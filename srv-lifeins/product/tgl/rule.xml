@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<rule>
+		<if id="rule_0001" condition="Channel('agy') and PARENT == null and Premium() lt 1500">
+			每期保險費（含附約保費合計）最低[折讓後]須為1500元。
+		</if>
+		<if condition="RiskAmount('accident') > 40000000">
+			傷害保險「累積有效保額」最高為4000萬元。
+		</if>
+		<if condition="RiskAmount('accident_r') > RiskAmount('life_m') * 10">
+			各項傷害保險附約「累積有效保額」最高以壽險主契約「累積有效保額」之10倍為限。
+		</if>
+		<if condition="(OCCUPATION_CATEGORY == 1 or OCCUPATION_CATEGORY == 2) and RiskAmount('accident_r') > 20000000">
+			職業級別為1級或2級時，傷害保險附約「累積有效保額」最高為2000萬元。
+		</if>
+		<if condition="(OCCUPATION_CATEGORY == 3 or OCCUPATION_CATEGORY == 4) and RiskAmount('accident_r') > 10000000">
+			職業級別為3級或4級時，傷害保險附約「累積有效保額」最高為1000萬元。
+		</if>
+		<if condition="(OCCUPATION_CATEGORY == 5 or OCCUPATION_CATEGORY == 6) and RiskAmount('accident_r') > 5000000">
+			職業級別為3級或4級時，傷害保險附約「累積有效保額」最高為500萬元。
+		</if>
+		<if condition="OCCUPATION_CATEGORY == 0 and RiskAmount('accident_r') > 1000000">
+			職業級別為危險職業時，傷害保險附約「累積有效保額」最高為100萬元。
+		</if>
+		<if condition="RiskAmount('dissubsidy') > 100000">
+			同一被保險人每月殘廢生活扶助保險金以10萬元為限。
+		</if>
+		<if condition="AGE lt 15 and RiskAmount('medical') > 6000">
+			未滿15歲之同一被保險人各項醫療險主、附約之累積住院日額，每日最高以6,000元為限。
+		</if>
+		<if condition="AGE >= 15 and RiskAmount('medical') > 8000">
+			15歲(含)以上之同一被保險人各項醫療險主、附約之累積住院日額，每日最高以8,000元為限。
+		</if>
+	</rule>
+</declare>

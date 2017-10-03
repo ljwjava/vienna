@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="GWL00002"
+		corporation_id="gwlife"
+		code="10522"
+		name="长城附加康健人生提前给付重大疾病保险"
+		name_abbr="康健人生重疾"
+		unit="1000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		is_main="no" 
+		is_rider="yes"
+		input="none"
+		amount="PARENT.AMOUNT"
+		premium="round(DS.RATE[0][PARENT.INDEX]*QUANTITY,2)"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="GWL00002" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+		
+		<init>
+			<item name="TR_CODE" value="100395" type="string"/>
+		</init>
+
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="PRM_O" param="A1" formula="(PARENT.PREMIUM+PREMIUM)*PAY_PERIOD-(IT.PRM_T(A1)+PARENT.IT.PRM_T(A1))" /><!--轻症疾病豁免保险费-->
+			<var name="CSV_70" param="A1" formula="try(Q * (DS.DATA_70[A1][0]), 0)" />
+			<var name="CSV_75" param="A1" formula="try(Q * (DS.DATA_75[A1][0]), 0)" />
+			<var name="CSV_79" param="A1" formula="try(Q * (DS.DATA_79[A1][0]), 0)" />
+			<var name="CSV" param="A1" formula="try(Q * (DS.DATA_70[A1][0]), 0)" /><!--现价-->
+		</interest>
+
+		<attachment>
+			<!--<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'轻症疾病保险金'</blank>
+						<blank row="1">'重大疾病保险金'</blank>
+						<blank row="1">'疾病终末期保险金'</blank>
+						<blank row="1">'轻症疾病豁免保险费'</blank>
+						<blank row="1">'轻症疾病豁免保险费'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row>
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">I>0?AMOUNT*0.2:0</blank>
+							<blank align="right" style="########0">I>0?AMOUNT:0</blank>
+							<blank align="right" style="########0">I>0?AMOUNT:0</blank>
+							<blank align="right" style="########0">I>0?IT.PRM_O(I):0</blank>
+							<blank align="right" style="########0">IT.CSV(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>-->
+
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="轻症疾病保险金">
+					<item>若被保险人于本附加险合同生效或最后一次复效之日起 90日内（含第 90日）因意外伤害以外的原因经专科医生明确诊断罹患本附加险合同所列的轻症疾病的一种或多种，我们不承担该种轻症疾病的保险责任，该种轻症疾病的保险责任终止。</item>
+					<item>若被保险人因意外伤害，或于本附加险合同生效或最后一次复效之日起 90日后因意外伤害以外的原因，经专科医生明确诊断初次罹患本附加险合同所列的轻症疾病的，我们将额外按本附加险合同基本保险金额的 20%给付轻症疾病保险金。每种轻症疾病只给付一次轻症疾病保险金，给付后该种轻症疾病的保险责任终止，若被保险人同时患有两种及两种以上轻症疾病的，针对每种轻症疾病将给付一次轻症疾病保险金；本附加险合同的轻症疾病保险金累计给付以五次为限，当累计次数达到五次时，本保险责任终止。</item>
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+					<item>若被保险人于本附加险合同生效或最后一次复效之日起 90日内（含第 90日）因意外伤害以外的原因经专科医生明确诊断初次罹患本附加险合同所列的重大疾病的一种或多种，我们将向您返还本附加险合同及主险合同累计已交保险费（无息），本附加险合同终止，主险合同也同时终止。</item>
+					<item>若被保险人因意外伤害，或于本附加险合同生效或最后一次复效之日起 90日后因意外伤害以外的原因，经专科医生明确诊断初次罹患本附加险合同所列重大疾病的一种或多种，我们将按本附加险合同的基本保险金额给付重大疾病保险金，本附加险合同终止，主险合同也同时终止。</item>
+					
+				</paragraph>
+				<paragraph title="疾病终末期保险金">
+					<item>若被保险人于本附加险合同生效或最后一次复效之日起 90日内（含第 90日）因意外伤害以外的原因经专科医生明确诊断达到疾病终末期，我们将向您返还本附加险合同及主险合同累计已交保险费（无息），本附加险合同终止，主险合同也同时终止。</item>
+					<item>若被保险人因意外伤害，或于本附加险合同生效或最后一次复效之日起 90日后因意外伤害以外的原因，经专科医生明确诊断达到疾病终末期，我们将按本附加险合同的基本保险金额给付疾病终末期保险金，本附加险合同终止，主险合同也同时终止。</item>
+					
+				</paragraph>
+				<paragraph title="轻症疾病豁免保险费">
+					<item>若被保险人于本附加险合同生效或最后一次复效之日起 90日内（含第 90日）因意外伤害以外的原因经专科医生明确诊断罹患本附加险合同约定的轻症疾病的一种或多种，我们不承担该种轻症疾病豁免保险费的保险责任，该种轻症疾病豁免保险费的保险责任终止。</item>
+					<item>若被保险人因意外伤害，或于本附加险合同生效或最后一次复效之日起 90日后因意外伤害以外的原因，经专科医生明确诊断初次罹患本附加险合同所列的轻症疾病的，我们将豁免本附加险合同及主险合同自轻症疾病确诊之日起的续期保险费，本附加险合同继续有效。</item>
+					
+				</paragraph>
+				<paragraph title="在任何情形下，我们仅给付本附加险合同约定的重大疾病保险金、疾病终末期保险金和主险合同约定的身故保险金、全残保险金中的一项，只要给付了其中一项保险金，将不再给付另一项保险金。">
+					
+				</paragraph>
+			</coverage>
+			
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

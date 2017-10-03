@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HXH01003"
+		corporation_id="hexie"
+		code="2110032"
+		name="和谐附加健康宝贝住院医疗保险"
+		name_abbr="附加医疗费用"
+		unit="5000"
+		type_code="medical"
+		sequence="1000"
+		sale_begin_date="2017-07-01"
+		sale_end_date=""
+		input="amount"
+		premium="0"
+		last_modify_date="2017-07-01">
+
+		<data>
+			<item parser="dds" value="HXH01003" />
+		</data>
+
+		<param>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+
+		<interest>
+			<item name="PRM_ACT" param="A1">
+				var r = DS.RATE[A1][0];
+				if (QUANTITY == 1)
+					return r;
+				if (QUANTITY > 1)
+					return r + r * (QUANTITY - 1) / 2;
+				return 0;
+			</item>
+		</interest>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

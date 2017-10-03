@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="GWL00007"
+		corporation_id="gwlife"
+		code="60620"
+		name="长城附加少儿意外伤害医疗保险"
+		name_abbr="附加少儿意外伤害医疗"
+		unit="1000"
+		type_code="medical"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		is_main="no" 
+		is_rider="yes"
+		input="amount"
+		premium="round((AMOUNT/UNIT)*18,2)"
+		last_modify_date="2017-01-01">
+
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+		</param>
+		
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<item name="R" value="PARENT.RIDER('GWL00008')"/>
+		</init>
+		
+
+		<interest>
+			<var name="PRM" param="A1" formula="(A1==0 or A1>PAY_PERIOD)?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<!--<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row>
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>-->
+
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="意外伤害医疗保险金">
+					<item>被保险人在保险期间内遭受意外伤害，并因该意外伤害须经医院进行必要的治疗，我们对其自该意外伤害发生之日起 180 日内已支出的必须且合理的实际医疗费用，在扣除人民币 100 元免赔额后向意外伤害医疗保险金受益人给付“意外伤害医疗保险金”。在一个保险单年度内，意外伤害医疗保险金的累计给付以保险单载明的本附加险合同基本保险金额为限。</item>
+					<item>实际医疗费用是指符合投保当地社会基本医疗保险管理规定的医疗费用。给付范围包括诊疗费、麻醉费、手术费、抢救费、床位费、药品费、化验费、检查费、护理费、治疗费、材料费等在医院内支出的费用。</item>
+					<item>若被保险人或者受益人按政府的规定取得补偿，或已从其他途径（包括工作单位、公费医疗、社会基本医疗保险、本公司在内的任何商业保险机构）取得补偿，我们仅对剩余的且符合投保当地社会基本医疗保险管理规定的医疗费用，在扣除人民币 100 元免赔额后向意外伤害医疗保险金受益人给付意外伤害医疗保险金。</item>
+				</paragraph>
+			</coverage>
+			
+		</attachment>
+
+		<rule skip="rule_6008,rule_6009">
+			<if condition="DAY lt 30 or AGE >17" type="customer">
+				投保年龄为0周岁（出生且出院满 30 天）至 17 周岁，可续保至 18 周岁
+			</if>
+			<if condition="AMOUNT lt 1000 or AMOUNT % 1000 > 0">
+				保额须为千元的整数倍，最低保额 1000 元
+			</if>
+			<if condition="R == null or AMOUNT > R.AMOUNT / 5">
+				必须附加少儿意外伤害，且本险种保额不可超过少儿意外伤害保额的1/5
+			</if>
+		</rule>
+	</product>
+</declare>

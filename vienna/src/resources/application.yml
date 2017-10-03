@@ -1,0 +1,29 @@
+path:
+  root: ./static/
+
+server:
+  port: 7701
+
+service:
+#  lifeins: http://10.253.102.74:7777
+#  boot: http://10.253.102.74:7500
+#  platformCode: http://10.253.102.74:7772
+#  customer: http://10.253.102.74:7602
+#  dict: http://10.253.102.74:7773
+#  order: http://10.253.102.74:7770
+#  proposal: http://10.253.102.74:7776
+#  sale: http://10.253.102.74:7772
+#  user: http://10.253.102.74:7601
+  boot: http://localhost:7500
+  lifeins: http://localhost:7777
+  customer: http://localhost:7602
+  dict: http://localhost:7773
+  order: http://localhost:7770
+  proposal: http://localhost:7776
+  sale: http://localhost:7772
+  user: http://localhost:7601
+  printer: http://localhost:7511
+  vienna: http://localhost:7701
+  iyb: https://uat.iyunbao.com
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000

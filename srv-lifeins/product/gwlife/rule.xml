@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<rule>
+		<if id="rule_4001" condition="APPLICANT.AGE lt 16" type="plan">
+			投保人未满16岁，不可做为投保人
+		</if>
+		<if id="rule_4102" condition="OCCUPATION_CATEGORY == 0 or OCCUPATION_CATEGORY == 7" type="plan">
+			被保人的职业为拒保职业。
+		</if>
+						
+		<if id="rule_5001" condition="PURCHASE == 'quantity' and QUANTITY != round(QUANTITY)">
+			以份数为基本投保单位的险种，最低为1份，多投时，必须按1份的整数倍递增
+		</if>
+		<if id="rule_5101" condition="PARENT != null and PAY_PERIOD > PARENT.PAY_PERIOD">
+			附加险交费年期不得超过对应主险交费年期。
+		</if>
+		<if id="rule_5102" condition="PARENT != null and INSURE_PERIOD > PARENT.INSURE_PERIOD">
+			附加险保险期限不得超过其对应主险保险期限。
+		</if>
+	</rule>
+</declare>

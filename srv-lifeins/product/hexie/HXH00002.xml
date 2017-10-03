@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="HXH00002" corporation_id="hexie" code="2140112" name="和谐附加轻症疾病保险" name_abbr="附加轻症" unit="1000" amount="min(PARENT.AMOUNT/2,100000)" input="none" premium="round(DS.RATE[0,0]*QUANTITY,2,'even')"
+		is_main="no" is_rider="yes" type_code="thunder" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
+
+		<data>
+			<item parser="dds" value="HXH00002" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="parent" />
+			</insure>
+		</param>
+		
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="轻症疾病保险金">
+				  <item>被保险人于本附加险合同生效（或合同效力恢复）之日起 180 日内因疾病，由医院的专科医生确诊初次发生本附加险合同所指的轻症疾病（无论一种或多种），本公司给付轻症疾病保险金，其金额为本附加险合同已交纳的保险费，本附加险合同终止。</item>
+				  <item>被保险人因意外伤害或于本附加险合同生效（或合同效力恢复）之日起 180日后因疾病，由医院的专科医生确诊初次发生本附加险合同所指的轻症疾病（无论一种或多种），本公司按本附加险合同约定的保险金额，给付轻症疾病保险金，本附加险合同终止。</item>
+					<item>轻症疾病保险金的给付以一次为限。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+		    <if condition="AGE > 50">
+				被保险人年龄不能大于50周岁。
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+  <parameter>
+		<rebewal name="REBEWAL">
+			<item code="2" value="1" show="续保保单"/>
+			<item code="1" value="2" show="新签保单"/>
+		</rebewal>
+	</parameter>
+</declare>

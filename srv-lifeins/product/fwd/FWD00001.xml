@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="FWD00001" corporation_id="fwd" code="FWD00001" name="CANsurance" name_abbr="CRP" unit="10000" currency="hkd" premium="(DS.RATE[0][COL]-(PARENT==null?0:95))*PRC*AMOUNT/UNIT"
+		is_main="yes" is_rider="yes" type_code="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="FWD00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="insure" />
+			</pay>
+			<insure>
+				<item code="to_100" />
+			</insure>
+			<rank>
+				<item code="1" />
+				<item code="2" />
+				<item code="3" />
+				<item code="4" />
+			</rank>
+		</param>
+		
+		<init>
+			<item name="PRC" value="1.25" /> 
+			<item name="COL" value="(AGE>55?4:0)+RANK_VALUE-1"/>
+		</init>
+
+		<interest>
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="Protection">
+				  <table>
+				  	<row type="title">
+				  		<blank>'Hospitalisation Benefits'</blank>
+				  		<blank row="5">'Pls refer to the Benefit Schedule\nIn case the actual confinement level is higher than the covered level, adjustment factor will be applied (same as existing)'</blank>
+				  	</row>
+				  	<row type="title"><blank>'Surgical Benefits'</blank></row>
+				  	<row type="title"><blank>'Other Benefits'</blank></row>
+				  	<row type="title"><blank>'Death Benefit'</blank></row>
+				  	<row type="title"><blank>'International SOS 24-hour Worldwide Assistance Program'</blank></row>
+				  </table>
+				</paragraph>
+				<paragraph title="Savings Option">
+				  <table>
+				  	<row type="title">
+				  		<blank>'Guaranteed Cash Value'</blank>
+				  		<blank row="5">'Not Applicable'</blank>
+				  	</row>
+				  	<row type="title"><blank>'Guaranteed Cash Coupon'</blank></row>
+				  	<row type="title"><blank>'Annual Dividend'</blank></row>
+				  	<row type="title"><blank>'Special Bonus'</blank></row>
+				  	<row type="title"><blank>'Surrender Value'</blank></row>
+				  </table>
+				</paragraph>
+				<paragraph title="Others (Additional Benefits For Cancer Reimbursement Plan)">
+				  <item>Convertibility Option</item>
+				  <item>
+•	An option to convert this cancer reimbursement plan to a full medical reimbursement plan and without re-underwriting
+•	Once per lifetime, exercisable at ANB 40 or above of the Insured
+•	Policy Owner should inform us at least 1 year before conversion (within 31 days before or after the relevant policy anniversary)
+•	Waiting Period: 10 years
+This option cannot be exercised after ANB 66’s policy anniversary
+•	The Lifetime Cancer Limit of Cancer Reimbursement Plan will be imposed to Full Medical Reimbursement Plan after conversion. The Lifetime Cancer Limit is only applicable to Cancer related claims of the converted Full Medical Reimbursement Plan’s policy.
+•	If Lifetime Cancer Limit exhausts after client’s notification on her/ his wish to convert, conversion to FMP can still be honoured subject to our discretion
+				  </item>
+				  <item>Job Changer Benefit</item>
+				  <item>
+•	An option to apply for temporary coverage by the Full Medical Reimbursement Plan for 6 months with simple health declaration only
+•	Policy Owner needs to pay the premium of Cancer Reimbursement Plan but the premium of Full Medical Reimbursement Plan will be waived 
+•	When Policy Owner / Insured has quitted and changed to another permanent job, Policy Owner should inform us within 31 days before or after the termination date of the existing permanent job, proof documents of changing job to another permanent job needs to be provided
+•	Policy Owner / Insured can exercise this benefit for a maximum of 3 times (aggregate) per policy
+•	Waiting Period: 3 years for the first (from the Policy Date) and between subsequent claims (counting from the last commencement date of temporary coverage of FMP)
+•	The available plan level of FMP for Job Changer Benefit of CMP
+				  </item>
+				  <table>
+				  	<row>
+				  		<blank>'Cancer Reimbursement Plan'</blank>
+				  		<blank>'Applicable Full Medical Reimbursement Plan for Job Changer Benefit'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Economy'</blank>
+				  		<blank>'Economy'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Standard'</blank>
+				  		<blank>'Standard'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Superior'</blank>
+				  		<blank>'Superior'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Premier'</blank>
+				  		<blank>'Premier'</blank>
+				  	</row>
+				  </table>
+				  <item>
+•	Expires at the earlier of (upon the exercise of Convertibility Option, ANB66)
+				  </item>
+				  <item>Special Event Benefit</item>
+				  <item>
+•	An option to apply for waiving premium for 1 year while the policy keeps in force
+•	Once per lifetime when Policy Owner is involuntarily unemployed, pursue further education (full time) or working holiday
+•	Waiting Period: 3 years
+•	Expires at the earlier of (upon the exercise of Convertibility Option, ANB66)
+				  </item>
+				  <item>Extended Grace Period Benefit </item>
+				  <item>
+•	An option to apply for extending the Grace Period up to 365 days if the Policy Owner gets married or becomes parent
+•	Once per lifetime and Policy Owner is required to pay back the premium due in the Grace Period without interest
+•	Policy lapses automatically if Policy Owner fails to pay back the outstanding premium at the end of Extended Grace Period
+•	Waiting Period: 3 years
+•	Expires at the earlier of (upon the exercise of Guaranteed Convertibility Option, ANB66)
+				  </item>
+		</paragraph>
+				  <paragraph title="Detailed administration rules and logistics are to be expanded and further discussed:">
+				  	<item>
+•	Policy should be in force when exercising each benefit
+•	Only one benefit under additional benefits being exercised at once
+•	Each Insured can only be covered by 1 CRP and 1 FMP; allow the exercise of Job Changer Benefit of CRP if the Insured is covered under both CRP and FMP ; but no new policy of FMP will be issued to same Insured whose CRP is in the Job Changer Period if s/he only holds CRP
+•	If the Insured is a housewife or age below ANB 18, he / she can only apply Economy Plan and Standard Plan for CRP
+				  	</item>
+				  </paragraph>
+				  <paragraph title="Cancer includes Cancer and Carcinoma-in-situ">
+				  	<item>
+Definition
+Cancer
+Cancer means a malignant tumour characterized by the uncontrolled growth of malignant cells and the invasion of tissue. This includes leukaemia (other than chronic lymphocytic leukaemia of RAI stage 0) but excludes non-invasive cancers in situ, tumours in the presence of any Human Immunodeficiency Virus and any non-melanoma skin cancer of AJCC stage I or below.
+Carcinoma-in-situ
+Carcinoma-in-situ means focal autonomous new growth of carcinomatous cells which has not yet resulted in the invasion of normal tissues. “Invasion” means an infiltration beyond the epithelial basement membrane. 
+For Carcinoma-in-situ of Cervix Uteri, it must be at a grading of CIN III – which has been confirmed by histopathology as Carcinoma-in-situ.
+The diagnosis of Carcinoma-in-situ must always be supported by a histopathological biopsy report and confirmed by a Specialist in the relevant field. Clinical or cytological diagnosis alone does not meet this standard.
+				  	</item>
+				  </paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+		    <if condition="AGE > 70">
+1 (from 15 days) – 55 (with Others - Additional Benefits For Cancer Reimbursement Plan), 56 – 70 (without Others - Additional Benefits For Cancer Reimbursement Plan)
+			</if>
+		</rule>
+	</product>
+</declare>

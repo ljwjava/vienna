@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="JKL00001"
+		corporation_id="junkang"
+		code="JKL00001"
+		name="君康龙驾宝两全保险"
+		name_abbr="龙驾宝"
+		unit_amount="1000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="JKL00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_5" />
+				<item code="term_10" />
+			</pay>
+			<insure>
+				<item code="term_30" />
+			</insure>
+		</param>
+
+		<rider>
+		</rider>
+
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY" />
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'疾病身故保险金'</blank>
+						<blank row="1">'意外身故保险金'</blank>
+						<blank row="1">'私家车意外身故保险金'</blank>
+						<blank row="1">'满期保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">I==INSURE_PERIOD-1?'-':IT.CSV(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)*1.2</blank>
+							<blank align="right" style="########0">AMOUNT</blank>
+							<blank align="right" style="########0">I==0?AMOUNT*2:AMOUNT*5</blank>
+							<blank align="right" style="########0">I==INSURE_PERIOD-1?IT.PRM_T(I)*1.2:0</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<coverage filter="coverage" parser="coverage">
+        <paragraph title="投保范围">
+          <item>投保人：凡年满十八周岁，具有完全民事行为能力且对被保险人具有保险利益的人，均可作为本合同的投保人。</item>
+          <item>被保险人：凡年满十八周岁至五十五周岁（含）身体健康的人，均可作为本合同的被保险人。</item>
+        </paragraph>
+				<paragraph title="满期保险金">
+					<item>被保险人生存至保险期间届满，本公司将给付满期保险金予被保险人，本合同随之终止。满期保险金金额为：本合同的年交保险费×交费年期数×120%。</item>
+					<item>上述本合同的年交保险费根据被保险人在一次性交付或年交的交费方式下对应的保险费率，以被保险人满期时本合同的基本保险金额为基础计算。</item>
+				</paragraph>
+				<paragraph title="疾病身故保险金">
+					<item>被保险人于本合同等待期后因疾病身故，本公司将按以下方式给付疾病身故保险金予受益人，本合同随之终止：</item>
+					<item>如果被保险人于交费期满前因疾病身故，疾病身故保险金金额为：本合同的年交保险费×被保险人身故时本合同的保单年度数×120%；</item>
+					<item>如果被保险人于交费期满后因疾病身故，疾病身故保险金金额为：本合同的年交保险费×交费年期数×120%。 </item>
+					<item>上述本合同的年交保险费根据被保险人在一次性交付或年交的交费方式下对应的保险费率，以被保险人身故时本合同的基本保险金额为基础计算。</item>
+				</paragraph>
+				<paragraph title="意外身故保险金">
+					<item>被保险人于本合同等待期后遭受意外伤害，并自该意外伤害发生之日起180 日内（含180 日），因该意外伤害为直接原因导致身故，本公司将给付意外身故保险金予受益人，本合同随之终止。意外身故保险金金额为：基本保险金额。</item>
+				</paragraph>
+				<paragraph title="私家车意外身故保险金">
+					<item>被保险人于本合同生效日起一年内（含一年）且等待期后，驾驶或乘坐私家车期间发生意外伤害，并自该意外伤害发生之日起180 内（含180 日），因该意外伤害为直接原因导致身故，本公司将给付私家车意外身故保险金予受益人，本合同随之终止。私家车意外身故保险金金额为:基本保险金额×2。</item>
+				</paragraph>
+			</coverage>
+			
+			<benefit_chart filter="chart" parser="chart">
+			    <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="意外身故保险金" color="#CC0000">AMOUNT</line>
+					<line name="私家车意外身故保险金" color="#0000FF">I==0?AMOUNT*2:AMOUNT*5</line>
+					<line name="疾病身故保险金" color="#CCAA00">IT.PRM_T(I)*1.2</line>
+					<bar name="满期保险金" color="#00AA00">I==INSURE_PERIOD-1?IT.PRM_T(I)*1.2:0</bar>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 55" type="customer">
+				被保险人年龄要求：18至55周岁。
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
+				最低保额10000元，且必须为1000元的整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

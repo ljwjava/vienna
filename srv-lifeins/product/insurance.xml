@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<corporation id="insurance">
+		<!-- 变量公式映射 -->
+		<item src="default/variable.xml"/>
+		
+		<!-- 基础定义，关于缴费、保障、领取 -->
+		<item src="default/parameter.xml"/>
+
+		<!-- 函数定义 -->
+		<item src="default/function.xml"/>
+
+		<!-- 风险保额累计 -->
+		<item src="default/accumulation.xml"/>
+	</corporation>
+
+  <corporation id="qianhai" name="前海人寿" extends="insurance">
+    <item src="qianhai/*.xml"/>
+    <item src="qianhai/product/*.xml"/>
+  </corporation>
+
+  <corporation id="tgl" name="全球人寿" extends="insurance">
+    <item src="tgl/*.xml"/>
+    <item src="tgl/product/*.xml"/>
+  </corporation>
+
+  <corporation id="guolian" name="国联人寿" extends="insurance">
+    <item src="guolian/*.xml"/>
+    <item src="guolian/product/*.xml"/>
+  </corporation>
+
+  <corporation id="icbc-axa" name="工银安盛" extends="insurance">
+    <item src="icbc-axa/*.xml"/>
+    <item src="icbc-axa/product/*.xml"/>
+  </corporation>
+
+  <corporation id="yg-life" name="阳光人寿" extends="insurance">
+    <item src="yg-life/*.xml"/>
+    <item src="yg-life/product/0???.xml"/>
+    <item src="yg-life/product/0???A.xml"/>
+    <item src="yg-life/product/YGL*.xml"/>
+  </corporation>
+
+  <corporation id="fwd" name="富衛人壽" extends="insurance">
+    <item src="fwd/*.xml"/>
+  </corporation>
+
+  <corporation id="hexie" name="和谐健康" extends="insurance">
+    <item src="hexie/*.xml"/>
+  </corporation>
+
+  <corporation id="nci" name="新华人寿" extends="insurance">
+    <item src="nci/*.xml"/>
+  </corporation>
+
+  <corporation id="hengqin" name="横琴人寿" extends="insurance">
+    <item src="hengqin/*.xml"/>
+  </corporation>
+
+  <corporation id="lianlife" name="利安人寿" extends="insurance">
+    <item src="lianlife/*.xml"/>
+    <item src="lianlife/product/LAL?????.xml"/>
+  </corporation>
+  
+  <corporation id="junkang" name="君康人寿" extends="insurance">
+    <item src="junkang/*.xml"/>
+    <item src="junkang/product/*.xml"/>
+  </corporation>
+
+  <corporation id="zhongan" name="众安在线" extends="insurance">
+    <item src="zhongan/*.xml"/>
+  </corporation>
+
+  <corporation id="gwlife" name="长城人寿" extends="insurance">
+    <item src="gwlife/*.xml"/>
+  </corporation>
+
+  <corporation id="fosun" name="复星保德信" extends="insurance">
+    <item src="fosun/*.xml"/>
+  </corporation>
+
+  <corporation id="bclife" name="中荷人寿" extends="insurance">
+    <item src="bclife/parameter.xml"/>
+    <item src="bclife/BCL*.xml"/>
+  </corporation>
+
+  <corporation id="shlife" name="上海人寿" extends="insurance">
+    <item src="shlife/*.xml"/>
+  </corporation>
+
+  <!--
+    <corporation id="iyb" name="i云保" extends="insurance">
+      <item src="hexie/HXH*.xml"/>
+      <item src="gwlife/GWL00001.xml"/>
+      <item src="gwlife/GWL00002.xml"/>
+      <item src="hengqin/HQL00101.xml"/>
+      <item src="fosun/FSH00001.xml"/>
+      <item src="yg-life/product/YGL00001.xml"/>
+      <item src="iyb/IYB*.xml"/>
+    </corporation>
+  -->
+</declare>

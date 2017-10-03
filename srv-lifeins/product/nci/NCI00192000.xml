@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <product id="NCI00192000" 
+		corporation_id="nci" 
+		code="00192000" 
+		name="附加畅行无忧两全保险" 
+		name_abbr="附加畅行无忧" 
+		is_main="no"
+		is_rider="yes"
+		type="life"
+		premium="DS.DATA[0,0]*QUANTITY" 
+		unit_amount="10000"
+		sale_begin_date="2016-07-21" 
+		sale_end_date="" 
+		last_modify_date="2016-07-21">
+		
+		<data>
+		    <item parser="file.auto" file="NCI00192000.dat"/> 
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</insure>
+		</param>
+		
+	 	<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="满期生存保险金">
+					<item>被保险人生存至保险期间届满，本公司按本保险实际交纳的保险费的1.2倍给付满期生存保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="疾病身故或身体全残保险金">
+					<item>被保险人因疾病身故或身体全残，本公司按本保险实际交纳的保险费的1.2倍给付疾病身故或身体全残保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="驾乘车意外伤害身故或身体全残保险金">
+					<item>被保险人驾驶或乘坐私家车、单位公务或商务用车期间，在私家车、单位公务或商务用车内因交通事故遭受意外伤害导致身故或身体全残的，本公司按被保险人身故或身体全残时所处的以下不同情形给付驾乘车意外伤害身故或身体全残保险金，合同终止：</item>
+					<item>（1）若身故或身体全残时被保险人处于70周岁保单生效对应日之前，则其驾乘车意外伤害身故或身体全残保险金为基本保险金额的10倍。</item>
+					<item>（2）若身故或身体全残时被保险人处于70周岁保单生效对应日（含）之后，则其驾乘车意外伤害身故或身体全残保险金为基本保险金额的2倍。</item>
+				</paragraph>
+				<paragraph title="公共交通工具意外伤害身故或身体全残保险金">
+					<item>被保险人以乘客身份乘坐公共交通工具期间，在交通工具内因交通事故遭受意外伤害导致身故或身体全残的，本公司按被保险人身故或身体全残时所处的以下不同情形给付公共交通工具意外伤害身故或身体全残保险金，合同终止：</item>
+					<item>（1）若身故或身体全残时被保险人处于70周岁保单生效对应日之前，则其公共交通工具意外伤害身故或身体全残保险金为基本保险金额的15倍。</item>
+					<item>（2）若身故或身体全残时被保险人处于70周岁保单生效对应日（含）之后，则其公共交通工具意外伤害身故或身体全残保险金为基本保险金额的3倍。</item>
+				</paragraph>
+				<paragraph title="航空意外伤害身故或身体全残保险金">
+					<item>被保险人以乘客身份乘坐合法商业运营民航班机期间，在民航班机内遭受意外伤害导致身故或身体全残的，本公司按基本保险金额的20倍给付航空意外伤害身故或身体全残保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="一般意外伤害身故或身体全残保险金">
+					<item>被保险人因上述驾乘车意外伤害、公共交通工具意外伤害、航空意外伤害以外的情形遭受意外伤害导致身故或身体全残，本公司按基本保险金额的2倍给付一般意外伤害身故或身体全残保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="投保人意外伤害身故或意外伤害身体全残豁免保险费">
+					<item>除另有约定外，投保人因意外伤害身故或因意外伤害身体全残，且投保人身故或身体全残时年龄已满18周岁未满61周岁，可免交自投保人身故或被确定身体全残之日起的续期保险费，合同继续有效。</item>
+					<item>豁免保险费的，本公司视同自投保人身故或被确定身体全残之日起的续期保险费已经交纳。</item>
+				</paragraph>
+				<paragraph>
+					<item>投保人在保险期间内变更的，本公司不予豁免保险费。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule skip="">
+			<if alert="amount" condition="AMOUNT lt 10000">
+				本险种最低保额不得低于10000元。
+			</if>
+			<if alert="amount" condition="AMOUNT > 500000">
+				本险种最高保额不得高于500000元。
+			</if>
+			<if alert="amount" condition="INSURE_VALUE == 20 and PAY_VALUE == 20">
+				保险期间为20年和缴费期间为20年时不能投保
+			</if>
+		</rule>
+	</product>
+</declare>

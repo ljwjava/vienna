@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="GWL00008"
+		corporation_id="gwlife"
+		code="60619"
+		name="长城附加少儿意外伤害保险"
+		name_abbr="附加少儿意外伤害"
+		unit="10000"
+		type_code="medical"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		is_main="no" 
+		is_rider="yes"
+		input="amount"
+		premium="round((AMOUNT/UNIT)*20,2)"
+		last_modify_date="2017-01-01">
+
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+		</param>
+		
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+		
+
+		<interest>
+			<var name="PRM" param="A1" formula="(A1==0 or A1>PAY_PERIOD)?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<!--<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'意外身故保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row>
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">AMOUNT</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>-->
+
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="意外身故保险金">
+					<item>被保险人自该意外伤害发生之日起 180日内因该意外伤害身故的，或虽然超过 180日，但有证据表明身故与该意外伤害有直接因果关系的，我们按基本保险金额向意外身故保险金受益人给付意外身故保险金，本附加险合同终止。若被保险人身故前本附加险合同已有意外伤残保险金给付，则给付意外身故保险金时应扣除已给付的意外伤残保险金。</item>
+					
+				</paragraph>
+				<paragraph title="意外伤残保险金">
+					<item>被保险人自该意外伤害发生之日起 180日内因该意外伤害造成《人身保险伤残评定标准与代码》所列伤残类别，如自意外伤害发生之日起 180日内治疗仍未结束的，则按该意外伤害发生之日起第 180日的身体情况进行伤残评定，我们按本附加险合同约定的保险金额乘以该处伤残的伤残等级所对应的保险金给付比例给付意外伤残保险金。</item>
+					<item>该次意外伤害导致的伤残合并前次伤残（不含因责任免除事项所致《人身保险伤残评定标准与代码》所列的伤残）可领较严重等级伤残保险金者，按较严重等级标准给付，但前次已给付的意外伤残保险金应予以扣除。</item>
+					<item>当同一保险事故造成两处或两处以上伤残时，首先对各处伤残程度分别进行评定，如果几处伤残等级不同，以最重的伤残等级作为最终的评定结论；如果两处或两处以上伤残等级相同，伤残等级在原评定基础上晋升一级，最高晋升至第一级。对于同一部位和性质的伤残，不适用以上晋级规则。</item>
+					<item>人身保险伤残程度等级相对应的保险金给付比例分为十档，伤残程度第一级对应的保险金给付比例为 100%，伤残程度第十级对应的保险金给付比例为10%，每相邻两级之间相差 10%。</item>
+				</paragraph>
+				<paragraph title="对于同一被保险人，前款所述的意外身故保险金和意外伤残保险金给付额累计不得超过我们约定的基本保险金额。">
+				</paragraph>
+			</coverage>
+			
+		</attachment>
+
+		<rule skip="rule_6008,rule_6009">
+			<if condition="DAY lt 30 or AGE >17" type="customer">
+				投保年龄为0周岁（出生且出院满 30 天）至 17 周岁，可续保至 18 周岁
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT > 50000 or AMOUNT % 10000 > 0">
+				保额须为万元的整数倍，最低保额 1 万元，最高保额 5 万元。
+			</if>
+		</rule>
+	</product>
+</declare>

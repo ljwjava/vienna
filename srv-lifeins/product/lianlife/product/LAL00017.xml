@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00017" corporation_id="lianlife" code="612002" name="保驾百万（B款）两全保险" name_abbr="保驾百万" unit="10000" input="quantity" purchase="quantity" type="life" sequence="2000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="LAL00017" />
+		</data>
+		
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_5" />
+				<item code="term_10" />
+			</pay>
+			<insure>
+				<item code="term_30" />
+				<item code="to_70" />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="LAL00018" />
+		</rider>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+					<item>若被保险人在本合同生效或最后一次复效（以较迟者为准）之日起180 日内因意外伤害以外的原因导致身故，我们按“本合同的投保份数×被保险人身故时本合同已经过的保险费应付期数×本合同及附加险合同的首期保险费”给付“身故保险金”，本合同终止。</item>
+					<item>若被保险人在本合同生效或最后一次复效（以较迟者为准）之日起180 日后身故，我们按基本保险金额给付“身故保险金”，本合同终止。</item>
+				</paragraph>
+				<paragraph title="意外身故保险金">
+					<item>若被保险人遭受意外伤害事故，并因本次事故直接导致被保险人在该事故发生之日起180 日内身故，我们按每份人民币20 万元给付“意外身故保险金”，本合同终止。</item>
+				</paragraph>
+				<paragraph title="航空及轨道交通意外身故保险金">
+					<item>若被保险人以乘客身份乘坐商业运营的民航班机或轨道公共交通工具，在交通工具内遭受意外伤害事故，并因本次事故直接导致被保险人在该事故发生之日起180 日内身故，我们按每份人民币40 万元给付“航空及轨道交通意外身故保险金”，本合同终止。</item>
+				</paragraph>
+				<paragraph title="满期生存保险金">
+					<item>若被保险人生存至保险期间届满，我们按基本保险金额给付“满期生存保险金”，本合同终止。</item>
+				</paragraph>
+				<paragraph title="">
+					<item>上述“身故保险金”、“意外身故保险金”、“航空及轨道交通意外身故保险金”不可兼得，我们仅支付其中一种保险金。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE lt 18" type="customer">
+				被保险人年龄不能小于18岁。
+			</if>
+			<if condition="PAY_VALUE == 30 and AGE > 40">
+				保险期间30年时，被保险人年龄不能大于40岁。
+			</if>
+			<if condition="PAY_VALUE == 70 and AGE > 50">
+				保险期间至70岁时,被保险人年龄不能大于50岁。
+			</if>
+			<if condition="QUANTITY != round(QUANTITY)">
+				份数必须为整数。
+			</if>
+			<if condition="OCCUPATION_CATEGORY lt 1 or OCCUPATION_CATEGORY > 4">
+				仅限承保1-4类职业类别人群。
+			</if>
+		</rule>
+	</product>
+</declare>
+

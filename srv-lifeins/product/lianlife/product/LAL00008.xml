@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00008" corporation_id="lianlife" code="115003" name="附加住院补贴医疗保险 " name_abbr="附加住院补贴" is_main="no" is_rider="yes" unit="1800" premium="PREM_S" input="quantity" purchase="quantity" type_code="medical" sequence="1000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<init>
+			<item name="PREM_S" type="formula">
+				var ra = [55,25,13,12,18,23,28,34,40,46,55,76,130];
+				var f_occ = [1.00, 1.00, 1.00, 1.3, 1.6, 2.0];
+				var ral = ra[AGE == 0 ? 0 : floor((AGE - 1) / 5)];
+
+				return ral * QUANTITY * f_occ[OCCUPATION_CATEGORY];
+			</item>
+		</init>
+		
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="等待期">
+					<item>您首次投保或重新投保本附加险时，若被保险人在附加险合同生效之日起90日（这90日的时间称为等待期，续保不设等待期）内因意外伤害以外的原因导致住院治疗，我们不承担给付保险金的责任。</item>
+				</paragraph>
+				<paragraph title="住院补贴保险金">
+					<item>被保险人在卫生行政部门认定的二级以上医院住院治疗，我们按其实际住院天数乘以投保时您与我们约定的日住院补贴金额给付住院补贴保险金。</item>
+				</paragraph>
+				<paragraph title="癌症住院额外补贴保险金">
+					<item>被保险人在卫生行政部门认定的二级以上医院因癌症住院治疗，在给付上述住院补贴保险金后，我们按因癌症实际住院天数乘以投保时您与我们约定的日住院补贴保险金金额给付癌症住院额外补贴保险金。</item>
+					<item>到保险期间届满住院仍未结束，且续保的，我们分别按每一保险期间内被保险人实际住院天数给付保险金。任一保险期间内，累计给付保险金的天数以180天为限。</item>
+					<item>到保险期间届满住院仍未结束，且未续保的，我们继续承担给付保险金责任至住院结束，但最长不超过保险期间届满之日起第30日，且累计给付保险金的天数以180天为限。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 60 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至60周岁。
+			</if>
+			<if condition="QUANTITY > 12">
+				本险种最多可以购买12份。
+			</if>
+			<if condition="QUANTITY != round(QUANTITY)">
+				份数必须为整数。
+			</if>
+			<if condition="AGE lt 18 and QUANTITY > 3">
+				未成年人最多可以购买3份。
+			</if>
+			<if condition="PARENT.PAY_CODE != 'single' and PARENT.PREMIUM >= 1000 and PARENT.PREMIUM lt 2000 and QUANTITY > 6">
+				主险期交保费未达到2000元时，本险种最多可以购买6份。
+			</if>
+			<if>
+				if (PARENT.PRODUCT_ID == 'LAL00016') {
+					if (PARENT.PAY_CODE != 'single' and PARENT.PREMIUM lt 1000 and QUANTITY > 6)
+						return '主险是爱的承诺、安享无忧，且期交保费未达到1000元，本险种最多可以购买6份。';
+				}
+				else {
+					if ((PARENT.PAY_CODE != 'single' and PARENT.PREMIUM lt 1000) or (PARENT.PAY_CODE == 'single' and PARENT.PREMIUM lt 5000))
+						return '主险趸缴保费未达到5000元，或期交保费未达到1000元。不可附加本险种。';
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00004" corporation_id="lianlife" code="115006" name="附加幸福宝贝重大疾病保险 " name_abbr="附加幸福宝贝" is_main="no" is_rider="yes" unit="10000" input="amount" type_code="thunder" sequence="1000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="LAL00004" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="to_25" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="等待期">
+					<item>若被保险人在附加险合同生效或最后一次复效（以较迟者为准）之日起180日（这180日的时间段称为“等待期”）内因意外伤害以外的原因被确诊初次发生附加险合同约定的重大疾病的，我们按您根据附加险合同的约定已支付的保险费给付保险金，附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+					<item>若被保险人因遭受意外伤害或在等待期后因意外伤害以外的原因被确诊初次发生附加险合同约定的重大疾病（无论一种或多种，下同），我们按附加险合同基本保险金额的10倍给付重大疾病保险金，附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="白血病额外保险金">
+					<item>若被保险人因遭受意外伤害或在等待期后因意外伤害以外的原因被确诊初次发生附加险合同约定的白血病，我们按附加险合同基本保险金额的2.5倍给付白血病额外保险金，附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日前身故，我们按您已支付的保险费给付身故保险金，附加险合同终止。</item>
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日后身故，我们按基本保险金额的10倍给付身故保险金，附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="投保人身故、全残豁免保险费">
+					<item>除另有约定外，若投保人因遭受意外伤害或在附加险合同生效或最后一次复效（以较迟者为准）之日起180日后因意外伤害以外的原因身故或全残，可免交自投保人身故或全残之日后的续期保险费，合同继续有效。</item>
+					<item>投保人在保险期间内变更的，我们不予豁免保险费。</item>
+					<item>“已支付的保险费”的含义:本条所述“已支付的保险费”指您根据附加险合同的约定已支付的保险费，豁免的保险费视作已支付。若发生减保，在计算已支付保险费时，减保前已支付的保险费将按减保比例相应减少。</item>
+				</paragraph>
+				<paragraph title="重大疾病列表">
+					<table>
+						<row>
+							<blank>'1'</blank>
+							<blank>'恶性肿瘤'</blank>
+							<blank>'10'</blank>
+							<blank>'双耳失聪'</blank>
+							<blank>'19'</blank>
+							<blank>'主动脉手术'</blank>
+						</row>
+						<row>
+							<blank>'2'</blank>
+							<blank>'重大器官移植术或造血干细胞移植术'</blank>
+							<blank>'11'</blank>
+							<blank>'双目失明'</blank>
+							<blank>'20'</blank>
+							<blank>'经输血导致的人类免疫缺陷病毒（HIV）感染'</blank>
+						</row>
+						<row>
+							<blank>'3'</blank>
+							<blank>'终末期肾病（或称慢性肾功能衰竭尿毒症期）'</blank>
+							<blank>'12'</blank>
+							<blank>'瘫痪'</blank>
+							<blank>'21'</blank>
+							<blank>'脊髓灰质炎（或称小儿麻痹症）'</blank>
+						</row>
+						<row>
+							<blank>'4'</blank>
+							<blank>'多个肢体缺失'</blank>
+							<blank>'13'</blank>
+							<blank>'心脏瓣膜手术'</blank>
+							<blank>'22'</blank>
+							<blank>'严重的Ｉ型糖尿病'</blank>
+						</row>
+						<row>
+							<blank>'5'</blank>
+							<blank>'急性或亚急性重症肝炎'</blank>
+							<blank>'14'</blank>
+							<blank>'严重脑损伤'</blank>
+							<blank>'23'</blank>
+							<blank>'严重川崎病'</blank>
+						</row>
+						<row>
+							<blank>'6'</blank>
+							<blank>'良性脑肿瘤'</blank>
+							<blank>'15'</blank>
+							<blank>'严重Ⅲ度烧伤'</blank>
+							<blank>'24'</blank>
+							<blank>'严重幼年型类风湿关节炎'</blank>
+						</row>
+						<row>
+							<blank>'7'</blank>
+							<blank>'慢性肝功能衰竭失代偿期'</blank>
+							<blank>'16'</blank>
+							<blank>'严重运动神经元病'</blank>
+							<blank>'25'</blank>
+							<blank>'系统性红斑狼疮'</blank>
+						</row>
+						<row>
+							<blank>'8'</blank>
+							<blank>'脑炎后遗症或脑膜炎后遗症'</blank>
+							<blank>'17'</blank>
+							<blank>'语言能力丧失特定疾病'</blank>
+							<blank col="2">'特定疾病'</blank>
+						</row>
+						<row>
+							<blank>'9'</blank>
+							<blank>'深度昏迷'</blank>
+							<blank>'18'</blank>
+							<blank>'重型再生障碍性贫血白血病'</blank>
+							<blank col="2">白血病</blank>
+						</row>
+					</table>
+					<item>注：第1~19种重大疾病是中国保险行业协会制定的《重大疾病保险的疾病定义使用规范》中列明的疾病。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="APPLICANT.AGE > 50 or APPLICANT.AGE lt 18" type="customer">
+				投保人年龄要求：18周岁至50周岁。
+			</if>
+			<if condition="APPLICANT.OCCUPATION_CATEGORY lt 1 or APPLICANT.OCCUPATION_CATEGORY > 4" type="customer">
+				投保人为5类（含）及以上职业类别予以拒保。
+			</if>
+			<if condition="AGE > 10 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至10周岁。
+			</if>
+			<if condition="AMOUNT > PARENT.AMOUNT">
+				该险种基本保额不能超过主险的基本保额。
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 5000 > 0">
+				保额最低为10000，且需是5000的倍数。
+			</if>
+		</rule>
+	</product>
+</declare>

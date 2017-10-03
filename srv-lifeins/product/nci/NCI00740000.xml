@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <product id="NCI00740000" 
+		corporation_id="nci" 
+		code="00740000" 
+		name="附加09终身重大疾病保险" 
+		name_abbr="附加09终身重疾" 
+		is_main="no"
+		is_rider="yes"
+		type="thunder"
+		unit_amount="10000"
+		sale_begin_date="2016-07-21" 
+		sale_end_date="" 
+		last_modify_date="2016-07-21">
+		
+		<data>
+		    <item parser="file.auto" file="NCI00740000.dat"/> 
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+				<item code="insure"/>
+			</pay>
+			<insure>
+				<item code="to_full"/>
+			</insure>
+		</param>
+		
+	 	<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="重大疾病保险金">
+					<item>被保险人于合同生效或复效（以较迟者为准）之日起一年内，由本公司认可医院的专科医生确诊发生合同所指的重大疾病，本公司给付重大疾病保险金，其金额为合同保险金额的10%与合同项下所实际交纳的保险费二者之和，合同效力即行终止；</item>
+					<item>保险人于合同生效或复效（以较迟者为准）之日起一年后，由本公司认可医院的专科医生确诊发生合同所指的重大疾病，本公司按合同保险金额给付重大疾病保险金，合同效力即行终止。</item>
+				</paragraph>
+				<paragraph title="身故或全残保险金">
+					<item>被保险人于合同生效或复效（以较迟者为准）之日起一年内因疾病（该疾病不包括前款所述的重大疾病）导致身故或身体全残，本公司按合同保险金额的10％与合同项下所实际交纳的保险费二者之和给付身故或全残保险金，合同效力即行终止；</item>
+					<item>被保险人因意外伤害或于合同生效或复效（以较迟者为准）之日起一年后因疾病（该疾病不包括前款所述的重大疾病）导致身故或身体全残，本公司按合同保险金额给付身故或全残保险金，合同效力即行终止。</item>
+				</paragraph>
+				<paragraph>
+					<item>上述“所实际交纳的保险费”不包括被保险人因健康及职业类别等原因所增加的保险费。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule skip="rule_4002,rule_4003">
+			<if alert="pay" condition="PAY_PERIOD != PARENT.PAY_PERIOD">
+				本险种要求和主险交费方式一致。
+			</if>
+		</rule>
+	</product>
+</declare>

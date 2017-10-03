@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="FWD00002" corporation_id="fwd" code="FWD00002" name="危疾全守衛" name_abbr="NCIP" unit="1000" currency="usd" premium="DS.RATE[0][COL]*AMOUNT/UNIT"
+		is_main="yes" is_rider="yes" type_code="life" sequence="2000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-01-01">
+
+		<bind>
+			<product id="FWD00003" when="AGE le 65"/>
+		</bind>
+
+		<data>
+			<item parser="dds" value="FWD00002" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+			</pay>
+			<insure>
+				<item code="to_100" />
+			</insure>
+		</param>
+		
+		<init>
+			<item name="COL" value="GENDER*2-2+SMOKE-1"/>
+			<item name="PDF" value="0.015"/>
+			<item name="PdfDeposit">
+				var rs = 0;
+				for (var i=1;i lt PAY_PERIOD;i++) {
+					var df = pow(1 + PDF, -i);
+					rs += df * PREMIUM;
+				}
+				return rs;
+			</item>
+			<item name="PLAN_SUMMARY"> 
+				var r = new list();
+				r += {seq:2000, text:'*保費率並非保證，本公司保留不時檢討及調整危疾全守衛(「本計劃」)之保費的權利。'};
+				return r;
+			</item>
+			<item name="TABLE_NOTICE"> 
+				var r = new list();
+				r += {seq:2000, text:'*保費率並非保證，本公司保留不時檢討及調整危疾全守衛(「本計劃」)之保費的權利。'};
+				return r;
+			</item>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CV" param="A1" formula="DS.CV[0][A1+1]*QUANTITY" />
+			<var name="DV" param="A1,A2" formula="DS.DV[0][A1+1+A2*100]*QUANTITY" />
+			<var name="TCV" param="A1,A2" formula="IT.CV(A1)+IT.DV(A1,A2)" />
+			<var name="DB" param="A1" formula="AMOUNT*(A1 lt 15 and AGE + A1 lt 65 ? 1.5 : 1)" />
+			<var name="TDB" param="A1,A2" formula="IT.DB(A1)+IT.DV(A1,A2)" />
+			<var name="PDF_BAL" param="A1" formula="A1>=PAY_PERIOD?0:(A1==0?PdfDeposit:IT.PDF_BAL(A1-1)-PREMIUM)*(1+PDF)" />
+			<var name="PDF_TCV" param="A1" formula="IT.PDF_BAL(A1)*(1-(A1>1?0:(A1>0?0.015:0.025)))+IT.TCV(A1,0)" />
+			<var name="PDF_TDB" param="A1" formula="IT.PDF_BAL(A1)+IT.DV(A1,0)+IT.DB(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table tag="illustration summary" name="Basic Plan - Illustration Summary">
+					<row type="title">
+						<blank row="2">'保單年度終結'</blank>
+						<blank row="2">'已達年齡'</blank>
+						<blank row="2">'繳付保費總額'</blank>
+						<blank col="3">'退保價值'</blank>
+						<blank col="3">'身故權益'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'保證金額'</blank>
+						<blank row="1">'非保證特別紅利'</blank>
+						<blank row="1">'總額'</blank>
+						<blank row="1">'保證金額'</blank>
+						<blank row="1">'非保證特別紅利'</blank>
+						<blank row="1">'總額'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.CV(I)</blank>
+							<blank align="right" style="########0">IT.DV(I,0)</blank>
+							<blank align="right" style="########0">IT.TCV(I,0)</blank>
+							<blank align="right" style="########0">IT.DB(I)</blank>
+							<blank align="right" style="########0">IT.DV(I,0)</blank>
+							<blank align="right" style="########0">IT.TDB(I,0)</blank>
+						</row>
+					</loop>
+				</table>
+				<table tag="surrender benefit" name="Basic Plan – Surrender Benefit – Illustration Under Different Investment Return">
+					<row type="title">
+						<blank row="3">'保單年度終結'</blank>
+						<blank row="3">'已達年齡'</blank>
+						<blank row="3">'繳付保費總額'</blank>
+						<blank col="5">'退保價值'</blank>
+					</row>
+					<row type="title">
+						<blank row="2">'保證金額'</blank>
+						<blank col="2">'悲觀情景'</blank>
+						<blank col="2">'樂觀情景'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'非保證特別紅利'</blank>
+						<blank row="1">'總額'</blank>
+						<blank row="1">'非保證特別紅利'</blank>
+						<blank row="1">'總額'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.CV(I)</blank>
+							<blank align="right" style="########0">IT.DV(I,1)</blank>
+							<blank align="right" style="########0">IT.TCV(I,1)</blank>
+							<blank align="right" style="########0">IT.DV(I,2)</blank>
+							<blank align="right" style="########0">IT.TCV(I,2)</blank>
+						</row>
+					</loop>
+				</table>
+				<table tag="death benefit" name="Basic Plan – Death Benefit – Illustration Under Different Investment Return">
+					<row type="title">
+						<blank row="3">'保單年度終結'</blank>
+						<blank row="3">'已達年齡'</blank>
+						<blank row="3">'繳付保費總額'</blank>
+						<blank col="5">'身故權益'</blank>
+					</row>
+					<row type="title">
+						<blank row="2">'保證金額'</blank>
+						<blank col="2">'悲觀情景'</blank>
+						<blank col="2">'樂觀情景'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'非保證特別紅利'</blank>
+						<blank row="1">'總額'</blank>
+						<blank row="1">'非保證特別紅利'</blank>
+						<blank row="1">'總額'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.DB(I)</blank>
+							<blank align="right" style="########0">IT.DV(I,1)</blank>
+							<blank align="right" style="########0">IT.TDB(I,1)</blank>
+							<blank align="right" style="########0">IT.DV(I,2)</blank>
+							<blank align="right" style="########0">IT.TDB(I,2)</blank>
+						</row>
+					</loop>
+				</table>
+				<notice tag="notice basic">
+					<text>(ⅰ) 第3、4及5部份乃概括說明閣下基本計劃的身故權益及退保價值，並未將第2部份所列之附加保障（如適用者）計算在內，且假設(一) 閣下已全數支付應繳保費， (二) 未曾支付任何賠償，(三) 保單內没有任何欠款，及(四)基本計劃的原有投保額(即投保時投保額)及保費於計劃年期內維持不變。如欲得悉更多資料，或索取更詳盡的建議書，請與本公司或閣下的保險中介人聯絡。</text>
+					<text>(ⅱ) 由於需要將金額及數值調整為整數，上列保費總額及數值或會與應繳保費總額稍有出入。而列表內的其他數值亦需被調整為整數，有關數值或會與本公司於保單下提供的稍有出入。</text>
+					<text condition="AGE le 65 and AGE >= 1">(ⅲ) 第3及5部份顯示的基本計劃說明摘要假設身故權益將於保單年度完結時支付。保證身故權益可得金額是現有投保額(現有投保額指保單原有投保額扣除任何已支付及/或須支付的特別疾病權益的金額)加上額外50%保障權益(適用於首15個保單年度)。身故權益總額為現有投保額加上額外50%保障權益(適用於首15個保單年度)及特別紅利(如有)。實際的身故權益金額受限於保單負債(如有，包括未有繳付之保費或貸款及其利息) 之扣除。</text>
+					<text condition="AGE >= 66 and AGE le 70">(ⅲ) 第3及5部份顯示的基本計劃說明摘要假設身故權益將於保單年度完結時支付。保證身故權益可得金額是現有投保額(現有投保額指保單原有投保額扣除任何已支付及/或須支付的特別疾病權益的金額)。身故權益總額為現有投保額加上特別紅利(如有)。實際的身故權益金額受限於保單負債(如有，包括未有繳付之保費或貸款及其利息) 之扣除。</text>
+					<text>(ⅳ) 基本計劃的現有投保額將會於特別疾病權益賠償後被相應扣減。身故權益、危疾權益、保證現金價值、將來的保費及特別紅利(如有)將被相應減少。若現有投保額被扣減至零，保單將會終止 (除非癌症、急性心肌梗塞或中風之危疾權益須被支付，保單將會於指定危疾之多重權益被支付後終止)。</text>
+					<text>(ⅴ) 第3部份預計的非保證金額乃根據本公司現時假設投資回報而計算，該金額並非保證。實際獲發之金額或會比所示者較高或較低。第4及5部份作為例子，說明因本公司現時假設的投資回報轉變而對退保價值及身故權益可能造成的影響。在某些情況下，非保證金額可能為零。</text>
+					<text>(ⅵ) 第4及5部份下悲觀情景是假設年度化投資回報率比現時預期每年下跌約1.5%；樂觀情景是假設年度化投資回報率比現時預期每年上升約1.5%。</text>
+					<text>(ⅶ) 有關保單批核與否、建議之原有投保額以及承保類別須經核保部批準及並不獲保證。本公司保留權利根據已確定的風險作出最終決定。</text>
+					<text>(ⅷ) 當保單生效期達5年或以上，特別紅利(此為非保證金額)可能會於該保單作出危疾權益或身故權益賠償、退保、保單期滿或若保單失效且未於一年保單復效期內申請復效，在該復效期屆滿時支付。按比例之特別紅利(如有)亦可能會於支付特別疾病權益或作出部份退保時派發，及後應付的特別紅利 (如有)將會按比例相應減少。特別紅利於保單所支付之危疾權益及/或特別疾病權益達到原有投保額的100%後將不再派發。</text>
+					<text>(ⅸ) 當檢視第3、4及5部份說明的金額時，應留意未來生活成本很可能因通脹而上調。</text>
+					<text>(ⅹ) 有關基本計劃及附約(如適用)的詳細投資策略、派發紅利的理念、主要產品風險 (包括但不限於信貸風險、流動性風險、外幣匯率及貨幣風險、通脹風險、提早退保風險、不保證權益、不保事項、保費調整、保費年期及欠繳保費以及終止保單)，請參閱相關主要推銷文件/小冊子。</text>
+				</notice>
+				<table tag="supplementary illustration" name="Supplementary Illustration – Policy Values At End Of Policy Year For Basic Plan Only">
+					<row type="title">
+						<blank row="1">'End of Policy Year'</blank>
+						<blank row="1">'Total Premiums Paid'</blank>
+						<blank col="1">'Guaranteed Cash Value(a)'</blank>
+						<blank col="1">'Non-Guaranteed Special Bonus(b)'</blank>
+						<blank col="1">'Total Surrender Benefit(a) + (b)'</blank>
+						<blank col="1">'Total Death Benefit'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.CV(I)</blank>
+							<blank align="right" style="########0">IT.DV(I,0)</blank>
+							<blank align="right" style="########0">IT.TCV(I,0)</blank>
+							<blank align="right" style="########0">IT.TDB(I,1)</blank>
+						</row>
+					</loop>
+				</table>
+				<table tag="supplementary illustration" name="Supplementary Illustration – Policy Values At End Of Policy Year After Partial Surrender For Basic Plan Only">
+					<row type="title">
+						<blank row="2">'End of Policy Year'</blank>
+						<blank row="2">'Total Premiums Paid'</blank>
+						<blank row="2">'Guaranteed Cash Value'</blank>
+						<blank col="4">'Non-Guaranteed'</blank>
+						<blank row="2">'Total Surrender Benefit'</blank>
+						<blank row="2">'Total Death Benefit'</blank>
+					</row>
+					<row type="title">
+						<blank col="1">'PDF balance'</blank>
+						<blank col="1">'Accumulated Annual Dividend'</blank>
+						<blank col="1">'Interest On Accumulated Annual Dividend'</blank>
+						<blank col="1">'Special Bonus'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.CV(I)</blank>
+							<blank align="right" style="########0">IT.PDF_BAL(I)</blank>
+							<blank align="right" style="########0">0</blank>
+							<blank align="right" style="########0">0</blank>
+							<blank align="right" style="########0">IT.DV(I,0)</blank>
+							<blank align="right" style="########0">IT.PDF_TCV(I)</blank>
+							<blank align="right" style="########0">IT.PDF_TDB(I)</blank>
+						</row>
+					</loop>
+				</table>				
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph title="Summary of Benefit">
+				  <table>
+				  	<row type="title">
+				  		<blank>'Coverage'</blank>
+				  		<blank>'Benefit'</blank>
+				  		<blank>'Amount of Benefit'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Crisis Benefit (note 1)'</blank>
+				  		<blank>'100% of the Current Sum Insured'</blank>
+				  		<blank>AMOUNT + ' +Special Bonus (if any) (note 2)'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Multiple Benefit for Designated Crises (note 3)'</blank>
+				  		<blank>'If the claim for Crisis Benefit for a Cancer, Heart Attack or Stroke is made, in the event the Insured is subsequently diagnosed with Cancer, Heart Attack or Stroke, an additional 110% of Initial Sum Insured will be paid'</blank>
+				  		<blank>floor(AMOUNT * 1.1)</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Special Disease Benefit (note 1 and 4)'</blank>
+				  		<blank>'Advance payment of 20% of the Initial Sum Insured\n(subject to a maximum of [HK$300,000 / US$37,500] per Insured of each claim under all policies of the Plan for Carcinoma-in-situ or Early Stage Malignancy of Specific Organs, Angioplasty of Coronary Artery and Special Diseases for Juvenile)'</blank>
+				  		<blank>floor(AMOUNT * 0.2) + ' + proportionate Special Bonus (if any) (note 2)'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Rehabilitation Benefit (note 5)'</blank>
+				  		<blank>'Additional 1% of Initial Sum Insured will be payable per month after Crisis Benefit for Heart Attack or Stroke is payable (up to a maximum of 6 months)'</blank>
+				  		<blank>floor(AMOUNT * 0.01)</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Special Benefit for Infant (note 6)'</blank>
+				  		<blank>'If the Insured (or the Insured’s spouse) gives birth to a child,  the new-born infant shall be covered by the Crisis Benefit or Death Benefit (20% of the Initial Sum Insured of this policy once per new-born infant and up to a per newborn infant of  [HK$200,000 / US$25,000] under all policies of the Insured and/or Insured’s spouse of this Plan) from the attain age of 15 days to age 5 (age next birthday) or termination of the policy of the Insured, whichever is earlier'</blank>
+				  		<blank>floor(AMOUNT * 0.01)</blank>
+				  	</row>
+				  	<row c="AGE le 65">
+				  		<blank>'Additional 50% Coverage Benefit (note 7)'</blank>
+				  		<blank>'Additional 50% of the Initial Sum Insured will  be payable if the Insured is diagnosed with one of the covered Crises or passes away before the 15th policy anniversary while the coverage of the policy is in effect'</blank>
+				  		<blank>floor(AMOUNT * 0.5)</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'Death Benefit (note 1)'</blank>
+				  		<blank>'100% of the Current Sum Insured'</blank>
+				  		<blank>AMOUNT + ' +Special Bonus (if any) (note 2)'</blank>
+				  	</row>
+				  </table>
+				  <item>1. 額外說明部份乃概括說明閣下基本計劃的身故權益及退保價值，並未將第2部份所列之附加保障（如適用者）計算在內，且假設(一) 閣下已全數支付應繳保費，(二) 未曾支付任何賠償，(三) 保單內没有任何欠款，(四)於甲部中，基本計劃的原有投保額及保費於計劃年期內維持不變。如欲得悉更多資料，或索取更詳盡的建議書，請與本公司或閣下的保險中介人聯絡。</item>
+				  <item>2. 由於需要將金額調整為整數，上列保費總額或會與應繳保費總額稍有出入。而列表內的其他數值亦需被調整為整數，有關數值或會與本公司於保單下提供的稍有出入。</item>
+				  <item c="AGE le 65">3. 額外說明部份顯示的基本計劃說明摘要假設身故權益將於保單年度完結時支付。保證身故權益可得金額是現有投保額(現有投保額指保單原有投保額扣除任何已支付及/或須支付的特別疾病權益的金額)及額外50%保障權益(適用於首15個保單年度)。身故權益總額(非保證)為現有投保額加上額外50%保障權益(適用於首15個保單年度)及特別紅利(如有)。實際的身故權益總額(非保證)受限於保單負債(如有，包括未有繳付之保費或貸款及其利息) 之扣除。</item>
+				  <item c="AGE > 65">3. 額外說明部份顯示的基本計劃說明摘要假設身故權益將於保單年度完結時支付。保證身故權益可得金額是現有投保額(現有投保額指保單原有投保額扣除任何已支付及/或須支付的特別疾病權益的金額)。身故權益總額(非保證)為現有投保額加上特別紅利(如有)。實際的身故權益總額(非保證)受限於保單負債(如有，包括未有繳付之保費或貸款及其利息) 之扣除。</item>
+				  <item>4. 基本計劃的現有投保額將會於特別疾病權益賠償後被相應扣減。身故權益、危疾權益、保證現金價值、將來的保費及特別紅利(如有)將被相應減少。若現有投保額被扣減至零，保單將會終止 (除非癌症、急性心肌梗塞或中風之危疾權益須被支付，保單將會於指定危疾之多重權益被支付後終止)。</item>
+				  <item>5. 額外說明部份預計的非保證金額乃根據本公司現時假設投資回報而計算，該金額並非保證。實際獲發之金額或會比所示者較高或較低。</item>
+				  <item>6. 有關保單批核與否、建議之投保額以及承保類別須經核保部批準及並不獲保證。本公司保留權利根據已確定的風險作出最終決定。</item>
+				  <item>7. 當保單生效期達5年或以上，特別紅利(此為非保證金額)可能會於該保單作出危疾權益賠償或身故權益賠償、退保、保單期滿或若保單失效且未於一年保單復效期內申請復效，在該復效期屆滿時支付。按比例之特別紅利(如有)亦可能會於支付特別疾病權益或作出部份退保時派發，及後應付的特別紅利 (如有)將會按比例相應減少。特別紅利於保單所支付之危疾權益及/或特別疾病權益達到原有投保額的100%後將不再派發。</item>
+				  <item>8. 當檢視額外說明部份的金額時，應留意未來生活成本很可能因通脹而上調。</item>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule>
+		    <if condition="AGE > 70 or AGE == 0">
+		    	age 1-70 only
+			</if>
+		    <if condition="AGE > 60 and AGE lt 70 and PAY_PERIOD != 10">
+		    	age 60-70, pay term 10 years only.
+			</if>
+		    <if condition="AGE > 55 and AGE lt 60 and PAY_PERIOD == 20">
+		    	age 55-60, pay term 10 years or 15 years limited.
+			</if>
+		    <if condition="AGE le 65 and !HasProduct('FWD00003')">
+		    	年齡小於等於65週歲，需要添加額外50%保障權益
+			</if>
+		</rule>
+	</product>
+</declare>

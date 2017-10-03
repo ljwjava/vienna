@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00019" corporation_id="lianlife" code="112002" name="附加安享无忧两全保险" name_abbr="附加安享无忧" is_main="no" is_rider="yes" unit="50000" purchase="quantity" input="none" quantity="PARENT.QUANTITY"
+		type_code="life" sequence="100" sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="LAL00019" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="parent" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日前身故，我们按您已支付的保险费与被保险人身故时基本保险金额对应的现金价值的较大者给付身故保险金，附加险合同终止。</item>
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日后（若投保时被保险人年满18周岁的,自合同生效日后）身故，我们按您已支付的保险费的110%与被保险人身故时基本保险金额对应的现金价值的较大者给付身故保险金，附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="癌症豁免保险费">
+					<item>若被保险人在附加险合同生效或最后一次复效（以较迟者为准）之日起180日后被确诊初次罹患附加险合同约定的癌症，且在此后的保险费约定支付日生存，我们将豁免附加险合同的该期保险费。已获豁免的保险费视为已支付，附加险合同继续有效。</item>
+				</paragraph>
+				<paragraph title="满期保险金">
+					<item>若被保险人生存至保险期间届满，我们按基本保险金额给付满期保险金，附加险合同终止。“已支付的保险费”的含义:本条所述“已支付的保险费”指您根据附加险合同的约定已支付的保险费。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 55 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至55周岁。
+			</if>
+			<if condition="QUANTITY lt 1 or QUANTITY != round(QUANTITY)">
+				最低承保份数为1份，整数份承保。
+			</if>
+			<if condition="PAY_VALUE > 1 and AGE lt 18 and PREMIUM lt 300">
+				该主险单独投保且被保险人＜18周岁时，期交保费不能低于300元。
+			</if>
+			<if condition="PAY_VALUE > 1 and AGE >= 18 and PREMIUM lt 500">
+				该主险单独投保且被保险人≥18周岁时，期交保费不能低于500元。
+			</if>
+			<if condition="PAY_VALUE == 1 and PREMIUM lt 1000">
+				该主险单独投保时，趸交保费不能低于1000 元。
+			</if>
+		</rule>
+	</product>
+</declare>

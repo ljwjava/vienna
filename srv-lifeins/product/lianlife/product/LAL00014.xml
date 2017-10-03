@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00014" corporation_id="lianlife" code="115001" name="附加安好一生提前给付重大疾病保险" name_abbr="附加安好一生重疾" is_main="no" is_rider="yes" input="none" unit="10000" premium="PREM_S" amount="PARENT.AMOUNT" type_code="thunder" sequence="1000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="LAL00014" />
+		</data>
+
+		<init>
+			<item name="PREM_S" type="formula">
+				var index;
+				if (PAY_VALUE == 1)
+					index = 0;
+				else if (PAY_VALUE == 30)
+					index = 5;
+				else
+					index = PAY_VALUE / 5;
+				return QUANTITY * DS.RATE[0][index];
+			</item>
+		</init>
+		
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="to_full" />
+			</insure>
+		</param>
+
+		<interest>
+			<var name="REC" param="A1" formula="AGE+A1>=18?0:IT.PRM_T(A1)" />
+			<var name="CSV" param="A1" formula="DS.CV[A1][0]*QUANTITY" />
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+					<item>(1)若被保险人因遭受意外伤害导致身故，或在本合同生效或最后一次复效（以较迟者为准）之日起180 日后因意外伤害以外的原因导致身故：</item>
+					<item>①若被保险人于年满18 周岁后的首个合同生效日对应日前身故，我们按已支付的保险费与累计红利保险金额的现金价值之和给付身故保险金，本合同终止。</item>
+					<item>②若被保险人于年满18 周岁后的首个合同生效日对应日后（若投保时被保险人年满18 周岁的,自合同生效日后）身故，我们按身故时的有效保险金额给付身故保险金，本合同终止。</item>
+					<item>(2)若被保险人在本合同生效或最后一次复效（以较迟者为准）之日起180 日内因意外伤害以外的原因导致身故，我们按已支付的保险费与累计红利保险金额的现金价值之和给付身故保险金，本合同终止。</item>
+					<item>“已支付的保险费”的含义：本条所述“已支付的保险费”指您根据本合同的约定已支付的保险费。若发生减保，在计算已支付的保险费时，减保前已支付的保险费将按减保比例相应减少。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 60 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至60周岁。
+			</if>
+			<!-- 下面这几条规则实际应该是重疾险风险保额总数的控制，这里只计算到本险种的，总数需要核心系统与该被保人在其他保单中的相加 -->
+			<if condition="AGE le 4 and AMOUNT > 200000">
+				被保险人年龄≤4周岁时，重大疾病险累计保额最高20万元；
+			</if>
+			<if condition="AGE >= 5 and AGE le 17 and AMOUNT > 300000">
+				被保险人年龄5-17周岁时，重大疾病险累计保额最高30万元；
+			</if>
+			<if condition="AGE >= 18 and AMOUNT > 1000000">
+				被保险人年龄≥18周岁时，重大疾病险累计保额最高100万元；
+			</if>
+		</rule>
+	</product>
+</declare>

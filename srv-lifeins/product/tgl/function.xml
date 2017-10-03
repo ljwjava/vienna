@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<function type="plan">
+    <!-- 每年保费 -->
+		<item name="PremiumYear" param="A1" formula="A1 lt PAY_PERIOD ? PREMIUM : 0"/>
+		
+		<!-- 累计保费 -->
+		<item name="PremiumAddup" param="A1" formula="(A1>0 ? PremiumAddup(A1-1) : 0) + PremiumYear(A1)"/>
+			
+		<!--  -->
+		<item name="Check001" param="A1" formula="(A1>0 ? PremiumAddup(A1-1) : 0) + PremiumYear(A1)"/>
+	</function>
+	
+	<function type="product">
+		<item name="AMOUNT_DESC" formula="UNIT==1000?round(AMOUNT/UNIT)+'千元':(UNIT==10000?round(AMOUNT/UNIT)+'万元':AMOUNT+'元')"/>
+		<item name="QUANTITY_DESC" formula="round(QUANTITY)+'份'"/>
+	</function>
+</declare>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <product id="NCI00193000" 
+		corporation_id="nci" 
+		code="00193000" 
+		name="附加投保人豁免保费定期寿险" 
+		name_abbr="豁免" 
+		is_main="no"
+		is_rider="yes"
+		input="none"
+		type="exempt" 
+		amount="PRM_EXEMPT"
+		unit_amount="1000"
+		sale_begin_date="2016-07-21" 
+		sale_end_date="" 
+		last_modify_date="2016-07-21">
+
+		<data>
+		    <item parser="file.auto" file="NCI00193000.dat"/> 
+		</data>
+		
+		<init>
+		    <item name="INSURANT">APPLICANT</item>
+		    <item name="PRM_EXEMPT">
+		        var total = 0;
+		        var list = PLAN.PRODUCTS;
+		        for (var x = 0; x lt size(list); x++) {
+		        	var p = list[x];
+		        	if ((p.PARENT == THIS.PARENT or p == THIS.PARENT) and p != THIS and p.PAY_PERIOD == THIS.PARENT.PAY_PERIOD) {
+		        		total += p.PREMIUM;
+		        	}
+		        }
+		        return total;
+			</item>
+		</init>
+		
+		<param> 
+		    <pay>
+				<item code="exempt"/>
+			</pay>
+			<insure>
+				<item code="exempt"/>
+			</insure>
+		</param>
+	 
+	 	<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="疾病身体全残豁免保险费">
+					<item>被保险人于合同生效（或合同效力恢复）之日起因疾病身体全残，可免交自被保险人被鉴定为身体全残之日起的主险合同及所附保险期间超过一年的附加险合同有效期内应交纳的续期保险费，合同终止。</item>
+				</paragraph>
+				<paragraph title="疾病身故豁免保险费">
+					<item>被保险人于合同生效（或合同效力恢复）之日起因疾病身故，可免交自被保险人身故之日起的主险合同及所附保险期间超过一年的附加险合同有效期内应交纳的续期保险费，合同终止。</item>
+				</paragraph>
+				<paragraph>
+					<item>上述两项保险责任中所指“主险合同及所附保险期间超过一年的附加险合同”在保险单上载明。</item>
+					<item>本附加合同每期所豁免保险费的金额在保险单上载明。</item>
+					<item>按照上述两项保险责任豁免保险费的，本公司视同主险合同及所附保险期间超过一年的附加险合同有效期内的续期保险费已交纳。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule skip="rule_0001,rule_0002">
+		</rule>
+	</product>
+</declare>

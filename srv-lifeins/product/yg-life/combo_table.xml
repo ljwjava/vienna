@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<attachment>
+		<!--共用 头 -->
+		<benefit_combo filter="combo" parser="combo_def">
+			<item code="year" mode="cover" name="保单年度" style="##0"/>
+			<item code="age"  mode="cover" name="年末已达年龄" style="##0"/>
+			
+			<item code="SGBXJ" mode="add" name="身故保险金" style="###########0"/>
+			<item code="BDNDCBXJ" mode="add" name="生存保险金" style="###########0"/>
+			<item code="YWSGBXJ" mode="add" name="意外身故\n保险金" style="###########0"/>
+			<item code="ZJBXJ" mode="add" name="重大疾病保险金" style="###########0"/>
+			<item code="QZZJBXJ" mode="add" name="轻症重疾保险金" style="###########0"/>
+			
+			<item code="SCZLY" mode="add" name="*生存总利益" style="###########0"/>
+			
+			<item code="SGZLY" mode="add" name="*身故总利益" style="###########0"/>
+			<items name="身故总利益">
+				<item code="SGZLY_BHHL" mode="add" name="不含红利" style="###############0"/>
+				<item code="SGZLY_HZDLJHL" mode="add" name="含中档累积红利" style="###############0"/>
+				<item code="SGZLY_HZDLJJQZE" mode="add" name="含中档累积交清增额" style="###############0"/>
+			</items>
+			
+			<items name="意外身故总利益">
+				<item code="YWSGZLY_BHHL" mode="add" name="不含红利" style="###############0"/>
+				<item code="YESGZLY_HZDLJHL" mode="add" name="含中档累积红利" style="###############0"/>
+				<item code="YESGZLY_HZDLJJQZE" mode="add" name="含中档累积交清增额" style="###############0"/>
+			</items>
+			
+			<items name="保险费">
+				<item code="premium" mode="add" name="期交" style="###############0"/>
+				<item code="premium_acc" mode="acc" name="累计" style="###############0"/>
+			</items>
+		</benefit_combo>
+	</attachment>
+</declare>
+

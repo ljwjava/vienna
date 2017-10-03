@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00010" corporation_id="lianlife" code="10" name="附加个人意外伤害医疗保险 " name_abbr="附加个意医疗" is_main="no" is_rider="yes" unit="1000" input="amount" premium="PREM_S" type_code="medical" sequence="1000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<init>
+			<item name="PREM_S" type="formula">
+				var f_occ = [1.00, 1.25, 1.50, 2.50, 3.50, 4.50];
+				var f_age = AGE >= 16 ? 1 : (AGE >= 3 ? 1.25 : 1.50);
+				var f_sci = SOCIAL_INS == 1 ? 0.9 : 1;
+				var p;
+
+				if (5000 > AMOUNT)
+					p = 12 * QUANTITY;
+				else if (10000 > AMOUNT)
+					p = 60 + 8 * (QUANTITY - 5);
+				else
+					p = 100 + 4 * (QUANTITY - 10);
+
+				return p * f_occ[OCCUPATION_CATEGORY-1] * f_age * f_sci;
+			</item>
+		</init>
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="意外伤害医疗保险金">
+					<item>若被保险人遭受意外伤害事故，并自该意外伤害发生之日起180 日内因该次意外伤害在卫生行政部门认定的二级以上医院接受治疗，我们对符合本附加险合同保单签发地政府基本医疗保险管理规定范围内合理且必要的医疗费用，按约定的免赔额及给付比例给付意外伤害医疗保险金。</item>
+					<item>到保险期间届满住院仍未结束的，我们继续承担本条前述所列的保险责任至治疗结束，但最长不超过意外伤害发生之日起第180 日；到保险期间届满门（急）诊治疗仍未结束的，我们继续承担本条前述所列的保险责任至治疗结束，但最长不超过意外伤害发生之日起第15 日。</item>
+					<item>在任何情况下，我们对被保险人一次或多次累计给付的意外伤害医疗保险金以本附加险合同的保险金额为限，当一次或多次累计给付的意外伤害医疗保险金达到本附加险合同的保险金额时，本附加险合同终止。</item>
+					<item>本附加险合同属于费用补偿型医疗保险合同，若被保险人已从其他途径取得医疗费用补偿或赔偿，我们对于符合保单签发地政府基本医疗保险管理规定的医疗费用，在扣除上述补偿或赔偿后，对于剩余部分承担保险责任。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 60 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至60周岁。
+			</if>
+			<if condition="SOCIAL_INS == null">
+				请补充客户的社保信息。
+			</if>
+			<if condition="AMOUNT > PARENT.AMOUNT / 10">
+				本险种保额不得高于所附加的主险保单基本保额的1/10。
+			</if>
+			<if condition="AMOUNT lt 3000 or AMOUNT > 100000">
+				本险种保额范围为3000至100000元
+			</if>
+			<if condition="AMOUNT % 1000 > 0">
+				保额必须1000元整数倍。
+			</if>
+			<if condition="!PARENT.HasProduct('LAL00015')">
+				必须同时投保附加天天吉祥。
+			</if>
+		</rule>
+	</product>
+</declare>

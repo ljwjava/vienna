@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00015" corporation_id="lianlife" code="114006" name="附加天天吉祥意外身故定期寿险" name_abbr="附加天天吉祥" is_main="no" is_rider="yes" unit="10000" input="amount" premium="PREM_S" type="life" sequence="2000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<init>
+			<item name="PREM_S" type="formula">
+				var f_age = 0;
+				if (AGE le 2)
+					f_age = 1.50;
+				else if (AGE le 15)
+					f_age = 1.25;
+				else if (AGE le 60)
+					f_age = 1;
+				else if (AGE le 65)
+					f_age = 1.50;
+					
+				var f_occ = [1.00, 1.40, 1.80, 3.20, 4.80, 9.00];
+				return 13 * QUANTITY * f_age * f_occ[OCCUPATION_CATEGORY - 1];
+			</item>
+		</init>
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="意外身故保险金">
+					<item>若被保险人遭受意外伤害事故，并因本次意外伤害直接导致被保险人在该事故发生之日起180日内身故，我们按保险金额给付 “意外身故保险金”，本附加险合同终止。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 60 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至60周岁。
+			</if>
+			<if condition="AMOUNT lt 50000">
+				保额最低为50000元。
+			</if>
+			<if condition="AMOUNT % 1000 > 0">
+				保额必须1000元整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

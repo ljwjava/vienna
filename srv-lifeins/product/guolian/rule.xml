@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<rule>
+	   	<if id = "rule_1001" condition = "AMOUNT lt 10000 or AMOUNT % 1000 != 0">
+			主险的最低基本保险金额不得低于1万元，且基本保额为1千元的整数倍。
+		</if> 
+		<if id = "rule_1002" condition = "PREMIUM gt 200000" level="alert">
+			根据反洗钱规定，单个被保险人保险费金额人民币20万元以上且以转账形式缴纳的保险合同，需提供投保人和被保险人、法定继承人以外的指定受益人的有效身份证件或者其他身份证明文件。
+		</if>
+		<if id = "rule_1003" condition="INSURANT.DAY lt 28">
+		 	  被保人未达最低承保年龄(满28天的出院的健康婴儿)，请给出核保提示。
+		</if>
+		<if id = "rule_1004" condition="(PAY_MODE.CODE == 'year' and PREMIUM lt 500) or (PAY_MODE.CODE == 'single' and PREMIUM lt 2000)" >
+		 	  每一份保单中，主被保险人的主险年交保险费不得低于500元，趸交保费不得低于2000元。
+		</if>
+		<if id = "rule_1005" condition="APPLICANT.AGE gt 74 or APPLICANT.AGE lt 16 " >
+		 	 投保人年龄必须在16（含）-74（含）周岁之间。 
+		</if>
+		<if id = "rule_1008" condition="APPLICANT.AGE lt 18 and APPLICANT.AGE ge 16">
+		 	  投保人为年满16周岁的未成年人，请提供收入证明或更换投保人为成年人。
+		</if>
+		<!--  
+		<if id = "rule_1006"  condition="OCCUPATION_CATEGORY == 5 or OCCUPATION_CATEGORY == 6" level="alert">
+		 	被保险人的职业等级为5-6类，需要额外加费。
+		</if>
+		-->
+		<if id="rule_1007" condition="QUANTITY lt 1 and QUANTITY % 1 !=0 ">
+		            投保的最低份数为1份，且须为整数。
+		</if>
+	</rule>
+</declare>

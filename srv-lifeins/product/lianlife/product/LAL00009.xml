@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00009" corporation_id="lianlife" code="9" name="附加豁免保险费定期寿险 " name_abbr="附加豁免" is_main="no" is_rider="yes" unit="1000" input="none" amount="PARENT.PremiumEL('LAL00009')*PAY_PERIOD" premium="QUANTITY/PAY_PERIOD*DS.RATE[0][PAY_PERIOD-1]"
+		type_code="medical" sequence="1000" sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="LAL00009" />
+		</data>
+		
+		<init>
+			<item name="AGE">APPLICANT.AGE</item>
+			<item name="GENDER">APPLICANT.GENDER</item>
+		</init>	
+
+		<param>
+			<pay>
+				<item code="exempt" />
+			</pay>
+			<insure>
+				<item code="exempt" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="保险期间">
+					<item>本附加险合同的保险期间自本附加险合同生效日的零时起，至主险合同最后一期保险费的支付日止，具体在保险单上载明。</item>
+				</paragraph>
+				<paragraph title="保险责任">
+					<item>在本附加险合同保险期间内，且主险合同和本附加险合同均有效的前提下，若投保人因遭受意外伤害导致身故或全残，或在本附加险合同生效或最后一次复效（以较迟者为准）之日起180日后因意外伤害以外的原因导致身故或全残，我们将按约定豁免其此后应支付的主险合同及保险期间在1年以上（不含1年）的附加险合同的各期保险费。豁免保险费自投保人身故日或全残确定日后的首个保险费约定支付日开始。获豁免的保险费视为已支付，获豁免保险费的主险合同及附加险合同仍然有效。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="APPLICANT.AGE > 50 or APPLICANT.AGE lt 18" type="customer">
+				投保人年龄要求：18周岁至50周岁。
+			</if>
+			<if condition="PARENT.PAY_PERIOD >= 0 and PARENT.PAY_PERIOD le 1">
+				主险的交费期间为趸交或1年期时，不可附加本险种。
+			</if>
+			<if condition="PARENT.APPLICANT.ID == PARENT.INSURANT.ID">
+				主险的投保人、被保险人须不为同一人。
+			</if>
+			<if condition="APPLICANT.OCCUPATION_CATEGORY lt 1 or APPLICANT.OCCUPATION_CATEGORY > 4">
+				投保人为5类（含）及以上职业类别予以拒保。
+			</if>
+		</rule>
+	</product>
+</declare>

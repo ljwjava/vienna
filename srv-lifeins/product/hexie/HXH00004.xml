@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HXH00004"
+		corporation_id="hexie"
+		code="2160413"
+		name="和谐健康宝贝护理保险（万能型）"
+		name_abbr="健康宝贝"
+		unit="1000"
+		type_code="universal"
+		sequence="1000"
+		sale_begin_date="2017-07-01"
+		sale_end_date=""
+		input="premium_and_amount"
+		last_modify_date="2017-07-01">
+
+		<data>
+			<item parser="dds" value="HXH00004" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="to_21"/>
+			</pay>
+			<insure>
+				<item code="to_25"/>
+			</insure>
+		</param>
+
+		<init premium="6000" amount="80000">
+			<item name="PRM_APD" value="0"/>
+			<item name="RATE" value="0.053"/>
+			<item name="RM" value="pow(1+RATE,1/12)"/>
+			<item name="RD" value="[RIDER('HXH01001'),RIDER('HXH01002'),RIDER('HXH01003'),RIDER('HXH01004')]"/>
+		</init>
+
+		<interest>
+			<item name="FEE" param="A1" value="(A1==0?PREMIUM*0.05:PremiumYear(A1)*0.02)+IT.PLS(A1,1)*0.01"/>
+			<item name="CSV" param="A1" value="A1>4?IT.ACE(A1):IT.ACE(A1)*(1-(5-A1)*0.01)"/>
+			<item name="ACE" param="A1" value="IT.ACT(A1,11)"/>
+			<item name="AMT" param="A1">
+				var r = IT.PLS(A1,2);
+				if (r > 0)
+					return r;
+				if (A1 == 0)
+					return AMOUNT;
+				return IT.AMT(A1-1);
+			</item>
+			<item name="BONUS" param="A1" value="A1 == INSURE_PERIOD - 1 ? IT.PRMT(A1) * 0.03 : 0"/>
+			<item name="PRMT" param="A1" value="(A1==0?0:IT.PRMT(A1-1))+PremiumYear(A1)+IT.PLS(A1,1)"/>
+			<item name="PLS" param="A1,A2">
+				var APP = ((A1==0 and A2==1) ? PRM_APD : 0);
+				if (SIM != null) {
+					for (var x : SIM) {
+						if (x != null) {
+							if (A1+AGE==x.AGE) {
+								if (A2==0 and x.DRAW != null) {
+									return x.DRAW;
+								}
+								if (A2==1 and x.PRM != null) {
+									return x.PRM+APP;
+								}
+								if (A2==2 and x.AMT != null) {
+									return x.AMT;
+								}
+							}
+						}
+					}
+				}
+				return APP;
+			</item>
+			<item name="ACT" param="A1,A2">
+				var r;
+				if (A2 == 0) {
+					if (A1>0 and IT.ACT(A1-1,11) le 0)
+						return 0;
+					var p1 = (A1==0?0:IT.ACT(A1-1,11)) + IT.PLS(A1,1) + PremiumYear(A1) - IT.PLS(A1,0);
+					r = (p1 - IT.FEE(A1) - IT.PRMS(A1,A2)) * RM;
+				} else {
+					if (IT.ACT(A1,A2-1) le 0)
+						return 0;
+					r = (IT.ACT(A1,A2-1) - IT.PRMS(A1,A2)) * RM;
+				}
+				if (A1 == INSURE_PERIOD - 1 and A2 == 11)
+					r += IT.BONUS(A1);
+				//print(A1 + " : " + A2 + " = " + r);
+				return r > 0 ? r : 0;
+			</item>
+			<item name="PRMY" param="A1">
+				var x = 0;
+				for (var i=0;12>i;i++)
+					x += IT.PRMS(A1,i);
+				return x;
+			</item>
+			<item name="PRMS" param="A1,A2">
+				if (AGE>=18) return 0;
+				var age = AGE+A1;
+				var A3=(A2==0?A1-1:A1);
+				var A4=(A2==0?11:A2-1);
+				var amt = IT.AMT(A1);
+				var amt1 = age>=18?amt:min((age>=10?500000:200000),amt);
+				var amt2 = age>=18?max(amt,0.6*IT.ACT(A3,A4)):amt;
+				var p = DS.RATE[age][0]*amt1/UNIT+DS.RATE[age][1]*amt2/UNIT;
+				//print(age + " = " + amt1 + ", " + amt2) + ", " + p;
+				for (var x : RD) {
+					if (x != null) {
+						var prm = x.IT.PRM_ACT(age);
+						p += prm;
+						//print(age + " = " + prm);
+					}
+				}
+				return p/12;
+			</item>
+		</interest>
+
+		<rider>
+			<product id="HXH01001"/>
+			<product id="HXH01002"/>
+			<product id="HXH01003"/>
+			<product id="HXH01004"/>
+		</rider>
+
+		<attachment>
+			<benefit_chart filter="chart" parser="chart">
+			    <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="累计保费" color="#00AA00">IT.PRMT(I)</line>
+					<line name="账户价值" color="#00AAFF">IT.ACE(I)</line>
+					<bar name="部分领取" color="#FF0000">IT.PLS(I,0)</bar>
+				</chart>
+			</benefit_chart>
+
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="2">'保单年度'</blank>
+						<blank row="2">'期初年龄'</blank>
+						<blank col="6">'保费'</blank>
+						<blank row="2">'疾病身故给付金额/护理给付金额'</blank>
+						<blank row="2">'账户价值'</blank>
+						<blank row="2">'部分领取'</blank>
+						<blank row="2">'现金价值'</blank>
+					</row>
+					<row type="title">
+						<blank>'当年保费'</blank>
+						<blank>'追加保费'</blank>
+						<blank>'累计保费'</blank>
+						<blank>'初始费用'</blank>
+						<blank>'持续交费奖金'</blank>
+						<blank>'风险保费'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">PremiumYear(I)</blank>
+							<blank align="right" style="########0">IT.PLS(I,1)</blank>
+							<blank align="right" style="########0">IT.PRMT(I)</blank>
+							<blank align="right" style="########0">IT.FEE(I)</blank>
+							<blank align="right" style="########0">IT.BONUS(I)</blank>
+							<blank align="right" style="########0">IT.PRMY(I)</blank>
+							<blank align="right" style="########0">IT.ACE(I) + IT.AMT(I)</blank>
+							<blank align="right" style="########0">IT.ACE(I)</blank>
+							<blank align="right" style="########0">IT.PLS(I,0)</blank>
+							<blank align="right" style="########0">IT.CSV(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 17 or 28 > DAY" type="customer">
+				被保人年龄要求年龄未满18周岁，且出生满28天。
+			</if>
+		</rule>
+	</product>
+</declare>

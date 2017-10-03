@@ -1,0 +1,1219 @@
+var occupation;
+var p = this;
+var age;
+var sex;
+var total;
+var rate; // 身故利率
+var rate2; // 重症轻症利率
+var rate3 = [1.2, 1.5, 1.8, 2.7, 4.2, 5.4]; // 意外伤害B利率
+// double rate3[] = { 0.5, 0.6,0.8, 1.1, 1.8, 2.3 }; //意外伤害利率
+var rate4; // 住院津贴医疗利率
+var rate5; // 住院医疗A 利率
+var rate6; // 住院医疗B利率
+var ratioWj = [0.025, 0.045, 0.06]; // 稳健年利率
+var ratioJq = [0, 0.045, 0.06]; // 进取年利率
+
+var hospital_fen; // 住院医疗津贴份数
+var hospital_fens; // 住院医疗津贴份数
+var temp_hospital_fens; // temp住院医疗津贴份数
+var hospitalCost_fen; // 住院医疗费用份数
+var hospitalCost_fens; // 住院医疗费用份数
+var temp_hospitalCost_fens; // temp住院医疗费用份数
+
+var jobRank; // 职业等级
+//var IssSocialSecurity; // 是否社保
+var rider1; // 重大C险
+var rider2; // 住院津贴医疗
+var addFenQ1; // 住院津贴医疗追加份数-------------------------------------------------------------------------
+var addFenY1; // 住院津贴医疗追加年数-------------------------------------------------------------------------
+var rider3; // 住院医疗费用A
+var addFenQ; // 住院医疗费用追加份数-------------------------------------------------------------------------
+var addFenY; // 住院医疗费用追加年数-------------------------------------------------------------------------
+var rider4; // 住院医疗费用B
+var rider5; // 附加账户式意外伤害保险
+var adYear1; // 附加账户式意外伤害保险调整
+var adAmount1; // 附加账户式意外伤害保险调整
+var rider6; // 附加账户式意外伤害医疗保险A款
+var adYear2; // 附加账户式意外伤害医疗保险调整
+var adAmount2;// 附加账户式意外伤害医疗保险
+var rider7; // 附加账户式意外伤害医疗保险B款
+var temp_premium;// 期交保费
+var premium; // 期交保费
+var addPremium;// 追加保费
+var cumulativePremium;// 累计保费
+var comeAllPremium; // 进入账户的总保费
+var startPremium;// 初始费用
+var temp_amount; // 万能保额
+var temp_mainAmount; // 万能保额(未調整)
+var mainAmount; // 万能保额（增加调整保额）
+var temp_badAmount;// 重疾保额
+var tenp_baAmount; // 重疾保险金额未調整
+var badAmount; // 重疾保险金额調整
+var badIllBasePremium;// 重疾保险金额
+var mldAmount; // 轻疾保额
+var temp_accidentAmount; // 意外伤害保额
+var temp_acAmount; // 意外伤害保额未調整
+var accidentAmount; // 意外伤害保额調整
+var adDate = 2; // 追加起始年份
+var temp_accidentMedicalAmount;// 意外医疗保额
+var temp_acMedicalAmount; // 意外医疗保额未調整
+var accidentMedicalAmount; // 意外医疗保额調整
+var policyManagementPremium;// 保单管理费
+var adjustAdWj; // 稳健调整后的值
+
+var riskAmount = 0;
+var badRisk = 0;
+var accidentRisk = 0;
+var hospitalRisk = 0;
+var hospitalCostRisk = 0;
+
+var specialHoldRatio = 0; // 特别持续奖金率 每交满20年才发放
+var comeWJHoldPrizes;// 进入W账户的持续奖金
+var comeJQHoldPrizes;// 进入J帐户的持续奖金
+var comeWJHoldPrizeses; // 进入W账户的特别持续奖金
+var comeJQHoldPrizeses;// 进入J账户的特别持续奖金
+var endWjAccountValue; // 期末W账户价值
+var endJqAccountValue; // 期末J账户价值
+var endAccountValue; // 期末总价值
+var startWjAccountValue; // 期初W账户价值
+var startJqAccountValue; // 期初J账户价值
+var startAccountValue; // 期初账户价值
+var holdPrizes; // 持续奖金
+var partValue;// 部分领取金额
+var dieBasePremium; // 身故基本保险金额
+var dieAndAccidentBasePremium; // 身故及意外基本保险金额
+var diePay; // 死亡给予
+var accidentPay; // 意外给予
+var dieAndAccidentPay; // 死亡及意外给予
+var mildDiseasesPay; // 轻症给予
+var badIllPay; // 重症给予
+var mildDiseasesBasePremium; // 轻症重疾保险金额
+var dieProtectionCost; // 身故保障成本
+var dieAndAccidentProtectionCost; // 死亡及意外伤害
+var badIllProtectionCost; // 重疾保障成本
+var mildDiseasesProtectionCost; // 轻症重疾保障成本
+var accidentProtectionCost; // 意外伤害保障成本
+var accidentMedicalProtectionCost; // 意外医疗保障成本
+var hospitalizationMedicalProtectionCost; // 住院医疗津贴 保障成本
+var hospitalizationCostProtectionCost; // 住院医疗费用保障成本
+var hospitalizationProtectionCost; // 住院医疗保障成本
+var year;// 缴费年期
+var apy;// 追加年份
+var aye; // 追加年份
+var apa; // 追加保费
+var ppy;// 部分领取年份
+var pye;// 部分领取年份
+var ppp;// 部分领取保费
+var chy;// 调整年份
+var cha; // 调整的主险保额
+var cha1; // 调整的保额（重大C险）
+var chy2;// 调整年份（重大C险）
+var cha2; // 调整的保额（重大C险）
+var adjustYwj; // 稳健调整年份
+var adjustAwj; // 稳健调整值
+var adjustAjq; // 进取调整值
+var mainTemp;
+
+var res = new map();
+
+var calculate = function() {
+	//print("t0: " + timems);
+  rate = RateArray(age, 80);
+ 	//print("t1: " + timems);
+	if (rider1) {
+    rate2 = rider1.RateArray(age, 90, 'DATA', 2);
+	}
+ 	//print("t1.1: " + timems);
+	if (rider2) {
+    rate4 = rider2.RateArray(age+1, 66, 'DATA');
+    rate4[size(rate4)-1]=rate4[size(rate4)-2];
+	}
+ 	//print("t1.2: " + timems);
+	if (rider3) {
+    rate5 = rider3.RateArray(age+1, 66, 'RATE', 2);
+    rate5[size(rate5)-1]=rate5[size(rate5)-2];
+	}
+ 	//print("t1.3: " + timems);
+	if (rider4) {
+    rate6 = rider4.RateArray(age+1, 66, 'DATA', 2);
+    rate6[size(rate6)-1]=rate6[size(rate6)-2];
+	}
+ 	//print("t2: " + timems);
+  
+	for (var i = 0; i < total; i++) {
+	 	//print("t2." + i + ": " + timems);
+		adjustAdWj[i][0] = 100;
+		temp_mainAmount[i][0] = temp_amount;
+		tenp_baAmount[i][0] = temp_badAmount;
+		if (rider5 != null) {
+			temp_acAmount[i][0] = temp_accidentAmount;
+		}
+		if (rider6 != null || rider7 != null) {
+			temp_acMedicalAmount[i][0] = temp_accidentMedicalAmount;
+			// System.out.println(temp_acMedicalAmount[i][0]+"-----------------------temp_acMedicalAmount");
+		}
+		if (rider2 != null) {
+			temp_hospital_fens[i][0] = hospital_fen;
+		}
+		if (rider3 != null || rider4 != null) {
+			temp_hospitalCost_fens[i][0] = hospitalCost_fen;
+		}
+		adjustAdWj[i][0] = getRatio(i, adjustYwj, adjustAwj, adjustAjq);
+		mainAmount[i][0] = getAmount(i, cha, chy, temp_mainAmount); // 主险保险金调整
+		riskAmount = riskAmount > mainAmount[i][0] ? riskAmount : mainAmount[i][0];
+		badAmount[i][0] = getAmount(i, cha1, chy, tenp_baAmount); // 重疾險保险金调整
+		badRisk = badRisk > badAmount[i][0] ? badRisk : badAmount[i][0];
+		mldAmount[i][0] = badAmount[i][0] * 0.2; // 轻症險保险金调整
+		hospital_fens[i][0] = getFengsu(age, i, addFenY1, addFenQ1, temp_hospital_fens, 1);
+		hospitalRisk = hospitalRisk > hospital_fens[i][0] ? hospitalRisk : hospital_fens[i][0];
+		hospitalCost_fens[i][0] = getFengsu(age, i, addFenY, addFenQ, temp_hospitalCost_fens, 2);
+		hospitalCostRisk = hospitalCostRisk > hospitalCost_fens[i][0] ? hospitalCostRisk
+				: hospitalCost_fens[i][0];
+		if (i + age < 66) {
+			accidentAmount[i][0] = getAmounts(age, i, adYear1, adAmount1, // 意外伤害保险金调整
+					temp_acAmount, 1);
+		} else {
+			accidentAmount[i][0] = 0;
+		}
+		accidentRisk = accidentRisk > accidentAmount[i][0] ? accidentRisk : accidentAmount[i][0];
+		accidentMedicalAmount[i][0] = getAmounts(age, i, adYear2, adAmount2, temp_acMedicalAmount, 2);
+		if (i < year) {
+			premium[i][0] = temp_premium;
+		} else {
+			premium[i][0] = 0;
+		}
+		addPremium[i][0] = getValue(i, apy, aye, 1);
+		cumulativePremium[i][0] = getAccumulativePremium(i);
+		comeAllPremium[i][0] = calculateComePremium(i, 2);
+		policyManagementPremium[i][0] = 12 * 5;
+		startPremium[i][0] = premium[i][0] + addPremium[i][0] - comeAllPremium[i][0];
+		if (i >= 3 && i < year) {
+			comeWJHoldPrizes[i][0] = premium[i][0] * 0.02 * (adjustAdWj[i][0]);
+			comeJQHoldPrizes[i][0] = premium[i][0] * 0.02 * (1 - adjustAdWj[i][0]);
+		} else {
+			comeWJHoldPrizes[i][0] = 0;
+			comeJQHoldPrizes[i][0] = 0;
+		}
+		// Log.d("test_Mjj",
+		// "奖金                      "+comeJQHoldPrizes[i][0]+"   "+(1 -
+		// adjustAdWj[i][0]));
+		holdPrizes[i][0] = comeWJHoldPrizes[i][0] + comeJQHoldPrizes[i][0];
+		partValue[i][0] = getValue(i, ppy, pye, 2);
+		if (i == 0) {
+			// for (int j=0;j<3;j++)
+			dieBasePremium[i][0] = (mainAmount[i][0] + addPremium[i][0] - partValue[i][0]) > 1000 ? (mainAmount[i][0]
+					+ addPremium[i][0] - partValue[i][0])
+					: 1000;
+			if (rider1 != null) {
+				badIllBasePremium[i][0] = (badAmount[i][0] + addPremium[i][0] - partValue[i][0]) > 1000 ? (badAmount[i][0]
+						+ addPremium[i][0] - partValue[i][0])
+						: 1000;
+				/*
+				 * mildDiseasesBasePremium[i][0] = (mldAmount[i][0] +
+				 * addPremium[i][0] - partValue[i][0]) > 1000 ?
+				 * (mldAmount[i][0] + addPremium[i][0] -
+				 * partValue[i][0]) : 1000;
+				 */
+				mildDiseasesBasePremium[i][0] = badIllBasePremium[i][0] * 0.2; // test==
+			} else {
+				badIllBasePremium[i][0] = 0;
+				mildDiseasesBasePremium[i][0] = 0;
+			}
+
+		} else {
+			dieBasePremium[i][0] = (dieBasePremium[i - 1][0] + (mainAmount[i][0] - mainAmount[i - 1][0])
+					+ addPremium[i][0] - partValue[i][0]) > 1000 ? (dieBasePremium[i - 1][0]
+					+ (mainAmount[i][0] - mainAmount[i - 1][0]) + addPremium[i][0] - partValue[i][0]) : 1000;
+			if (rider1 != null) {
+				badIllBasePremium[i][0] = (badIllBasePremium[i - 1][0]
+						+ (badAmount[i][0] - badAmount[i - 1][0]) + addPremium[i][0] - partValue[i][0]) > 1000 ? (badIllBasePremium[i - 1][0]
+						+ (badAmount[i][0] - badAmount[i - 1][0]) + addPremium[i][0] - partValue[i][0])
+						: 1000;
+				/*
+				 * mildDiseasesBasePremium[i][0] =
+				 * (mildDiseasesBasePremium[i - 1][0] + addPremium[i][0]
+				 * - partValue[i][0]) > 1000 ?
+				 * (mildDiseasesBasePremium[i - 1][0] + addPremium[i][0]
+				 * - partValue[i][0]) : 1000;
+				 */
+				mildDiseasesBasePremium[i][0] = badIllBasePremium[i][0] * 0.2; // test==
+			} else {
+				badIllBasePremium[i][0] = 0;
+				mildDiseasesBasePremium[i][0] = 0;
+			}
+
+		}
+		for (var k = 0; chy != null && k < size(chy); k++) {
+			if (chy[k] - 1 == i) {
+				// if (cha[k] > 0) {
+				// dieBasePremium[i][0] = (cha[k] - partValue[i][0]) >
+				// 1000 ? (cha[k] - partValue[i][0])
+				// : 1000;
+				// }
+				if (cha1[k] > 0) {
+					badIllBasePremium[i][0] = (cha1[k] - partValue[i][0]) > 1000 ? (cha1[k] - partValue[i][0])
+							: 1000;
+				}
+				mildDiseasesBasePremium[i][0] = badIllBasePremium[i][0] * 0.2;
+			}
+		}
+		// 当年度是否调整
+		if (isChgAmount(i, chy, cha)) {
+			dieBasePremium[i][0] = mainAmount[i][0];
+		}
+		mainTemp[i][0] = dieBasePremium[i][0];
+		dieAndAccidentBasePremium[i][0] = dieBasePremium[i][0] + accidentAmount[i][0];
+		comeWJHoldPrizeses[i][0] = calculateSpe(i, specialHoldRatio) * (adjustAdWj[i][0]);
+		comeJQHoldPrizeses[i][0] = calculateSpe(i, specialHoldRatio) * (1 - adjustAdWj[i][0]);
+		for (var j = 0; j < 3; j++) {
+			// if (i < year) {
+			calculateStartAccountValue(i, j);
+			startAccountValue[i][j] = startWjAccountValue[i][j] + startJqAccountValue[i][j];
+			// Log.d("test_Mjj",startAccountValue[i][j]+" "+startWjAccountValue[i][j]+"  "+startJqAccountValue[i][j]);
+			diePay[i][j] = max(startAccountValue[i][j] * 1.05, dieBasePremium[i][0]);
+			if ((i + age) < 66) {
+				accidentPay[i][j] = accidentAmount[i][0];
+			} else {
+				accidentPay[i][j] = 0;
+			}
+
+			// dieAndAccidentPay[i][j] = round( diePay[i][j]
+			// //-------------------------------------------------------------test
+			// + accidentPay[i][j] );
+
+			/*
+			 * dieProtectionCost[i][j] = (max(
+			 * dieBasePremium[i][0], startAccountValue[i][j] * 1.05D) -
+			 * startAccountValue[i][j]) / 1000 * rate[i];
+			 */
+			dieProtectionCost[i][j] = round((max(dieBasePremium[i][0], startAccountValue[i][j] * 1.05) - startAccountValue[i][j]) / 1000 * rate[i<size(rate)?i:size(rate)-1], 2);
+			// Log.d("test_Mjj",
+			// dieBasePremium[i][0]+"    "+(startAccountValue[i][j])+"  "+i);
+			/*
+			 * System.out.println(max( dieBasePremium[i][0],
+			 * startAccountValue[i][j] * 1.05D) -
+			 * startAccountValue[i][j]+"++++++身故危");
+			 */
+			if (rider1 != null) {
+				/*
+				 * badIllProtectionCost[i][j]
+				 * =round(calculatebadProtectionCost( i, j) / 1000
+				 * * rate2[i][0]);
+				 */
+				badIllProtectionCost[i][j] = round(calculatebadProtectionCost(i, j) / 1000
+								* rate2[i<size(rate2)?i:size(rate2)-1][0], 2);
+
+				/*
+				 * mildDiseasesProtectionCost[i][j] = round(
+				 * badIllBasePremium[i][0] 0.2 / 1000 *
+				 * rate2[i][1] );
+				 */
+
+				mildDiseasesProtectionCost[i][j] = round(badIllBasePremium[i][0] * 0.2 / 1000
+								* rate2[i<size(rate2)?i:size(rate2)-1][1], 2);
+				// System.out.println(badIllBasePremium[i][0] * 0.2
+				// + "____________BV");
+			}
+			if (rider5 != null && (i + age) < 66) {
+				/*
+				 * accidentProtectionCost[i][j] = round(
+				 * rate3[jobRank - 1] accidentAmount[i][0] / 1000 );
+				 */
+				accidentProtectionCost[i][j] = round(rate3[jobRank - 1]
+						* accidentAmount[i][0] / 1000, 2);
+			}
+			/*
+			 * accidentMedicalProtectionCost[i][j] = round(
+			 * calculateAccidentMedical( i, j) );
+			 */
+			if (i + age < 66) {
+				accidentMedicalProtectionCost[i][j] = round(calculateAccidentMedical(i, j), 2);
+			} else {
+				accidentMedicalProtectionCost[i][j] = 0;
+			}
+			if (rider2 != null && i + age < 66) {
+				/*
+				 * hospitalizationMedicalProtectionCost[i][j]
+				 * =round( rate4[i]  *
+				 * hospital_fens[i][0] );
+				 */
+				hospitalizationMedicalProtectionCost[i][j] = round(rate4[i] * hospital_fens[i][0], 2);
+				// System.out.println(hospitalizationMedicalProtectionCost[i][j]+"          "+rate4[i]+"         "+hospital_fens[i][0]+"     "+i);
+
+				// System.out.println(hospitalizationMedicalProtectionCost[i][j]
+				// +"-----------------------------津贴");
+			} else {
+				hospitalizationMedicalProtectionCost[i][j] = 0;
+			}
+			/*
+			 * hospitalizationCostProtectionCost[i][j] = round(
+			 * calculateHospitalCost( i, j) );
+			 */
+			if (i + age < 66) {
+				hospitalizationCostProtectionCost[i][j] = round(calculateHospitalCost(i, j), 2);
+			} else {
+				hospitalizationCostProtectionCost[i][j] = 0;
+			}
+			if (age + i < 66) {
+				hospitalizationProtectionCost[i][j] = accidentMedicalProtectionCost[i][j]
+						+ hospitalizationMedicalProtectionCost[i][j];
+			} else {
+				hospitalizationProtectionCost[i][j] = 0;
+			}
+			endWjAccountValue[i][j] = (startWjAccountValue[i][j] - policyManagementPremium[i][0] - (dieProtectionCost[i][j]
+					+ badIllProtectionCost[i][j]
+					+ mildDiseasesProtectionCost[i][j]
+					+ accidentProtectionCost[i][j]
+					+ accidentMedicalProtectionCost[i][j]
+					+ hospitalizationMedicalProtectionCost[i][j] + hospitalizationCostProtectionCost[i][j])
+					* (startWjAccountValue[i][j] / startAccountValue[i][j]))
+					* (1 + ratioWj[j])
+					- partValue[i][0]
+					* (startWjAccountValue[i][j] / startAccountValue[i][j]);
+			// Log.d("test_Mjj", endWjAccountValue[i][j]+"     WJ");
+			// =MAX(ROUND((Y6-Q6-($AH6+$AK6+$AN6+AQ6+AT6+AY6+BD6)*(Y6/AE6))*(1+Inout!$C$51)-$F6*Y6/AE6,2),0)
+			/*
+			 * System.out.println(endWjAccountValue[i][j] + "----BG" +
+			 * "--" + i); System.out.println(startWjAccountValue[i][j] +
+			 * "---Y"); System.out.println(policyManagementPremium[i][0]
+			 * + "---Q"); System.out.println(dieProtectionCost[i][j] +
+			 * "---AH"); System.out .println(badIllProtectionCost[i][j]
+			 * + "---AK");
+			 * System.out.println(mildDiseasesProtectionCost[i][j] +
+			 * "---AN"); System.out.println(accidentProtectionCost[i][j]
+			 * + "---AQ");
+			 * System.out.println(accidentMedicalProtectionCost[i][j] +
+			 * "---AT"); System.out
+			 * .println(hospitalizationMedicalProtectionCost[i][j] +
+			 * "---AY"); System.out
+			 * .println(hospitalizationCostProtectionCost[i][j] +
+			 * "---BD"); System.out .println(
+			 * "____________________________________________________________"
+			 * );
+			 */
+
+			endJqAccountValue[i][j] = (startJqAccountValue[i][j] - (dieProtectionCost[i][j]
+					+ badIllProtectionCost[i][j] + mildDiseasesProtectionCost[i][j]
+					+ accidentProtectionCost[i][j] + accidentMedicalProtectionCost[i][j]
+					+ hospitalizationMedicalProtectionCost[i][j] + hospitalizationCostProtectionCost[i][j])
+					* (startJqAccountValue[i][j] / startAccountValue[i][j]))
+					* (1 + ratioJq[j])
+					- partValue[i][0]
+					* (startJqAccountValue[i][j] / startAccountValue[i][j]);
+			// Log.d("test_Mjj", endJqAccountValue[i][j]+"     JQ");
+			endAccountValue[i][j] = (endWjAccountValue[i][j] + endJqAccountValue[i][j]);
+			dieProtectionCost[i][j] = round(dieProtectionCost[i][j]);
+			if (endAccountValue[i][j] > 0) {
+				badIllProtectionCost[i][j] = max(round(badIllProtectionCost[i][j]), 0);
+			} else {
+				badIllProtectionCost[i][j] = -1;
+			}
+			if (endAccountValue[i][j] > 0) {
+				mildDiseasesProtectionCost[i][j] = max(round(mildDiseasesProtectionCost[i][j]), 0);
+			} else {
+				mildDiseasesProtectionCost[i][j] = -1;
+			}
+			accidentProtectionCost[i][j] = round(accidentProtectionCost[i][j]);
+			accidentMedicalProtectionCost[i][j] = round(accidentMedicalProtectionCost[i][j]);
+			hospitalizationMedicalProtectionCost[i][j] = round(hospitalizationMedicalProtectionCost[i][j]);
+			hospitalizationCostProtectionCost[i][j] = round(hospitalizationCostProtectionCost[i][j]);
+			if (i + age < 66) {
+				hospitalizationMedicalProtectionCost[i][j] += hospitalizationCostProtectionCost[i][j];
+			} else {
+				hospitalizationMedicalProtectionCost[i][j] = -1;
+			}
+			if (endAccountValue[i][j] < 0) {
+				hospitalizationMedicalProtectionCost[i][j] = -1;
+			}
+			if (hospitalizationMedicalProtectionCost[i][j] == 0) {
+				hospitalizationMedicalProtectionCost[i][j] = -1;
+			}
+
+			/*
+			 * System.out.println(endWjAccountValue[i][j] +
+			 * endJqAccountValue[i][j]+
+			 * "-----------------------------------------------------+++++++++++++++++"
+			 * );
+			 */
+			if (endAccountValue[i][j] > 0) {
+				dieAndAccidentProtectionCost[i][j] = max(
+						round(dieProtectionCost[i][j] + accidentProtectionCost[i][j]
+								+ accidentMedicalProtectionCost[i][j]), 0);
+			} else {
+				dieAndAccidentProtectionCost[i][j] = -1;
+			}
+			if (endAccountValue[i][j] > 0) {
+				// mildDiseasesPay[i][j] = mldAmount[i][0];
+				dieAndAccidentPay[i][j] = round(max((endAccountValue[i][j] * 1.05),
+						dieBasePremium[i][0]) + accidentPay[i][0]);
+
+				// if (rider1 != null) {
+				badIllPay[i][j] = round(max(endAccountValue[i][j] * 1.05, badIllBasePremium[i][0]));
+				mildDiseasesPay[i][j] = (badIllBasePremium[i][0] > 1000 ? badIllBasePremium[i][0] : 1000) * 0.2;
+				// }
+			} else if (endAccountValue[i][j] < 0) {
+				dieAndAccidentPay[i][j] = -1;
+				badIllPay[i][j] = -1;
+				mildDiseasesPay[i][j] = -1;
+			}
+			// }
+		}
+	}
+	
+	res.AGE = age;
+	res.PREMIUM = premium;
+	res.ADDPREMIUM = addPremium;
+	res.ACCUMULATIVEPREMIUM = cumulativePremium;
+	res.STARTPREMIUM = startPremium;
+	res.MANAGERPERMIUM = policyManagementPremium;
+	res.COMEACCOUNTVALUE = comeAllPremium;
+	res.HOLDPRIZERS = holdPrizes;
+	res.PARTVALUE = partValue;
+	res.DIEPROTECTIONCOST = dieAndAccidentProtectionCost;
+	res.MILDDISEASESPROTECTIONCOST = mildDiseasesProtectionCost;
+	res.BADILLPROTECTIONCOST = badIllProtectionCost;
+	res.DIEPREMIUM = dieAndAccidentBasePremium;
+	res.BADILLBASEPREMIUM = badIllBasePremium;
+	res.MILDDISEASESBASEPREMIUN = mildDiseasesBasePremium;
+	res.ENDACCOUNTVALUE = endAccountValue;
+	res.DIEPAY = dieAndAccidentPay;
+	res.MILDDISEASESPAY = mildDiseasesPay;
+	res.BADILLPAY = badIllPay;
+	res.HOSPITALIZATIONPROTECTIONCOST = hospitalizationProtectionCost;
+	res.HOSPITALIZATIONMEDICALPROTECTIONCOST = hospitalizationMedicalProtectionCost;
+	res.RISK_AMOUNT = riskAmount;
+	res.HOSPITAL_FENS = hospitalRisk;
+	res.HOSPITALCOST_FENS = hospitalCostRisk;
+	res.BADRISK = badRisk;
+	res.ACCIDENTRISK = accidentRisk;
+	// res.HOSPITALIZATIONCOSTPROTECTIONCOST = hospitalizationCostProtectionCost;
+}
+
+var getRatio = function(index, adJustY, adJustA, adJustB) {
+	var currentWyRatio = adjustAdWj[index][0];
+	for (var i = 0; adJustY != null && i < size(adJustY); i++) {
+		if (index + 1 >= adJustY[i]) {
+			if (adJustA[i] + adJustB[i] == 100) {
+				currentWyRatio = adJustA[i];
+			}
+		}
+	}
+	return currentWyRatio / 100;
+}
+
+/**
+ * 调整保额
+ */
+var getAmount = function(index, cha, chy, amount) {
+	var currentAmount = amount[index][0];
+	for (var i = 0; chy != null && i < size(chy); i++) {
+		if (index + 1 >= chy[i]) {
+			if (cha[i] > 0) {
+				currentAmount = cha[i];
+			}
+		}
+	}
+	return currentAmount;
+}
+
+/**
+ * 当年度是否调整保额
+ * 
+ * @param index
+ * @param chy
+ * @param cha
+ * @return <b>default</b> false
+ */
+var isChgAmount = function(index, chy, cha) {
+	var changed = false;
+	if (cha != null) {
+		for (var i = 0; i < size(cha); i++) {
+			if (index + 1 == chy[i]) {
+				changed = true;
+			}
+		}
+	}
+	return changed;
+}
+
+var checkRule = function() {
+//print("t3.1: " + timems);
+	if (mainTemp[0][0] < premium[0][0] * 20) {
+		res.RULE002 = 1;
+	}
+	if (mainTemp[0][0] < premium[0][0] * 5 || mainTemp[0][0] < 120000) {
+		res.RULE003 = 1;
+	}
+	if (rider2 != null || rider3 != null || rider4 != null) {
+		res.CONDITIONAL = 1;
+	}
+	if (age < 18) {
+		for (var i = age; i < 18; i++) {
+			if (diePay[i][0] > 100000) {
+				res.RULE12 = 1;
+			}
+		}
+	}
+//print("t3.2: " + timems);
+	for (var i = 0; chy2 != null && i < size(chy2); i++) {
+		if (chy2[i] > 60) {
+			if (cha2[i] > badIllBasePremium[chy2[i] - age - 1][0]) {
+				res.RULE11 = 1;
+			}
+		}
+	}
+	/*
+	 * if (adDate < age || adDate > 60) { res.RULE10 = 1; }
+	 */
+
+	if (p.getRider("YGL00049") == null) {
+		res.RULE01 = 1;
+	}
+//print("t3.3: " + timems);
+	for (var i = 0; i < total; i++) {
+//print("t3.3." + i + ": " + timems);
+
+		if (i < year) {
+			if (badAmount[i][0] > 2000000) {
+				res.RULE26 = 1;
+			}
+		}
+
+		if (age + i < 18 && hospitalCost_fens[i][0] > 5) {
+			res.RULE21 = 1;
+		}
+		if (hospitalCost_fens[i][0] < 3 || hospitalCost_fens[i][0] > 20) {
+			if (hospitalCost_fens[i][0] == 0 && temp_hospitalCost_fens[i][0] != 0) {
+				res.RULE20 = 0;
+			} else {
+				res.RULE20 = 1;
+			}
+		}
+		if (temp_hospitalCost_fens[i][0] == 0) {
+			for (var p = 0; p < size(hospitalCost_fens); p++) {
+				if (hospitalCost_fens[i][0] >= 3 && hospitalCost_fens[i][0] <= 20) {
+					res.RULE20 = 0;
+				}
+			}
+		}
+		if (age >= 3 && age <= 17) {
+			if (mainTemp[i][0] < 30000) {
+				res.RULE17 = 1;
+			}
+		}
+		if (mainTemp[i][0] % 1000 != 0) {
+			res.RULE001 = 1;
+		}
+
+		if (mainAmount[i][0] < 20000) {
+			res.RULE22 = 1;
+		}
+		if (mainTemp[i][0] >= 20000 && mainTemp[i][0] < 30000) {
+			res.RULE23 = 1;
+		}
+		if (mainTemp[i][0] >= 300000 && hospitalCost_fens[i][0] > 20) {
+			res.RULE25 = 1;
+		}
+		if (mainTemp[i][0] > 30000 && mainTemp[i][0] < 300000 && hospitalCost_fens[i][0] > 5) {
+			if ((hospitalCost_fens[i][0] - 5) * 10000 > mainTemp[i][0] - 30000 || hospitalCost_fens[i][0] > 15) {
+				res.RULE24 = 1;
+			}
+		}
+		if (i < year && accidentAmount[i][0] != -1) {
+			if (accidentAmount[i][0] < 3000 || accidentAmount[i][0] % 1000 != 0) {
+				res.RULE07 = 1;
+			}
+
+			if (accidentAmount[i][0] > mainTemp[i][0] * 5) {
+				res.RULE06 = 1;
+			}
+		}
+		// 学生、家庭主妇、军人累计人身险保额不得超过50万元。
+		if ((str_begin(occupation,"9000002") || str_end(occupation,"4099907")
+				|| str_begin(occupation,"9000011") || str_end(occupation,"6071203")
+				|| str_begin(occupation,"9000003") || str_begin(occupation,"9000004")
+				|| str_begin(occupation,"9000005") || str_begin(occupation,"9000006")
+				|| str_begin(occupation,"9000007") || str_begin(occupation,"9000008")
+				|| str_begin(occupation,"9000009") || str_begin(occupation,"9000010") || str_begin(occupation,"9000011")) 
+				&& (accidentAmount[i][0] + mainAmount[i][0]) > 500000) {
+			res.RULE005 = 1;
+		}
+		if (temp_amount > temp_premium * getResultRule03(age)) {
+			res.RULE03 = 1;
+		}
+		if (i < year) {
+			if (partValue[i][0] > 0) {
+				res.RULE04 = 1;
+			}
+			if (accidentMedicalAmount[i][0] > 200000) {
+				res.RULE16 = 1;
+			}
+			if (rider5 != null) {
+				if (accidentMedicalAmount[i][0] > accidentAmount[i][0] / 5) {
+					res.RULE15 = 1;
+				}
+			}
+			// 说明有调整
+			if (adYear2 != null && accidentMedicalAmount[i][0] > 0
+					&& (accidentMedicalAmount[i][0] < 3000 || accidentMedicalAmount[i][0] % 1000 != 0)) {
+				res.RULE14 = 1;
+			} else if (adYear2 == null && accidentMedicalAmount[i][0] < 3000
+					|| accidentMedicalAmount[i][0] % 1000 != 0) {// 无调整
+				res.RULE14 = 1;
+			}
+			if (mainTemp[i][0] < badIllBasePremium[i][0]) {
+				res.RULE19 = 1;
+			}
+			for (var j = 0; j < 3; j++) {
+				if (partValue[i][0] > 0) {
+					if (endAccountValue[i][j] < 1000) {
+						res.RULE02 = 1;
+					}
+				}
+			}
+		}
+
+		/*
+		 * if (mainAmount[i][0] / 10 < accidentMedicalAmount[i][0]) { res.RULE18 = 1; }
+		 */
+
+		if (endAccountValue[0][0] < 0) {
+			res.RULE004 = 1;
+		}
+		for (var k = age + i; k <= 3; k++) {
+			if (accidentAmount[k][0] > 20000) {
+				res.RULE05 = 1;
+			}
+		}
+		if (temp_acAmount[i][0] == 0) {
+			for (var k = 0; k < size(accidentAmount); k++) {
+				if (accidentAmount[k][0] >= 3000 && accidentAmount[k][0] % 1000 == 0) {
+					res.RULE07 = 0;
+				}
+			}
+		}
+	}
+}
+
+var getResultRule03 = function(age) {
+	if (age >= 18 && age <= 25) {
+		return 100;
+	}
+	if (age >= 26 && age <= 30) {
+		return 90;
+	}
+	if (age >= 31 && age <= 35) {
+		return 70;
+	}
+	if (age >= 36 && age <= 40) {
+		return 60;
+	}
+	if (age >= 41 && age <= 45) {
+		return 50;
+	}
+	if (age >= 46 && age <= 50) {
+		return 40;
+	}
+	if (age >= 51 && age <= 55) {
+		return 20;
+	}
+	return 0;
+}
+
+/**
+ * 意外医疗费用
+ * 
+ * @param index
+ * @param type
+ * @return
+ */
+var calculateHospitalCost = function(index, type) {
+	if (age <= 66 && startAccountValue[index][type] > 0) {
+		if (rider3 != null) {
+			if (hospitalCost_fens[index][0] != 0) {
+				return rate5[index][0] + (hospitalCost_fens[index][0] - 3)
+						* rate5[index][1];
+			} else {
+				return 0;
+			}
+		} else {
+			if (rider4 != null) {
+				if (hospitalCost_fens[index][0] != 0) {
+					return rate6[index][0] + (hospitalCost_fens[index][0] - 3)
+							* rate6[index][1];
+				} else {
+					return 0;
+				}
+			}
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
+/**
+ * 意外医疗
+ * 
+ * @param index
+ * @param type
+ * @return
+ */
+var calculateAccidentMedical = function(index, type) {
+	var arr1 = array( ( 24, 6.1 ), ( 30, 7.7 ), ( 36, 9.2 ), ( 54, 13.8 ) );
+	var arr2 = array( ( 17.8, 4.5 ), ( 22.3, 5.7 ), ( 26.7, 6.8 ), ( 40.1, 10.2 ) );
+	if (age <= 66 && startAccountValue[index][type] > 0) {
+		if (rider6 != null) {
+			if (accidentMedicalAmount[index][0] != 0) {
+				return arr2[jobRank - 1][0] + arr2[jobRank - 1][1] * (accidentMedicalAmount[index][0] - 2000)
+						/ 1000;
+			} else {
+				return 0;
+			}
+		} else {
+			if (rider7 != null) {
+				if (accidentMedicalAmount[index][0] != 0) {
+					return arr1[jobRank - 1][0] + arr1[jobRank - 1][1]
+							* (accidentMedicalAmount[index][0] - 2000) / 1000;
+				} else {
+					return 0;
+				}
+			} else {
+				return 0;
+			}
+		}
+	} else {
+		return 0;
+	}
+}
+
+/**
+ * 重大疾病危险保额
+ * 
+ * @param index
+ * @param type
+ * @return
+ */
+var calculatebadProtectionCost = function(index, type) {
+	// System.out.println(diePay[index][type] + "   BP   ");
+	/*
+	 * System.out.println(max(
+	 * max(badIllBasePremium[index][0],
+	 * startAccountValue[index][type] * 1.05) -
+	 * max(badIllBasePremium[index][0],
+	 * (startAccountValue[index][type] * 1.05)) / diePay[index][type]
+	 * startAccountValue[index][type], 0) + "  BZ  ");
+	 */
+	/*
+	 * System.out.println(badIllBasePremium[index][0] + "   H   " +
+	 * startAccountValue[index][type] + "   AE   " +
+	 * dieBasePremium[index][0] + "   BP   ");
+	 */
+	return max(
+			max(badIllBasePremium[index][0], startAccountValue[index][type] * 1.05)
+					- max(badIllBasePremium[index][0], (startAccountValue[index][type] * 1.05))
+					/ diePay[index][type] * startAccountValue[index][type], 0);
+}
+
+/**
+ * 计算特别持续奖金
+ * 
+ * @param index
+ * @param rate
+ * @return
+ */
+var calculateSpe = function(index, rate) {
+	if (index >= 20 && index % 20 == 0) {
+		return premium[index][0] * rate;
+	}
+	return 0;
+}
+
+/**
+ * 计算个子账户期初价值
+ * 
+ * @param index
+ * @param type
+ */
+var calculateStartAccountValue = function(index, type) {
+	if (index == 0) {
+		/*
+		 * startWjAccountValue[index][type] = comeAllPremium[index][0]
+		 * (adjustAdWj[index][0]) + comeWJHoldPrizes[index][0] +
+		 * comeWJHoldPrizeses[index][0];
+		 */
+		startWjAccountValue[index][type] = calculateComePremium(index, 1) + comeWJHoldPrizes[index][0]
+				+ comeWJHoldPrizeses[index][0];
+		// Log.d("test_Mjj",
+		// "WJ            "+startWjAccountValue[index][type]+"      "+index);
+		/*
+		 * System.out.println(startWjAccountValue[index][type] +
+		 * "++++++++++++++++++++++++++++期初价值");
+		 */
+		/*
+		 * startJqAccountValue[index][type] = comeAllPremium[index][0]
+		 * (1 - adjustAdWj[index][0]) + comeJQHoldPrizes[index][0] +
+		 * comeJQHoldPrizeses[index][0];
+		 */
+		startJqAccountValue[index][type] = calculateComePremium(index, 3) + comeJQHoldPrizes[index][0]
+				+ comeJQHoldPrizeses[index][0];
+		// Log.d("test_MJj",
+		// "JQ         "+startJqAccountValue[index][type]+"      "+index);
+		// Log.d("test_Mjj","   细节  "+
+		// calculateComePremium(index,3)+"  "+comeJQHoldPrizes[index][0]+"   "+
+		// comeJQHoldPrizeses[index][0]+"  "+index);
+	} else {
+		/*
+		 * startWjAccountValue[index][type] = comeAllPremium[index][0]
+		 * (adjustAdWj[index][0]) + endWjAccountValue[index - 1][type] +
+		 * comeWJHoldPrizes[index][0] + comeWJHoldPrizeses[index][0];
+		 */
+
+		startWjAccountValue[index][type] = calculateComePremium(index, 1)
+				+ endWjAccountValue[index - 1][type] + comeWJHoldPrizes[index][0]
+				+ comeWJHoldPrizeses[index][0];
+		// Log.d("test_Mjj",
+		// "WJ          "+startWjAccountValue[index][type]+"      "+index);
+		// Log.d("test_Mjj",
+		// "WJ详细          "+calculateComePremium(index,1)+"      "+endWjAccountValue[index-1][type]+"   "+comeWJHoldPrizes[index][0]+"  "+comeWJHoldPrizeses[index][0]+"   "+index);
+		// System.out.println( endWjAccountValue[index - 1][type]
+		// + "++++++++++++++++++++++++++++   "+index);
+		/*
+		 * System.out.println("S     " + comeAllPremium[index][0] +
+		 * "    上BG   " + endWjAccountValue[index - 1][type] + "   T " +
+		 * comeWJHoldPrizes[index][0] + "   u  " +
+		 * comeWJHoldPrizeses[index][0]);
+		 * System.out.println(endWjAccountValue[index -
+		 * 1][type]+"______Y=MAX($S5+BG4+$T5+U5,0)*($B5<=NB)");
+		 * System.out.println(startWjAccountValue[index -
+		 * 1][type]+"_______BG");
+		 * System.out.println(comeAllPremium[index][0]*
+		 * (adjustAdWj[index][0])+"_______S");
+		 */
+		/*
+		 * startJqAccountValue[index][type] = comeAllPremium[index][0]
+		 * (1 - adjustAdWj[index][0]) + endJqAccountValue[index -
+		 * 1][type] + comeJQHoldPrizes[index][0] +
+		 * comeJQHoldPrizeses[index][0];
+		 */
+
+		startJqAccountValue[index][type] = calculateComePremium(index, 3)
+				+ endJqAccountValue[index - 1][type] + comeJQHoldPrizes[index][0]
+				+ comeJQHoldPrizeses[index][0];
+		// Log.d("test_Mjj",
+		// "JQ          "+startJqAccountValue[index][type]+"      "+index);
+		// Log.d("test_Mjj","   细节  "+
+		// calculateComePremium(index,3)+"  "+comeJQHoldPrizes[index][0]+"   "+
+		// comeJQHoldPrizeses[index][0]+"  "+index);
+	}
+}
+
+
+var comeRate = array(0.5, 0.25, 0.15, 0.1, 0.1);
+
+/**
+ * 
+ * 进入账户的总保费
+ * 
+ * @param index
+ * @return
+ */
+var calculateComePremium = function(index, type) {
+	var ratio1 = 0.05;
+	if (index < year && index < 5) {
+    ratio1 = comeRate[index];
+	}
+	if (type == 1) {
+		return min(6000, premium[index][0]) * (1 - ratio1) + max(0, premium[index][0] - 6000)
+				* (1 - 0.05) * (adjustAdWj[index][0]) + addPremium[index][0] * (1 - 0.05)
+				* (adjustAdWj[index][0]);
+	} else if (type == 2) {
+		return min(6000, premium[index][0]) * (1 - ratio1) + max(0, premium[index][0] - 6000)
+				* (1 - 0.05) + addPremium[index][0] * (1 - 0.05);
+	} else {
+		return min(6000, premium[index][0]) * (1 - ratio1) * 0 + max(0, premium[index][0] - 6000)
+				* (1 - 0.05) * (1 - adjustAdWj[index][0]) + addPremium[index][0] * (1 - 0.05)
+				* (1 - adjustAdWj[index][0]);
+	}
+}
+
+/**
+ * 返回累计保费
+ * 
+ */
+var getAccumulativePremium = function(index) {
+	var basePremium = 0;
+	if (index < year) {
+		basePremium = temp_premium * (index + 1);
+
+		for (var i = 0; i <= index; i++) {
+			basePremium = basePremium + addPremium[i][0];
+		}
+		return basePremium;
+	} else {
+		return cumulativePremium[index - 1][0] + addPremium[index][0];
+	}
+	// return cumulativePremium[year-1][0];
+}
+
+/**
+ * 返回追加保费、部分领取的值
+ * 
+ * @return
+ */
+var getValue = function(index, fromYear, toYear, type) {
+	if (type == 2) {
+		index = index + age;
+	}
+	if (fromYear != null && toYear != null) {
+		for (var i = 0; i < size(fromYear); i++) {
+			if (index >= fromYear[i] - 1 && index <= toYear[i] - 1) {
+				if (type==1) {
+					return apa[i];
+        } else if (type==2) {
+					return ppp[i];
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+var getFengsu = function(age, index, add_y, add_f, fengsu, type) {
+	var currentFen = fengsu[index][0];
+	for (var i = 0; add_y != null && i < size(add_y); i++) {
+		if (age + index >= add_y[i] - 1) {
+			if (add_f[i] != -1) {
+				currentFen = add_f[i];
+			}
+		}
+		if (add_y[i] > 0 && age > add_y[i] - 1) {
+			if (type == 2) {
+				res.AGEOFYEAR = 1;
+			} else if (type == 1) {
+				res.AGEOFYEAR_TWO = 1;
+			}
+		}
+		/*
+		 * else{ if(type==2){ res.AGEOFYEAR = 1; }else{
+		 * if(type==1){ res.AGEOFYEAR_TWO = 1; } } }
+		 */
+	}
+	return currentFen;
+}
+
+var getAmounts = function(age, index, add_ay, add_aa, amount, type) {
+	var currentAmount = amount[index][0];
+	for (var i = 0; add_ay != null && i < size(add_ay); i++) {
+		if (age + index >= add_ay[i] - 1) {
+			/*
+			 * if(age+index>60 && currentAmount<add_aa[i]){
+			 * res.RULE014 = 1; }
+			 */
+			if (add_aa[i] > 0) {
+				currentAmount = add_aa[i];
+			}
+		}
+		if (add_ay[i] > 0 && age > add_ay[i] - 1) {
+			if (type == 1) {
+				res.AMOUNT_AGEOFYEAR = 1;
+			} else if (type == 2) {
+				res.AMOUNT_AGEOFYEAR_TWO = 1;
+			}
+		}
+	}
+	return currentAmount;
+}
+
+occupation = INSURANT.OCCUPATION_CODE;
+res.RULE20 = 0;
+res.CON = 0;
+rider1 = THIS.RIDER("YGL00049");
+rider2 = THIS.RIDER("YGL00065");
+rider3 = THIS.RIDER("YGL00063");
+rider4 = THIS.RIDER("YGL00064");
+rider5 = THIS.RIDER("YGL00050");
+rider6 = THIS.RIDER("YGL00055");
+rider7 = THIS.RIDER("YGL00056");
+age = INSURANT.AGE;
+sex = INSURANT.GENDER_CODE;
+total = 105 - age;
+year = PAY_PERIOD;
+temp_premium = PREMIUM;
+temp_amount = AMOUNT;
+if (rider1) {
+	temp_badAmount = rider1.AMOUNT;
+} else {
+	temp_badAmount = 0;
+}
+if (rider5) {
+	temp_accidentAmount = rider5.AMOUNT;
+} else {
+	temp_accidentAmount = 0;
+}
+jobRank = INSURANT.OCCUPATION_CATEGORY;
+if (rider2) {
+	hospital_fen = rider2.QUANTITY;
+	res.CON = 1;
+} else {
+	hospital_fen = 0;
+}
+if (rider3) {
+	hospitalCost_fen = rider3.QUANTITY;
+	res.CON = 1;
+} else {
+	if (rider4) {
+		hospitalCost_fen = rider4.QUANTITY;
+		res.CON = 1;
+	} else {
+		hospitalCost_fen = 0;
+	}
+}
+if (rider6) {
+	temp_accidentMedicalAmount = rider6.AMOUNT;
+} else {
+	if (rider7) {
+		temp_accidentMedicalAmount = rider7.AMOUNT;
+	} else {
+		temp_accidentMedicalAmount = 0;
+	}
+}
+if (rider3) {
+	addFenY = rider3.add_ya;
+	addFenQ = rider3.add_fa;
+} else if (rider4 != null) {
+	addFenY = rider4.add_yb;
+	addFenQ = rider4.add_fb;
+}
+if (rider2) {
+	addFenY1 = rider2.add_yc;
+	addFenQ1 = rider2.add_fc;
+}
+if (rider5) {
+	adYear1 = rider5.add_aaddy;
+	adAmount1 = rider5.add_aadda;
+}
+if (rider6) {
+	adYear2 = rider6.add_aaddy;
+	adAmount2 = rider6.add_aadda;
+} else if (rider7) {
+	adYear2 = rider7.add_aaddy;
+	adAmount2 = rider7.add_aadda;
+}
+
+apy = add_year;// 追加年份
+aye = add_year_end; // 追加年份
+apa = add_prm; // 追加保费
+chy = chg_year; // 调整年份
+cha = chg_sg_amt; // 调整主險保额
+cha1 = chg_zj_amt; // 调整保额(C重大疾病)
+chy2 = chg_year2; // 调整年份(意外伤害)
+cha2 = chg_amt2; // 调整保额(意外伤害)
+ppy = saw_year1;// 部分领取年份
+pye = saw_year2;// 部分领取年份
+ppp = saw_v;// 部分领取金额
+adjustYwj = wj_year;// 调整比例年度
+adjustAwj = wj_rate; // 调整比例值
+adjustAjq = jq_rate; // 调整比例值
+
+//rate = new double[total];
+//rate2 = new double[total][2];
+//rate4 = new double[total];
+//rate5 = new double[total][2];
+//rate6 = new double[total][2];
+adjustAdWj = new double[total][1];
+premium = new double[total][1];
+addPremium = new double[total][1];
+cumulativePremium = new double[total][1];
+startPremium = new double[total][1];
+comeAllPremium = new double[total][1];
+accidentAmount = new double[total][1];
+temp_acAmount = new double[total][1];
+policyManagementPremium = new double[total][1];
+comeWJHoldPrizes = new double[total][1];
+comeJQHoldPrizes = new double[total][1];
+holdPrizes = new double[total][1];
+partValue = new double[total][1];
+
+hospital_fens = new double[total][1];
+temp_hospital_fens = new double[total][1];
+temp_hospitalCost_fens = new double[total][1];
+hospitalCost_fens = new double[total][1];
+
+mainAmount = new double[total][1];
+mldAmount = new double[total][1];
+temp_mainAmount = new double[total][1];
+hospitalizationProtectionCost = new double[total][3];
+accidentMedicalAmount = new double[total][1];
+temp_acMedicalAmount = new double[total][1];
+dieBasePremium = new double[total][1];
+dieAndAccidentBasePremium = new double[total][1];
+badAmount = new double[total][1];
+badIllBasePremium = new double[total][1];
+tenp_baAmount = new double[total][1];
+mildDiseasesBasePremium = new double[total][1];
+dieProtectionCost = new double[total][3];
+diePay = new double[total][3];
+accidentPay = new double[total][3];
+dieAndAccidentPay = new double[total][3];
+dieAndAccidentProtectionCost = new double[total][3];
+mildDiseasesPay = new double[total][3];
+badIllPay = new double[total][3];
+badIllProtectionCost = new double[total][3];
+mildDiseasesProtectionCost = new double[total][3];
+accidentProtectionCost = new double[total][3];
+accidentMedicalProtectionCost = new double[total][3];
+hospitalizationMedicalProtectionCost = new double[total][3];
+hospitalizationCostProtectionCost = new double[total][3];
+startWjAccountValue = new double[total][3];
+startJqAccountValue = new double[total][3];
+startAccountValue = new double[total][3];
+endWjAccountValue = new double[total][3];
+endJqAccountValue = new double[total][3];
+endAccountValue = new double[total][3];
+comeWJHoldPrizeses = new double[total][1];
+comeJQHoldPrizeses = new double[total][1];
+mainTemp = new double[total][1];
+
+res.CONDITIONAL = 0;
+res.RULE01 = 0;
+res.RULE001 = 0;
+res.RULE02 = 0;
+res.RULE002 = 0;
+res.RULE03 = 0;
+res.RULE003 = 0;
+res.RULE04 = 0;
+res.RULE004 = 0;
+res.RULE005 = 0;
+res.RULE05 = 0;
+res.RULE06 = 0;
+res.RULE07 = 0;
+res.RULE08 = 0;
+res.RULE09 = 0;
+res.RULE10 = 0;
+res.RULE11 = 0;
+res.RULE12 = 0;
+res.RULE13 = 0;
+res.RULE14 = 0;
+res.RULE014 = 0;
+res.RULE15 = 0;
+res.RULE16 = 0;
+res.RULE17 = 0;
+res.RULE18 = 0;
+res.RULE19 = 0;
+res.RULE21 = 0;
+res.RULE22 = 0;
+res.RULE23 = 0;
+res.RULE24 = 0;
+res.RULE25 = 0;
+res.RULE26 = 0;
+res.AGEOFYEAR = 0;
+res.AGEOFYEAR_TWO = 0;
+res.AMOUNT_AGEOFYEAR = 0;
+res.AMOUNT_AGEOFYEAR_TWO = 0;
+
+calculate();
+//print("t3: " + timems);
+checkRule();
+//print("t4: " + timems);
+return res;

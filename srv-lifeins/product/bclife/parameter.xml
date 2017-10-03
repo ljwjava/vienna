@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<parameter>
+		<pay>
+			<item code="insure_5" value="INSURE_VALUE-5" desc="print(INSURE_PERIOD); '交'+round(INSURE_PERIOD-5)+'年'" show="自动计算" />
+		</pay>
+	</parameter>
+</declare>

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<variable type="plan">
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+	</variable>
+	
+	<variable type="product">
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="ZONE" formula="INSURANT.ZONE"/>
+		<item name="DEF_ID" formula="PRODUCT_ID"/>
+		
+		<item name="COMMISSION" formula="COMMISSION_RATE(MONTH)*PREMIUM" param="MONTH"/>
+		<item name="COMMISSION_PAY_FREQ_YEAR" formula="0" param="YEAR"/>
+		<item name="COMMISSION_RATE" formula="0" param="MONTH"/>
+		
+		<item name="PREMIUM_FY" formula="PREMIUM"/> <!-- 首年保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="PREMIUM_FT" formula="PREMIUM"/> <!-- 首期保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="AMOUNT_DTL" formula="UNIT*QUANTITY"/>
+		<item name="QUANTITY_DTL" formula="AMOUNT/UNIT"/>
+		<item name="PREMIUM_DTL" formula="DS.RATE[0,0]*QUANTITY"/>
+		<item name="AMOUNT" formula="UNIT*QUANTITY"/>
+		<item name="QUANTITY" formula="AMOUNT/UNIT"/>
+		<item name="PREMIUM" formula="DS.RATE[0,0]*QUANTITY"/>
+		
+		<item name="INSURE_VALUE" formula="insure.VALUE"/>
+		<item name="INSURE_MODE" formula="insure.MODE"/>
+		<item name="INSURE_DESC" formula="insure.DESC"/>
+		<item name="INSURE_PERIOD" formula="insure.PERIOD"/>
+		<item name="INSURE_CODE" formula="insure.CODE"/>
+		
+		<item name="PAY_VALUE" formula="pay.VALUE"/>
+		<item name="PAY_DESC" formula="pay.DESC"/>
+		<item name="PAY_MODE" formula="pay.MODE"/>
+		<item name="PAY_PERIOD" formula="pay.PERIOD"/>
+		<item name="PAY_CODE" formula="pay.CODE"/>
+		
+		<item name="RANK_VALUE" formula="rank.VALUE"/>
+		<item name="RANK_CODE" formula="rank.CODE"/>
+		
+		<item name="DRAW_VALUE" formula="draw.VALUE"/>
+		<item name="DRAW_DESC" formula="draw.DESC"/>
+		<item name="DRAW_AGE_VALUE" formula="draw_age.VALUE"/>
+		<item name="DRAW_FREQ_DESC" formula="draw_freq.DESC"/>
+		<item name="DRAW_FREQ_VALUE" formula="draw_freq.VALUE"/>
+		
+		<item name="PAY_FREQ_CODE" formula="pay_freq.CODE"/>
+		<item name="PAY_FREQ_VALUE" formula="pay_freq.VALUE"/>
+	</variable>
+</declare>

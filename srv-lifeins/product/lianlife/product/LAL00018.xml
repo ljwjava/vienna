@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00018" corporation_id="lianlife" code="614002" name="附加保驾百万（B款）意外伤害" name_abbr="附加保驾百万" is_main="no" is_rider="yes" unit="1000" input="none" quantity="PARENT.QUANTITY" purchase="quantity" type="accident" sequence="2000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="LAL00018" />
+		</data>
+		
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="parent" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="">
+					<item>在本附加险合同保险期间内，且本附加险合同有效的前提下，若被保险人以乘客身份乘坐私家车、商业运营的民航班机或轨道公共交通工具，或作为驾驶员驾驶私家车，在上述特定交通工具内遭受意外伤害事故，我们按以下约定承担保险责任：</item>
+				</paragraph>
+				<paragraph title="特定交通意外身故保险金">
+					<item>因本次事故直接导致被保险人在该事故发生之日起180 日内身故，我们按每份人民币80 万元给付“特定交通意外身故保险金”，本附加险合同终止。若已给付过“特定交通意外伤残保险金”，在给付“特定交通意外身故保险金”时，将扣除累计已给付的金额。</item>
+				</paragraph>
+				<paragraph title="特定交通意外伤残保险金">
+					<item>因本次事故直接导致被保险人在该事故发生之日起180 日内发生本附加险合同所附《人身保险伤残评定标准(行业标准)》（中保协发〔2013〕88 号，以下简称“评定标准”，具体详见附件）所列伤残条目，我们按“评定标准”对其伤残进行评定（如自事故发生之日起180 日治疗仍未结束的，则按事故发生之日起第180 日的身体情况进行伤残评定），并根据评定结果对应的给付比例乘以每份人民币20 万元给付“特定交通意外伤残保险金”。伤残评定原则具体如下：</item>
+					<item>(1)确定伤残类别：根据人体的身体结构与功能损伤情况确定所涉及的伤残类别。</item>
+					<item>(2)确定伤残等级：根据伤残情况，在同类别伤残下，确定伤残等级。</item>
+					<item>(3)确定保险金给付比例：根据伤残等级对应的百分比，确定保险金给付比例。</item>
+					<item>(4)多处伤残的评定原则：当同一保险事故造成两处或两处以上伤残时，首先对各处伤残程度分别进行评定，如果几处伤残等级不同，以最重的伤残等级作为最终的评定结论；如果两处或两处以上伤残等级相同，伤残等级在原评定基础上最多晋升一级，最高晋升至第一级。同一部位和性质的伤残，不应采用“评定标准”两条以上或者同一条文两次以上进行评定。</item>
+					<item>若该次事故导致的伤残合并前次伤残可领较严重等级意外伤残保险金者，按较严重等级标准给付，但前次已给付的意外伤残保险金（投保前已患或因责任免除事项所致附件所列的伤残视为已给付意外伤残保险金）应予以扣除。</item>
+					<item>本附加险合同有效期内，我们对被保险人的“特定交通意外伤残保险金”的累计给付每份以人民币20 万元为限，每份一次或累计给付金额达到人民币20万元时，我们对被保险人的“特定交通意外伤残保险金”给付责任终止。</item>
+				</paragraph>
+				<paragraph title="航空及轨道交通意外额外保险金">
+					<item>若被保险人以乘客身份乘坐商业运营的民航班机或轨道公共交通工具，在该交通工具内遭受意外伤害事故，并因本次事故直接导致被保险人在该事故发生之日起180 日内身故或前述伤残，我们给付“特定交通意外身故保险金”或“特定交通意外伤残保险金”的，在给付上述保险金的同时，按相同金额给付“航空及轨道交通意外额外保险金”。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE lt 18" type="customer">
+				被保险人年龄不能小于18岁。
+			</if>
+			<if condition="PARENT.QUANTITY != QUANTITY">
+				保驾百万B与附加保驾百万B的承保份数须相同。
+			</if>
+			<if condition="PAY_VALUE == 30 and AGE > 40">
+				保险期间30年时，被保险人年龄不能大于40岁。
+			</if>
+			<if condition="PAY_VALUE == 70 and AGE > 50">
+				保险期间至70岁时,被保险人年龄不能大于50岁。
+			</if>
+			<if condition="QUANTITY != round(QUANTITY)">
+				份数必须为整数。
+			</if>
+			<if condition="OCCUPATION_CATEGORY lt 1 or OCCUPATION_CATEGORY > 4">
+				仅限承保1-4类职业类别人群。
+			</if>
+		</rule>
+	</product>
+</declare>

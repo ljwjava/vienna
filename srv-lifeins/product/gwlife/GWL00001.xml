@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="GWL00001"
+		corporation_id="gwlife"
+		code="00108"
+		name="长城康健人生两全保险"
+		name_abbr="康健人生两全"
+		unit="1000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		input="amount"
+		premium="round(DS.RATE[0][INDEX]*QUANTITY,2)"
+		bind="GWL00002"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="GWL00001" />
+		</data>
+		
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+			</pay>
+			<insure>
+				<item code="to_full" />
+			</insure>
+			<draw_age>
+				<item code="70" />
+				<item code="75" />
+				<item code="79" />
+			</draw_age>
+		</param>
+
+		<input>
+			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[150000,'15万'],[200000,'20万']]</item>
+			<item name="PAY" label="缴费年期" widget="select">[['single','一次交清'],['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交']]</item>
+			<item name="DRAW_AGE" label="领取年龄" widget="select">[['70', '70周岁'],['75', '75周岁'],['79', '79周岁']]</item>
+		</input>
+
+		<rider>
+			<product id="GWL00003"/>
+			<product id="GWL00004"/>
+			<product id="GWL00005"/>
+			<product id="GWL00006"/>
+			<product id="GWL00007"/>
+			<product id="GWL00008"/>
+			<product id="GWL00009"/>
+		</rider>
+
+		<init>
+			<item name="DRAW_AGE" value="70" type="string"/>
+			<item name="INDEX">find(['70','75','79'],DRAW_AGE)</item>
+			<item name="ADD" value="RIDER('GWL00002')"/>
+			<item name="TR_CODE" value="100394" type="string"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="BG" param="A1" formula="AGE+A1==DRAW_AGE?IT.PRM_T(A1):0" /><!--祝寿金-->
+			<var name="AMT" param="A1" formula="AGE+A1>=18?AMOUNT:IT.PRM_T(A1)" /><!--身故或全残保险金-->
+			<var name="CSV_70" param="A1" formula="try(QUANTITY * (DS.DATA70[A1][0]), 0)" />
+			<var name="CSV_75" param="A1" formula="try(QUANTITY * (DS.DATA75[A1][0]), 0)" />
+			<var name="CSV_79" param="A1" formula="try(QUANTITY * (DS.DATA79[A1][0]), 0)" />
+			<var name="CSV" param="A1" formula="DRAW_AGE == 70?IT.CSV_70(A1):(DRAW_AGE == 75?IT.CSV_75(A1):IT.CSV_79(A1))" /><!--现价-->
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table condition="ADD != null" desc="康健人生两全附加康健人生提前给付重大疾病利益汇总">	<!-- 汇总表，不在产品内展示，必须包含‘利益汇总’字符串 -->
+					<row type="title">
+						<blank row="2">'保单年度'</blank>
+						<blank row="2">'年龄'</blank>
+						<blank row="2">'当期保费'</blank>
+						<blank row="2">'累计保费'</blank>
+						<blank col="2">'康健人生'</blank>
+						<blank col="3">'附加康健人生提前给付重疾'</blank>
+						<blank col="5">'责任合计'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'祝寿金（年初）'</blank>
+						<blank row="1">'身故/全残'</blank>
+						<!--<blank row="1">'现金价值'</blank>-->
+						<blank row="1">'重疾/疾病终末期保险金'</blank>
+						<blank row="1">'轻症疾病保险金'</blank>
+						<blank row="1">'轻症疾病豁免保险费'</blank>
+						<!--<blank row="1">'现金价值'</blank>-->
+						<blank row="1">'祝寿金给付总额（年初）'</blank>
+						<blank row="1">'身故/全残给付总额'</blank>
+						<blank row="1">'重疾/疾病终末期保险金给付总额'</blank>
+						<blank row="1">'轻症疾病保险金给付总额'</blank>
+						<blank row="1">'轻症疾病豁免保险费总额'</blank>
+						<!--<blank row="1">'退保给付总额（年末）'</blank>-->
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)+ADD.IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)+ADD.IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">AGE+I==DRAW_AGE?IT.PRM_T(I)+ADD.IT.PRM_T(I):0</blank>
+							<blank align="right" style="########0">AGE+I>=18?AMOUNT:(IT.PRM_T(I)+ADD.IT.PRM_T(I))*2</blank>
+							<!--<blank align="right" style="########0"></blank>IT.CSV(I)-->
+							<blank align="right" style="########0">ADD.AMOUNT</blank>
+							<blank align="right" style="########0">ADD.AMOUNT*0.2</blank>
+							<blank align="right" style="########0">ADD.IT.PRM_O(I)</blank>
+							<!--<blank align="right" style="########0"></blank>ADD.IT.CSV(I)-->
+							<blank align="right" style="########0">AGE+I==DRAW_AGE?IT.PRM_T(I)+ADD.IT.PRM_T(I):0</blank>
+							<blank align="right" style="########0">AGE+I>=18?AMOUNT:(IT.PRM_T(I)+ADD.IT.PRM_T(I))*2</blank>
+							<blank align="right" style="########0">ADD.AMOUNT</blank>
+							<blank align="right" style="########0">ADD.AMOUNT*0.2</blank>
+							<blank align="right" style="########0">ADD.IT.PRM_O(I)</blank>
+							<!--<blank align="right" style="########0"></blank>IT.CSV(I)+ADD.IT.CSV(I)-->
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			
+
+			<coverage filter="coverage" parser="coverage">
+				
+				<paragraph title="身故或全残保险金">
+					<item>若被保险人于本主险合同生效或者最后一次复效之日起90日内（含第90日）因意外伤害以外的原因导致身故或全残的，我们将向您返还本主险合同及《长城附加康健人生提前给付重大疾病保险》累计已交保险费（无息），同时本主险合同终止。</item>
+					<item>若被保险人身故时未满18周岁，且因意外伤害或于本主险合同生效或最后一次复效之日起90日后因意外伤害以外的原因导致身故或全残的，我们将按本主险合同及《长城附加康健人生提前给付重大疾病保险》累计已交保险费（无息）的2倍给付身故或全残保险金，同时本主险合同终止。</item>
+					<item>若被保险人身故时已满18周岁，且因意外伤害或于本主险合同生效或最后一次复效之日起90日后因意外伤害以外的原因导致身故或全残的，我们将按本主险合同载明的基本保险金额给付身故或全残保险金，同时本主险合同终止。</item>
+				</paragraph>
+				<paragraph title="祝寿金">
+					<item>若被保险人在祝寿金领取日零时生存，且未发生全残或其他导致本主险合同终止的情形，经我们确认后，我们将按您已交纳的本主险合同及 《长城附加康健人生提前给付重大疾病保险》 的累计已交保险费（无息）给付祝寿金。</item>
+				</paragraph>
+				
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="DAY lt 30 or AGE >60" type="customer">
+				投保年龄为 0 周岁（指出生满 30 天且已健康出院的婴儿）至 60 周岁。
+			</if>
+			<if condition="AGE lt 40 and (AMOUNT lt 100000 or AMOUNT % 10000>0)">
+				被保险人小于40周岁，最低保额为10万元，超过部分应为1万元的整数倍.
+			</if>
+			
+			<if condition="AGE >= 40 and (AMOUNT lt 50000 or AMOUNT % 10000>0)">
+				被保险人大于等于40周岁，最低保额为 5 万元，超过部分应为 1 万元的整数倍.
+			</if>
+			
+			<if condition="DRAW_AGE_VALUE == 70 and PAY_PERIOD == 1 and AGE >55">
+				70岁领取祝寿金、趸交、投保年龄：0-55周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 70 and PAY_PERIOD == 5 and AGE >50">
+				70岁领取祝寿金、五年交、投保年龄：0-50周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 70 and PAY_PERIOD == 10 and AGE >45">
+				70岁领取祝寿金、十年交、投保年龄：0-45 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 70 and PAY_PERIOD == 15 and AGE >45">
+				70岁领取祝寿金、十五年交、投保年龄：0-45 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 70 and PAY_PERIOD == 20 and AGE >40">
+				70岁领取祝寿金、二十年交、投保年龄：0-40 周岁。
+			</if>
+			
+			<if condition="DRAW_AGE_VALUE == 75 and PAY_PERIOD == 1 and AGE >55">
+				75岁领取祝寿金、趸交、投保年龄：0-55 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 75 and PAY_PERIOD == 5 and AGE >55">
+				75岁领取祝寿金、五年交、投保年龄：0-55 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 75 and PAY_PERIOD == 10 and AGE >55">
+				75岁领取祝寿金、十年交、投保年龄：0-55 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 75 and PAY_PERIOD == 15 and AGE >50">
+				75岁领取祝寿金、十五年交、投保年龄：0-50 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 75 and PAY_PERIOD == 20 and AGE >45">
+				75岁领取祝寿金、二十年交、投保年龄：0-45 周岁。
+			</if>
+			
+			<if condition="DRAW_AGE_VALUE == 79 and PAY_PERIOD == 1 and AGE >60">
+				79岁领取祝寿金、趸交、投保年龄：0-60 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 79 and PAY_PERIOD == 5 and AGE >60">
+				79岁领取祝寿金、五年交、投保年龄：0-60 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 79 and PAY_PERIOD == 10 and AGE >60">
+				79岁领取祝寿金、十年交、投保年龄：0-60 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 79 and PAY_PERIOD == 15 and AGE >55">
+				79岁领取祝寿金、十五年交、投保年龄：0-55 周岁。
+			</if>
+			<if condition="DRAW_AGE_VALUE == 79 and PAY_PERIOD == 20 and AGE >50">
+				79岁领取祝寿金、二十年交、投保年龄：0-50 周岁。
+			</if>
+			<if condition="ADD == null">
+				此产品必须绑定长城附加康健人生提前给付重大疾病保险。
+			</if>
+			
+		</rule>
+	</product>
+</declare>

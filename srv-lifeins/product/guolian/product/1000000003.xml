@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare> <!-- product_declare改为declare -->
+	<product id="1000000003" 
+	    corporation_id="guolian" 
+	    code="112202"
+		name="康无忧B款两全保险(分红型)" 
+		name_abbr="康无忧B款" 
+		type_code="dividend" 
+		bind="1000000004"
+		unit_amount="10000"
+		is_main="yes"
+		is_rider="no"
+		sale_begin_date="2011-12-01"
+		sale_end_date="2099-01-01" 
+		last_modify_date="2011-12-01"
+		>
+		<data>
+			<item parser="file.auto" value="1000000003" /> 
+		</data>
+		
+		<param>
+			<pay_freq> 
+				<item code="single"/>
+				<item code="year"/>
+			</pay_freq	>
+			<pay>
+			    <item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+			</pay>
+			<insure>
+				<item code="to_70"/>
+				<item code="to_80"/>
+			</insure>
+		</param>
+    
+		<interest>
+		    <!-- 主副险合并期交保险费 -->
+		    <var name="Y_VALUE" param="A1,A2" type="double" formula="case(A1 lt PAY_PERIOD,DS.RATE[0,0]*QUANTITY+DS.RATE[0,1]*RIDER('1000000004').QUANTITY+ IT.PRM1(A1,A2)+ IT.PRM2(A1,A2)+ IT.PRM3(A1,A2)+ IT.PRM4(A1,A2),0)"></var>
+		    <var name="PRM1" param="A1,A2" type="double"	formula="try(RIDER('1000000010').PREMIUM,0)"></var>
+			<var name="PRM2" param="A1,A2" type="double"	formula="try(RIDER('1000000011').PREMIUM,0)"></var>
+			<var name="PRM3" param="A1,A2" type="double"	formula="try(RIDER('1000000012').PREMIUM,0)"></var>
+			<var name="PRM4" param="A1,A2" type="double"	formula="try(RIDER('1000000013').PREMIUM,0)"></var>
+		    <!-- 主险期交保险费 -->
+		    <var name="PREMIUM_MAIN" param="A1,A2" type="double" formula="case(A1 lt PAY_PERIOD,DS.RATE[0,0]*QUANTITY,0)"></var>
+		    <!-- 主副险合并累计保险费 -->
+		    <var name="Y_ACCOUNT" param="A1,A2" type="double" formula="(A1 == 0 ? IT.Y_VALUE(A1,0) : IT.Y_ACCOUNT(A1-1,0)+IT.Y_VALUE(A1,0))"></var>
+		     <!-- 主险累计保险费 -->
+		    <var name="AD_PREMIUM_MAIN" param="A1,A2" type="double" formula="(A1 == 0 ? IT.PREMIUM_MAIN(A1,0) : IT.AD_PREMIUM_MAIN(A1-1,0)+IT.PREMIUM_MAIN(A1,0))"></var>
+		    <!--满期保险金 -->
+		    <var name="B_ALL" param="A1,A2" type="double" formula="DS.CV[A1,1]*QUANTITY+DS.CV[A1,3]*this.getRider('1000000004').getQuantity()"></var>
+		    <!-- 身故保险金 -->
+		    <var name="SG_ACCOUNT" param="A1,A2" type="double" formula="case(A1 + AGE lt 18, max(IT.AD_PREMIUM_MAIN(A1,0),IT.MAINXJ_VALUE(A1,0)),AMOUNT)"></var>
+		    <!-- 重大疾病保险金 -->
+		    <var name="FZJ_VALUE" param="A1,A2" type="double" formula="AMOUNT"></var>
+		    <!-- 特定疾病保险保险金 -->
+		    <var name="TD_VALUE" param="A1,A2" type="double" formula="AMOUNT*0.1"></var>
+		    <!-- 现金价值-->
+		    <var name="XJ_VALUE" param="A1,A2" type="double" formula="DS.CV[A1,0]*QUANTITY+DS.CV[A1,2]*this.getRider('1000000004').getQuantity()"></var>
+		    <!--主险 现金价值-->
+		    <var name="MAINXJ_VALUE" param="A1,A2" type="double" formula="DS.CV[A1,0]*QUANTITY"></var>
+		    <!-- 年度红利 -->
+		    <var name="DV_ANN" type="double" param="A1,A2" formula="round(DS.DIV[A1,A2],2)*QUANTITY"></var>
+		    <!-- 过度公式 -->
+		    <var name="DV_ANN2" type="double" param="A1,A2" formula="DS.DIV[A1,A2]"></var>
+		    <var name="DV_ANN3" type="double" param="A1,A2" formula="(A1 == 0 ? IT.DV_ANN2(A1,A2):round((IT.DV_ANN3(A1-1,A2)*1.03 + IT.DV_ANN2(A1,A2)),2) )"></var>
+		    <!-- 累计红利 -->
+		    <var name="AD_DV" type="double" param="A1,A2" formula="round(IT.DV_ANN3(A1,A2)*QUANTITY,0)"></var>
+		    <!-- 主险年度末现金价值-->
+		    <var name="MAIN_VALUE" type="double" param="A1,A2" formula="DS.CV[A1,0]*QUANTITY"></var>
+		    <!-- 附加险年度末现金价值-->
+		    <var name="NOMAIN_VALUE" type="double" param="A1,A2" formula="DS.CV[A1,2]*QUANTITY"></var>
+		</interest>
+
+    <attachment> <!-- append改为attachment -->
+		    <benefit_table name="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="3">'保单\n年度'</blank>
+						<blank row="3">'年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank col="5">'基本保险金额对应利益'</blank>
+						<blank col="3">'年度红利'</blank>
+						<blank col="3">'累积红利'</blank>
+					</row>		
+					<row type="title">
+					    <blank row="2">'满期\n保险金'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'重大疾病保险金'</blank>
+					    <blank row="2">'特定疾病保险金'</blank>
+					    <blank row="2">'现金价值'</blank>
+					    <blank row="2">'低'</blank>
+					    <blank row="2">'中'</blank>
+					    <blank row="2">'高'</blank>
+					    <blank row="2">'低'</blank>
+					    <blank row="2">'中'</blank>
+					    <blank row="2">'高'</blank>
+					</row>			
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">I+1</blank>
+						    <blank style="###0">I+AGE</blank>
+						    <blank style="###0">IT.Y_VALUE(I,0)</blank>
+						    <blank style="###0">IT.Y_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.B_ALL(I,0)</blank>
+						    <blank style="###0">IT.SG_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.FZJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.TD_VALUE(I,0)</blank>
+						    <blank style="###0">IT.XJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.DV_ANN(I,0)</blank>
+						    <blank style="###0">IT.DV_ANN(I,1)</blank>
+						    <blank style="###0">IT.DV_ANN(I,2)</blank>
+						    <blank style="###0">IT.AD_DV(I,0)</blank>
+						    <blank style="###0">IT.AD_DV(I,1)</blank>
+						    <blank style="###0">IT.AD_DV(I,2)</blank> 
+						   
+						</row>
+					</loop>
+				</table>
+				<table desc="假设结算利率为低档时">
+					<row type="title">
+						<blank row="3">'保单\n年度'</blank>
+						<blank row="3">'年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank col="5">'基本保险金额对应利益'</blank>
+						<blank col="1">'年度红利'</blank>
+						<blank col="1">'累积红利'</blank>
+					</row>		
+					<row type="title">
+					    <blank row="2">'满期保险金'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'重大疾病保险金'</blank>
+					    <blank row="2">'特定疾病保险金'</blank>
+					    <blank row="2">'现金价值'</blank>
+					    <blank row="2">'低'</blank>
+					    <blank row="2">'低'</blank>
+					</row>			
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">I+1</blank>
+						    <blank style="###0">I+AGE</blank>
+						    <blank style="###0">IT.Y_VALUE(I,0)</blank>
+						    <blank style="###0">IT.Y_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.B_ALL(I,0)</blank>
+						    <blank style="###0">IT.SG_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.FZJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.TD_VALUE(I,0)</blank>
+						    <blank style="###0">IT.XJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.DV_ANN(I,0)</blank>
+						    <blank style="###0">IT.AD_DV(I,0)</blank>
+						</row>
+					</loop>
+				</table>
+				<table desc="假设结算利率为中档时">
+					<row type="title">
+						<blank row="3">'保单\n年度'</blank>
+						<blank row="3">'年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank col="5">'基本保险金额对应利益'</blank>
+						<blank col="1">'年度红利'</blank>
+						<blank col="1">'累积红利'</blank>
+					</row>		
+					<row type="title">
+					    <blank row="2">'满期保险金'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'重大疾病保险金'</blank>
+					    <blank row="2">'特定疾病保险金'</blank>
+					    <blank row="2">'现金价值'</blank>
+					    <blank row="2">'中'</blank>
+					    <blank row="2">'中'</blank>
+					</row>			
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">I+1</blank>
+						    <blank style="###0">I+AGE</blank>
+						
+						    <blank style="###0">IT.Y_VALUE(I,0)</blank>
+						    <blank style="###0">IT.Y_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.B_ALL(I,0)</blank>
+						    <blank style="###0">IT.SG_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.FZJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.TD_VALUE(I,0)</blank>
+						    <blank style="###0">IT.XJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.DV_ANN(I,1)</blank>
+						    <blank style="###0">IT.AD_DV(I,1)</blank>
+						</row>
+					</loop>
+				</table>
+				<table desc="假设结算利率为高档时">
+					<row type="title">
+						<blank row="3">'保单\n年度'</blank>
+						<blank row="3">'年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank col="5">'基本保险金额对应利益'</blank>
+						<blank col="1">'年度红利'</blank>
+						<blank col="1">'累积红利'</blank>
+					</row>		
+					<row type="title">
+					    <blank row="2">'满期保险金'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'重大疾病保险金'</blank>
+					    <blank row="2">'特定疾病保险金'</blank>
+					    <blank row="2">'现金价值'</blank>
+					    <blank row="2">'高'</blank>
+					    <blank row="2">'高'</blank>
+					</row>			
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">I+1</blank>
+						    <blank style="###0">I+AGE</blank>
+						    <blank style="###0">IT.Y_VALUE(I,0)</blank>
+						    <blank style="###0">IT.Y_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.B_ALL(I,0)</blank>
+						    <blank style="###0">IT.SG_ACCOUNT(I,0)</blank>
+						    <blank style="###0">IT.FZJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.TD_VALUE(I,0)</blank>
+						    <blank style="###0">IT.XJ_VALUE(I,0)</blank>
+						    <blank style="###0">IT.DV_ANN(I,2)</blank>
+						    <blank style="###0">IT.AD_DV(I,2)</blank>
+						</row>
+					</loop>
+				</table>
+				<text>注释说明：</text>
+				<text>本公司声明：</text>
+				<text>1、红利分配分别按低、中、高3种情况进行预测，仅作为参考之用，不作为未来红利分配的保证，实际红利水平可能高于或低于表中所列数字；累积红利的累积利率为3%，是假设值，公司每年公布的累积利率可能高于或低于该利率；</text>
+				<text>2、年龄为保单年度初的值；满期保险金、身故保险金、现金价值、年度红利和累积红利为保单年度末的值；</text>
+				<text>3、利益演示数据显示到整数位，单位为人民币元。</text>
+				<text bold="yes">特别提示：上述利益演示基于公司的精算及其他假设，不代表公司的历史经营业绩，也不代表对公司未来经营业绩的预期，保单的红利分配是不确定的。</text>
+			</benefit_table>
+
+			<coverage name="coverage" parser="coverage">
+				<paragraph>
+		    		<item>在本合同有效期内，我们按以下约定承担保险责任：</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+				    <item>若被保险人于年满18周岁后的首个合同生效日对应日前身故，我们按您已支付的保险费和被保险人身故时本合同的现金价值的较大者给付“身故保险金”，本合同终止。</item>
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日后（若投保时被保险人年满18周岁的,自合同生效日后）身故，我们按以下约定给付身故保险金，本合同终止。</item>
+                    <item>(1)因遭受意外伤害（见释义）导致身故的，或在本合同生效（或最后一次复效，以较迟者为准）之日起180日后因意外伤害以外的原因导致身故的，身故保险金为基本保险金额；</item>
+                    <item>(2)在本合同生效或最后一次复效(以较迟者为准)之日起180日内因意外伤害以外的原因导致身故的，身故保险金为您已支付的保险费的105%。</item>
+					<item>*“已支付的保险费 ”的含义:本条所 述“已支付的保险费”指您根据本合同的约定已支付的保险费。</item>
+				</paragraph>
+				<paragraph title="满期保险金">
+				   	<item>若被保险人生存至保险期间届满，我们按基本保险金额给付“满期保险金”，本合同终止。</item>
+				</paragraph>
+				<paragraph title="保单红利">
+					<item>保单红利的确定</item>
+					<item>本合同为分红保险合同，您有权参与我们分红保险业务可分配盈余的分配。</item>
+					<item>在本合同有效期间内，按照保险监督管理机构的有关规定，我们每年根据分红保险业务的实际经营状况确定红利分配方案。保单红利是不确定的。</item>
+					<item>若我们确定本合同有红利分配，则该红利将于合同生效日对应日分配给您，我们每个保单年度会向您提供红利通知书，告知您分红的具体情况。</item>
+					<item>保单红利的领取</item>
+					<item>红利留存在我们的红利账户，按我们每年公布的红利累积利率以年复利方式累积生息，并于您申请或本合同终止时给付。</item>
+					<item>在本合同终止前根据您的申请给付红利的，给付金额不超过累积到上一个合同生效日对应日的累积红利。发生身故给付、合同解除等合同终止情形的，给付累积到上一个合同生效日对应日的累积红利，但若您在上一个合同生效日对应日至合同终止期间已经领取过红利，我们将予以扣除。</item>
+					<item>申请领取红利，须凭保险合同和您的有效身份证件办理。</item>
+				</paragraph>
+				<paragraph title="责任免除">
+					<item>因下列情形之一导致被保险人身故的，我们不承担给付保险金的责任：</item>
+					<item>(1)投保人对被保险人的故意杀害、故意伤害；</item>
+					<item>(2)被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施；</item>
+					<item>(3)被保险人自本合同成立之日起2 年内自杀，但被保险人自杀时为无民事行为能力人的除外；</item>
+					<item>(4)被保险人主动吸食或注射毒品（见释义）；</item>
+					<item>(5)被保险人未遵医嘱，私自使用药物，但按使用说明的规定使用非处方药（见释义）除外；</item>
+					<item>(6)被保险人酒后驾驶（见释义），无合法有效驾驶证驾驶（见释义），或驾驶无有效行驶证（见释义）的机动车（见释义）；</item>
+					<item>(7)被保险人因妊娠（含宫外孕）、流产、分娩（含剖宫产）导致的伤害；</item>
+					<item>(8)被保险人从事潜水（见释义）、跳伞、攀岩（见释义）、蹦极、驾驶滑翔机或滑翔伞、探险（见释义）、摔跤、武术比赛（见释义）、特技表演（见释义）、赛马、赛车等高风险运动； </item>
+					<item>(9)战争、军事冲突、暴乱或武装叛乱；</item>
+					<item>(10)核爆炸、核辐射或核污染。</item>
+					<item>发生上述第(1)项情形导致被保险人身故的，本合同终止，我们向受益人退还本合同的现金价值；</item>
+					<item>发生上述其他情形导致被保险人身故的，本合同终止，我们向您退还本合同的现金价值。</item>
+				</paragraph>
+			</coverage>
+			
+			<benefit_detail name="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+				    <item>若被保险人于年满18周岁后的首个合同生效日对应日前身故，我们按您已支付的保险费和被保险人身故时本合同的现金价值的较大者给付“身故保险金”，本合同终止。</item>
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日后（若投保时被保险人年满18周岁的,自合同生效日后）身故，我们按以下约定给付身故保险金，本合同终止。</item>
+                    <item>(1)因遭受意外伤害（见释义）导致身故的，或在本合同生效（或最后一次复效，以较迟者为准）之日起180日后因意外伤害以外的原因导致身故的，身故保险金为基本保险金额；</item>
+                    <item>(2)在本合同生效或最后一次复效(以较迟者为准)之日起180日内因意外伤害以外的原因导致身故的，身故保险金为您已支付的保险费的105%。</item>
+					<item>*“已支付的保险费 ”的含义:本条所 述“已支付的保险费”指您根据本合同的约定已支付的保险费。</item>
+				</paragraph>
+				<paragraph title="满期保险金">
+				   	<item>若被保险人生存至保险期间届满，我们按基本保险金额给付“满期保险金”，本合同终止。</item>
+				</paragraph>
+			</benefit_detail>
+			<benefit_chart name="chart@axa" parser="chart@axa">
+			   <year_data from="0" to="INSURE_PERIOD-1" name="I" step="1">
+			    	<item mode="add" type="formula" title="主险累计保险费" code="sg">IT.Y_ACCOUNT[I,0]</item>
+			       	<item mode="year" type="formula" title="主险现金价值" code="sg">IT.MAINXJ_VALUE[I,0]</item>
+			        <item mode="year" type="formula" title="主险[待确认]基本保额" code="sg">1111</item>
+			        <item mode="year" type="formula" title="基本保险金额" code="sc">IT.FZJ_VALUE[I,0]</item>
+			        <item mode="year" type="formula" title="基本保险金额" code="sa">IT.FZJ_VALUE[I,0]</item>
+			        <item mode="year" type="formula" title="主险年度末现金价值" code="sb">IT.MAIN_VALUE[I,0]</item>
+			        <item mode="year" type="formula" title="附加险年度末现金价值" code="sb">IT.NOMAIN_VALUE[I,0]</item>
+			    </year_data>
+			    <chart desc="身故利益" code="sg">
+			        <axis from="0" to="INSURE_PERIOD-1" name="I" desc="身故利益">
+			    	    <item name="身故利益" type="bar">IT.SG_ACCOUNT[I,0]</item>
+			    	</axis>
+			    </chart>
+			    <chart desc="重疾利益" code="sc">
+			    	<axis from="0" to="INSURE_PERIOD-1" name="I"> 
+			        	<item name="生存利益" type="bar">IT.FZJ_VALUE[I,0]</item>
+			    	</axis>
+			    </chart>
+			    <chart desc="特定疾病利益" code="sa">
+			    	<axis from="0" to="INSURE_PERIOD-1" name="I"> 
+			        	<item name="生存利益" type="bar">IT.FZJ_VALUE[I,0]*0.1</item>
+			    	</axis>
+			    </chart>
+			    <chart desc="现金价值" code="sb">
+			    	<axis from="0" to="INSURE_PERIOD-1" name="I"> 
+			        	<item name="生存利益" type="bar">IT.XJ_VALUE[I,0]</item>
+			    	</axis>
+			    </chart>
+			</benefit_chart>
+		</attachment>
+		<rider>
+		   <product id="1000000010"/>
+		   <product id="1000000011"/>
+		   <product id="1000000013"/>
+		</rider>
+		<rule skip="rule_1003,rule_1001,rule_1006">
+		  	<if condition = "AMOUNT lt 10000">
+				最低基本保额为10000元。
+			</if> 
+			<if condition = "AMOUNT gt 10000 and AMOUNT % 1000 != 0">
+				投保金额应为1000的整数倍。
+			</if>
+			<if condition="INSURANT.DAY lt 28" type="customer">
+				被保人投保年龄未达最低承保年龄(出生满28天)。 
+			</if>
+			<if condition="AGE gt 60" type="customer">
+				被保人投保年龄超过最高承保年龄(60岁)。
+			</if>
+			<!-- 
+		   <if condition="APPLICANT.AGE lt 18">
+		    	投保人年龄必须大于18周岁（含）。
+		    </if>
+		     -->
+			<if condition="PAY_PERIOD==5 and AGE gt 55" >
+				缴费年期为五年期时，被保人年龄应该在28天-55周岁。
+		    </if>
+			<if condition="PAY_PERIOD==10 and AGE gt 50" >
+				缴费年期为十年期时，被保人年龄应该在28天-50周岁。
+		    </if>
+			<if condition="PAY_PERIOD==15 and AGE gt 45" >
+				缴费年期为十五年期时，被保人年龄应该在28天-45周岁。
+		    </if>
+			<if condition="PAY_PERIOD==20 and AGE gt 40 " >
+				缴费年期为二十年期时，被保人年龄应该在28天-40周岁。
+		    </if>
+		    <if condition="PAY_MODE.CODE == 'single' and PAY_VALUE != 1" >
+				当交费方式为一次性交清时，交费期间仅可选择1年交。
+		    </if>
+		    <if condition="PAY_MODE.CODE == 'year' and PAY_VALUE == 1" >
+				当交费方式为年交时，交费期间仅可选择5年交、10年交、15年交、20年。
+		    </if>
+		    <if condition="'901003'.indexOf(''+OCCUPATION_CODE) ge 0  and AMOUNT gt 300000">
+				18周岁以上学生累计人身险风险保额不得超过30万，请调整投保计划。
+			</if>
+			<if condition="'1601004'.indexOf(''+OCCUPATION_CODE) ge 0 and AMOUNT gt 300000">
+				家庭主妇投保，累计人身险风险保额超过30万元，请调整投保计划。
+			</if>
+			<if condition="'1601002,1601003'.indexOf(''+OCCUPATION_CODE) >= 0 and AMOUNT gt 200000">
+				无固定职业人员投保累计寿险风险保额不得超过20万，请调整投保计划。
+			</if>
+			<if condition="'1601001'.indexOf(''+OCCUPATION_CODE) >= 0 and AMOUNT gt 600000">
+				离退休人员投保，累计人身险风险保额不得超过60万元，请调整投保计划。
+			</if>
+		</rule>
+	</product>
+</declare>

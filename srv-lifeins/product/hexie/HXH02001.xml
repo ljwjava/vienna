@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="HXH02001" corporation_id="hexie" code="HXH02001" name="和谐健康之享定期重大疾病组合" name_abbr="健康之享" premium="PremiumChildren"
+		type="thunder" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
+
+		<init amount="150000">
+			<item name="EXEMPT" value="true" type="boolean"/>
+		</init>
+
+		<param>
+			<pay>
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+			</pay>
+			<insure>
+				<item code="to_80" />
+				<item code="to_60" />
+				<item code="to_65" />
+				<item code="to_70" />
+				<item code="to_75" />
+			</insure>
+		</param>
+
+		<input>
+			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[150000,'15万'],[200000,'20万']]</item>
+			<item name="PAY" label="缴费年期" widget="select">[['term_3','3年交'],['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交']]</item>
+			<item name="INSURE" label="保障年期" widget="select">[['to_60','至60周岁'],['to_65','至65周岁'],['to_70','至70周岁'],['to_75','至75周岁'],['to_80','至80周岁']]</item>
+			<item name="EXEMPT" label="附加豁免" widget="select" type="boolean">[['Y', '是'],['N', '否']]</item>
+		</input>
+
+		<portfolio>
+			<product id="HXH00001">
+				<AMOUNT>PACK.AMOUNT</AMOUNT>
+				<PAY>PACK.PAY</PAY>
+				<INSURE>PACK.INSURE</INSURE>
+			</product>
+			<product id="HXH00002" parent="HXH00001"/>
+			<product id="HXH00003" parent="HXH00001" c="EXEMPT"/>
+		</portfolio>
+
+	</product>
+</declare>

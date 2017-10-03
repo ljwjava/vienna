@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<attachment>
+		<benefit_combo filter="combo" parser="combo_def">
+			<item code="year" row="1" mode="cover" name="年期" style="##0"/>
+			<item code="age"  row="1" mode="cover" name="年齡" style="##0"/>
+			<item code="life" row="1" mode="add" name="身故/全殘保險金" style="###########0"/>
+			<item code="accident" row="1" mode="add" name="意外身故" style="###########0"/>
+			<item code="cancer" row="1" mode="add" name="癌症身故" style="###########0"/>
+			<item code="suv" row="1" mode="add" name="年度末生存保險金" style="###########0"/>
+			<item code="dissolution" row="1" mode="add" name="年末解約金" style="###########0"/>
+			<text code="t1">上表＂年度末生存保險金＂欄位適用全球人壽安心殘廢生活扶助還本保險及全球人壽優利520還本終身保險，且＂年度末解約金＂一欄中所列的數值，係含當年度末應給付之生存保險金。</text>
+		</benefit_combo>
+	</attachment>
+</declare>

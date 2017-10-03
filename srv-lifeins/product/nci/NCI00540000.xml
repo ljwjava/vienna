@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <product id="NCI00540000" 
+		corporation_id="nci" 
+		code="00540000" 
+		name="附加2016住院费用医疗保险（A款）" 
+		name_abbr="附加2016住院A" 
+		is_main="no"
+		is_rider="yes"
+		type="medical"
+		purchase="rank"
+		input="rank"
+		amount="try(case(RANK_CODE,'1',5000,'2',10000,'3',20000,0),0)" 
+		premium="try(case(RANK_CODE,'1',308,'2',501,'3',879,0),0)"
+		unit_amount="1000"
+		sale_begin_date="2016-07-21" 
+		sale_end_date="" 
+		last_modify_date="2016-07-21">
+			
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+			<rank>
+				<item code="1"/>
+				<item code="2"/>
+				<item code="3"/>
+			</rank>
+		</param>
+		
+	 	<attachment>
+			<coverage filter="coverage" parser="coverage">
+ 	    		<paragraph title="保险责任主要保险利益">
+					<item>被保险人发生意外伤害并因该意外伤害或于合同生效之日起30日后发生疾病并因该疾病，在本公司认可医院住院治疗的，本公司按下列规定给付保险金：</item>
+				</paragraph>
+				<paragraph title="住院床位费保险金">
+					<item>对于被保险人每次住院实际发生并支付的符合当地基本医疗保险基金支付范围的医疗必需且合理的住院床位费用，本公司在扣除其他途径已经补偿或给付的部分后，在合同约定的住院床位费日限额内给付住院床位费保险金，保险期间内最长给付天数为180天。</item>
+				</paragraph>
+				<paragraph title="住院手术费保险金">
+					<item>（1）器官移植手术费保险金</item>
+					<item>被保险人在住院期间进行器官移植手术治疗，对于每次实际发生并支付的符合当地基本医疗保险基金支付范围的医疗必需且合理的器官移植手术费，本公司在扣除其他途径已经补偿或给付的部分后，按照75%的比例给付器官移植手术费保险金。</item>
+					<item>每一保单年度内，本公司对被保险人累计给付的器官移植手术费保险金以附表中所列的器官移植手术费保险金年限额为限；本公司在每一保单年度内累计给付的器官移植手术费保险金达到该项保险金年限额时，该保单年度本公司对被保险人的该项保险责任终止。</item>
+					<item>（2）非器官移植手术费保险金</item>
+					<item>被保险人在住院期间进行非器官移植手术治疗，对于每次实际发生并支付的符合当地基本医疗保险基金支付范围的医疗必需且合理的非器官移植手术费，本公司在扣除其他途径已经补偿或给付的部分后，按照75%的比例给付非器官移植手术费保险金。</item>
+					<item>每一保单年度内，本公司对被保险人累计给付的非器官移植手术费保险金以附表中所列的非器官移植手术费保险金年限额为限；本公司在每一保单年度内累计给付的非器官移植手术费保险金达到该项保险金年限额时，该保单年度本公司对被保险人的该项保险责任终止。</item>
+				</paragraph>
+				<paragraph title="住院癌症放化疗费用保险金">
+					<item>被保险人在住院期间接受癌症放化疗治疗，对于每次实际发生并支付的符合当地基本医疗保险基金支付范围的医疗必需且合理的放化疗费用，本公司在扣除其他途径已经补偿或给付的部分后，按照75%的比例给付住院癌症放化疗费用保险金。</item>
+					<item>每一保单年度内，本公司对被保险人累计给付的住院放化疗费用保险金以附表中所列的住院放化疗费用保险金年限额为限；本公司在每一保单年度内累计给付的住院放化疗费用保险金达到该项保险金年限额时，该保单年度本公司对被保险人的该项保险责任终止。</item>
+				</paragraph>
+				<paragraph title="其他住院费用保险金">
+					<item>对于被保险人每次住院实际发生并支付的除床位费、手术费和放化疗费用以外的符合当地基本医疗保险基金支付范围的医疗必需且合理的其他住院费用，本公司在扣除其他途径已经补偿或给付的部分后，按照75%的比例给付其他住院费用保险金。</item>
+					<item>每一保单年度内，本公司对被保险人累计给付的上述各项保险金以合同附表所列的保单年度内各项保险金限额为限；本公司在每一保单年度内累计给付的各项保险金达到保单年度内该项保险金限额时，该保单年度本公司对被保险人的该项保险责任终止。</item>
+					<table>
+						<row>
+							<blank>'保险责任'</blank> 
+							<blank>'赔付比例'</blank> 
+							<blank>'保险金给付限额'</blank> 
+						</row>
+						<row>
+							<blank>'1.住院床位费保险金'</blank> 
+							<blank>'按实际给付，不超过日限额，每年限180日'</blank> 
+							<blank>round(case(RANK_CODE,'1',30,'2',40,'3',50,0))+'元/日'</blank> 
+						</row>
+						<row>
+							<blank>'2.住院手术费保险金'</blank>
+							<blank col="2">'2.住院手术费保险金'</blank> 
+						</row>
+						<row>
+							<blank>'2.1 器官移植手术费保险金'</blank> 
+							<blank row="4">'75%'</blank> 
+							<blank>round(case(RANK_CODE,'1',50000,'2',100000,'3',200000,0))+'元/年'</blank> 
+						</row>
+						<row>
+							<blank>'2.2 非器官移植手术费保险金'</blank> 
+							<blank>round(case(RANK_CODE,'1',20000,'2',40000,'3',80000,0))+'元/年'</blank> 
+						</row>
+						<row>
+							<blank>'3.住院癌症放化疗费用保险金'</blank> 
+							<blank>round(case(RANK_CODE,'1',10000,'2',20000,'3',40000,0))+'元/年'</blank> 
+						</row>
+						<row>
+							<blank>'4.其他住院费用保险金'</blank> 
+							<blank>round(case(RANK_CODE,'1',5000,'2',10000,'3',20000,0))+'元/年'</blank> 
+						</row>
+					</table>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule skip="rule_0001">
+			<if condition="AGE > 60">
+				被保险人不能超过60周岁。
+			</if>
+			<if condition="AMOUNT > 50000" type="amount">
+				本险种最高保险金额5万元。
+			</if>
+		</rule>
+	</product>
+</declare>

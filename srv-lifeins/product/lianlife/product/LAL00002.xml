@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00002" corporation_id="lianlife" code="133001" name="附加聚宝盆年金保险（万能型） " name_abbr="聚宝盆" is_main="no" is_rider="yes" unit="1000" input="none" purchase="none" premium="0" amount="0" type_code="invest"
+		sequence="1000" sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<param>
+			<pay>
+				<item code="none" />
+			</pay>
+			<insure>
+				<item code="to_88" />
+			</insure>
+		</param>
+
+		<init>
+			<item name="RATE" value="[1.025,1.04,1.06]" type="formula" />
+			<item name="PREMIUM" value="0" type="integer" />
+		</init>
+
+		<interest>
+			<var name="V" param="A1,A2" formula="((A1>0?IT.V(A1-1,A2):0)+IT.PRM(A1))*RATE[A2]" />
+			<var name="PRM" param="A1" formula="A1>0?PARENT.IT.SUV_D(A1-1,1):PARENT.IT.SUV(A1)" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="3">'保单\n年度'</blank>
+						<blank row="3">'年龄'</blank>
+						<blank row="3">'年度\n保险费'</blank>
+						<blank row="3">'累计\n保险费'</blank>
+						<blank row="3">'初始\n费用'</blank>
+						<blank row="3">'进入保\n单账户\n的价值'</blank>
+						<blank row="3">'保单\n管理费'</blank>
+						<blank row="3">'风险\n保障费'</blank>
+						<blank col="3">'结算利率（低）'</blank>
+						<blank col="3">'结算利率（中）'</blank>
+						<blank col="3">'结算利率（高）'</blank>
+					</row>
+					<row type="title">
+						<blank row="2">'保单账\n户价值'</blank>
+						<blank row="2">'身故\n保险金'</blank>
+						<blank row="2">'现金价值'</blank>
+						<blank row="2">'保单账\n户价值'</blank>
+						<blank row="2">'身故\n保险金'</blank>
+						<blank row="2">'现金价值'</blank>
+						<blank row="2">'保单账\n户价值'</blank>
+						<blank row="2">'身故\n保险金'</blank>
+						<blank row="2">'现金价值'</blank>
+					</row>
+					<row type="title" />
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">0</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">0</blank>
+							<blank align="right" style="########0">0</blank>
+							<blank align="right" style="########0">IT.V(I,0)</blank>
+							<blank align="right" style="########0">IT.V(I,0)</blank>
+							<blank align="right" style="########0">IT.V(I,0)</blank>
+							<blank align="right" style="########0">IT.V(I,1)</blank>
+							<blank align="right" style="########0">IT.V(I,1)</blank>
+							<blank align="right" style="########0">IT.V(I,1)</blank>
+							<blank align="right" style="########0">IT.V(I,2)</blank>
+							<blank align="right" style="########0">IT.V(I,2)</blank>
+							<blank align="right" style="########0">IT.V(I,2)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="年金">
+					<item>若合同生效满三年且被保险人生存，年金受益人可向我们申请年金。我们将自年金受益人提出申请后的首个合同生效日对应日起，每年按当时保单账户价值的 10%给付年金。
+					</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>若被保险人身故，我们按申请“身故保险金”当时的保单账户价值给付“身故保险金”，保单账户同时被注销，附加险合同终止。</item>
+				</paragraph>
+			</coverage>
+			
+			<specification filter="document" parser="document">
+				<text style="font:kai;font-size:30px;">重要声明：</text>
+				<text style="font:hei;font-size:30px;">1、本产品为万能保险，结算利率超过最低保证利率的部分是不确定的，将随实际投资和经营情况发生变动，敬请注意。</text>
+				<text style="font:hei;font-size:30px;">2、本说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定以及实际结算利率为准。</text>
+				<text/>
+				<text style="font:hei;font-size:20px;">　　为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">一、产品特色</text>
+				<text style="font:hei;font-size:24px;">1. 保底收益有保证</text>
+				<text style="font-size:24px;">　　无论资本市场是起是伏，本产品年结算利率保证不低于2.5%（前5 个保单年度）。</text>
+				<text style="font:hei;font-size:24px;">2. 全额入账增值快</text>
+				<text style="font-size:24px;">　　不扣任何初始费用，按照约定转入的生存类保险金或保单红利（如有）全部进入保单账户，让您的财富增长更快。</text>
+				<text style="font:hei;font-size:24px;">3. 月月结算更透明</text>
+				<text style="font-size:24px;">　　每日计息，月度公布，月月复利累积，实现账户价值持续增长。</text>
+				<text style="font:hei;font-size:24px;">4. 专家理财收益增</text>
+				<text style="font-size:24px;">　　借助专家理财团队，让您轻松分享保证利率之上的超额收益，且免收保单管理费。</text>
+				<text style="font:hei;font-size:24px;">5. 部分领取巧规划</text>
+				<text style="font-size:24px;">　　合同生效后，您可根据需要申请部分领取保单账户价值，提取灵活，自在规划。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">二、产品描述</text>
+				<text style="font:hei;font-size:24px;">1. 投保年龄：本产品接受的被保险人投保年龄范围与主险合同一致。</text>
+				<text style="font:hei;font-size:24px;">2. 保险期间：本产品的保险期间与主险合同一致。</text>
+				<text style="font:hei;font-size:24px;">3. 保险费及交费方式：本产品的保险费通过主险合同的生存类保险金或保单红利（如有）按照约定转入的方式支付。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">三、保险责任</text>
+				<text style="font-size:24px;">　　在附加险合同保险期间内，且在附加险合同有效的前提下，我们按以下约定承担保险责任：</text>
+				<text style="font:hei;font-size:24px;">1. 年金</text>
+				<text style="font-size:24px;">　　若合同生效满三年且被保险人生存，年金受益人可向我们申请年金。我们将自年金受益人提出申请后的首个合同生效日对应日起，每年按当时保单账户价值的10%给付年金。</text>
+				<text style="font-size:24px;">　　若被保险人生存至保险期间届满，我们向满期保险金受益人一次性给付当时的保单账户价值，附加险合同终止。</text>
+				<text style="font:hei;font-size:24px;">2. 身故保险金</text>
+				<text style="font-size:24px;">　　若被保险人身故，我们按申请“身故保险金”当时的保单账户价值给付“身故保险金”，保单账户同时被注销，附加险合同终止。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">四、责任免除</text>
+				<text style="font-size:24px;">　　因下列情形之一导致被保险人身故的，我们不承担给付保险金的责任：</text>
+				<text style="font-size:24px;">　　(1)投保人对被保险人的故意杀害、故意伤害；</text>
+				<text style="font-size:24px;">　　(2)被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施；</text>
+				<text style="font-size:24px;">　　(3)被保险人自合同成立或合同效力恢复之日起2 年内自杀，但被保险人自杀时为无民事行为能力人的除外；</text>
+				<text style="font-size:24px;">　　(4)被保险人斗殴、吸食或注射毒品；</text>
+				<text style="font-size:24px;">　　(5)被保险人酒后驾驶，无合法有效驾驶证驾驶，或驾驶无有效行驶证的机动车；</text>
+				<text style="font-size:24px;">　　(6)战争、军事冲突、暴乱或武装叛乱；</text>
+				<text style="font-size:24px;">　　(7)核爆炸、核辐射或核污染。</text>
+				<text style="font-size:24px;">　　发生上述第(1)项情形导致被保险人身故的，合同终止，我们向受益人退还合同的现金价值；</text>
+				<text style="font-size:24px;">　　发生上述其他情形导致被保险人身故的，合同终止，我们向您退还合同的现金价值。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">五、犹豫期及退保</text>
+				<text style="font:hei;font-size:24px;">1. 犹豫期</text>
+				<text style="font-size:24px;">　　自您签收附加险合同次日起，有10 日的犹豫期。在此期间，请您认真审视附加险合同，如果您认为附加险合同与您的需求不相符，您可以在此期间提出解除附加险合同，我们将退还您所支付的保险费。解除附加险合同时，您需要填写申请书，并提供您的保险合同及有效身份证件。自我们收到您解除合同的书面申请时起，附加险合同即被解除，对于合同解除前发生的保险事故，我们不承担保险责任。</text>
+				<text style="font:hei;font-size:24px;">2. 退保</text>
+				<text style="font-size:24px;">　　您在犹豫期后要求解除附加险合同的，本公司自收到解除合同申请书之日起30 日内向您退还保险单的现金价值。现金价值指附加险合同保险单所具有的价值，通常体现为解除合同时，根据精算原理计算的，由本公司退还的那部分金额。附加险合同的现金价值等于保单账户价值减去退保手续费后的金额。附加险合同不收取退保手续费。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">六、主要投资策略</text>
+				<text style="font-size:24px;">　　我们立足于长期稳健的经营，投资策略遵循“安全性——收益性——流动性”相统一和资产与负债匹配，风险与收益兼顾的原则。以长期投资、价值投资为主的投资理念进行大类资产的配置，以信用等级较高、期限较长的资产类别为配置重点，以低风险资产配置比例高、高风险资产配置比例低为特点，形成相对稳定的战略资产配置结构，努力保持结算利率水平的稳定性和连续性。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">七、 保单账户及结算</text>
+				<text style="font:hei;font-size:24px;">1. 保单账户</text>
+				<text style="font-size:24px;">　　我们于合同生效日为您建立保单账户。初始的保单账户价值为零。</text>
+				<text style="font-size:24px;">　　在附加险合同有效期内，保单账户价值因下列情形而增加：</text>
+				<text style="font-size:24px;">　　(1)主险合同的生存类保险金或保单红利（如有）转入附加险合同保单账户后，保单账户价值按转入金额等额增加；</text>
+				<text style="font-size:24px;">　　(2)结算账户利息后，保单账户价值按结算利息等额增加；</text>
+				<text style="font-size:24px;">　　在附加险合同有效期内，保单账户价值因下列情形而减少：</text>
+				<text style="font-size:24px;">　　(1)收取保单管理费后，保单账户价值等额减少；</text>
+				<text style="font-size:24px;">　　(2)收取风险保障费后，保单账户价值等额减少；</text>
+				<text style="font-size:24px;">　　(3)申请年金给付后，保单账户价值每年于合同生效日对应日按我们当年应给付的年金金额等额减少；</text>
+				<text style="font-size:24px;">　　(4)发生部分领取后，保单账户价值按申请领取的金额等额减少。</text>
+				<text style="font-size:24px;">　　若保单账户价值不足以支付保单管理费及风险保障费，附加险合同终止。</text>
+				<text style="font-size:24px;">　　在附加险合同有效期内，保单账户价值因下列情形降为零，附加险合同终止：</text>
+				<text style="font-size:24px;">　　(1)发生保险事故的；</text>
+				<text style="font-size:24px;">　　(2)退还现金价值的。</text>
+				<text style="font-size:24px;">　　在附加险合同有效期内，我们每年会向您寄送保单年度报告，告知您保单账户价值的具体情况。</text>
+				<text style="font:hei;font-size:24px;">2. 账户利息</text>
+				<text style="font-size:24px;">　　账户利息在每月结算日零时（指每月第1 日）或附加险合同终止时根据实际经过天数和日结算利率按单利结算。</text>
+				<text style="font-size:24px;">　　在附加险合同终止时结算的，实际经过天数为当月实际经过的天数，日结算利率为年保证利率对应的日利率。前五个保单年度的年保证利率为2.5%，自第六个保单年度起，我们有权调整年保证利率，调整后的年保证利率须符合保险监督管理机关的有关规定。</text>
+				<text style="font-size:24px;">　　在每月结算日结算的，实际经过天数为上个月实际经过的天数，我们根据保险监督管理机关的有关规定，确定上个月的日结算利率（对应的年利率不低于年保证利率，年保证利率之上的部分是不保证的），并在结算日起6 个工作日内公布。</text>
+				<text style="font:hei;font-size:24px;">3. 费用扣除</text>
+				<text style="font-size:24px;">　　(1)初始费用：指按保险费的一定比例收取的费用，若我们收取初始费用，则在您支付保险费时收取。本产品不收取初始费用。</text>
+				<text style="font-size:24px;">　　(2)保单管理费：指为维护附加险合同而收取的费用，若我们收取保单管理费，则在每月结算日从保单账户中扣除。本产品不收取保单管理费。</text>
+				<text style="font-size:24px;">　　(3)风险保障费：指根据附加险合同承担的保险责任应收的保障成本，若我们收取风险保障费，则在合同生效日及以后每月结算日从保单账户中扣除。本产品不收取风险保障费。</text>
+				<text style="font-size:24px;">　　(4)部分领取手续费：指部分领取保单账户价值时按一定金额收取的费用。对每一保单年度的前两次部分领取，我们不收取部分领取手续费；对每一保单年度以后的各次部分领取，我们每次收取15 元部分领取手续费。我们保留调整部分领取手续费收取标准的权力，但最多不超过每次50 元。</text>
+				<text style="font-size:24px;">　　(5)退保手续费：指附加险合同解除时按保单账户价值的一定比例收取的费用。本产品不收取退保手续费。</text>
+				<text/>
+				<text style="font:hei;font-size:24px;">八、其他权益</text>
+				<text style="font-size:24px;">　　1. 部分领取</text>
+				<text style="font-size:24px;">　　在合同有效期内，您在犹豫期后可以申请部分领取保单账户价值，但您每次申请领取的金额及领取后的保单账户价值余额不得低于我们规定的最低金额。我们在扣除部分领取手续费后向您退还部分领取金额。</text>
+				<text style="font-size:24px;">　　2. 保险金领取方式选择权</text>
+				<text style="font-size:24px;">　　受益人在领取保险金时，可以一次性领取，或者转换为年金领取。如果选择年金领取，领取金额按照转换时我们提供的转换标准确定。用于转换的保险金金额不得低于转换时我们规定的相应最低限额。</text>
+			</specification>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 60 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至60周岁。
+			</if>
+		</rule>
+	</product>
+</declare>

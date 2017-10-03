@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="GWL00006"
+		corporation_id="gwlife"
+		code="60703"
+		name="长城附加住院医疗保险(2007)"
+		name_abbr="附加住院医疗"
+		unit="1000"
+		type_code="medical"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		is_main="no" 
+		is_rider="yes"
+		input="amount"
+		premium="round((AMOUNT/UNIT)*DS.RATE[0][0],2)"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="GWL00006" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+		</param>
+		
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+		
+
+		<interest>
+			<var name="PRM" param="A1" formula="(A1==0 or A1>PAY_PERIOD)?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<!--<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row>
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>-->
+
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="等待期">
+					<item>您首次投保或非连续投保本附加险时，被保险人在本附加险合同生效之日起90天内（含）发生疾病，由此而导致的住院治疗，我们不承担给付保险金的责任。这90天的时间称为等待期。</item>
+					<item>续保或者因意外伤害住院治疗无等待期。</item>
+				</paragraph>
+				<paragraph title="住院医疗保险金">
+					<item>被保险人在等待期后发生疾病或意外伤害并因此导致住院治疗的，我们按下述情形向住院医疗保险金受益人给付“住院医疗保险金”：</item>
+					<item>（1）若被保险人或者受益人已从工作单位、公费医疗、社会基本医疗保险、本公司在内的任何商业保险机构提供的费用补偿型医疗保险取得住院医疗费用补偿，我们按在住院治疗期间支出的必要且合理的实际医疗费用的剩余部分给付“住院医疗保险金”；</item>
+					<item>（2）若被保险人或者受益人未从工作单位、公费医疗、社会基本医疗保险、本公司在内的任何商业保险机构提供的费用补偿型医疗保险取得住院医疗费用补偿，我们按在住院治疗期间支出的必要且合理的实际医疗费用的70%给付“住院医疗保险金”。</item>
+					<item>实际医疗费用是指符合投保当地社会基本医疗保险管理规定的医疗费用。给付范围包括诊疗费、麻醉费、手术费、抢救费、床位费、药品费、化验费、检查费、护理费、治疗费、材料费等在医院内支出的费用。</item>
+					<item>在一个保险单年度内，住院医疗保险金的累计给付以保险单载明的基本保险金额为限。</item>
+				</paragraph>
+				<paragraph title="补偿原则">
+					<item>本附加险是费用补偿型医疗保险，适用补偿原则，即若被保险人或者受益人已从包括本公司在内的任何途径取得补偿，则我们给付的住院医疗保险金仅以未取得补偿的剩余部分为限。</item>
+					
+				</paragraph>
+				<paragraph title="无理赔优惠">
+					<item>在每一个保证续保期间届满时，若被保险人在前一个保证续保期间内未发生理赔，经核实后，您可以在下一个保证续保期间内享受费率8折的优惠，即在下一个保证续保期间内您只需按时以续保当时费率的 80%交纳保险费。但是，发生下列情形之一，我们对本附加险合同不提供无理赔优惠：</item>
+					<item>（1） 您在上一个保证续保期间内在主险合同生效后投保本附加险合同，则在下一个保证续保期间内我们对本附加险合同不提供无理赔优惠；</item>
+					<item>（2） 您在上一个保证续保期间内申请增加本附加险合同的基本保险金额，则在下一个保证续保期间内我们对本附加险合同不提供无理赔优惠；</item>
+					<item>（3） 您在享受无理赔优惠的保证续保期间内申请增加本附加险合同的基本保险金额，则自本附加险合同的基本保险金额增加之日起至下一个保证续保期间结束，我们对本附加险合同不提供无理赔优惠。</item>
+					
+				</paragraph>
+				<paragraph title="责任的延续">
+					<item>对被保险人在本附加险合同终止日前发生的且延续至本附加险合同终止日后30天内（含）的住院治疗，我们仍然承担给付保险金的责任。</item>
+					
+				</paragraph>
+			</coverage>
+			
+		</attachment>
+
+		<rule skip="rule_6008,rule_6009">
+			<if condition="DAY lt 30 or AGE >60" type="customer">
+				投保年龄为0周岁（指出生满 30 天且已健康出院的婴儿）至 60 周岁
+			</if>
+			<if condition="AMOUNT lt 5000 or AMOUNT >50000 or AMOUNT % 1000 > 0">
+				最低保额 5000 元、最高保额 50000 元，且应为 1000 元的整数倍
+			</if>
+			<if condition="PARENT.PREMIUM lt 1000">
+				所对应保单主险期交保费必须 1000 元（含）以上
+			</if>
+		</rule>
+	</product>
+</declare>

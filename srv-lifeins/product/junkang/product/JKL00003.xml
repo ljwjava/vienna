@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="JKL00003" corporation_id="junkang" code="JKL00003" name="君康附加六福提前给付重大疾病保险" name_abbr="六福重疾" unit="1000" is_main="no" is_rider="yes"
+		type_code="thunder" sequence="1000" sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="JKL00003" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+		
+		<init amount="PARENT.AMOUNT">
+		</init>
+
+		<rider>
+		</rider>
+
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY" />
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="重大疾病保险金">
+					<item>若被保险人在等待期后经医院专科医生确诊初次罹患本附加合同约定的重大疾病中的一种或多种，本公司将按基本保 险金额给付重大疾病保险金，本附加合同和本附加合同的主合同《君康六福两全保险》随之终止。</item>
+				</paragraph>
+				<paragraph title="轻症疾病保险金">
+					<item>若被保险人在等待期后经医院专科医生确诊初次罹患本附加合同约定的轻症疾病中的一种或多种，本公司将按基本保险金额的20%给付轻症疾病保险金，同时将豁免本附加合同自轻症疾病确诊之日以后的本附加合同和主合同《君康六福两全保险》各期保险费。</item>
+					<item>每种轻症疾病只给付一次轻症疾病保险金，给付后该种轻症保险金保险责任终止，本附加合同的轻症疾病保险金累计给付以三次为限。</item>
+				</paragraph>
+				<paragraph title="特定恶性肿瘤保险金">
+					<item>若被保险人在等待期后经医院专科医生确诊初次罹患本附加合同约定的特定恶性肿瘤中的一种或多种，本公司将在上述重大疾病保险金给付的基础上还将按 基本保险金额的50%给付特定恶性肿瘤保险金，本附加合同和本附加合同的主合同《君康六福两全保险》随之终止。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

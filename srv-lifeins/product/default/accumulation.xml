@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <accumulation>
+		<product type="life">
+			<life>AMOUNT</life>
+		</product>
+		<product type="thunder">
+			<thunder>AMOUNT</thunder>
+		</product>
+		<product type="accident">
+			<accident>AMOUNT</accident>
+		</product>
+	</accumulation>
+</declare>

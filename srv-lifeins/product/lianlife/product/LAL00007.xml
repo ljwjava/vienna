@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00007" corporation_id="lianlife" code="115002" name="附加住院费用医疗保险 " name_abbr="附加住院医疗" is_main="no" is_rider="yes" unit="5000" premium="PREM_S" input="amount" type_code="medical" sequence="1000"
+		sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<init>
+			<item name="PREM_S" type="formula">
+				var ra = [
+					[720,1080,180],
+					[352,528,88],
+					[280,420,70],
+					[252,378,63],
+					[240,360,60],
+					[292,438,73],
+					[340,510,85],
+					[392,588,98],
+					[472,708,118],
+					[560,840,140],
+					[700,1050,175],
+					[872,1308,218],
+					[1352,2028,338]
+				];
+				var f_occ = [1.00, 1.00, 1.00, 1.3, 1.6, 2.0];
+				var ral = ra[AGE == 0 ? 0 : floor((AGE - 1) / 5)];
+				var p;
+
+				if (5000 >= AMOUNT)
+					p = ral[0];
+				else if (10000 >= AMOUNT)
+					p = ral[1];
+				else
+					p = ral[1] + ral[2] * (QUANTITY - 2);
+
+				return p * f_occ[OCCUPATION_CATEGORY];
+			</item>
+		</init>
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="等待期">
+					<item>您首次投保或重新投保本附加险时，若被保险人在附加险合同生效之日起90日（这90日的时间称为等待期，续保不设等待期）内因意外伤害以外的原因导致住院治疗,我们不承担给付保险金的责任。</item>
+				</paragraph>
+				<paragraph title="住院费用补偿保险金">
+					<item>被保险人在卫生行政部门认定的二级以上医院住院治疗，我们就被保险人每次住院实际发生的符合本附加险合同保单签发地政府社会基本医疗保险规定的合理且必要的医疗费用，按以下约定承担保险责任：</item>
+					<item>(1)若被保险人以社会基本医疗保险或公费医疗身份住院，我们在扣除被保险人从其他途径取得的医疗费用补偿或赔偿（包括但不限于按社会医疗保险或公费医疗有关规定应取得的医疗费用补偿）后，按剩余部分的90％给付住院费用补偿保险金。</item>
+					<item>(2)若被保险人未以社会基本医疗保险且未以公费医疗身份住院的,我们在扣除被保险人从其他途径取得的医疗费用补偿或赔偿后,按剩余部分扣除人民币500元后的70％给付住院费用补偿保险金。</item>
+				</paragraph>
+				<paragraph title="门急诊费用补偿保险金">
+					<item>被保险人在卫生行政部门认定的二级以上医院住院治疗，我们就被保险人每次住院前后各30日内因与该次住院相同原因进行的门急诊治疗而发生的符合本附加险合同保单签发地政府社会基本医疗保险规定的合理且必要的医疗费用，在扣除被保险人从其他途径取得的医疗费用补偿或赔偿后，按剩余部分的50％给付门急诊费用补偿保险金。</item>
+					<item>到保险期间届满住院（包括住院前后各30日内因与该次住院相同原因进行的门急诊治疗）仍未结束，且续保的，我们分别按每一保险期间内被保险人实际发生的合理且必要的医疗费用给付保险金。任一保险期间内，累计给付的门急诊费用补偿保险金以保险金额的10％为限，累计给付的保险金以保险金额为限。</item>
+					<item>到保险期间届满住院（包括住院前后各30日内因与该次住院相同原因进行的门急诊治疗）仍未结束，且未续保的，我们继续承担给付保险金责任至住院结束，但最长不超过保险期间届满之日起第30日，且累计给付的门急诊费用补偿保险金以保险金额的10％为限，累计给付的保险金以保险金额为限。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 60 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至60周岁。
+			</if>
+			<if condition="PLAN.CountProduct('LAL00007') > 1">
+				附加住院费用只可以购买一次。
+			</if>
+			<if condition="AMOUNT > 60000">
+				保额最高为60000元。
+			</if>
+			<if condition="AMOUNT % 5000 > 0">
+				保额必须5000元整数倍。
+			</if>
+			<if condition="AGE lt 18 and AMOUNT > 20000">
+				未成年人最高保额为20000元。
+			</if>
+			<if condition="PARENT.PAY_CODE != 'single' and PARENT.PREMIUM >= 1000 and PARENT.PREMIUM lt 2000 and AMOUNT > 20000">
+				主险期交保费未达到2000元时，本险种保额最高为20000元。
+			</if>
+			<if>
+				if (PARENT.PRODUCT_ID == 'LAL00016') {
+					if (PARENT.PAY_CODE != 'single' and PARENT.PREMIUM lt 1000 and AMOUNT > 20000)
+						return '主险是爱的承诺、安享无忧，且期交保费未达到1000元，本险种保额最高为20000元。';
+				}
+				else {
+					if ((PARENT.PAY_CODE != 'single' and PARENT.PREMIUM lt 1000) or (PARENT.PAY_CODE == 'single' and PARENT.PREMIUM lt 5000))
+						return '主险趸缴保费未达到5000元，或期交保费未达到1000元。不可附加本险种。';
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

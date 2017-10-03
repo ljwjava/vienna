@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+  <variable type="plan">
+    <item name="OCCUPATION_LEVEL" formula="OCCUPATION_CATEGORY"/>
+  </variable>
+	
+	<variable type="product">
+    <item name="OCCUPATION_LEVEL" formula="OCCUPATION_CATEGORY"/>
+	</variable>
+</declare>

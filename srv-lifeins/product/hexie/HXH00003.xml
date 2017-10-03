@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="HXH00003" corporation_id="hexie" code="2140202" name="和谐附加豁免保费轻症疾病保险" name_abbr="附加豁免" unit="1000" premium="round(DS.RATE[0][PAY_PERIOD-2]*QUANTITY,2,'even')" amount="PARENT.PREMIUM" input="none"
+		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
+
+		<data>
+			<item parser="dds" value="HXH00003" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="exempt" />
+			</pay>
+			<insure>
+				<item code="exempt" />
+			</insure>
+		</param>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="等待期">
+					<item>被保险人于本附加险合同生效（或最后复效）之日起 180 日内因疾病，由医院的专科医生确诊初次发生本附加险合同所指的轻症疾病（无论一种或多种），本公司无息退还您已交纳的本附加险合同保险费，同时本附加险合同终止。这 180 天的时间称为等待期。</item>
+				</paragraph>
+				<paragraph title="豁免保险费">
+				 	<item>被保险人因意外伤害或于本附加险合同生效（或最后复效）之日起 180 日后因疾病，由医院的专科医生确诊初次发生本附加险合同所指的轻症疾病（无论一种或多种），则自确诊日后首个被豁免合同的保险费约定交纳日开始至被豁免合同最后一次保险费约定交纳日止，我们豁免前述期间内您应交纳的被豁免合同的保险费，但不包含被保险人确诊日之前所欠交的保险费及利息。我们视豁免的保险费为您已交纳的保险费。被豁免合同继续有效，本附加险合同终止。</item>
+				 	<item>在豁免保险费期间，我们不接受被豁免合同的保险金额以及交费方式的变更。</item>
+					<item>本附加险合同所豁免保险费的险种在保险单上载明。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

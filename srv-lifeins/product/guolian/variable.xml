@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+  <variable type="plan">
+		<item name="insured" formula="INSURANT.instance"/>
+    <item name="applicant" formula="APPLICANT.instance"/>
+  </variable>
+	
+	<variable type="product">
+    <item name="insured" formula="INSURANT.instance"/>
+    <item name="applicant" formula="APPLICANT.instance"/>
+		<item name="PRODUCT_ID" formula="DEF_ID"/>
+
+		<item name="reb" formula="rebewal"/>
+		<item name="REB_VALUE" formula="reb.VALUE"/>
+		<item name="REB_CODE" formula="reb.CODE"/>
+
+		<item name="PAY_MODE" formula="pay_freq"/>
+	</variable>
+</declare>

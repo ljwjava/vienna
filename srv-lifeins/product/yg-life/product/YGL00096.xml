@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<declare>
+	<product id="YGL00096"
+		corporation_id="yg-life"
+		code="AUAI"
+		name="金祥裕终身寿险（万能型）"
+		name_abbr="金祥裕"
+		unit="1000"
+		input="amount"
+		premium="6000"
+		type="life"
+		sequence="12000"
+		depend="rider"
+		sale_begin_date="2014-01-15"
+		sale_end_date=""
+		last_modify_date="2008-03-05">
+		
+		<data>
+			<item parser="dds" file="YGL00096.dat"/>
+		</data>
+		
+		<init>
+			<item name="YEAR" value="10" type="integer"/>
+			<item name="PREMIUM_T">PREMIUM + (HasProduct('YGL00097') ? RIDER('YGL00097').PREMIUM : 0)</item>
+			<item name="R" type="formula">
+//初始固定数据
+var charging1 = [0.5, 0.25, 0.15, 0.1, 0.1, 0.05];
+var charging2 = charging1;
+var rate1 = [0.025, 0.045, 0.06]; 
+var rate2 = rate1;
+var baseRate2 = baseRate;
+var otherRate2 = otherRate;
+var minAmount = 1000;
+var manageFee = 60;
+
+var r = new map(); //返回的结果集合
+if (AMOUNT le 0) return r;
+
+//计算结果数据
+var account = new double[INSURE_PERIOD][3];
+var prmFee = new double[INSURE_PERIOD];
+var prmIn = new double[INSURE_PERIOD];
+var bonus = new double[INSURE_PERIOD];
+var amount = new double[INSURE_PERIOD];
+var thunderAmount = new double[INSURE_PERIOD];
+var fee = new double[INSURE_PERIOD][3];
+var feeT = new double[INSURE_PERIOD][3];
+var feeS = new double[INSURE_PERIOD][3];
+var feeM = new double[INSURE_PERIOD][3];
+var amtL = new double[INSURE_PERIOD][3];
+var amtT = new double[INSURE_PERIOD][3];
+var amtS = new double[INSURE_PERIOD][3];
+
+var gender = GENDER - 1;
+var baseAmount1 = AMOUNT;
+var baseAmount2 = HasProduct('YGL00097') ? RIDER('YGL00097').AMOUNT : 0;
+var baseThunder = HasProduct('YGL00098') ? RIDER('YGL00098').AMOUNT : 0;
+var rate96 = RateArray(18, 105, 'RATE', 2);
+var rate98 = HasProduct('YGL00098') ? RIDER('YGL00098').RateArray(18, 105, 'RATE', 4) : 0;
+
+//账户是根据上一年的结果变化的，需要临时存
+var account1 = new double[3];
+var account2 = new double[3];
+var accountBegin1 = new double[3];
+var accountBegin2 = new double[3];
+//主附保额也是会根据上一年的结果变化的，需要临时存
+var deadAmount1 = [baseAmount1, baseAmount1, baseAmount1];
+var deadAmount2 = [baseAmount2, baseAmount2, baseAmount2];
+var thunder = [baseThunder, baseThunder, baseThunder];
+
+for(var i = 0; i lt INSURE_PERIOD; i++)
+{
+	var age = AGE + i;
+	
+	var premium1 = i lt YEAR ? PREMIUM : 0;
+	var addPremium1 = try(X_PREMIUM[i], 0);
+	var bonus1 = i >= 3 and i lt PAY_PERIOD ? 120 : 0;
+
+	var premium2 = HasProduct('YGL00097') and i lt YEAR ? RIDER('YGL00097').PREMIUM : 0;
+	var addPremium2 = try(HasProduct('YGL00097') ? RIDER('YGL00097').X_PREMIUM[i] : 0, 0);
+	var bonus2 = HasProduct('YGL00097') and i >= 3 and i lt PAY_PERIOD ? 80 : 0;
+	
+	bonus[i] = bonus1 + bonus2;
+	
+	//保费
+	if (i lt PAY_PERIOD)
+	{
+		var vp1 = premium1 * (1-charging1[min(i, 5)]);//主险保费
+		var vp2 = premium2 * (1-charging2[min(i, 5)]);//副险保费
+		prmFee[i] = premium1 + premium2 - vp1 - vp2;
+		
+		for(var k = 0; k lt 3; k++)
+		{
+			account1[k] += vp1 + bonus1;
+			account2[k] += vp2 + bonus2;
+		}
+
+		prmIn[i] += vp1 + vp2;
+	}
+
+	//追加保费
+	if (addPremium1 > 0 || addPremium2 > 0)
+	{
+		for(var k = 0; k lt 3; k++)
+		{
+			deadAmount1[k] += addPremium1;
+			deadAmount2[k] += addPremium2;
+			thunder[k] += addPremium1;
+			
+			account1[k] += addPremium1 * 0.97;
+			account2[k] += addPremium2 * 0.97;
+		}
+		
+		prmIn[i] += addPremium1 * 0.97 + addPremium2 * 0.97;
+		prmFee[i] += addPremium1 * 0.03 + addPremium2 * 0.03;
+	}
+
+	for(var k = 0; k lt 3; k++)
+	{
+		accountBegin1[k] = account1[k];//期末主账户价值
+		accountBegin2[k] = account2[k];//期末副账户价值
+	}
+
+	//领取
+	var draw = try(X_DRAW[i], 0);
+	if (draw > 0)
+	{
+		for(k = 0; k lt 3; k++)
+		{
+			if (accountBegin1[k]>0 || accountBegin2[k]>0)
+			{
+				var draw1 = draw * accountBegin1[k] / (accountBegin1[k] + accountBegin2[k]);
+				deadAmount1[k] -= draw1;
+				deadAmount2[k] -= draw - draw1;
+				thunder[k] -= draw1;
+			}
+		}
+	}
+	
+	//调整主险身故保额
+	var newAmount1 = try(X_AMOUNT[i],0);//调整保额
+	if (newAmount1 > 0)
+	{
+		deadAmount1[0] = newAmount1;
+		deadAmount1[1] = newAmount1;
+		deadAmount1[2] = newAmount1;
+	}
+	
+	//调整副险身故保额
+	var newAmount2 = try(RIDER('YGL00097').X_AMOUNT[i], 0);//调整保额
+	if (newAmount2 > 0)
+	{
+		deadAmount2[0] = newAmount2;
+		deadAmount2[1] = newAmount2;
+		deadAmount2[2] = newAmount2;
+	}
+	
+	//调整重疾保额
+	var newThunder = try(RIDER('YGL00098').X_AMOUNT[i], 0);
+	if (newThunder > 0)
+	{
+		thunder[0] = newThunder;
+		thunder[1] = newThunder;
+		thunder[2] = newThunder;
+	}
+	
+	for(var k=0;k lt 3;k++)
+	{
+		deadAmount1[k] = max(deadAmount1[k], minAmount);
+		deadAmount2[k] = baseAmount2>0 ? max(deadAmount2[k], minAmount) : 0;
+		thunder[k] = max(thunder[k], minAmount);
+	}
+	
+	var rider50Amt = (RiderValid('YGL00050',i) ? RIDER('YGL00050').AMOUNT : 0);
+	amount[i] = deadAmount1[2] + deadAmount2[2] + rider50Amt;
+	thunderAmount[i] = thunder[2];
+	
+	//扣除各种风险保费
+	for(var k = 0; k lt 3; k++)
+	{
+		var t = max(deadAmount1[k] , 1.2*accountBegin1[k]);
+  	var dieAmount1 = t - accountBegin1[k];
+		var dieAmount2 = max(deadAmount2[k] , 1.2*accountBegin2[k]) - accountBegin2[k];
+		var mainFee = dieAmount1*rate96[age-18][gender]/1000;//主险身故保费
+		var riderFee = dieAmount2*rate96[age-18][gender]/1000;//副险身故保费
+		var thunderAmt = max(thunder[k], 1.2*accountBegin1[k]) * (1 - accountBegin1[k] / t);
+		var thunderFee = HasProduct('YGL00098') ? thunderAmt*rate98[age-18][gender+2]/1000 : 0; //重疾保费
+		var slightFee = HasProduct('YGL00098') ? thunder[k]*0.2*rate98[age-18][gender]/1000 : 0; //重疾轻症保费
+		
+		var rp50 = RiderValid('YGL00050',i) ? RIDER('YGL00050').COST(i) : 0;
+		var rp55 = RiderValid('YGL00055',i) ? RIDER('YGL00055').COST(i) : 0;
+		var rp56 = RiderValid('YGL00056',i) ? RIDER('YGL00056').COST(i) : 0;
+		var rp63 = RiderValid('YGL00063',i) ? RIDER('YGL00063').COST(i) : 0;
+		var rp64 = RiderValid('YGL00064',i) ? RIDER('YGL00064').COST(i) : 0;
+		var rp65 = RiderValid('YGL00065',i) ? RIDER('YGL00065').COST(i) : 0;
+
+		fee[i][k] = round(mainFee + riderFee) + round(rp50 + rp55 + rp56, 2);
+		feeT[i][k] = round(thunderFee);
+		feeS[i][k] = round(slightFee);
+		feeM[i][k] = round(rp63 + rp64 + rp65, 2);
+		
+		//print(rp63 + ', ' + rp64 + ', ' + rp65);
+		//print(RiderValid('YGL00050',i) + ", " + RiderValid('YGL00056',i));
+		//print(mainFee + ',' + riderFee + ',' + thunderFee + ',' + slightFee + ',' + rp50 + ',' + rp55 + ',' + rp56);
+		
+		var accountMain = account1[k] - manageFee - (mainFee + riderFee + thunderFee + slightFee + rp50 + rp55 + rp56 + rp63 + rp64 + rp65);
+		var accountRider = account2[k];
+		
+		if (accountMain lt 0)
+		{
+			accountRider += accountMain;
+			accountMain = 0;
+		}
+		account1[k] = accountMain * (1 + rate1[k]);
+		account2[k] = accountRider * (1 + rate2[k]);
+		
+		amtL[i][k] = round(max(deadAmount1[k], account1[k] * 1.2) + max(deadAmount2[k], account2[k] * 1.2) + rider50Amt);
+		amtT[i][k] = round(max(thunder[k], account1[k] * 1.2));
+		amtS[i][k] = round(thunder[k] * 0.2);
+	}
+	
+	//领取
+	if (draw > 0)
+	{
+		for(var k = 0; k lt 3; k++)
+		{
+			if (account1[k]>0 || account2[k]>0)
+			{
+				//客户的文档上用的是期初的账户价值算的比例，并不是用现在的比例，感觉用现在的比例似乎更合理，但是这里还是参照客户的文档
+				var draw1 = draw * accountBegin1[k] / (accountBegin1[k] + accountBegin2[k]); 
+				account1[k] -= draw1;
+				account2[k] -= draw - draw1;
+			}
+		}
+	}
+	
+	for(var k = 0; k lt 3; k++)
+	{
+		account[i][k] = account1[k]+account2[k];
+	}
+}
+
+r.ACCOUNT = account;
+r.AMOUNT = amount;
+r.THUNDER = thunderAmount;
+r.PRM_I = prmIn;
+r.PRM_F = prmFee;
+r.BONUS = bonus;
+r.FEE_L	= fee;
+r.FEE_T	= feeT;
+r.FEE_S	= feeS;
+r.FEE_M	= feeM;
+r.MANAGE = manageFee;
+r.AMT_L = amtL;
+r.AMT_T = amtT;
+r.AMT_S = amtS;
+
+return r;
+			</item>
+			<item name="V" param="X">X le 0 ? '--' : X</item>
+			<item name="H0098" param="X">HasProduct('YGL00098') ? X : '--'</item>
+			<item name="H006X" param="X">HasProduct('YGL00063','YGL00064','YGL00065') ? X : '--'</item>
+		</init>
+	    
+		<param>
+			<pay>
+				<item code="input"/>
+			</pay>
+			<insure>
+				<item code="full_105"/>
+			</insure>
+		</param>
+		
+		<rider>
+			<product id="YGL00097"/>
+			<product id="YGL00050"/>
+			<product id="YGL00055"/>
+			<product id="YGL00056"/>
+			<product id="YGL00063"/>
+			<product id="YGL00064"/>
+			<product id="YGL00065"/>
+		</rider>
+		
+		<interest>
+			<item name="PREMIUM_YEAR" param="I" formula="I lt YEAR ? PREMIUM_T : 0"/>
+			<item name="PREMIUM_APPEND" param="I" formula="val(X_PREMIUM,I) + try(RIDER('YGL00097').X_PREMIUM[I],0)"/>
+			<item name="PREMIUM_ACC" param="I" formula="(I > 0 ? IT.PREMIUM_ACC(I - 1) : 0) + IT.PREMIUM_YEAR(I) + IT.PREMIUM_APPEND(I)"/>
+		</interest>
+    
+    <attachment>
+      <benefit_table filter="document" parser="document">
+      	<table>
+					<row type="title">
+						<blank row="3">'保单年度'</blank>
+						<blank row="3">'保单年\n度末已\n达年龄'</blank>
+						<blank col="3" row="2">'保险费'</blank>
+						<blank row="3">'初始费用'</blank>
+						<blank row="3">'保单\n管理费'</blank>
+						<blank row="3">'进入个\n人账户\n保险费'</blank>
+						<blank row="3">'持续交费\n特别奖金'</blank>
+						<blank row="3">'部分领取\n个人账户\n价值'</blank>
+						<blank row="3">'身故/轻症\n/重疾基本\n保险金额'</blank>
+						<blank col="9" row="1">'不同假定结算利率下'</blank>
+					</row>
+					<row type="title">
+						<blank col="3" row="1">'身故/轻症/重疾保障成本'</blank>
+						<blank col="3" row="1">'保单年度末个人账户价值'</blank>
+						<blank col="3" row="1">'保单年度末身故/轻症/重疾保险金'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'期交'</blank>
+						<blank row="1">'追加'</blank>
+						<blank row="1">'累计'</blank>
+						<blank row="1">'低\n（2.5%）'</blank>
+						<blank row="1">'中\n（4.5%）'</blank>
+						<blank row="1">'高\n（6.0%）'</blank>
+						<blank row="1">'低\n（2.5%）'</blank>
+						<blank row="1">'中\n（4.5%）'</blank>
+						<blank row="1">'高\n（6.0%）'</blank>
+						<blank row="1">'低\n（2.5%）'</blank>
+						<blank row="1">'中\n（4.5%）'</blank>
+						<blank row="1">'高\n（6.0%）'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">I+AGE+1</blank>
+							<blank style="########0">IT.PREMIUM_YEAR(I)</blank>
+							<blank style="########0">IT.PREMIUM_APPEND(I)</blank>
+							<blank style="########0">IT.PREMIUM_ACC(I)</blank>
+							<blank style="########0">R.PRM_F[I]</blank>
+							<blank style="########0">R.MANAGE</blank>
+							<blank style="########0">R.PRM_I[I]</blank>
+							<blank style="########0">R.BONUS[I]</blank>
+							<blank style="########0">val(X_DRAW,I)</blank>
+							<blank style="########0">R.AMOUNT[I]+'\n'+H0098(R.THUNDER[I]*0.2) + '\n' + H0098(R.THUNDER[I])</blank>
+							<blank style="########0">V(R.FEE_L[I][0]) + '\n' + H0098(R.FEE_S[I][0]) + '\n' + H0098(R.FEE_T[I][0]) + '\n' + H006X(R.FEE_M[I][0])</blank>
+							<blank style="########0">V(R.FEE_L[I][1]) + '\n' + H0098(R.FEE_S[I][1]) + '\n' + H0098(R.FEE_T[I][1]) + '\n' + H006X(R.FEE_M[I][1])</blank>
+							<blank style="########0">V(R.FEE_L[I][2]) + '\n' + H0098(R.FEE_S[I][2]) + '\n' + H0098(R.FEE_T[I][2]) + '\n' + H006X(R.FEE_M[I][2])</blank>
+							<blank style="########0">V(R.ACCOUNT[I][0])</blank>
+							<blank style="########0">V(R.ACCOUNT[I][1])</blank>
+							<blank style="########0">V(R.ACCOUNT[I][2])</blank>
+							<blank style="########0">V(R.AMT_L[I][0]) + '\n' + V(R.AMT_S[I][0]) + '\n' + V(R.AMT_T[I][0])</blank>
+							<blank style="########0">V(R.AMT_L[I][1]) + '\n' + V(R.AMT_S[I][1]) + '\n' + V(R.AMT_T[I][1])</blank>
+							<blank style="########0">V(R.AMT_L[I][2]) + '\n' + V(R.AMT_S[I][2]) + '\n' + V(R.AMT_T[I][2])</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险利益">
+					<table>
+						<row>
+							<blank>'身故保险金'</blank>
+							<blank>'若被保险人因疾病或意外身故，可获得的给付金额为：身故当时的基本保险金额与当时个人账户价值之和'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="满期保险利益">
+					<table>
+						<row>
+							<blank>'满期保险金'</blank>
+							<blank>'若被保险人于本合同保险期满时仍生存，我们按当时个人账户价值给付满期保险金'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="投保人意外身故或全残利益">
+					<item>投保人因意外伤害事故发生之日起180日内因该事故导致身故或全残，且投保人身故或全残时已满18周岁但未满65周岁，同时以前各期期交保险费已交纳，投保人并未变更，并且当期应交期交保险费在约定的交费日期或其后的60日内交纳。我们将豁免前十个保单年度内投保人未缴纳的期交保险费。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+		<rule skip="rule_9048,rule_9049,rule_9050,rule_9051,rule_9052,rule_9053,rule_9054,rule_9055,rule_9056,rule_9057,rule_9058,rule_9059,rule_9059,rule_9060,rule_9061,rule_9062,rule_9063,rule_9064,rule_9065,rule_9066,rule_9067,rule_9068,rule_9069,rule_9070,rule_9071,rule_9072,rule_9073,rule_9074,rule_9075,rule_9076,rule_9077,rule_9078,rule_9079,rule_9080,rule_9081,rule_9082,rule_9083,rule_9084,rule_9085,rule_9085,rule_9086,rule_9087,rule_9088,rule_9089,rule_9090,rule_9091,rule_9092,rule_9093,rule_9094,rule_9095,rule_9096,rule_9097,rule_9112,rule_9113,rule_9114,rule_9124,rule_9116,rule_9117,rule_9118,rule_9119,rule_9120,rule_9121,rule_9122,rule_9123">
+			<if condition="AGE lt 18 or AGE gt 55" type="customer">
+				被保险人投保年龄为18（含）-55周岁
+			</if>
+			<if condition="PLAN.CountMain() > 1">
+				不能重复投保万能险，且万能险建议书不能同时出现其他主险。
+			</if>
+			<if condition="AMOUNT % 1000 != 0" alert="amount">
+				基本保额需要为1000的整数倍。
+			</if>
+			<if condition="AMOUNT lt 120000" alert="amount">
+				投保第一年最低基本保险金额不得低于12万。
+			</if>
+			<if condition="YEAR lt 10">
+				交费年期最少10年。
+			</if>
+			<if alert="amount">
+				var lamt = AMOUNT;
+				var xp = [100,100,90,70,60,50,40,20];
+				for(var i=0;i lt min(size(X_AMOUNT), INSURE_PERIOD);i++) { 
+					var xamt = val(X_AMOUNT,i);
+					if (xamt > 0) {
+						if (i == 0)
+							return '第2个保单年度及以后才可以调整基本保险金额';
+						if (i > 65 - AGE - 1 and xamt > lamt)
+							return '被保险人已过65周岁的保单周年日，不能增加基本保险金额';
+						if (xamt lt 30000)
+							return '最低基本保额不低于期交保费的5倍'; 
+						if (xamt > xp[(AGE-16)/5]*PREMIUM)
+							return AGE + '岁被保险人，最高基本保额不高于期交保费的' + xp[(AGE-16)/5] + '倍';
+					}
+					lamt = xamt;
+				}
+				return null;
+			</if>
+			<if alert="premium">
+				for(var i=0;i lt min(size(X_PREMIUM), INSURE_PERIOD);i++) { 
+					var xprm = val(X_PREMIUM,i);
+					if (xprm > 0) {
+						if (i lt 5)
+							return '从第5个保单年度开始的保单有效期内方可申请追加保费'; 
+						if (xprm > 60000)
+							return '每年度累计追加保险费不能超过期交保险费的10倍'; 
+						if (xprm lt 1000 or xprm % 500 > 0)
+							return '追加保险费的额度最低位1000元，且必须为500元的整数倍'; 
+					}
+				}
+				return null;
+			</if>
+			<if alert="draw">
+				for(var i=0;i lt min(size(X_DRAW), INSURE_PERIOD);i++) { 
+					var xdrw = val(X_DRAW,i);
+					if (xdrw > 0) {
+						if (xdrw lt 1000 or xdrw % 100 > 0)
+							return '每次部分领取最低1000元，领取金额需要为100元的整数倍'; 
+					}
+					lamt = xamt;
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HXH01002"
+		corporation_id="hexie"
+		code="2140082"
+		name="和谐附加健康宝贝重大疾病保险"
+		name_abbr="附加少儿重疾"
+		unit="1000"
+		type_code="thunder"
+		sequence="1000"
+		sale_begin_date="2017-07-01"
+		sale_end_date=""
+		input="amount"
+		premium="0"
+		last_modify_date="2017-07-01">
+
+		<data>
+			<item parser="dds" value="HXH01002" />
+		</data>
+
+		<param>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+
+		<interest>
+			<item name="PRM_ACT" param="A1" value="DS.RATE[A1][0] * QUANTITY"/>
+		</interest>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

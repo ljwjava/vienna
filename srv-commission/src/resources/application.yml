@@ -1,0 +1,11 @@
+server:
+  port: 7769
+
+datasource:
+  url: jdbc:mysql://10.253.102.74:3306/vie_biz
+  username: iyb
+  password: Abcd2017
+
+service:
+  iyb: https://test.iyunbao.com
+

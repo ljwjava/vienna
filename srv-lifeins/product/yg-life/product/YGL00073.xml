@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<declare>
+	<product id="YGL00073"
+		corporation_id="yg-life"
+		code="AREE01"
+		name="爱随行两全保险B款"
+		name_abbr="爱随行B"
+		is_main="yes"
+		is_rider="no"
+		unit_amount="1000"
+		type_code="life"
+		input="amount"
+		sequence="4050"
+		bind="YGL00074"
+		sale_begin_date="2002-01-01"
+		sale_end_date=""
+		last_modify_date="2007-01-15">
+		
+		<data>
+			<item parser="file.sig" value="YGL00073"/>
+		</data>
+		
+		<param>
+			<pay>
+				<item code="term_5"/>
+				<item code="term_10"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</insure>
+		</param>
+		
+		<rider>
+			<product id="YGL00074"/>
+			<product id="YGL00008"/>
+			<product id="0009"/>
+			<product id="0010"/>
+			<product id="0011"/>
+			<product id="0012"/>
+		</rider>
+		
+		<interest>
+				<var name="XJJZ_A"        param="A1,A2" type="double" formula="AMOUNT/1000*DS.DATA[A1,3]"/>
+		</interest>
+		
+		<attachment>
+			<benefit_combo parser="combo">
+				<table hide="YWSGBXJ,YESGZLY,YWSGZLY_BHHL,YESGZLY_HZDLJHL,YESGZLY_HZDLJJQZE">
+				  <item code="ZJCYWSGBXJ_A" add="YWSGBXJ" mode="add" name="自驾车意外身故\n保险金" style="###########0" /> 
+				  <item code="ZJCYWQCBXJ_A" mode="add" name="自驾车意外全残\n保险金" style="###########0" /> 
+				  <item code="GGJTYWSGBXJ_A" add="YWSGBXJ" mode="add" name="公共交通意外\n身故\n保险金" style="###########0" /> 
+				  <item code="GGJTYWQCBXJ_A" mode="add" name="公共交通意外\n全残\n保险金" style="###########0" /> 
+				  <item code="QTYWSGQCBXJ_A" add="YWSGBXJ" mode="add" name="其他意外身\n故/全残\n保险金(最高)" style="###########0" /> 
+				  <item code="YBSGQCBXJ_A" mode="add" name="一般身故/全残\n保险金" style="###########0" /> 
+				  <item code="YWSCBXJ_A" add="YWSGBXJ" mode="add" name="意外伤残保险金(最高)" style="###########0" /> 
+				  <item code="MQBXJ_A" mode="add" name="满期\n保险金" style="###########0" /> 
+				  <item code="XJJZ_A" mode="add" name="现金价值" style="###########0" /> 
+				</table>
+				<year from="0" to="INSURE_PERIOD-1" name="I">
+					<item code="year" formula="I+1"/>
+					<item code="age" formula="I+1+AGE"/>
+					<item code="ZJCYWSGBXJ_A" formula="AMOUNT*case((I+1) == 1,5,10)"/>
+					<item code="ZJCYWQCBXJ_A" formula="AMOUNT*case((I+1) == 1,5,10)"/>
+					<item code="GGJTYWSGBXJ_A" formula="AMOUNT*10"/>
+					<item code="GGJTYWQCBXJ_A" formula="AMOUNT*10"/>
+					<item code="QTYWSGQCBXJ_A" formula="min(PAY_PERIOD,(I+1))*PREMIUM"/>
+					<item code="YBSGQCBXJ_A" formula="min(PAY_PERIOD,(I+1))*PREMIUM"/>
+					<item code="YWSCBXJ_A" formula="0"/>
+					<item code="MQBXJ_A" formula="(INSURE_PERIOD - (I+1) == 0) ? PREMIUM*PAY_PERIOD : 0"/>
+					<item code="XJJZ_A" formula="IT.XJJZ_A[I,0]"/>   
+					<item code="premium"    formula="((I+1) le PAY_PERIOD) ? (PREMIUM) : 0"/>
+					<item code="premium_acc" formula="PREMIUM*min((I+1),PAY_PERIOD)"/>
+				</year>
+			</benefit_combo>
+		</attachment>
+		
+		<rule skip="rule_0001,rule_9050,rule_9061,rule_9075,rule_9089,rule_6005,rule_6020,rule_6021,rule_9000,rule_9001,rule_9002,rule_9003,rule_9004,rule_9005,rule_9006,rule_9007,rule_9008,rule_9009,rule_9010,rule_9011,rule_9012,rule_9013,rule_9014,rule_9015,rule_9016,rule_9017,rule_9018,rule_9019,rule_9020,rule_9021,rule_9022,rule_9023,rule_9024,rule_9025,rule_9026,rule_9027,rule_9028,rule_9029,rule_9030,rule_9031,rule_9032,rule_9033,rule_9034,rule_9035,rule_9036,rule_9037,rule_9038,rule_9039,rule_9040,rule_9041,rule_9042,rule_9043,rule_9044,rule_9045,rule_9046,rule_9047,rule_9048,rule_9049,rule_9050,rule_9051,rule_9052,rule_9053,rule_9054,rule_9055,rule_9056,rule_9057,rule_9058,rule_9059,rule_9060,rule_9061,rule_9062,rule_9063,rule_9064,rule_9065,rule_9066,rule_9067,rule_9068,rule_9069,rule_9070,rule_9071,rule_9072,rule_9073,rule_9074,rule_9075,rule_9076,rule_9077,rule_9078,rule_9079,rule_9080,rule_9081,rule_9082,rule_9083,rule_9084,rule_9085,rule_9086,rule_9087,rule_9088,rule_9089,rule_9090,rule_9091,rule_9092,rule_9093,rule_9094,rule_9095,rule_9096,rule_9097,rule_9100,rule_9101,rule_9102,rule_9103,rule_9104,rule_9105,rule_9106,rule_9107,rule_9108,rule_9109,rule_9110,rule_9111,rule_9112,rule_9115,rule_9200,rule_9201,rule_9202,rule_9203,rule_9204,rule_9205,rule_9206,rule_9207,rule_9208,rule_9209,rule_9210">
+			<when condition="AGE lt 18 or AGE > 60" type="customer">
+				投保年龄为18周岁（含）-60周岁（含）。
+			</when>	
+			<when condition="AGE > 50 and INSURE_PERIOD == 30">
+				投保年龄为51-60周岁时，主险保险期间为20年。
+			</when>	
+			<when condition="AGE lt 51 and INSURE_PERIOD == 20">
+				投保年龄为18-50周岁时，主险保险期间为30年。
+			</when>	
+			<when condition="AMOUNT lt 10000 || AMOUNT % 10000 != 0" alert="AMOUNT">
+   				最低基本保额为1万，且为万元的整数倍。
+			</when>
+			<when condition="OCCUPATION_CATEGORY == 5 or OCCUPATION_CATEGORY == 6">
+				五类（含）以上职业及残疾人不能投保。
+			</when>
+			<when condition="PREMIUM + RIDER('YGL00074').PREMIUM lt 2000">
+				主、附加险保费合计不得低于2000元。
+			</when>
+		</rule>
+	</product>
+</declare>

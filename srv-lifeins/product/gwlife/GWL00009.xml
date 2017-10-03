@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="GWL00009"
+		corporation_id="gwlife"
+		code="10523"
+		name="长城附加投保人豁免保险费重大疾病保险"
+		name_abbr="附加投保人豁免保险费重大疾病"
+		unit="1000"
+		type_code="exempt"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		is_main="no" 
+		is_rider="yes"
+		input="none"
+		amount="PRM_EXEMPT*PAY_PERIOD"
+		premium="round(PRM_E,2)"
+		last_modify_date="2017-01-01">
+		
+		<data>
+			<item parser="dds" value="GWL00009" />
+		</data>
+
+
+		<param>
+			<pay>
+				<item code="exempt"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+		
+		<init>
+			<item name="R">PLAN.INSURANT.RELATIVE</item>
+			<item name="INSURANT">PARENT.APPLICANT</item>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<item name="PRM_EXEMPT">
+		        var total = 0;
+		        var list = PLAN.PRODUCTS;
+		        for (var x = 0; x lt size(list); x++) {
+		        	var p = list[x];
+		        	if ((p.PARENT == THIS.PARENT or p == THIS.PARENT) and p != THIS and p.PAY_PERIOD == THIS.PARENT.PAY_PERIOD) {
+		        		total += p.PREMIUM;
+		        	}
+		        }
+		        return total;
+			</item>
+			<item name="EXEMPT">
+		        var total = 0;
+		        var list = PLAN.PRODUCTS;
+		        for (var x = 0; x lt size(list); x++) {
+		        	var p = list[x];
+		        	if (p.PRODUCT_ID == 'GWL000002') {
+		        		total = p.PREMIUM;
+		        	}
+		        }
+		        return total;
+			</item>
+			<item name="PRM_E">
+		        var total = 0;
+		        if(PARENT.INSURE_VALUE == 20)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][0];
+				else if(PARENT.INSURE_VALUE == 30)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][1];
+				else if(PARENT.INSURE_VALUE == 40)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][2];
+				else if(PARENT.INSURE_VALUE == 60)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][3];
+				else if(PARENT.INSURE_VALUE == 70)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][4];
+				else if(PARENT.INSURE_VALUE == 80)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][5];
+				else if(PARENT.INSURE_VALUE == 100)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][6];
+				else if(PARENT.INSURE_VALUE == 105 or PARENT.INSURE_VALUE == 106)
+					total = PRM_EXEMPT/UNIT*DS.RATE[0][7];
+		        return total;
+			</item>
+		</init>
+		
+
+		<interest>
+			<var name="PRM" param="A1" formula="(A1==0 or A1>PAY_PERIOD)?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="SCD" param="A1" formula="(A1>=0 and A1 lt PARENT.PAY_PERIOD)?(PARENT.PREMIUM+EXEMPT)*(PARENT.PAY_PERIOD-A1):0"/><!--豁免保险费-->
+		</interest>
+
+		<attachment>
+			<!--<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'轻症疾病豁免保险费'</blank>
+						<blank row="1">'重大疾病豁免保险费'</blank>
+						<blank row="1">'身故或全残豁免保险费'</blank>
+						<blank row="1">'重大疾病保险金'</blank>
+						<blank row="1">'身故或全残保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row>
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.SCD(I)</blank>
+							<blank align="right" style="########0">IT.SCD(I)</blank>
+							<blank align="right" style="########0">IT.SCD(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>-->
+
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="一、在本附加险合同保险期间内，且在本附加险合同交费期满期后的首个保险单周年日前，本公司承担下列保险责任：">
+				</paragraph>
+				<paragraph title="轻症疾病豁免保险费">
+					<item>若被保险人于本附加险合同生效，或于最后一次复效之日起 90日内（含第 90日）因意外伤害以外的原因经专科医生明确诊断初次罹患本附加险合同所列的轻症疾病的一种或多种，我们向您返还本附加险合同的已交保险费（无息），本附加险合同终止。</item>
+					<item>若被保险人因意外伤害，或于本附加险合同生效或最后一次复效之日起 90日后因意外伤害以外的原因经专科医生明确诊断初次罹患本附加险合同所列轻症疾病的一种或多种，我们将豁免主险合同及其相关附加险合同自被保险人轻症疾病确诊之日起的续期保险费，本附加险合同终止。</item>
+					
+				</paragraph>
+				<paragraph title="重大疾病豁免保险费">
+					<item>若被保险人于本附加险合同生效，或于最后一次复效之日起 90日内（含第 90日）因意外伤害以外的原因经专科医生明确诊断初次罹患本附加险合同所列的重大疾病的一种或多种，我们向您返还本附加险合同的已交保险费（无息），本附加险合同终止。</item>
+					<item>若被保险人因意外伤害，或于本附加险合同生效或最后一次复效之日起 90日后因意外伤害以外的原因经专科医生明确诊断初次罹患本附加险合同所列重大疾病的一种或多种，我们将豁免主险合同及其相关附加险合同自被保险人重大疾病确诊之日起的续期保险费，本附加险合同终止。</item>
+					
+				</paragraph>
+				<paragraph title="身故或全残豁免保险费">
+					<item>若被保险人于本附加险合同生效，或于最后一次复效之日起 90日内（含第 90日）因意外伤害以外的原因导致身故或全残的，我们向您返还本附加险合同的已交保险费（无息），本附加险合同终止。</item>
+					<item>若被保险人因意外伤害，或于本附加险合同生效或最后一次复效之日起 90日后因意外伤害以外的原因导致身故或全残，我们将豁免主险合同及其相关附加险合同自被保险人身故或被鉴定机构认定为全残之日起的续期保险费，本附加险合同终止。</item>
+					<item></item>
+				</paragraph>
+				<paragraph title="二、在本附加险合同保险期间内，且在本附加险合同交费期满期后的首个保险单周年日之后，本公司承担下列保险责任：">
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+					<item>在本附加险合同有效期内，被保险人经专科医生明确诊断初次罹患本附加险合同约定的一种或多种重大疾病，本公司将按本附加险合同的已交保险费给付重大疾病保险金，本附加险合同终止。</item>
+					
+				</paragraph>
+				<paragraph title="身故或全残保险金">
+					<item>在本附加险合同有效期内，被保险人身故或被鉴定机构认定为全残的，本公司按本附加险合同的已交保险费给付身故或全残保险金，本附加险合同终止。</item>
+					
+				</paragraph>
+			</coverage>
+			
+		</attachment>
+
+		<rule skip="rule_5102,rule_6008,rule_6009">
+			<if condition="AGE lt 18 or AGE >60" type="customer">
+				投保年龄为18周岁-60周岁
+			</if>
+			<if condition="R != '01' and R != '03' and R != '04'">
+				该险种要求投被保人关系为子女、父母、配偶。
+			</if>
+			<if condition="PARENT.PAY_PERIOD == 1 or PARENT.PAY_PERIOD > 100 ">
+				主险采用趸交或终身交费方式时不得附加本险种
+			</if>
+			<if condition="PARENT.INSURANT == PARENT.APPLICANT">
+				本单投保人与被保险人为同一人时不得附加本险种
+			</if>
+			
+			<if condition="PAY_PERIOD == 19 and INSURE_VALUE == 60 and (AGE > 40 or AGE lt 18)">
+				缴费期间为19年，保险期间为至60周岁时，投保年龄要求18-40周岁
+			</if>
+			<if condition="PAY_PERIOD == 19 and INSURE_VALUE != 60 and (AGE > 50 or AGE lt 18)">
+				缴费期间为19年，保险期间为20年、30年、40年、至70岁、至80岁、至100岁、终身时，投保年龄要求18-50周岁
+			</if>
+			<if condition="PAY_PERIOD == 14 and INSURE_VALUE == 60 and (AGE > 45 or AGE lt 18)">
+				缴费期间为14年，保险期间为至60周岁时，投保年龄要求18-45周岁
+			</if>
+			<if condition="PAY_PERIOD == 14 and INSURE_VALUE != 60 and (AGE > 55 or AGE lt 18)">
+				缴费期间为14年，保险期间为20年、30年、40年、至70岁、至80岁、至100岁、终身时，投保年龄要求18-55周岁
+			</if>
+			<if condition="PAY_PERIOD lt 10 and INSURE_VALUE == 60 and (AGE > 50 or AGE lt 18)">
+				缴费期间为2/4/9年，保险期间为至60周岁时，投保年龄要求18-50周岁
+			</if>
+			<if condition="PAY_PERIOD lt 10 and INSURE_VALUE != 60 and (AGE > 60 or AGE lt 18)">
+				缴费期间为2/4/9年，保险期间为20年、30年、40年、至70岁、至80岁、至100岁、终身时，投保年龄要求18-60周岁
+			</if>
+			<if>
+				for (var p : PLAN.PRODUCTS) {
+					if (p.PARENT == PARENT and p != THIS) {
+						if (p.PAY_PERIOD le 1)
+							return "该险种不能与其他短期附加险同时投保";
+					}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

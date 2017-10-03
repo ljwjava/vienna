@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="GWL00003"
+		corporation_id="gwlife"
+		code="60609"
+		name="长城附加意外伤害保险（2014）"
+		name_abbr="附加意外伤害"
+		unit="1000"
+		type_code="accident"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		is_main="no" 
+		is_rider="yes"
+		input="amount"
+		premium="round(PRM_E,2)"
+		last_modify_date="2017-01-01">
+
+		<data>
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+		</param>
+		
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<item name="PRM_E">
+		        var total = 0;
+				if(OCCUPATION_CATEGORY == 1)
+					total = (AMOUNT/UNIT)*2.93;
+				else if(OCCUPATION_CATEGORY == 2)
+					total = (AMOUNT/UNIT)*3.69;
+				else if(OCCUPATION_CATEGORY == 3)
+					total = (AMOUNT/UNIT)*4.73;
+				else if(OCCUPATION_CATEGORY == 4)
+					total = (AMOUNT/UNIT)*7.73;
+				else if(OCCUPATION_CATEGORY == 5)
+					total = (AMOUNT/UNIT)*11.52;
+				else 
+					total = (AMOUNT/UNIT)*20.78;
+		        return total;
+			</item>
+		</init>
+		
+		<risk>
+			<item type="accident" formula="AMOUNT"/>
+			<item type="AirAccid" formula="AMOUNT"/>
+			<item type="PubTrafAccid" formula="AMOUNT"/>
+		</risk>
+		
+
+		<interest>
+			<var name="PRM" param="A1" formula="(A1==0 or A1>PAY_PERIOD)?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<!--<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'意外身故保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row>
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">AMOUNT</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>-->
+
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="意外身故保险金">
+					<item>被保险人因遭受意外伤害，并自该意外伤害发生之日起180日内身故的，我们按基本保险金额向意外身故保险金受益人给付“意外身故保险金”，本附加险合同终止。</item>
+					<item>但若被保险人身故前本附加险合同已有意外伤残保险金给付，则给付意外身故保险金时应扣除已给付的意外伤残保险金。</item>
+					
+				</paragraph>
+				<paragraph title="意外伤残保险金">
+					<item>被保险人因遭受意外伤害，造成本附加险合同所附《人身保险伤残评定标准（行业标准）》（中保协发 2013（88）号，以下简称“评定标准”，具体详见附件一）所列伤残项目，我们依照该评定标准规定的评定原则对伤残项目进行评定，并按评定结果所对应的评定标准规定的给付比例乘以基本保险金额向意外伤残保险金受益人给付“意外伤残保险金”。如自意外伤害发生之日起 180 日内治疗仍未结束的，则按该意外伤害发生之日起第 180 日的身体情况进行伤残评定，并据此给付意外伤残保险金。</item>
+					<item>该次意外伤害导致的伤残合并前次伤残（不含因责任免除事项所致附件一所列的伤残）可领较严重等级伤残保险金者，按较严重等级标准给付，但前次已给付的意外伤残保险金应予以扣除。</item>
+					<item>意外伤残保险金以基本保险金额为限，累计给付的意外伤残保险金的总额达到基本保险金额时，本附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="两倍保险金">
+					<item>被保险人以乘客身份搭乘公共陆路或水路交通工具时，或在学校内或医院内发生火警时，遭受意外伤害事故，并因本次意外伤害直接导致被保险人在该意外伤害事故发生之日起180日内身故或伤残，我们除按上述“意外身故保险金”或“意外伤残保险金”所列保险责任给付保险金外，再额外给付一倍保险金。</item>
+					<item>两倍保险金=(按上述“意外身故保险金”或“意外伤残保险金”)×2对于同一被保险人，我们给付的长城附加意外伤害保险（2014）各保险单的“两倍保险金”累计以200 万元为限。</item>
+					
+				</paragraph>
+				<paragraph title="三倍保险金">
+					<item>被保险人以乘客身份搭乘航空交通工具时，遭受意外伤害事故，并因本次意外伤害直接导致被保险人在该意外伤害事故发生之日起180日内身故或伤残，我们除按上述“意外身故保险金”或“意外伤残保险金”所列保险责任给付保险金外，再额外给付两倍保险金。三倍保险金=(按上述“意外身故保险金”或“意外伤残保险金”)×3对于同一被保险人，我们给付的长城附加意外伤害保险（2014）各保险单的“三倍保险金”累计以500万元为限。</item>
+					
+				</paragraph>
+			</coverage>
+			
+		</attachment>
+
+		<rule>
+			<if condition="AGE lt 18 or AGE >60" type="customer">
+				投保年龄为18 周岁至 60 周岁,可续保至 64 周岁。
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
+				最低保险金额10000元，且必须为1000元的整数倍。
+			</if>
+			<if condition="AMOUNT > PARENT.AMOUNT * 5">
+				主附险保额比例最大为1:5
+			</if>
+		</rule>
+	</product>
+</declare>

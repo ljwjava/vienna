@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="BCL00001"
+		corporation_id="bclife"
+		code="ETL1101"
+		name="中荷顾家保定期寿险"
+		name_abbr="减额定寿"
+		unit="10000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		input="amount"
+		premium="DS.RATE[0][PAY_PERIOD-5]*AMOUNT/INSURE_PERIOD/UNIT"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="BCL00001" />
+		</data>ß
+
+		<param>
+			<pay>
+				<item code="insure_5"/>
+			</pay>
+			<insure>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_25"/>
+				<item code="term_30"/>
+			</insure>
+		</param>
+
+		<init>
+			<!-- 基本保额（保额/保障期间） -->
+			<item name="BASE_AMOUNT" value="AMOUNT/INSURE_PERIOD" type="formula"/>
+			<item name="ZONE_CITY" value="ZONE==null?'9999':str(ZONE,0,4)" type="formula"/>
+		</init>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'身故保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0.00">PremiumYear(I)</blank>
+							<blank align="right" style="########0.00">PremiumSum(I)</blank>
+							<blank align="right" style="########0.00">AMOUNT*(INSURE_PERIOD-I)/INSURE_PERIOD</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+		</attachment>
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 45" type="customer">
+				投保年龄须为18~45周岁
+			</if>
+			<!-- if condition="BASE_AMOUNT lt 10000 or BASE_AMOUNT % 10000 > 0">
+				最低投保基本保险金额：10000元，且需要为10000元的整数倍
+			</if -->
+			<if condition="AMOUNT == 300000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15">
+				保额选择30万时，保障期间只可以选择10/15年期
+			</if>
+			<if condition="AMOUNT == 500000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 25">
+				保额选择50万时，保障期间只可以选择10/25年期
+			</if>
+			<if condition="AMOUNT == 600000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 20 and INSURE_PERIOD != 30">
+				保额选择60万时，保障期间只可以选择10/15/20/30年期
+			</if>
+			<if condition="AMOUNT == 900000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 30">
+				保额选择90万时，保障期间只可以选择10/15/30年期
+			</if>
+			<if condition="AMOUNT == 1000000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 20 and INSURE_PERIOD != 25">
+				保额选择100万时，保障期间只可以选择10/20/25年期
+			</if>
+			<if condition="AMOUNT == 1200000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 20 and INSURE_PERIOD != 30">
+				保额选择120万时，保障期间只可以选择10/15/20/30年期
+			</if>
+			<if condition="AMOUNT == 1500000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 25 and INSURE_PERIOD != 30">
+				保额选择150万时，保障期间只可以选择10/15/25/30年期
+			</if>
+			<if>
+				if(INSURE_PERIOD > 25 and AGE > (45+25-INSURE_PERIOD)){
+					return '当保障期间选择为'+INSURE_PERIOD+'年时，投保年龄不能超过'+round(45+25-INSURE_PERIOD,0)+'周岁';
+				}
+				if(INSURE_PERIOD != PAY_PERIOD+5){
+					return '当保障期间选择为'+INSURE_PERIOD+'年时，缴费期间只能选择'+round(INSURE_PERIOD-5,0)+'年交';
+				}
+				return null;
+			</if>
+			<if condition="ZONE == null" level="alert">
+				请选择所在地区
+			</if>
+			<if>
+				if (ZONE == null)
+					return null;
+				var lv = try(DS.ZONE_LEVEL[0][0],3);
+				if (lv == 1) {
+					if (AMOUNT > 1500000) {
+						return '一类城市最高150万有效保额';
+					}
+				} else if (lv == 2) {
+					if (AMOUNT > 1200000) {
+						return '二类城市最高120万有效保额';
+					}
+				} else {
+					if (AMOUNT > 1000000) {
+						return '普通地区最高100万有效保额';
+					}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

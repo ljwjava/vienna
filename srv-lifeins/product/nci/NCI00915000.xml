@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <product id="NCI00915000" 
+		corporation_id="nci" 
+		code="00915000" 
+		name="附加随意领年金保险(万能型)" 
+		name_abbr="随意领" 
+		is_main="no"
+		is_rider="yes"
+		type="invest" 
+		input="none"
+		premium="0"
+		amount="0"
+		unit_amount="1000"
+		sale_begin_date="2016-07-21" 
+		sale_end_date="" 
+		last_modify_date="2016-07-21">
+
+		<param>
+			<pay>
+				<item code="parent"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+		
+		<interest>
+			<var formula="PARENT.IT.CS1(A1)+PARENT.IT.CS2(A1)" name="PRM" param="A1" type="double"/>
+			<var formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" name="PRM_T" param="A1" type="double"/>
+			<var formula="round(((A1>0?IT.CAP(A1-1,A2):0)+PARENT.IT.CS1(A1))*1.025+PARENT.IT.CS2(A1))" name="CAP" param="A1,A2" type="double"/>
+		</interest>
+
+		<attachment>
+			<!-- benefit_table name="table" parser="table">
+				<table>
+				 	<row type="title">
+					    <blank col="1" row="2">'保单年度末'</blank>
+					    <blank col="1" row="2">'生存类保险金转入的保险费 '</blank>
+					    <blank col="1" row="2">'累计生存类保险金转入的保险费 '</blank>
+					    <blank col="1" row="2">'进入万能保单账户的价值'</blank>
+						<blank col="3" row="1">'保单年度末保单账户价值'</blank>
+						<blank col="3" row="1">'保单年度末身故保险金'</blank>
+						<blank col="3" row="1">'保单年度末现金价值'</blank>
+				 	</row>
+					<row type="title">
+						<blank col="1" row="1">'低'</blank>
+						<blank col="1" row="1">'中'</blank>
+						<blank col="1" row="1">'高'</blank>
+						<blank col="1" row="1">'低'</blank>
+						<blank col="1" row="1">'中'</blank>
+						<blank col="1" row="1">'高'</blank>
+						<blank col="1" row="1">'低'</blank>
+						<blank col="1" row="1">'中'</blank>
+						<blank col="1" row="1">'高'</blank>
+					</row>
+
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+							<blank style="##0">I+1</blank>
+						    <blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>  
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.CAP(I,0)</blank>
+							<blank align="right" style="########0">IT.CAP(I,1)</blank>
+							<blank align="right" style="########0">IT.CAP(I,2)</blank>
+							<blank align="right" style="########0">IT.CAP(I,0)</blank>
+							<blank align="right" style="########0">IT.CAP(I,1)</blank>
+							<blank align="right" style="########0">IT.CAP(I,2)</blank>
+							<blank align="right" style="########0">IT.CAP(I,0)</blank>
+							<blank align="right" style="########0">IT.CAP(I,1)</blank>
+							<blank align="right" style="########0">IT.CAP(I,2)</blank>
+						</row>
+					</loop>
+				</table>
+				<text>1.上述演示数据经过取整处理。</text>
+				<text>2.上述保险利益演示中,假设结算利率分别处于低、中、高三种水平。对应的年结算利率分别为： “低”为 2.5％（保证利率）； “中”为 4.5％； “高” 为 6％。 </text>
+				<text>3.本产品的保险利益演示基于公司的精算及其他假设，不代表公司的历史经营业绩，也不代表对公司未来经营业绩的预期，最低保证 利率之上的投资收益是不确定的，实际保单账户利益可能低于中、高档利益演示水平。 </text>
+			</benefit_table -->
+			
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+					<item>被保险人身故，本公司按其身故时的保单账户价值给付身故保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="年金">
+					<item>合同生效满三年后，年金受益人可选择向本公司申请年金。如年金受益人申请年金的，自年金受益人提出申请后的首个保单生效对应日起，被保险人在每一保单生效对应日零时生存，本公司按当时保单账户价值的10%给付年金。</item>
+					<item>被保险人生存至保险期间届满，本公司一次性给付当时的保单账户价值余额，合同终止。</item>
+				</paragraph>
+			</coverage>
+			
+			<benefit_chart filter="chart" parser="chart">
+			    <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="保单账户价值(低)" color="#FF00DD">IT.CAP(I,0)</line>
+					<line name="保单账户价值(中)" color="#FF00EE">IT.CAP(I,1)</line>
+					<line name="保单账户价值(高)" color="#FF00FF">IT.CAP(I,2)</line>
+					<line name="累计保费" color="green">IT.PRM_T(I)</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule skip="rule_0001,rule_0002">
+		</rule>
+	</product>
+</declare>

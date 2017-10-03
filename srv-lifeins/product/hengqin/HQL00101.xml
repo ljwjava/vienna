@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HQL00101"
+		corporation_id="hengqin"
+		code="12030"
+		name="横琴优爱宝定期寿险"
+		name_abbr="优爱宝"
+		unit="10000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		input="amount"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="HQL00101" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_3"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_30"/>
+				<item code="to_60"/>
+				<item code="to_65"/>
+				<item code="to_70"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="PHOTO" value="AMOUNT >= 200000 ? 2 : 0"/>
+			<item name="COMMISSION" param="A1,A2"> 
+				if (A1 == 0) {
+					if (PAY_VALUE == 10) {
+						return 0.20;
+					} else if (PAY_VALUE == 15) {
+						return 0.25;
+					} else if (PAY_VALUE == 20) {
+						return 0.3;
+					} else if (PAY_VALUE == 30) {
+						return 0.4;
+					}
+				} else if (A1 == 1) {
+					if (PAY_VALUE == 10) {
+						return 0.1;
+					} else if (PAY_VALUE == 15) {
+						return 0.125;
+					} else if (PAY_VALUE == 20) {
+						return 0.15;
+					} else if (PAY_VALUE == 30) {
+						return 0.2;
+					}
+				}
+				return 0;
+			</item>
+		</init>
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 60" type="customer">
+				投保年龄：18~60周岁
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 10000 > 0">
+				最低投保基本保险金额：10000元，且需要为10000元的整数倍
+			</if>
+			<if condition="AGE >= 41 and AGE le 45 and INSURE_VALUE == 30">
+				41-45周岁，可选保障期间：20年、至60/65/70周岁
+			</if>
+			<if condition="AGE >= 41 and AGE le 45 and INSURE_VALUE == 60 and PAY_VALUE > 10">
+				41-45周岁，保至60周岁，可选缴费期间：5/10年交
+			</if>
+			<if condition="AGE >= 46 and AGE le 50 and INSURE_VALUE == 30">
+				46-50周岁，可选保障期间：20年、至60/65/70周岁
+			</if>
+			<if condition="AGE >= 46 and AGE le 50 and (INSURE_VALUE == 60 or INSURE_VALUE == 65) and PAY_VALUE > 10">
+				46-50周岁，保至60/65周岁，可选缴费期间：5/10年交
+			</if>
+			<if condition="AGE >= 51 and AGE le 55 and INSURE_VALUE != 65 and INSURE_VALUE != 70">
+				51-55周岁，可选保障期间：至65/70周岁
+			</if>
+			<if condition="AGE >= 56 and AGE le 60 and INSURE_VALUE != 70">
+				56-60周岁，可选保障期间：至70周岁
+			</if>
+			<if condition="AGE >= 51 and AGE le 60 and PAY_VALUE > 10">
+				51-60周岁，可选缴费期间：5/10年交
+			</if>
+			<if condition="ZONE == null" level="alert">
+				请选择所在地区
+			</if>
+			<if>
+				if (ZONE == null)
+					return null;
+				var lv = try(DS.ZONE_LEVEL[0][0]>0?DS.ZONE_LEVEL[0][0]:(DS.ZONE_LEVEL[0][1]>0?DS.ZONE_LEVEL[0][1]:DS.ZONE_LEVEL[0][2]),3);
+				if (lv == 1) {
+					if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
+						return '北京、上海、广州、深圳18~40岁最高保额为150万';
+					} else if (AGE > 40 and AGE le 50 and AMOUNT > 1000000) {
+						return '北京、上海、广州、深圳41~50岁最高保额为100万';
+					} else if (AGE > 50 and AGE le 60 and AMOUNT > 500000) {
+						return '北京、上海、广州、深圳51~60岁最高保额为50万';
+					}
+				} else if (lv == 2) {
+					if (AGE >= 18 and AGE le 40 and AMOUNT > 1000000) {
+						return '省会城市18~40岁最高保额为100万';
+					} else if (AGE > 40 and AGE le 50 and AMOUNT > 500000) {
+						return '省会城市41~50岁最高保额为50万';
+					} else if (AGE > 50 and AGE le 60 and AMOUNT > 500000) {
+						return '省会城市51~60岁最高保额为50万';
+					}
+				} else {
+					if (AGE >= 18 and AGE le 40 and AMOUNT > 500000) {
+						return '普通地区18~40岁最高保额为50万';
+					} else if (AGE > 40 and AGE le 50 and AMOUNT > 500000) {
+						return '普通地区41~50岁最高保额为50万';
+					} else if (AGE > 50 and AGE le 60 and AMOUNT > 300000) {
+						return '普通地区51~60岁最高保额为30万';
+					}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

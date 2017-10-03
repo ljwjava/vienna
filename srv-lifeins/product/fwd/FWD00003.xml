@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="FWD00003" corporation_id="fwd" code="FWD00003" name="額外50%保障權益" name_abbr="額外保障權益" unit="1000" currency="usd" premium="0"
+		is_main="no" is_rider="yes" type_code="life" sequence="2000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-01-01">
+
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="term_15" />
+			</insure>
+		</param>
+		
+		<init>
+			<item name="PLAN_SUMMARY"> 
+				var r = new list();
+				r += {seq:1000, text:'首15個保單年度內基本計劃之保證危疾權益或身故權益總額為'+(PARENT.AMOUNT+AMOUNT)+'，詳情請參閱第6部份說明(i)及(iii)。'};
+				r += {seq:3000, text:'在本保單的保障有效期間內，被保人如於第15個保單週年日前確診患上任何受保危疾或身故，本計劃會作出額外50%的原有投保額的賠償，請參考保障簡介註7。'};
+				return r;
+			</item>
+		</init>
+
+		<rule>
+		    <if condition="AGE > 65">
+		    	age 1-65 only
+			</if>
+		</rule>
+	</product>
+</declare>

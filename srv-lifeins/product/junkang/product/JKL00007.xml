@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="JKL00007" corporation_id="junkang" code="JKL00007" name="君康颐养一生养老年金" name_abbr="颐养一生" unit="1000"
+		type_code="life" sequence="1000" sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="JKL00007" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_20" />
+			</pay>
+			<insure>
+				<item code="to_full" />
+			</insure>
+			<draw_age>
+			    <item code="55" />
+			    <item code="60" />
+			    <item code="65" />
+			</draw_age>
+		</param>
+
+		<rider>
+			<product id="JKL00005"/>
+		    <product id="JKL00006"/>
+		</rider>
+
+		<init>
+			<item name="R" value="[55,60,65]" /> 
+		</init>
+		
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="DS.DATA[0][A1]*QUANTITY" />
+			<var name="DRAW_V" param="A1" formula="AGE+A1+1 > DRAW_AGE ? AMOUNT:0" />
+			<var name="DRAW_T" param="A1" formula="(A1>0?IT.DRAW_T(A1-1):0)+IT.DRAW_V(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'身故保险金'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'养老年金(年)'</blank>
+						<blank row="1">'养老年金(月)'</blank>
+						<blank row="1">'累计养老年金(年)'</blank>
+						<blank row="1">'累计养老年金(月)'</blank>
+						
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">AMOUNT</blank>
+							<blank align="right" style="########0">IT.CSV(I)</blank>
+							<blank align="right" style="########0">IT.DRAW_V(I)</blank>
+							<blank align="right" style="########0">IT.DRAW_T(I)*0.085</blank>
+							<blank align="right" style="########0">IT.DRAW_V(I)</blank>
+							<blank align="right" style="########0">IT.DRAW_T(I)*0.085</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="投保范围">
+				  <item>投保人：凡年满十八周岁，具有完全民事行为能力且对被保险人具有保险利益的人，均可作为本合同的投保人。</item>
+				  <item>被保险人：凡出生满二十八天至六十四周岁（含）身体健康的人，均可作为本合同的被保险人。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>若被保险人在年金开始领取日前身故，本公司将按以下两项金额中的较大者给付身故保险金，同时本合同效力终止。</item>
+					<item>1. 本合同的年交保险费与被保险人身故时本合同的保单年度数或交费年期数（以较小者为准）的乘积</item>
+					<item>2. 被保险人身故时本合同的现金价值。</item>
+				</paragraph>
+				<paragraph title="养老年金">
+					<item>本合同的年金开始领取日为被保险人达到年金起领年龄后的首个保单周年日。本合同年金起领年龄分为55周岁、60周岁、65周岁三档，由投保人在投保时与本公司约定并在保险单中载明。</item>
+					<item>若年金领取方式为年领，自本合同年金开始领取日起至本合同终止，若被保险人于每个保单周年日零时生存，本公司将按基本保险金额给付养老年金。</item>
+					<item>若年金领取方式为月领，自本合同年金开始领取日起至本合同终止，若被保险人于每个保单周月日零时生存，本公司将按基本保险金额的8.5%给付养老年金</item>
+				</paragraph>
+			</coverage>
+			
+			<benefit_chart filter="chart" parser="chart">
+			     <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="累计保险费" color="#CC0000">IT.PRM_T(I)</line>
+					<bar name="身故保险金" color="#00AA00">AMOUNT</bar>
+					<line name="现金价值" color="#CC00FF">IT.CSV(I)</line>
+			        <line name="累计养老年金(年)" color="#0000FF">IT.DRAW_T(I)</line>
+			        <line name="累计养老年金(月)" color="#0055FF">IT.DRAW_T(I)*0.085*12</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule>
+		    <if condition="AGE > 54">
+				被保险人年龄不能大于54周岁。
+			</if>
+			<if condition="PAY_VALUE == 3 and AGE > 52">
+				选择3年交时，被保险人年龄不能大于52周岁
+			</if>
+		    <if condition="PAY_VALUE == 5 and AGE > 50">
+				选择5年交时，被保险人年龄不能大于50周岁
+			</if>
+		    <if condition="PAY_VALUE == 10 and AGE > 45">
+				选择10年交时，被保险人年龄不能大于45周岁
+			</if>
+			<if condition="PAY_VALUE == 20 and AGE > 35">
+				选择20年交时，被保险人年龄不能大于35周岁
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 10000 > 0">
+				最低保额10000元，且必须为10000元的整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,462 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<rule>
+		<if id = "rule_0001" condition = "UNIT >= 1000 and (AMOUNT lt 10000 || AMOUNT % 1000 != 0)">
+			每一险种的最低保险金额为10000元，且为1000的整数倍。
+		</if>
+		<if id = "rule_0002" condition = "parent == null and PREMIUM > 0 and PAY_PERIOD > 1 and PREMIUM lt 500 and INSURE_PERIOD > 1">
+			每份投保单的主险(非一年期)最低年交保费为500元。
+		</if>
+		<if id="rule_9500" condition = "OCCUPATION_CATEGORY == 0">
+			被保人的职业为拒保职业。
+		</if>
+		<if id = "rule_4002" condition = "parent != null and PAY_PERIOD > PARENT.PAY_PERIOD">
+			附加险交费年期不得超过对应主险交费年期。
+		</if>
+		<if id = "rule_4003" condition = "parent != null and INSURE_PERIOD > PARENT.INSURE_PERIOD">
+			附加险保险期限不得超过其对应主险保险期限。
+		</if>
+		<!-- 
+		<if id = "rule_4004" condition = "parent != null and PAY_INPUT_VALUE != PARENT.PAY_INPUT_VALUE" alert="pay">
+			附加险交费频率须与主险一致。
+		</if>
+		 -->
+		<if id = "rule_4005" condition = "parent != null and PARENT.PAY_MODE_CODE == 'single' and INSURE_PERIOD le 1">
+			附加短期险不得附加在趸交方式的主险上。
+		</if>
+		<if id = "rule_0011" condition = "RiskAmount('thunder') > 2000000">
+			同一被保险人累计重大疾病保额不得超过200万。
+		</if>
+		<!-- 
+		<if name="rule_5002" condition = "AGE lt 18 and (RiskAmount('thunder') > 210000) and (PLAN.calculate('city_type')!='8601' and PLAN.calculate('city_type')!='8605' and PLAN.calculate('city_type')!='8608' and PLAN.calculate('city_type')!='8612' and PLAN.calculate('city_type')!='8619' and PLAN.calculate('city_type')!='8623')">
+			未满18周岁的未成年人累计重疾险风险保额不能超过20万。
+		</if>
+		<if name="rule_5003" condition = "AGE lt 18 and (RiskAmount('thunder') > 310000) and (PLAN.calculate('city_type')=='8601' or PLAN.calculate('city_type')=='8605' or PLAN.calculate('city_type')=='8608' or PLAN.calculate('city_type')=='8612' or PLAN.calculate('city_type')=='8619' or PLAN.calculate('city_type')=='8623')">
+			未满18周岁的未成年人累计重疾险风险保额不能超过30万。
+		</if>
+		 -->
+		<if id = "rule_6000" condition = "RiskAmount('life') > 300000 and OccMatch('4099907','6071203','90000??')">
+			学生、家庭主妇、军人累计寿险风险保额不得超过30万元。
+		</if>
+		<if id = "rule_6001" condition = "OccMatch('6050405','5000001','5000002','4099907','6071203','90000??','405????') and RiskAmount('quantity') > 5">
+		    学生、无业人员、无固定职业人员、家庭主妇、军人、医务人员、离退休人员累计投保附加住院津贴保险（阳光关爱、住院津贴）最多可投保5份。
+		</if>
+		<if id = "rule_6006" condition = "RiskAmount('thunder') > 300000 and OccMatch('5000001','5000002','4099907','6071203','90000??')">
+			学生、无业人员、家庭主妇、军人、离退休人员累计重疾风险保额不能超过30万元。
+		</if>
+		<if id = "rule_6007" condition = "RiskAmount('accident') > 300000 and OccMatch('4099907','6071203','90000??')">
+			学生、家庭主妇、军人累计意外险风险保额不得超过30万元。
+		</if>
+		<if id = "rule_6020" condition = "RiskAmount('life') + RiskAmount('accident') > 500000 and OccMatch('4099907','6071203','90000??')">
+			学生、家庭主妇、军人累计人身险保额不得超过50万元。
+		</if>
+		<if id = "rule_6021" condition = "RiskAmount('life') + RiskAmount('accident') > 300000 and OccMatch('5000001','5000002')">
+			无业人员、离退休人员累计人身险保额不得超过30万元。
+		</if>
+		
+		<if condition = "APPLICANT.AGE lt 16">
+			投保人要求：具有完全民事行为能力（16周岁（含）以上不满18周岁者以自己劳动收入为主要生活来源的，视为具有完全民事行为能力人），可以独立进行民事活动且有稳性经济来源者。
+		</if>
+		<if condition = "INSURANT.DAY lt 30">
+			被保人要求出生满30天。
+		</if>
+		 		
+		<if id = "rule_7000" condition = "!HasProduct('0024','0069') and (RiskAmount('life') + RiskAmount('accident') > 100000) and (AGE lt 18)">
+			不满18周岁的被保险人累计死亡给付金额不得超过10万元。
+		</if>
+			
+		<!-- 寿险风险保额规则提示(I类) -->	
+		<if id="rule_9000" level="alert" condition="(RiskAmount('life') le 100000 and RiskAmount('life') >= 10000) and AGE > 55">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤寿险风险保额≤10万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9001" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 300000)) and (AGE > 50 and AGE lt 56)">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（10万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9002" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 300000)) and AGE > 55">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（10万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id="rule_9003" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 600000)) and AGE > 50">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜寿险风险保额≤60万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id="rule_9004" level="alert" condition="(RiskAmount('life') > 400000 and (RiskAmount('life') le 600000)) and (AGE > 40 and AGE lt 51)">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（40万＜寿险风险保额≤60万），请提前与客户联系，并做好体检准备
+		</if>		
+		<if id="rule_9005" level="alert" condition="(RiskAmount('life') > 600000 and (RiskAmount('life') le 1000000)) and (AGE > 15 and AGE lt 41)">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（60万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9006" level="alert" condition="(RiskAmount('life') > 600000 and (RiskAmount('life') le 1000000)) and (AGE > 40 and AGE lt 56)">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（60万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9007" level="alert" condition="(RiskAmount('life') > 600000 and (RiskAmount('life') le 1000000)) and AGE > 55">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（60万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9008" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000)) and (AGE > 15 and AGE lt 56)">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9009" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000)) and AGE > 55">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9010" level="alert" condition="(RiskAmount('life') > 2000000 and (RiskAmount('life') le 3000000)) and AGE > 15">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（200万＜寿险风险保额≤300万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9011" level="alert" condition="  RiskAmount('life') > 3000000 and AGE > 15">
+			I类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（寿险风险保额>300万），请提前与客户联系，并做好体检准备
+		</if>	
+
+		<!-- 寿险风险保额规则提示(II类) -->	
+		<if id="rule_9012" level="alert" condition="(RiskAmount('life') >= 10000 and (RiskAmount('life') le 100000)) and AGE > 55">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤寿险风险保额≤10万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9013" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 300000)) and (AGE > 50 and AGE lt 56)">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（10万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9014" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 300000)) and AGE > 55">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（10万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id="rule_9015" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and (AGE > 40 and AGE lt 51)">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id="rule_9016" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and AGE > 50">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id="rule_9017" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 1000000)) and (AGE > 15 and AGE lt 41)">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（50万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9018" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 1000000)) and (AGE > 40 and AGE lt 56)">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（50万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9019" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 1000000)) and AGE > 55">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（50万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9020" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000)) and (AGE > 15 and AGE lt 56)">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9021" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000)) and AGE > 55">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id="rule_9022" level="alert" condition="RiskAmount('life') > 2000000 and AGE > 15">
+			II类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（寿险风险保额>200万），请提前与客户联系，并做好体检准备
+		</if>	
+		
+ 		<!-- 寿险风险保额规则提示(III类) -->	
+		<if id= "rule_9023" level="alert" condition="(RiskAmount('life') >= 10000 and (RiskAmount('life') le 100000)) and AGE > 55">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤寿险风险保额≤10万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9024" level="alert" condition="(RiskAmount('life') > 50000 and (RiskAmount('life') le 200000)) and (AGE > 50 and AGE lt 56)">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜寿险风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9025" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 200000)) and AGE > 55">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（10万＜寿险风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9026" level="alert" condition="(RiskAmount('life') > 200000 and (RiskAmount('life') le 300000)) and AGE > 50">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（20万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9027" level="alert" condition="(RiskAmount('life') > 200000 and (RiskAmount('life') le 300000)) and (AGE > 40 and AGE lt 51)">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（20万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>		
+		<if id= "rule_9028" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and (AGE > 15 and AGE lt 41)">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9029" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and (AGE > 40 and AGE lt 56)">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9030" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and AGE > 55">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9031" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 1000000)) and (AGE > 15 and AGE lt 56)">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（50万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9032" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 1000000)) and AGE > 55">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（50万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9033" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000)) and AGE > 15">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9034" level="alert" condition="RiskAmount('life') > 2000000 and AGE > 15">
+			III类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（寿险风险保额>200万），请提前与客户联系，并做好体检准备
+		</if>	
+		
+		<!-- 寿险风险保额规则提示(IV类) -->	
+		<if id= "rule_9035" level="alert" condition="(RiskAmount('life') >= 10000 and (RiskAmount('life') le 50000)) and AGE > 55">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤寿险风险保额≤5万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9036" level="alert" condition="(RiskAmount('life') > 50000 and (RiskAmount('life') le 100000)) and (AGE > 50 and AGE lt 56)">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜寿险风险保额≤10万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9037" level="alert" condition="(RiskAmount('life') > 50000 and (RiskAmount('life') le 100000)) and AGE > 55">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（5万＜寿险风险保额≤10万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9038" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 200000)) and (AGE > 40 and AGE lt 51)">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（10万＜寿险风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9039" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 200000)) and AGE > 50">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（10万＜寿险风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9040" level="alert" condition="(RiskAmount('life') > 200000 and (RiskAmount('life') le 300000)) and AGE > 40">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（20万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9041" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and (AGE > 15 and AGE lt 41)">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9042" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and (AGE > 40 and AGE lt 56)">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9043" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 500000)) and AGE > 55">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（30万＜寿险风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9044" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 1000000)) and (AGE > 15 and AGE lt 56)">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（50万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9045" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 1000000)) and AGE > 55">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（50万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9046" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000)) and AGE > 15">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9047" level="alert" condition="RiskAmount('life') > 2000000 and AGE > 15">
+			IV类机构寿险体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（寿险风险保额>200万），请提前与客户联系，并做好体检准备
+		</if>	
+		
+		<!-- 寿险风险保额规则提示(Z类) -->	
+	    <if id="rule_9100" level="alert" condition="(RiskAmount('life') le 100000 ) and AGE > 55">
+	        Z类机构寿险体检标准： 普检+心电图+胸部X线+血清A（寿险风险保额≤10万），请提前与客户联系，并做好体检准备
+	    </if>
+	      <if id="rule_9101" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 300000 )) and (AGE > 50 and AGE lt 56)">
+	        Z类机构寿险体检标准：普检+心电图+血清A+B超（10万＜寿险风险保额≤30万），请提前与客户联系，并做好体检准备
+	    </if>
+	      <if id="rule_9102" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 600000 )) and (AGE > 40 and AGE lt 51)">
+	        Z类机构寿险体检标准：普检+心电图+血清A+B超（30万＜寿险风险保额≤60万），请提前与客户联系，并做好体检准备
+	    </if>
+	      <if id="rule_9103" level="alert" condition="(RiskAmount('life') > 300000 and (RiskAmount('life') le 600000 )) and (AGE > 50 and AGE lt 56)">
+	        Z类机构寿险体检标准：普检+心电图+血清（A+B）+B超（30万＜寿险风险保额≤60万），请提前与客户联系，并做好体检准备
+	    </if>
+		 <if id="rule_9104" level="alert" condition="(RiskAmount('life') > 100000 and (RiskAmount('life') le 600000 )) and AGE > 55">
+	        Z类机构寿险体检标准：普检+心电图+血清（A+B）+B超（10万＜寿险风险保额≤60万），请提前与客户联系，并做好体检准备
+	    </if>
+	    <if id="rule_9105" level="alert" condition="(RiskAmount('life') > 600000 and (RiskAmount('life') le 1000000 )) and (AGE > 15 and AGE lt 41)">
+	        Z类机构寿险体检标准：普检+心电图+血清A+B超（60万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+	    </if>
+	    <if id="rule_9106" level="alert" condition="(RiskAmount('life') > 600000 and (RiskAmount('life') le 1000000 )) and (AGE > 40 and AGE lt 56)">
+	        Z类机构寿险体检标准：普检+心电图+血清(A+B)+B超（60万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+	    </if>
+	     <if id="rule_9107" level="alert" condition="(RiskAmount('life') > 600000 and (RiskAmount('life') le 1000000 )) and AGE > 55">
+	        Z类机构寿险体检标准：普检+心电图+胸部X线+血清（A+B+C）+B超（60万＜寿险风险保额≤100万），请提前与客户联系，并做好体检准备
+	    </if>
+	    <if id="rule_9108" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000 )) and (AGE > 15 and AGE lt 56)">
+	        Z类机构寿险体检标准：普检+心电图+血清（A+B+C）+B超+血常规（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+	    </if> 
+	      <if id="rule_9109" level="alert" condition="(RiskAmount('life') > 1000000 and (RiskAmount('life') le 2000000 )) and AGE > 55">
+	        Z类机构寿险体检标准：普检+心电图+胸部X线+血清F+B超+血常规（100万＜寿险风险保额≤200万），请提前与客户联系，并做好体检准备
+	    </if> 
+	       <if id="rule_9110" level="alert" condition="RiskAmount('life') > 2000000 and AGE > 15">
+	        Z类机构寿险体检标准：普检+心电图+胸部X线+血清F+B超+血常规+超声心动图（200万＜寿险风险保额），请提前与客户联系，并做好体检准备
+	    </if> 
+	     <if id="rule_9115" level="alert" condition="(RiskAmount('life') > 500000 and (RiskAmount('life') le 600000 )) and (AGE > 35 and AGE lt 41)">
+	        Z类机构寿险体检标准：普检+心电图+血清A+B超（50万＜寿险风险保额≤60万），请提前与客户联系，并做好体检准备
+	    </if>  
+	    
+		<!-- 重疾风险保额规则提示(I类) -->	
+		<if id= "rule_9048" level="alert" condition="(RiskAmount('thunder') >= 10000 and (RiskAmount('thunder') le 50000)) and AGE > 55">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤重大疾病风险保额≤5万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9049" level="alert" condition="(RiskAmount('thunder') > 50000 and (RiskAmount('thunder') le 120000)) and AGE > 50">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜重大疾病风险保额≤12万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9050" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 300000)) and (AGE > 40 and AGE lt 56)">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（12万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9051" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 300000)) and AGE > 55">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（12万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9052" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 600000)) and (AGE > 15 and AGE lt 41)">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（30万＜重大疾病风险保额≤60万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9053" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 600000)) and (AGE > 40 and AGE lt 51)">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜重大疾病风险保额≤60万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9054" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 600000)) and (AGE > 50 and AGE lt 56)">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（30万＜重大疾病风险保额≤60万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9055" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 600000)) and AGE > 55">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（30万＜重大疾病风险保额≤60万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9056" level="alert" condition="(RiskAmount('thunder') > 600000 and (RiskAmount('thunder') le 1000000)) and AGE > 15">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（60万＜重大疾病风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9057" level="alert" condition="(RiskAmount('thunder') > 1000000 and (RiskAmount('thunder') le 3000000)) and AGE > 15">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（100万＜重大疾病风险保额≤300万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9058" level="alert" condition="RiskAmount('thunder') > 3000000 and AGE > 15">
+			I类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（重大疾病风险保额>300万），请提前与客户联系，并做好体检准备
+		</if>	
+
+		<!-- 重疾风险保额规则提示(II类) -->	
+		<if id= "rule_9059" level="alert" condition="(RiskAmount('thunder') >= 10000 and (RiskAmount('thunder') le 50000)) and AGE > 55">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤重大疾病风险保额≤5万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9060" level="alert" condition="(RiskAmount('thunder') > 50000 and (RiskAmount('thunder') le 120000)) and AGE > 50">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜重大疾病风险保额≤12万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9061" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 300000)) and (AGE > 40 and AGE lt 56)">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（12万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if> 
+		<if id= "rule_9062" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 300000)) and AGE > 55">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（12万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9063" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and (AGE > 15 and AGE lt 41)">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9064" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and (AGE > 40 and AGE lt 51)">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9065" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and (AGE > 50 and AGE lt 56)">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9066" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and AGE > 55">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9067" level="alert" condition="(RiskAmount('thunder') > 500000 and (RiskAmount('thunder') le 1000000)) and AGE > 15">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（50万＜重大疾病风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9068" level="alert" condition="(RiskAmount('thunder') > 1000000 and (RiskAmount('thunder') le 2000000)) and AGE > 15">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（100万＜重大疾病风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9069" level="alert" condition="RiskAmount('thunder') > 2000000 and AGE > 15">
+			II类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（重大疾病风险保额>200万），请提前与客户联系，并做好体检准备
+		</if>	
+		
+		<!-- 重疾风险保额规则提示(III类) -->	
+		<if id= "rule_9070" level="alert" condition="(RiskAmount('thunder') >= 10000 and (RiskAmount('thunder') le 50000)) and AGE > 55">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤重大疾病风险保额≤5万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9071" level="alert" condition="(RiskAmount('thunder') > 50000 and (RiskAmount('thunder') le 120000)) and AGE > 50">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜重大疾病风险保额≤12万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9072" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 200000)) and (AGE > 40 and AGE lt 56)">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（12万＜重大疾病风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9073" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 200000)) and AGE > 55">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（12万＜重大疾病风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9074" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 300000)) and (AGE > 15 and AGE lt 41)">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（20万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9075" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 300000)) and (AGE > 40 and AGE lt 51)">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（20万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9076" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 500000)) and (AGE > 50 and AGE lt 56)">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（20万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9077" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 500000)) and AGE > 55">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（20万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9078" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and (AGE > 15 and AGE lt 41)">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9079" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and (AGE > 40 and AGE lt 51)">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9080" level="alert" condition="(RiskAmount('thunder') > 500000 and (RiskAmount('thunder') le 1000000)) and AGE > 15">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（50万＜重大疾病风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9081" level="alert" condition="(RiskAmount('thunder') > 1000000 and (RiskAmount('thunder') le 2000000)) and AGE > 15">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（100万＜重大疾病风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9082" level="alert" condition="RiskAmount('thunder') > 2000000 and AGE > 15">
+			III类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（重大疾病风险保额>200万），请提前与客户联系，并做好体检准备
+		</if>
+		
+		<!-- 重疾风险保额规则提示(IV类) -->	
+		<if id= "rule_9083" level="alert" condition="(RiskAmount('thunder') >= 10000 and (RiskAmount('thunder') le 50000)) and AGE > 50">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤重大疾病风险保额≤5万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9084" level="alert" condition="(RiskAmount('thunder') > 50000 and (RiskAmount('thunder') le 120000)) and (AGE > 50 and AGE lt 56)">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜重大疾病风险保额≤12万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9085" level="alert" condition="(RiskAmount('thunder') > 50000 and (RiskAmount('thunder') le 120000)) and AGE > 55">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（5万＜重大疾病风险保额≤12万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9086" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 200000)) and (AGE > 40 and AGE lt 51)">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（12万＜重大疾病风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9087" level="alert" condition="(RiskAmount('thunder') > 120000 and (RiskAmount('thunder') le 200000)) and AGE > 50">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（12万＜重大疾病风险保额≤20万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9088" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 300000)) and (AGE > 15 and AGE lt 41)">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（20万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9089" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 300000)) and (AGE > 40 and AGE lt 51)">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（20万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9090" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 500000)) and (AGE > 50 and AGE lt 56)">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（20万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9091" level="alert" condition="(RiskAmount('thunder') > 200000 and (RiskAmount('thunder') le 500000)) and AGE > 55">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（20万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9092" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and (AGE > 15 and AGE lt 41)">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9093" level="alert" condition="(RiskAmount('thunder') > 300000 and (RiskAmount('thunder') le 500000)) and (AGE > 40 and AGE lt 51)">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_9094" level="alert" condition="(RiskAmount('thunder') > 500000 and (RiskAmount('thunder') le 1000000)) and AGE > 15">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（50万＜重大疾病风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9095" level="alert" condition="(RiskAmount('thunder') > 1000000 and (RiskAmount('thunder') le 2000000)) and AGE > 15">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（100万＜重大疾病风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9096" level="alert" condition="RiskAmount('thunder') > 2000000 and AGE > 15">
+			IV类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（重大疾病风险保额>200万），请提前与客户联系，并做好体检准备
+		</if>
+		<!-- 重疾风险保额规则提示(Z类) 	 -->
+		<if id= "rule_8001" level="alert" condition="RiskAmount('thunder') >= 10000 and RiskAmount('thunder') le 50000 and AGE > 55">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（1万≤重大疾病风险保额≤5万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_8002" level="alert" condition="RiskAmount('thunder') > 50000 and RiskAmount('thunder') le 120000 and (AGE > 50 and AGE lt 56)">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜重大疾病风险保额≤12万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_8003" level="alert" condition="RiskAmount('thunder') > 50000 and RiskAmount('thunder') le 120000 and AGE > 55">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（5万＜重大疾病风险保额≤12万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_8004" level="alert" condition="RiskAmount('thunder') > 120000 and RiskAmount('thunder') le 300000 and (AGE > 40 and AGE lt 51)">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（12万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_8005" level="alert" condition="RiskAmount('thunder') > 120000 and RiskAmount('thunder') le 300000 and (AGE > 50 and AGE lt 56)">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（12万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_8006" level="alert" condition="RiskAmount('thunder') > 120000 and RiskAmount('thunder') le 300000 and AGE > 55">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（12万＜重大疾病风险保额≤30万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_8007" level="alert" condition="RiskAmount('thunder') > 300000 and RiskAmount('thunder') le 500000 and (AGE > 15 and AGE lt 41)">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_8008" level="alert" condition="RiskAmount('thunder') > 300000 and RiskAmount('thunder') le 500000 and (AGE > 40 and AGE lt 51)">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>	
+		<if id= "rule_8009" level="alert" condition="RiskAmount('thunder') > 300000 and RiskAmount('thunder') le 500000 and (AGE > 50 and AGE lt 56)">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_8010" level="alert" condition="RiskAmount('thunder') > 300000 and RiskAmount('thunder') le 500000 and AGE > 55">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（30万＜重大疾病风险保额≤50万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_8011" level="alert" condition="RiskAmount('thunder') > 500000 and RiskAmount('thunder') le 1000000 and AGE > 15">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片（50万＜重大疾病风险保额≤100万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_8012" level="alert" condition="RiskAmount('thunder') > 1000000 and RiskAmount('thunder') le 2000000 and AGE > 15">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图（100万＜重大疾病风险保额≤200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_8013" level="alert" condition="RiskAmount('thunder') > 2000000 and AGE > 15">
+			Z类机构重疾体检标准：普检+心电图+血清A+腹部B超 (女性含妇科B超)+血清B+血清C+血常规+血清D+胸片+超声心动图+肺功能，核保员要求增加的其他检查（重大疾病风险保额>200万），请提前与客户联系，并做好体检准备
+		</if>
+		<if id= "rule_9097" level="alert" condition="AGE>44 and GENDER_CODE==2 and RiskAmount('thunder') > 1000000">
+			45岁及45岁以上女性，累计重疾风险保额100万以上，需要加查妇科TCT检查
+		</if>	
+		<if id="rule_9111" level="alert" condition="AGE > 55">
+		    56岁及56岁以上，需要加查胸部X线检查。
+	    </if>
+	    <if id="rule_9112" level="alert" condition="RiskAmount('accident') > 2000000">
+		    普检+心电图+血清A+B超(200万＜意外险风险保额)，请提前联系客户并做好准备。
+		</if>						
+	</rule>
+</declare>

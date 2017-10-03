@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="SHL00001"
+		corporation_id="shlife"
+		code="1025001"
+		name="小蘑菇定期寿险"
+		name_abbr="小蘑菇定寿"
+		unit="1000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		input="amount"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="SHL00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_30"/>
+				<item code="to_60"/>
+				<item code="to_70"/>
+			</insure>
+		</param>
+
+		<init>
+		</init>
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 50" type="customer">
+				投保年龄：18~45周岁
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 10000 > 0">
+				最低投保基本保险金额：10000元，且需要为10000元的整数倍
+			</if>
+			<if condition="AGE >= 41 and PAY_VALUE == 30">
+				大于40周岁时，不可选择30年交
+			</if>
+			<if condition="AGE >= 41 and INSURE_VALUE == 30">
+				大于40周岁时，不可选择保30年
+			</if>
+			<if condition="AGE >= 41 and PAY_VALUE == 20 and INSURE_VALUE == 60">
+				大于40周岁且20年交时，不可选择保至60周岁
+			</if>
+			<if condition="PAY_PERIOD > INSURE_PERIOD">
+				交费期间不能长于保障期间
+			</if>
+			<!--<if condition="AGE >= 31 and AGE le 40 and PAY_VALUE == 30 and (INSURE_VALUE == 20 or INSURE_VALUE == 60))">-->
+				<!--大于40周岁时，不可选择30年交，只可以选择10年交-->
+			<!--</if>-->
+			<!--<if condition="AGE >= 18 and AGE le 30 and PAY_VALUE == 30 and INSURE_VALUE == 20">-->
+				<!--大于40周岁时，不可选择30年交，只可以选择10年交-->
+			<!--</if>-->
+			<if condition="ZONE == null" level="alert">
+				请选择所在地区
+			</if>
+			<if>
+				if (ZONE == null)
+					return null;
+				var lv = try(DS.ZONE_LEVEL[0][0],3);
+				if (lv == 1) {
+					if (AGE le 40 and AMOUNT > 1500000) {
+						return '18~40周岁，一类城市最高150万有效保额';
+					} else if (AGE >= 41 and AMOUNT > 1000000) {
+						return '41~50周岁，一类城市最高100万有效保额';
+					}
+				} else if (lv == 2) {
+					if (AGE le 40 and AMOUNT > 1000000) {
+						return '18~40周岁，二类城市最高100万有效保额';
+					} else if (AGE >= 41 and AMOUNT > 500000) {
+						return '41~50周岁，二类城市最高50万有效保额';
+					}
+				} else {
+					if (AMOUNT > 500000) {
+						return '普通地区最高50万有效保额';
+					}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

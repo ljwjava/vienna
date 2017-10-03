@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare> <!-- product_declare改为declare -->
+	<product id="1000000004" 
+	    corporation_id="guolian"
+	    code="121503"
+		name="附加康无忧B款提前给付重大疾病保险" 
+		name_abbr="附加康无忧B款" 
+		type_code="thunder" 
+		unit_amount="10000"
+		input="none"
+		amount="PARENT.AMOUNT"
+		is_main="no" 
+		is_rider="yes"
+		sale_begin_date="2011-12-01"
+		sale_end_date="2099-01-01" 
+		last_modify_date="2011-12-01">
+		<data>
+			<item parser="file.auto" value="1000000004" /> 
+		</data>
+		<param>
+			<pay_mode>
+				<item code="parent"/>
+			</pay_mode>
+			<pay>
+			    <item code="parent"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+    <attachment> 
+			<coverage name="coverage" parser="coverage">
+				<paragraph>
+		    		<item>在本附加险合同有效期内，我们按以下约定承担保险责任：</item>
+				</paragraph>
+				<paragraph title="等待期	">
+				    <item>若被保险人在本附加险合同生效或最后一次复效（以较迟者为准）之日起日（这180日的时间段称为“等待期”）内因意外伤害（见释义）以外的原因被确诊初次发生本附加险合同约定的重大疾病（无论一种或多种，下同）或特定疾病的，我们将无息退还您已支付的保险费，本附加险合同和主合同同时终止。</item>
+					<item>*“已支付的保险费 ”的含义:本条所 述“已支付的保险费”指您根据本合同的约定已支付的保险费。</item>
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+				    <item>若被保险人因遭受意外伤害或在等待期后因意外伤害以外的原因被确诊初次发生本附加险合同约定的重大疾病，我们按本附加险合同的基本保险金额给付重大疾病保险金后，不再承担主险合同的保险金给付责任，本附加险合同和主险合同同时终止。</item>
+				</paragraph>
+				<paragraph title="特定疾病额外保险金">
+					<item>若被保险人因遭受意外伤害或在等待期后因意外伤害以外的原因被确诊初次发生本附加险合同约定的五种特定疾病之一，我们按本附加险合同基本保险金额的10%给付特定疾病额外保险金，该项保险责任终止。若患多种特定疾病，以其中一种特定疾病按约定给付特定疾病额外保险金。</item>
+				    <item>*“已支付的保险费”的含义：本条所述“已支付的保险费”指您根据本附加险合同和主险合同的约定已支付的保险费。</item>
+				</paragraph>
+				<paragraph title="责任免除">
+				    <item>因下列情形之一导致被保险人身故的，我们不承担给付保险金的责任：</item>
+				    <item>(1)投保人对被保险人的故意杀害、故意伤害；</item>
+				    <item>(2)被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施；</item>
+				    <item>(3)被保险人主动吸食或注射毒品（见释义）；</item>
+				    <item>(4)被保险人酒后驾驶（见释义），无合法有效驾驶证驾驶（见释义），或驾驶无有效行驶证（见释义）的机动车（见释义）；</item>
+				    <item>(5)被保险人所患遗传性疾病（见释义），先天性畸形、变形或染色体异常（见释义）；</item>
+				    <item>(6)被保险人感染艾滋病病毒或患艾滋病（见释义）期间(不包括本附加险合同所保障的“经输血导致的人类免疫缺陷病毒（HIV）感染”)；</item>
+				    <item>(7)战争、军事冲突、暴乱或武装叛乱；</item>
+				    <item>(8)核爆炸、核辐射或核污染。</item>
+				    <item>发生上述第(1)项情形导致被保险人发生重大疾病或特定疾病的，本附加险合同终止，我们向受益人退还本附加险合同的现金价值（见释义）；</item>
+				    <item>发生上述其他情形导致被保险人发生重大疾病或特定疾病的，本附加险合同终止，我们向您退还本附加险合同的现金价值。</item>
+				</paragraph>
+			</coverage>
+			
+			<benefit_detail name="coverage" parser="coverage">
+				<paragraph title="等待期	">
+				    <item>若被保险人在本附加险合同生效或最后一次复效（以较迟者为准）之日起日（这180日的时间段称为“等待期”）内因意外伤害（见释义）以外的原因被确诊初次发生本附加险合同约定的重大疾病（无论一种或多种，下同）或特定疾病的，我们将无息退还您已支付的保险费，本附加险合同和主合同同时终止。</item>
+					<item>*“已支付的保险费 ”的含义:本条所 述“已支付的保险费”指您根据本合同的约定已支付的保险费。</item>
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+				    <item>若被保险人因遭受意外伤害或在等待期后因意外伤害以外的原因被确诊初次发生本附加险合同约定的重大疾病，我们按本附加险合同的基本保险金额给付重大疾病保险金后，不再承担主险合同的保险金给付责任，本附加险合同和主险合同同时终止。</item>
+				</paragraph>
+				<paragraph title="特定疾病额外保险金">
+					<item>若被保险人因遭受意外伤害或在等待期后因意外伤害以外的原因被确诊初次发生本附加险合同约定的五种特定疾病之一，我们按本附加险合同基本保险金额的10%给付特定疾病额外保险金，该项保险责任终止。若患多种特定疾病，以其中一种特定疾病按约定给付特定疾病额外保险金。</item>
+				    <item>*“已支付的保险费”的含义：本条所述“已支付的保险费”指您根据本附加险合同和主险合同的约定已支付的保险费。</item>
+				</paragraph>
+			</benefit_detail>
+		</attachment>
+		<rule skip="rule_1003,rule_1001,rule_1004,rule_1006">
+		    <if condition="INSURANT.DAY lt 28">
+				被保人投保年龄未达最低承保年龄(出生满28天)。 
+			</if>
+			<if condition="AGE gt 60 " type="customer">
+				被保人投保年龄超过最高承保年龄(60岁)。
+			</if>
+			<if condition = "AMOUNT lt 10000">
+				最低基本保额为10000元。
+			</if> 
+			<if condition = "AMOUNT gt 10000 and AMOUNT % 1000 != 0">
+				投保金额应为1000的整数倍。
+			</if>
+			<if condition="PARENT.PAY_MODE.CODE == 'single' and PARENT.PAY_VALUE != 1" >
+				当交费方式为一次性交清时，交费期间仅可选择1年交。
+		    </if>
+		    <if condition="PARENT.PAY_MODE.CODE == 'year' and PARENT.PAY_VALUE == 1" >
+				当交费方式为年交时，交费期间仅可选择5年交、10年交、15年交、20年。
+		    </if>
+			<if condition="AGE lt 18 and AMOUNT gt 300000 ">
+				未成年人投保，累计重大疾病风险保额超过30万元，请调整投保计划。
+			</if>
+			 <if condition="'901003'.indexOf(''+OCCUPATION_CODE) >= 0  and AMOUNT >300000 ">
+				18周岁以上学生累计重大疾病风险保额不得超过30万，请调整投保计划。
+			</if>
+			<if condition="'1601004'.indexOf(''+OCCUPATION_CODE) >= 0 and AMOUNT gt 300000">
+				家庭主妇投保，累计重大疾病风险保额不得超过30万，请调整投保计划。
+			</if>
+			<if condition="'1601002,1601003'.indexOf(''+OCCUPATION_CODE) >= 0 and AMOUNT gt 100000">
+				无固定职业人员投保累计重大疾病风险保额不得超过10万，请调整投保计划。
+			</if>
+			<if condition="'1601001'.indexOf(''+OCCUPATION_CODE) >= 0 and AMOUNT gt 200000">
+				离退休人员投保，累计重大疾病风险保额不得超过20万元，请调整投保计划。
+			</if>
+		</rule>
+	</product>
+</declare>

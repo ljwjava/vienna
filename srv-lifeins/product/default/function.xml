@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<function type="product">
+		<!-- 累计保费 -->
+		<item name="PremiumAcc" param="I">
+			case(I>PAY_PERIOD,PAY_PERIOD*PREMIUM,PREMIUM*I)
+		</item>
+		<!-- 判断当前主险在某个年度是否有自动续保的一年期附加险 -->
+		<item name="RiderValid" param="PID,I">
+			HasProduct(PID) and I le RIDER(PID).RENEWAL_AGE - AGE;
+		</item>
+		<!-- 计算自动续保的年期 -->
+		<item name="RENEWAL_PERIOD">
+			RENEWAL_AGE == null ? 1 : (PARENT == null ? RENEWAL_AGE-AGE+1 : min(RENEWAL_AGE-AGE+1, PARENT.PAY_PERIOD));
+		</item>
+
+		<item name="PremiumChildren">
+			var T = 0;
+			for (var C : CHILDREN) {
+				T += C.PREMIUM;
+			}
+			return T;
+		</item>
+
+		<!-- 只有年交才正确 -->
+		<item name="PremiumTerm" param="A1"> 
+			A1>=PAY_PERIOD?0:PREMIUM
+		</item>
+
+		<item name="PremiumYear" param="A1"> 
+			PremiumTerm(A1)
+		</item>
+
+		<item name="PremiumSum" param="A1"> 
+			A1>0?PremiumSum(A1-1)+PremiumYear(A1):PREMIUM
+		</item>
+
+		<item name="CommissionRate" param="A1,A2"> 
+			if (COMMISSION != null) {
+				return COMMISSION(A1,A2);
+			} else if (A1 == 0) {
+				if (PAY_VALUE == 10) {
+					return 0.20;
+				} else if (PAY_VALUE == 15) {
+					return 0.25;
+				} else if (PAY_VALUE == 20) {
+					return 0.3;
+				} else if (PAY_VALUE == 30) {
+					return 0.4;
+				}
+			} else if (A1 == 1) {
+				if (PAY_VALUE == 10) {
+					return 0.1;
+				} else if (PAY_VALUE == 15) {
+					return 0.125;
+				} else if (PAY_VALUE == 20) {
+					return 0.15;
+				} else if (PAY_VALUE == 30) {
+					return 0.2;
+				}
+			}
+			return 0;
+		</item>
+
+		<item name="CommissionTerm" param="A1"> 
+			PremiumTerm(A1)*CommissionRate(A1,PAY_MODE)
+		</item>
+
+		<item name="CommissionYear" param="A1"> 
+			CommissionTerm(A1)
+		</item>
+	</function>
+</declare>

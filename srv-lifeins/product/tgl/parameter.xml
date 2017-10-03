@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<parameter>
+		<pay>
+			<item code="auto_1" value="1" desc="'續至'+round(RENEWAL)+'歲'" show="1年期" />
+		</pay>
+		
+		<rank>
+			<item code="0" value="0" show="基本計劃" />
+			<item code="1" value="1" show="計劃1" />
+			<item code="2" value="2" show="計劃2" />
+			<item code="3" value="3" show="計劃3" />
+			<item code="4" value="4" show="計劃4" />
+			<item code="5" value="5" show="計劃5" />
+			<item code="6" value="6" show="計劃6" />
+			<item code="7" value="7" show="計劃7" />
+			<item code="8" value="8" show="計劃8" />
+			<item code="9" value="9" show="計劃9" />
+		</rank>
+	</parameter>
+</declare>

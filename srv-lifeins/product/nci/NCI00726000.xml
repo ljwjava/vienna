@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <product id="NCI00726000" 
+		corporation_id="nci" 
+		code="00726000" 
+		name="附加住院费用A款" 
+		name_abbr="附加住院费用A" 
+		is_main="no"
+		is_rider="yes"
+		type="medical" 
+		premium="if (AGE le 4) {418} else if (AGE le 9) {383} else if (AGE le 15) {338} else if (AGE le 20) {288} else if (AGE le 30) {296} else if (AGE le 40) {457} else if (AGE le 50) {646} else if (AGE le 60) {790} else if (AGE le 64) {1409} else {0}"
+		unit_amount="10000"
+		sale_begin_date="2016-07-21" 
+		sale_end_date="" 
+		last_modify_date="2016-07-21">
+
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+ 	    		<paragraph>
+					<item>在合同保险期间内，被保险人因意外伤害或合同生效六十日后患疾病并在本公司指定医院住院治疗所引起的合理的实际医疗费用，本公司给付下列保险金：</item>
+					<item>（1）住院床位费保险金</item>
+					<item>（2）住院前后门诊费保险金</item>
+					<item>（3）住院杂项费及手术费保险金</item>
+					<item>在合同保险期间内，被保险人不论一次或多次发生住院医疗费用，本公司均按1中规定分别给付保险金，累计给付保险金达到保险金额全数时，合同效力即行终止。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule skip="">
+		</rule>
+	</product>
+</declare>

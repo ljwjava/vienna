@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="LAL00016" corporation_id="lianlife" code="115010" name="安享无忧恶性肿瘤疾病保险" name_abbr="安享无忧" unit="50000" purchase="quantity" input="quantity"
+		type_code="life" sequence="1000" sale_begin_date="2015-01-01" sale_end_date="" last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="LAL00016" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+			</pay>
+			<insure>
+				<item code="term_30" />
+				<item code="to_70" />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="LAL00019" />
+			<product id="LAL00015" />
+		</rider>
+
+		<interest>
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="等待期">
+					<item>若被保险人在合同生效或最后一次复效（以较迟者为准）之日起180日（这180日的时间段称为“等待期”）内被确诊初次罹患合同约定的癌症（无论一种或多种，下同）或因意外伤害以外的原因身故，我们按您已支付的保险费给付保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日前身故，并且在身故前未被确诊患癌症，我们按您已支付的保险费与被保险人身故时基本保险金额对应的现金价值的较大者给付身故保险金,合同终止。</item>
+					<item>若被保险人于年满18周岁后的首个合同生效日对应日后（若投保时被保险人年满18周岁的,自合同生效日后）因遭受意外伤害或在等待期后因意外伤害以外的原因身故，并且在身故前未确诊患癌症，我们按您已支付的保险费的110%与被保险人身故时基本保险金额对应的现金价值的较大者给付身故保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="癌症保险金">
+					<item>若被保险人在等待期后被确诊初次罹患合同约定的癌症，我们按合同的基本保险金额给付癌症保险金。若癌症为肺癌，我们将再额外给付基本保险金额的20%。给付癌症保险金后，我们不再承担身故保险金责任，合同的现金价值减少为0。</item>
+				</paragraph>
+				<paragraph title="">
+					<item>“已支付的保险费”的含义:本条所述“已支付的保险费”指您根据合同的约定已支付的保险费。</item>
+				</paragraph>
+			</coverage>
+
+			<summary filter="document" parser="document">
+				<table style="cols:20%,30%,50%;">
+					<row type="title">
+						<blank>'序号'</blank>
+						<blank>'保险责任'</blank>
+						<blank>'保障内容'</blank>
+					</row>
+					<row>
+						<blank>'1'</blank>
+						<blank>'癌症保险金'</blank>
+						<blank>AMOUNT+'元'</blank>
+					</row>
+					<row>
+						<blank>'2'</blank>
+						<blank>'肺癌额外保险金'</blank>
+						<blank>AMOUNT*0.2+'元'</blank>
+					</row>
+					<row>
+						<blank>'3'</blank>
+						<blank>'身故保险金'</blank>
+						<blank>'◇ 若未发生癌症\n被保人＜18周岁，不低于主附险所交保费\n被保人≥18周岁，不低于主附险所交保费*110%\n◇ 若发生癌症\n被保人＜18周岁，不低于附加险所交保费\n被保人≥18周岁，不低于附加险所交保费*110%'</blank>
+					</row>
+					<row>
+						<blank>'4'</blank>
+						<blank>'癌症豁免保险费'</blank>
+						<blank>'若发生癌症，豁免附加险后续保费，且视为已支付'</blank>
+					</row>
+					<row>
+						<blank>'5'</blank>
+						<blank>'满期保险金'</blank>
+						<blank>try(RIDER('LAL00019').AMOUNT, 0)+'元'</blank>
+					</row>
+				</table>
+				<text>备注：“被保人＜18周岁”是指被保险人年满18周岁后的首个合同生效日对应日前；</text>
+				<text>“被保人≥18周岁”是指被保险人年满18周岁后的首个合同生效日对应日及以后。</text>
+			</summary>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 55 or DAY lt 28" type="customer">
+				被保险人年龄要求：出生满28天至55周岁。
+			</if>
+			<if condition="QUANTITY lt 1 or QUANTITY != round(QUANTITY)">
+				最低承保份数为1份，整数份承保。
+			</if>
+			<if condition="PAY_VALUE > 1 and AGE lt 18 and PREMIUM lt 300">
+				该主险单独投保且被保险人＜18周岁时，期交保费不能低于300元。
+			</if>
+			<if condition="PAY_VALUE > 1 and AGE >= 18 and PREMIUM lt 500">
+				该主险单独投保且被保险人≥18周岁时，期交保费不能低于500元。
+			</if>
+			<if condition="PAY_VALUE == 1 and PREMIUM lt 1000">
+				该主险单独投保时，趸交保费不能低于1000 元。
+			</if>
+		</rule>
+	</product>
+</declare>

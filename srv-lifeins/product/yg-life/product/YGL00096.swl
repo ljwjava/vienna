@@ -1,0 +1,233 @@
+//初始固定数据
+var charging1 = [0.5, 0.25, 0.15, 0.1, 0.1, 0.05];
+var charging2 = charging1;
+var rate1 = [0.025, 0.045, 0.06]; 
+var rate2 = rate1;
+var baseRate2 = baseRate;
+var otherRate2 = otherRate;
+var minAmount = 1000;
+var manageFee = 60;
+
+var r = new map(); //返回的结果集合
+if (AMOUNT <= 0) return r;
+
+//计算结果数据
+var account = new double[INSURE_PERIOD][3];
+var prmFee = new double[INSURE_PERIOD];
+var prmIn = new double[INSURE_PERIOD];
+var bonus = new double[INSURE_PERIOD];
+var amount = new double[INSURE_PERIOD];
+var thunderAmount = new double[INSURE_PERIOD];
+var fee = new double[INSURE_PERIOD][3];
+var feeT = new double[INSURE_PERIOD][3];
+var feeS = new double[INSURE_PERIOD][3];
+var feeM = new double[INSURE_PERIOD][3];
+var amtL = new double[INSURE_PERIOD][3];
+var amtT = new double[INSURE_PERIOD][3];
+var amtS = new double[INSURE_PERIOD][3];
+
+var gender = GENDER - 1;
+var baseAmount1 = AMOUNT;
+var baseAmount2 = HasProduct('YGL00097') ? RIDER('YGL00097').AMOUNT : 0;
+var baseThunder = HasProduct('YGL00098') ? RIDER('YGL00098').AMOUNT : 0;
+var rate96 = RateArray(18, 105, 'RATE', 2);
+var rate98 = HasProduct('YGL00098') ? RIDER('YGL00098').RateArray(18, 105, 'RATE', 4) : 0;
+
+//账户是根据上一年的结果变化的，需要临时存
+var account1 = new double[3];
+var account2 = new double[3];
+var accountBegin1 = new double[3];
+var accountBegin2 = new double[3];
+//主附保额也是会根据上一年的结果变化的，需要临时存
+var deadAmount1 = [baseAmount1, baseAmount1, baseAmount1];
+var deadAmount2 = [baseAmount2, baseAmount2, baseAmount2];
+var thunder = [baseThunder, baseThunder, baseThunder];
+
+for(var i = 0; i < INSURE_PERIOD; i++)
+{
+	var age = AGE + i;
+	
+	var premium1 = i < YEAR ? PREMIUM : 0;
+	var addPremium1 = try(X_PREMIUM[i], 0);
+	var bonus1 = i >= 3 and i < PAY_PERIOD ? 120 : 0;
+
+	var premium2 = HasProduct('YGL00097') and i < YEAR ? RIDER('YGL00097').PREMIUM : 0;
+	var addPremium2 = try(HasProduct('YGL00097') ? RIDER('YGL00097').X_PREMIUM[i] : 0, 0);
+	var bonus2 = HasProduct('YGL00097') and i >= 3 and i < PAY_PERIOD ? 80 : 0;
+	
+	bonus[i] = bonus1 + bonus2;
+	
+	//保费
+	if (i < PAY_PERIOD)
+	{
+		var vp1 = premium1 * (1-charging1[min(i, 5)]);//主险保费
+		var vp2 = premium2 * (1-charging2[min(i, 5)]);//副险保费
+		prmFee[i] = premium1 + premium2 - vp1 - vp2;
+		
+		for(var k = 0; k < 3; k++)
+		{
+			account1[k] += vp1 + bonus1;
+			account2[k] += vp2 + bonus2;
+		}
+
+		prmIn[i] += vp1 + vp2;
+	}
+
+	//追加保费
+	if (addPremium1 > 0 || addPremium2 > 0)
+	{
+		for(var k = 0; k < 3; k++)
+		{
+			deadAmount1[k] += addPremium1;
+			deadAmount2[k] += addPremium2;
+			thunder[k] += addPremium1;
+			
+			account1[k] += addPremium1 * 0.97;
+			account2[k] += addPremium2 * 0.97;
+		}
+		
+		prmIn[i] += addPremium1 * 0.97 + addPremium2 * 0.97;
+		prmFee[i] += addPremium1 * 0.03 + addPremium2 * 0.03;
+	}
+
+	for(var k = 0; k < 3; k++)
+	{
+		accountBegin1[k] = account1[k];//期末主账户价值
+		accountBegin2[k] = account2[k];//期末副账户价值
+	}
+
+	//领取
+	var draw = try(X_DRAW[i], 0);
+	if (draw > 0)
+	{
+		for(k = 0; k < 3; k++)
+		{
+			if (accountBegin1[k]>0 || accountBegin2[k]>0)
+			{
+				var draw1 = draw * accountBegin1[k] / (accountBegin1[k] + accountBegin2[k]);
+				deadAmount1[k] -= draw1;
+				deadAmount2[k] -= draw - draw1;
+				thunder[k] -= draw1;
+			}
+		}
+	}
+	
+	//调整主险身故保额
+	var newAmount1 = try(X_AMOUNT[i],0);//调整保额
+	if (newAmount1 > 0)
+	{
+		deadAmount1[0] = newAmount1;
+		deadAmount1[1] = newAmount1;
+		deadAmount1[2] = newAmount1;
+	}
+	
+	//调整副险身故保额
+	var newAmount2 = try(RIDER('YGL00097').X_AMOUNT[i], 0);//调整保额
+	if (newAmount2 > 0)
+	{
+		deadAmount2[0] = newAmount2;
+		deadAmount2[1] = newAmount2;
+		deadAmount2[2] = newAmount2;
+	}
+	
+	//调整重疾保额
+	var newThunder = try(RIDER('YGL00098').X_AMOUNT[i], 0);
+	if (newThunder > 0)
+	{
+		thunder[0] = newThunder;
+		thunder[1] = newThunder;
+		thunder[2] = newThunder;
+	}
+	
+	for(var k=0;k<3;k++)
+	{
+		deadAmount1[k] = max(deadAmount1[k], minAmount);
+		deadAmount2[k] = baseAmount2>0 ? max(deadAmount2[k], minAmount) : 0;
+		thunder[k] = max(thunder[k], minAmount);
+	}
+	
+	var rider50Amt = (RiderValid('YGL00050',i) ? RIDER('YGL00050').AMOUNT : 0);
+	amount[i] = deadAmount1[2] + deadAmount2[2] + rider50Amt;
+	thunderAmount[i] = thunder[2];
+	
+	//扣除各种风险保费
+	for(var k = 0; k < 3; k++)
+	{
+		var t = max(deadAmount1[k] , 1.2*accountBegin1[k]);
+  	var dieAmount1 = t - accountBegin1[k];
+		var dieAmount2 = max(deadAmount2[k] , 1.2*accountBegin2[k]) - accountBegin2[k];
+		var mainFee = dieAmount1*rate96[age-18][gender]/1000;//主险身故保费
+		var riderFee = dieAmount2*rate96[age-18][gender]/1000;//副险身故保费
+		var thunderAmt = max(thunder[k], 1.2*accountBegin1[k]) * (1 - accountBegin1[k] / t);
+		var thunderFee = HasProduct('YGL00098') ? thunderAmt*rate98[age-18][gender+2]/1000 : 0; //重疾保费
+		var slightFee = HasProduct('YGL00098') ? thunder[k]*0.2*rate98[age-18][gender]/1000 : 0; //重疾轻症保费
+		
+		var rp50 = RiderValid('YGL00050',i) ? RIDER('YGL00050').COST(i) : 0;
+		var rp55 = RiderValid('YGL00055',i) ? RIDER('YGL00055').COST(i) : 0;
+		var rp56 = RiderValid('YGL00056',i) ? RIDER('YGL00056').COST(i) : 0;
+		var rp63 = RiderValid('YGL00063',i) ? RIDER('YGL00063').COST(i) : 0;
+		var rp64 = RiderValid('YGL00064',i) ? RIDER('YGL00064').COST(i) : 0;
+		var rp65 = RiderValid('YGL00065',i) ? RIDER('YGL00065').COST(i) : 0;
+
+		fee[i][k] = round(mainFee + riderFee) + round(rp50 + rp55 + rp56, 2);
+		feeT[i][k] = round(thunderFee);
+		feeS[i][k] = round(slightFee);
+		feeM[i][k] = round(rp63 + rp64 + rp65, 2);
+		
+		//print(rp63 + ', ' + rp64 + ', ' + rp65);
+		//print(RiderValid('YGL00050',i) + ", " + RiderValid('YGL00056',i));
+		//print(mainFee + ',' + riderFee + ',' + thunderFee + ',' + slightFee + ',' + rp50 + ',' + rp55 + ',' + rp56);
+		
+		var accountMain = account1[k] - manageFee - (mainFee + riderFee + thunderFee + slightFee + rp50 + rp55 + rp56 + rp63 + rp64 + rp65);
+		var accountRider = account2[k];
+		
+		if (accountMain < 0)
+		{
+			accountRider += accountMain;
+			accountMain = 0;
+		}
+		account1[k] = accountMain * (1 + rate1[k]);
+		account2[k] = accountRider * (1 + rate2[k]);
+		
+		amtL[i][k] = round(max(deadAmount1[k], account1[k] * 1.2) + max(deadAmount2[k], account2[k] * 1.2) + rider50Amt);
+		amtT[i][k] = round(max(thunder[k], account1[k] * 1.2));
+		amtS[i][k] = round(thunder[k] * 0.2);
+	}
+	
+	//领取
+	if (draw > 0)
+	{
+		for(var k = 0; k < 3; k++)
+		{
+			if (account1[k]>0 || account2[k]>0)
+			{
+				//客户的文档上用的是期初的账户价值算的比例，并不是用现在的比例，感觉用现在的比例似乎更合理，但是这里还是参照客户的文档
+				var draw1 = draw * accountBegin1[k] / (accountBegin1[k] + accountBegin2[k]); 
+				account1[k] -= draw1;
+				account2[k] -= draw - draw1;
+			}
+		}
+	}
+	
+	for(var k = 0; k < 3; k++)
+	{
+		account[i][k] = account1[k]+account2[k];
+	}
+}
+
+r.ACCOUNT = account;
+r.AMOUNT = amount;
+r.THUNDER = thunderAmount;
+r.PRM_I = prmIn;
+r.PRM_F = prmFee;
+r.BONUS = bonus;
+r.FEE_L	= fee;
+r.FEE_T	= feeT;
+r.FEE_S	= feeS;
+r.FEE_M	= feeM;
+r.MANAGE = manageFee;
+r.AMT_L = amtL;
+r.AMT_T = amtT;
+r.AMT_S = amtS;
+
+return r;

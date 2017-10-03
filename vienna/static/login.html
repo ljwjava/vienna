@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>VIENNA</title>
+
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/web.css" rel="stylesheet">
+
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/jquery.cookie.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+  <script src="./js/common.js"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" onclick="common.home()">VIENNA</a>
+    </div>
+    <div class="navbar-header" id="menu"></div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a id="username"></a></li>
+        <li><a onclick="common.logout()">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container" id="content">
+  <br/>
+  <h2 class="form-signin-heading">请输入用户名和密码</h2>
+  <label for="loginName" class="sr-only">loginName</label>
+  <input type="text" id="loginName" class="form-control" placeholder="用户名" required autofocus/>
+  <br/>
+  <label for="password" class="sr-only">Password</label>
+  <input type="password" id="password" class="form-control" placeholder="密码" required/>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" id="remember"> 记住我的用户名和密码
+    </label>
+  </div>
+  <button class="btn btn-lg btn-primary btn-block" type="button" onclick="login()">登录</button>
+
+  <script>
+    var login = function() {
+      common.req("user/login.json", {loginName:$("#loginName").val(),password:$("#password").val()}, function(r) {
+        if ($("#remember").is(':checked')) {
+          $.cookie('user/loginName', $("#loginName").val(), { expires: 30 });
+          $.cookie('user/password', $("#password").val(), { expires: 30 });
+        } else {
+          $.cookie('user/loginName', "");
+          $.cookie('user/password', "");
+        }
+        document.location.href = "proposal/standard.web";
+      });
+    }
+
+    if ($.cookie('user/loginName') != "" && $.cookie('user/password') != "")  {
+      $("#loginName").val($.cookie('user/loginName'));
+      $("#password").val($.cookie('user/password'));
+      $("#remember").attr("checked", true);
+    } else {
+      $("#loginName").val("");
+      $("#password").val("");
+      $("#remember").attr("checked", false);
+    }
+  </script>
+</div>
+</body>
+</html>

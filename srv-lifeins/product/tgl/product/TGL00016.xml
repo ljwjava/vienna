@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="TGL00016"
+		corporation_id="tgl"
+		full_code="'RIS' + (round(PAY_PERIOD) le 10 ?('0'+round(PAY_PERIOD)):round(PAY_PERIOD))"
+		name="全球人壽安心360利率變動型人民幣增額終身壽險"
+		name_abbr="全球人壽安心360利率變動型人民幣增額終身壽險"
+		currency="cny"
+		unit="1000"
+		type="life"
+		sequence="1000"
+		channel="agy,std,br,bd,ho"
+		sale_begin_date="2002-01-01"
+		sale_end_date=""
+		last_modify_date="2014-09-27">
+		
+		<risk>
+		</risk>
+		
+		<data>
+			<item parser="file.auto" value="TGL00016"/>
+		</data>
+
+		<param>
+		    <pay_freq>
+		        <item code="year"/>
+		        <item code="half_year"/>
+		        <item code="season"/>
+		        <item code="month"/>
+		    </pay_freq>
+			<pay>
+				<item code="term_6"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_25"/>
+				<item code="term_30"/>
+				<item code="to_55"/>
+				<item code="to_60"/>
+				<item code="to_65"/>
+			</pay>
+			<insure>
+				<item code="full_110"/>
+			</insure>
+		</param>
+		
+		<rider>
+		</rider>
+		
+		<init>
+		    <item name="DISCOUNT_H" type="double" value="0"/>
+		    <item name="R" type="double" value="0.035"/>
+		</init>
+		
+		<interest>
+			<var name="ADD_PRM" desc="保險費總和" param="A1" formula="PREMIUM*min((A1+1),PAY_PERIOD)"/>
+			<var name="DND_AMT" desc="當年度保險金額" param="A1" formula="AMOUNT/1000*DS.DDB[0][A1]"/>
+			<var name="BD_VALUE" desc="保單價值準備金" param="A1" formula="AMOUNT/1000*DS.NFO[0][A1]"/>
+			<var name="JY_VALUE" desc="解約金" param="A1" formula="AMOUNT/1000*DS.CSV[0][A1]"/>
+			<var name="SG_VALUE" desc="身故/全殘保險金" param="A1" formula="max(max(IT.DND_AMT(A1),IT.BD_VALUE(A1)),IT.ADD_PRM(A1)*1.03)"/>
+			<var name="ZZ_VALUE" desc="增值回饋分享金" param="A1" formula="(A1 == 0 ?IT.BD_VALUE(A1): IT.BD_VALUE(A1)+IT.BD_VALUE(A1-1))*0.5*(R-0.025)"/>
+			<var name="SJBF"  desc="實繳保費" param="A1" formula="A1 ge PAY_PERIOD?'':floor(DS.RATE[0][0]*0.985*QUANTITY)"/>
+			<var name="ZEJQ_VALUE" desc="增額繳清" param="A1" formula="AGE lt 15 and A1 lt PAY_PERIOD?0:IT.ZZ_VALUE(A1)"/>
+			<var name="ADD_SJBF"  desc="累積實繳保費" param="A1" formula="A1 == 0?IT.SJBF(A1):IT.ADD_SJBF(A1-1)+IT.SJBF(A1)"/>
+			<var name="DJBF_VALUE" desc="增值回饋之抵繳保費" param="A1" formula="AGE lt 15 and A1 lt PAY_PERIOD?IT.ZZ_VALUE(A1):0"/>
+			<var name="PUA_DJBF_VALUE" desc="PUA產生之抵繳保費" param="A1" formula="IT.DJBF_VALUE(A1) != 0 ? IT.PUA_END_VALUE(A1): 0"/>
+			<var name="DNZE_VALUE" desc="當年增額繳清保險金額" param="A1" formula="(IT.ZEJQ_VALUE(A1)+ (IT.ZEJQ_VALUE(A1) != 0?IT.PUA_VALUE(A1):0))/DS.NSP[0][A1+1]*1000"/>
+			<var name="ADD_DNZE_VALUE" desc="累積增額繳清保險金額" param="A1" formula="A1 == 0 ? IT.DNZE_VALUE(A1) : IT.ADD_DNZE_VALUE(A1-1)+round(IT.DNZE_VALUE(A1),0)"/>
+			<var name="PUA_VALUE" desc="PUA產生之分享金" param="A1" formula="A1 gt 0 ? (IT.PUA_END_VALUE(A1-1)+IT.JS_PUA_VALUE(A1))*0.5*(R-0.025) : 0"/>
+			<var name="PUA_END_VALUE" desc="PUA期末報價金" param="A1" formula="round(IT.ADD_DNZE_VALUE(A1),0)*DS.NSP[0][A1+1]/1000"/>
+			<var name="JS_PUA_VALUE" desc="計算PUA分享金期末報價金" param="A1" formula="A1 gt 0 ? IT.ADD_DNZE_VALUE(A1-1)*DS.NSP[0][A1+1]/1000 : 0"/>
+			<var name="ZZHK" desc="加PUA之後的增值回饋分享金" param="A1" formula="IT.ZZ_VALUE(A1)+IT.PUA_VALUE(A1)"/>
+			<var name="B_BD_VALUE" desc="基本保險金額+累計增加保險金額的保單價值準備金" param="A1" formula="round(IT.BD_VALUE(A1),0)+round(IT.PUA_END_VALUE(A1),0)"/>
+			<var name="B_JY_VALUE" desc="基本保險金額+累計增加保險金額的解約金" param="A1" formula="round(IT.JY_VALUE(A1),0)+round(IT.PUA_END_VALUE(A1),0)"/>
+			<var name="CSV" desc="年度末解約金" param="A1" formula="QUANTITY*DS.CSV[0][A1+1]"/>
+			<var name="RPU" desc="減額繳清" param="A1" formula="QUANTITY*DS.RPU[0][A1+1]"/>
+			<var name="X" desc="展期期間年" param="A1" formula="floor(DS.EX1[0][A1+1])"/>
+			<var name="Y" desc="展期期間天" param="A1" formula="round((DS.EX1[0][A1+1]-floor(DS.EX1[0][A1+1]))*1000)"/>
+			<var name="EXA" desc="展期保險金" param="A1" formula="QUANTITY*DS.EX2[0][A1+1]"/>
+			<var name="ZZ_SG_VALUE"  desc="增值回饋身故/全殘保險金" param="A1"  formula="A1 == 0?IT.SJBF(A1):IT.ADD_SJBF(A1-1)+IT.SJBF(A1)"/>
+			<var name="DJ_ZZ_VALUE" desc="累計PUA與增值回饋抵繳保費" param="A1" formula="A1 == 0 ?(IT.PUA_DJBF_VALUE(A1)+IT.DJBF_VALUE(A1)): (IT.DJ_ZZ_VALUE( A1- 1)+IT.PUA_DJBF_VALUE(A1)+IT.DJBF_VALUE(A1))"/>
+		  <var name="DJ_VALUE" desc="抵繳保費後累計實繳保費" param="A1" formula="IT.ADD_SJBF(A1)"/>  
+		  <var name="BAIFENB" desc="解約金對累積實繳保費之百分比" param="A1" formula="0"/> 
+		</interest>
+		
+		<attachment>
+			<benefit_table filter="document" parser="document">
+				<!--<table>
+					<row type="title">
+						<blank>'保單年度末'</blank>
+						<blank>'保險年齡'</blank>
+						<blank>'累積實繳保費'</blank>
+						<blank>'當年度保險金額'</blank>
+						<blank>'保單價值準備金'</blank>
+						<blank>'身故/全殘保險金'</blank>
+						<blank>'解約金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE</blank>
+							<blank align="right" style="########0">IT.ADD_SJBF(I)</blank>
+							<blank align="right" style="########0">IT.DND_AMT(I)</blank>
+							<blank align="right" style="########0">IT.BD_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.SG_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.JY_VALUE(I)</blank>
+						</row>
+					</loop>
+					</table>
+					-->
+					<table>
+					<row type="title">
+						<blank row="3">'保單年度末'</blank>
+						<blank row="3">'保險年齡'</blank>
+						<blank col="5">'基本保險金額'</blank>
+						<blank col="7">'宣告利率假設'+round(R*100,2)+'%'</blank>
+					</row>
+					<row type="title">	
+						<blank row="2">'累計實繳保費'</blank>
+						<blank row="2">'當年度保險金額'</blank>
+						<blank row="2">'保單價值準備金'</blank>
+						<blank row="2">'身故/全殘保險金'</blank>
+						<blank row="2">'解約金'</blank>
+						<blank row="2">'增值回饋分享金'</blank>
+						<blank row="2">'抵繳保費後累計實繳保費'</blank>
+						<blank col="5">'保險金額 ( 基本保險金額 + 累計增加保險金額 )'</blank>
+					</row>
+					<row type="title">	
+						<blank>'當年度保險金額'</blank>
+						<blank>'保單價值準備金'</blank>
+						<blank>'身故/全殘保險金'</blank>
+						<blank>'解約金'</blank>
+						<blank>'解約金對累積實繳保費之百分比'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank align="right" style="########0">I+1</blank>
+							<blank align="right" style="########0">I+AGE</blank>
+							<blank align="right" style="########0">IT.ADD_SJBF(I)</blank>
+							<blank align="right" style="########0">IT.DND_AMT(I)</blank>
+							<blank align="right" style="########0">IT.BD_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.SG_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.JY_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.ZZ_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.DJ_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.ZEJQ_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.DNZE_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.ADD_DNZE_VALUE(I)</blank>
+							<blank align="right" style="########0">IT.B_JY_VALUE(I)</blank>
+							<blank align="right" style="########0">0</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			
+			<!--<extend_table filter="document" parser="document">
+				<table>
+					<row type="title">
+							<blank>'年度'</blank>
+							<blank>'年齡'</blank>
+							<blank>'實繳保費'</blank>
+							<blank>'當年度壽險保額'</blank>
+							<blank>'年度末生存保險金'</blank>
+							<blank>'年度末解約金'</blank>
+							<blank>'展期期間'</blank>
+							<blank>'展期保險金'</blank>
+							<blank>'減額繳清保額'</blank>
+						</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="###,###,##0">IT.SJBF(I)</blank>
+							<blank align="right" style="###,###,##0">case(AGE+I lt 15,"*",IT.DND_AMT(I))</blank>
+							<blank align="right" style="###,###,##0"></blank>
+							<blank align="right" style="###,###,##0">IT.CSV(I)</blank>
+							<blank align="right" style="###,###,##0">IT.X(I)+'年'+IT.Y(I)+'天'</blank>
+							<blank align="right" style="###,###,##0">IT.EXA(I)</blank>
+							<blank align="right" style="###,###,##0">case(IT.RPU(I)==0,"",IT.RPU(I))</blank>
+						
+						</row>
+					</loop>
+				</table>
+			</extend_table>
+		--></attachment>
+		
+		<rule skip="">
+			<if>
+				if (PAY_VALUE lt 45) {
+					if (PAY_VALUE+AGE > 75)
+						return '選擇繳費' + PAY_VALUE + '年，要求投保年齡介於0~' + (75-PAY_VALUE) + '歲';
+				}
+				else {
+					if (AGE lt PAY_VALUE-30 or AGE > PAY_VALUE-6)
+						return '選擇繳費至' + PAY_VALUE + '歲，要求投保年齡介於' + (PAY_VALUE-30) + '~' + (PAY_VALUE-6) + '歲';
+				}
+				return null;
+			</if>
+			<if condition="AMOUNT lt 2000">
+				最低保額為2000美元。
+			</if>
+		</rule>
+	</product>
+</declare>

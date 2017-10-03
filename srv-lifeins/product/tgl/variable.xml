@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<variable type="product">
+	  <item name="INS_AGE" formula="INSURANT.INS_AGE"/>
+		<item name="PREMIUM_DTL" formula="PREMIUM_O*RRR"/>
+		<!-- 高保额折让保费 -->
+		<item name="DISCOUNT_HV" formula="DISCOUNT_H == null ? 0 : DISCOUNT_H * PREMIUM_O"/>
+		<!-- 初始保费  -->
+		<item name="PREMIUM_O" formula="DS.RATE[0][0]*QUANTITY"/>
+		<!-- 保费频率对应因子 -->
+		<item name="RRR">
+			var x = DISCOUNT_H == null ? 1 : 1 - DISCOUNT_H;
+			x = DISCOUNT == null ? x : x * (1 - DISCOUNT);
+			if (PAY_FREQ_VALUE == 1 or PAY_FREQ_VALUE == 0)
+				return x;
+			else if (PAY_FREQ_VALUE == 4)
+				return x * 0.52;
+			else if (PAY_FREQ_VALUE == 3)
+				return x * 0.262;
+			else if (PAY_FREQ_VALUE == 2)
+				return x * 0.088;
+			//print('pay_freq: ' + PAY_FREQ_VALUE);
+			throw '錯誤的繳費頻率';
+		</item>
+	</variable>
+</declare>

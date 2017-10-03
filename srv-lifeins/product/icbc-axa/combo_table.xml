@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+    <attachment>
+      <benefit_combo name="combo" parser="combo_def">
+       	  <!--共用 头 -->
+            <item code="year" row="4" mode="cover" name="保单\n年度"/>
+            <item code="age"  row="4" mode="cover" name="年末\n已达\n年龄"/>
+            <item code="age1"  row="4" mode="cover" name="已达\n年龄"/>
+            <item code="age2"  row="4" mode="cover" name="保单\n年度末\n已达\n年龄"/>
+            <item code="age3"  row="4" mode="cover" name="保单年度\n末年龄"/>
+            <item code="age4"  row="4" mode="cover" name="年龄"/>
+            <item code="SGBXJ1" row="4" mode="add" name="身故\n保险金" style="###########0"/>
+            <item code="BDNDCBXJ" row="4" mode="add" name="保单年度初\n生存保险金" style="###########0"/>
+            <item code="ZJBXJ1" row="4" mode="add" name="重大疾病\n保险金" style="###########0"/>
+            <item code="QZZJBXJ1" row="4" mode="add" name="轻症重疾\n保险金" style="###########0"/>
+            <item code="INSURED_AGE"  row="4" mode="cover" name="被保险人\n年末年龄"/>
+            <item code="APPLICANT_AGE"  row="4" mode="cover" name="投保人\n年末年龄"/>
+            
+            <items name="万能账户价值（满期金）" row="2">
+          		<item code="WNZHJZ_MQJ_low" row="2" mode="add" name="低（2.5%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+          		<item code="WNZHJZ_MQJ_middle" row="2" mode="add" name="中（4.5%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+          		<item code="WNZHJZ_MQJ_high" row="2" mode="add" name="高（6.0%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+          	</items>
+            <!-- 非万能险 -->
+            <item code="SCZLY" row="4" mode="add" name="*生存\n总利益" style="###########0" value="case(v le 0 ,'-',value)"/>
+            <item code="SCZLYC" row="4" mode="add" name="*生存\n总利益" style="###########0"/>
+            <item code="SGZLY" row="4" mode="add" name="*身故\n总利益" style="###########0" value="case(v le 0 ,'-',value)"/>
+            
+            <item code="JBSGZLY" row="4" mode="add" name="*疾病身故\n总利益" style="###########0" value="case(v le 0 ,'-',value)"/>
+            <item code="JBSGZLYC" row="4" mode="add" name="*疾病身故\n总利益" style="###########0"/>
+            <item code="YWSGZLY" row="4" mode="add" name="*意外身故\n总利益" style="###########0" value="case(v le 0 ,'-',value)"/>
+            <item code="YWSGZLYC" row="4" mode="add" name="*意外身故\n总利益" style="###########0"/>
+            
+            <item code="MQBXJ" row="4" mode="add" name="*满期\n保险金" style="###########0"/>
+            <item code="NJ_1" row="4" mode="add" name="*年金" style="###########0"/>
+            <item code="LJNJ_1" row="4" mode="add" name="*累积\n年金" style="###########0"/>
+            <item code="SCNJ" row="4" mode="add" name="*生存年金" style="###########0" value="case(v le 0 ,'-',value)"/>
+            <item code="MQJ1" row="4" mode="add" name="*满期金" style="###########0"/>
+            <item code="SCJ" row="4" mode="add" name="*生存金" style="###########0"/>
+            <item code="SCJ_BHZSJ1" row="4" mode="add" name="*生存金\n（包含祝\n寿金）" style="###########0" value="case(v le 0 ,'-',value)"/>
+            <item code="SCJ_TBSCJ_ZSJ" row="4" mode="add" name="*生存金\n（包含特别\n生存金\n和祝寿金）" style="###########0"/>
+            <item code="LJSCJ1" row="4" mode="add" name="*累积生存金" style="###########0"/>
+            <item code="LJSCJ_CFNN" row="4" mode="add" name="*累积生存\n金（包含祝\n寿金）" style="###########0"/>
+            <item code="LJSCJ_TBSCJ_ZSJ" row="4" mode="add" name="*累积生存金\n（包含特别\n生存金\n和祝寿金）" style="###########0"/>
+            
+            <item code="SCJ_BHZSJ" row="4" mode="add" name="生存金\n（包含祝\n寿金）" style="###########0"/>
+            <item code="LJSCJ" row="4" mode="add" name="累计生存\n金" style="###########0"/>
+            
+			<item code="SGJ" row="4" mode="add" name="身故金" style="###########0"/>
+			<item code="QCJ" row="4" mode="add" name="全残金" style="###########0"/>
+            <item code="SGBXJ" row="4" mode="add" name="身故\n保险金" style="###########0"/>
+            <item code="QCBXJ" row="4" mode="add" name="全残\n保险金" style="###########0"/>
+            <item code="JBSGBXJ" row="4" mode="add" name="疾病身故\n保险金" style="###########0"/>
+            <item code="JBQCBXJ" row="4" mode="add" name="疾病全残\n保险金" style="###########0"/>
+            <item code="YWSGBXJ" row="4" mode="add" name="意外身故\n保险金" style="###########0"/>
+            <item code="YWQCBXJ" row="4" mode="add" name="意外全残\n保险金" style="###########0"/>
+            
+            <items name="年金" row="2">
+            	<item code="NJ_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="NJ_HZDLJJQZE" row="2" mode="add" name="含中档\n累积交\n清增额" style="###############0"/>
+            </items>
+            <items name="累积年金" row="2">
+            	<item code="LJNJ_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="LJNJ_HZDLJJQZE" row="2" mode="add" name="含中档\n累积交\n清增额" style="###############0"/>
+            </items>
+            
+            <items name="身故保险金" row="2">
+            	<item code="SGBXJ_JB" row="2" mode="add" name="疾病" style="###############0"/>
+            	<item code="SGBXJ_YW" row="2" mode="add" name="意外" style="###############0"/>
+            </items>
+            
+            <items name="身故总利益" row="2">
+            	<item name="不含红利" row="2">
+            		<item code="SGZLY_BHHL_JB" row="2" mode="add" name="疾病" style="###############0"/>
+            		<item code="SGZLY_BHHL_YW" row="2" mode="add" name="意外" style="###############0"/>
+            	</item>
+            	<item name="含中档累积红利" row="2">
+            		<item code="SGZLY_HZDLJHL_JB" row="2" mode="add" name="疾病" style="###############0"/>
+            		<item code="SGZLY_HZDLJHL_YW" row="2" mode="add" name="意外" style="###############0"/>
+            	</item>
+            	<item name="含中档累积交清\n增额" row="2">
+            		<item code="SGZLY_HZDLJJQZE_JB" row="2" mode="add" name="疾病" style="###############0"/>
+            		<item code="SGZLY_HZDLJJQZE_YW" row="2" mode="add" name="意外" style="###############0"/>
+            	</item>
+            </items>
+            <items name="生存总利益" row="2">
+            	<item code="SCZLY_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="SCZLY_HZDLJHL" row="2" mode="add" name="含中档累积红利" style="###############0"/>
+            	<item code="SCZLY_HZDLJJQZE" row="2" mode="add" name="含中档\n累积交\n清增额" style="###############0"/>
+            </items>
+            
+            <items name="满期金" row="2">
+            	<item code="MQJ_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="MQJ_HZDLJJQZE" row="2" mode="add" name="含中档\n累积交\n清增额" style="###############0"/>
+            </items>
+            
+            
+            <items name="生存金" row="2">
+            	<item code="SCJ_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="SCJ_HZDLJHL" row="2" mode="add" name="含中档累积红利" style="###############0"/>
+            </items>
+            
+            <items name="累积生存金" row="2">
+            	<item code="LJSCJ_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="LJSCJ_HZDLJJQZE" row="2" mode="add" name="含中档\n累积交\n清增额" style="###############0"/>
+            </items>
+            
+            <items name="意外身故总利益" row="2">
+            	<item code="YWSGZLY_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="YESGZLY_HZDLJHL" row="2" mode="add" name="含中档累积红利" style="###############0"/>
+            	<item code="YESGZLY_HZDLJJQZE" row="2" mode="add" name="含中档\n累积交\n清增额" style="###############0"/>
+            </items>
+            <items name="身故总利益" row="2">
+            	<item code="SGZLY_BHHL" row="2" mode="add" name="不含红利" style="###############0"/>
+            	<item code="SGZLY_HZDLJHL" row="2" mode="add" name="含中档累积红利" style="###############0"/>
+            	<item code="SGZLY_HZDLJJQZE" row="2" mode="add" name="含中档\n累积交\n清增额" style="###############0"/>
+            </items>
+            
+            <item code="ZJCYWSGQCBXJ" row="4" mode="add" name="公共交通\n/自驾车意外\n身故/全残\n保险金" style="###########0"/>
+            <item code="ZJCYWSGBXJ" row="4" mode="add" name="公共交通\n/自驾车意外\n身故\n保险金" style="###########0"/>
+            <item code="ZJCYWQCBXJ" row="4" mode="add" name="公共交通\n/自驾车意外\n全残\n保险金" style="###########0"/>
+            <item code="QTYWSGQCBXJ" row="4" mode="add" name="其他意外身故\n/全残保险金" style="###########0"/>
+            <item code="YBSGQCBXJ" row="4" mode="add" name="一般身故\n/全残保险金" style="###########0"/>
+            <item code="YWCJ_STSBXJ" row="4" mode="add" name="意外残疾/烧烫伤\n保险金（最高）" style="###########0"/>
+            
+            <items name="身故保险金" row="2">
+            	<item code="SGBXJ_low" row="2" mode="add" name="低" style="###############0" value="case(v le 0 ,'-',value)"/>
+            	<item code="SGBXJ_middle" row="2" mode="add" name="中" style="###############0" value="case(v le 0 ,'-',value)"/>
+            	<item code="SGBXJ_high" row="2" mode="add" name="高" style="###############0" value="case(v le 0 ,'-',value)"/>
+            </items>
+           
+			<item code="BFLQ1" row="4" mode="add" name="部分\n领取" style="###########0"/>
+            <item code="ZSBXJ" row="4" mode="add" name="祝寿\n保险金" style="###########0"/>
+			<item code="YLBXJ" row="4" mode="add" name="养老\n保险金" style="###########0"/>
+            
+            <item code="HYQHJ" row="4" mode="add" name="婚姻\n庆贺金" style="###########0"/>
+            <item code="BBXRSGHQCBXJ" row="4" mode="add" name="被保险人\n身故或全\n残保险金" style="###########0"/>
+            <item code="TBRYWSGHQCBXJ" row="4" mode="add" name="投保人\n意外身故或\n全残保险金" style="###########0"/>
+		
+			<items name="满期保险金" row="2">
+            	<item code="MQJ_BZLY" row="2" mode="add" name="保证利益" style="###############0"/>
+            	<item code="MQJ_Z" row="2" mode="add" name="中" style="###############0"/>
+            	<item code="MQJ_G" row="2" mode="add" name="高" style="###############0"/>
+            </items>
+            
+            <items name="身故、全残保险金" row="2">
+            	<item code="SGQCBXJ_BZLY" row="2" mode="add" name="保证利益" style="###############0"/>
+            	<item code="SGQCBXJ_Z" row="2" mode="add" name="中" style="###############0"/>
+            	<item code="SGQCBXJ_G" row="2" mode="add" name="高" style="###############0"/>
+            </items>
+            
+            <items name="现金价值" row="2">
+            	<item code="XJJZ_BZLY" row="2" mode="add" name="保证利益" style="###############0"/>
+            	<item code="XJJZ_Z" row="2" mode="add" name="中" style="###############0"/>
+            	<item code="XJJZ_G" row="2" mode="add" name="高" style="###############0"/>
+            </items>
+      <item code="DYDBF" row="4" mode="add" name="当年\n度保费" style="###########0"/>
+      <item code="LJSJBF" row="4" mode="add" name="累计所\n交保费" style="###########0"/>
+		 	<item code="QZZJBXJ" row="4" mode="add" name="轻症重疾\n保险金" style="###########0"/>
+            <item code="ZJBXJ" row="4" mode="add" name="重大疾病\n保险金" style="###########0"/>
+            <item code="ZCEXZLBXJ"  row="4" mode="add" name="再次恶性\n肿瘤保险金" style="###########0"/>
+            <item code="YWYL"  row="4" mode="add" name="意外\n医疗" style="###########0"/>
+            <item code="JBYLFY_high"  row="4" mode="add" name="基本医疗\n费用（最高）\n元/次" style="###########0"/>
+            <item code="JBYLWYPFY_high"  row="4" mode="add" name="基本医疗\n外药品费用\n（最高）元/次" style="###########0"/>
+            <item code="ZYJT_high"  row="4" mode="add" name="住院津贴\n（最高）元/天" style="###########0"/>
+            <item code="MQJ" row="4" mode="add" name="满期金" style="###########0"/>
+            <item code="SGBXJ2" row="4" mode="add" name="身故\n保险金" style="###########0"/>
+            <item code="MQB" row="4" mode="add" name="满期\n保险金" style="###########0"/>
+            <item code="SCNJ1" row="4" mode="add" name="生存年金" style="###########0"/>
+			<item code="XJJZ" row="4" mode="add" name="现金\n价值" style="###########0"/>
+			
+            <items name="当年度红利" row="2">
+            	<item code="bonus_low" row="2" mode="add" name="低" style="###############0"/>
+            	<item code="bonus_middle" row="2" mode="add" name="中" style="###############0"/>
+            	<item code="bonus_high" row="2" mode="add" name="高" style="###############0"/>
+            </items>
+            <items visible="self.getAdditional('DIVIDEND_MODE') != null and (self.getAdditional('DIVIDEND_MODE') == 'interest' or plan.getAdditional('DIVIDEND_MODE') == 'premium')" name="累积红利" row="2">
+            	<item code="dividend_low" row="2" mode="add" name="低" style="###############0"/>
+            	<item code="dividend_middle" row="2" mode="add" name="中" style="###############0"/>
+            	<item code="dividend_high" row="2" mode="add" name="高" style="###############0"/>
+            </items>
+			<!--添加0076分红方式-->
+			<items  visible="plan.getProductByDefId('0075') == null" name="累积红利" row="2">
+            	<item code="dividend_low_noadditional" row="2" mode="add" name="低" style="###############0"/>
+            	<item code="dividend_middle_noadditional" row="2" mode="add" name="中" style="###############0"/>
+            	<item code="dividend_high_noadditional" row="2" mode="add" name="高" style="###############0"/>
+            </items>
+            <item code="BFLQ" row="4" mode="add" name="部分\n领取" style="###########0"/>
+            <items visible="self.getAdditional('DIVIDEND_MODE') != null and self.getAdditional('DIVIDEND_MODE') == 'add'"  name="累积交清增额" row="2">
+            	<item code="LJJQZE_low" row="2" mode="add" name="低" style="###############0"/>
+            	<item code="LJJQZE_middle" row="2" mode="add" name="中" style="###############0"/>
+            	<item code="LJJQZE_high" row="2" mode="add" name="高" style="###############0"/>
+            </items>
+            <!-- 
+            <item code="JEJQ" row="4" mode="add" name="减额交清"  style="###########0"/>
+             -->
+            <items name="万能账户价值\n（括号中为假设万能结算利率）" row="2">
+          		<item code="WNZHJZ_low" row="2" mode="add" name="低\n（2.5%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+          		<item code="WNZHJZ_middle" row="2" mode="add" name="中\n（4.5%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+          		<item code="WNZHJZ_high" row="2" mode="add" name="高\n（6.0%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+          	</items>
+          	
+          	 
+            <items name="保单账户价值（年末）" row="2">
+          		<item code="BDZHJZ_low" row="2" mode="add" name="投资收益\n演示（低）\n2.5%" style="###########0"></item>
+          		<item code="BDZHJZ_middle" row="2" mode="add" name="投资收益\n演示（中）\n4.5%" style="###########0"></item>
+          		<item code="BDZHJZ_high" row="2" mode="add" name="投资收益\n演示（高）\n6.0%" style="###########0"></item>
+          	</items>
+          	
+            <item code="premium" row="4" mode="add" name="当年\n保费"  style="###########0.00"/>
+            <item code="premium_sum" row="4" mode="accumulate" name="累计\n保费"  style="###########0.00"/>
+            <items name="保险费" row="2">
+            <item code="premium_time" row="2" mode="add" name="期交" style="###############0"/>
+            	<item code="premium_add" row="2" mode="add" name="累计" style="###############0"/>
+            </items>
+           
+            <items name="保险费" row="2">
+            	<item code="time_premium" row="2" mode="add" name="期交" style="###############0"/>
+            	<item code="acc_premium" row="2" mode="add" name="累计" style="###############0"/>
+            	<item code="add_premium" row="2" mode="add" name="追加" style="###############0.00"/>
+            </items>
+            
+            <items name="*保险费" row="2">
+            	<item code="time_premium1" row="2" mode="add" name="*期交" style="###############0"/>
+            	<item code="add_premium1" row="2" mode="add" name="追加" style="###############0"/>
+            	<item code="acc_premium1" row="2" mode="add" name="*累计" style="###############0"/>
+            </items>
+            
+            <items name="保险费" row="2">
+            	<item code="time_premium_J" row="2" mode="add" name="期交" style="###############0"/>
+            	<item code="add_premium_J" row="2" mode="add" name="追加" style="###############0"/>
+            	<item code="acc_premium_J" row="2" mode="add" name="累计" style="###############0"/>
+            </items>
+           	<item code="CSFY" row="4" mode="add" name="初始费用" style="###########0.00"/>
+           	
+           	<!-- 金娃娃 -->
+            <item code="BDGLF" row="4" mode="add" name="保单\n管理\n费" style="###########0"/>
+            <item code="JRGRZHBXF" row="4" mode="add" name="进入个\n人账户\n保险费" style="###########0"/>
+            <item code="CXJFTBJJ" row="4" mode="add" name="持续\n缴费\n特别\n奖金" style="###########0"/>
+            <item code="BFLQGRZHJZ" row="4" mode="add" name="部分领\n取个人\n账户价\n值" style="###########0"/>
+        	<item code="QZZJBXJ_J" row="4" mode="add" name="轻症重疾\n保险金" style="###########0"/>
+            <item code="ZJBXJ_J" row="4" mode="add" name="重大疾病\n保险金" style="###########0"/>
+        	<item code="SGZJ_J" row="4" mode="add" name="身故、轻症重\n疾、重大疾病\n及住院医疗保\n障成本" style="###########0"/>
+        	<item code="SG_QZ_ZJ_JBBXJE" row="4" mode="add" name="身故/轻\n症/重疾\n基本保险\n金额"  style="###########0"/>
+        	<!-- 
+        	<items name="不同假定结算利率下" row="2">
+            	<item name="保单年度末个人账户价值" row="2">
+            		<item name="最低保证利率" row="2">
+            			<item name="稳健型：2.5%" row="2">
+            				<item code="ACCOUNTVALUE_J_low" row="2" mode="add" name="进取型：0%" style="###############0"/>
+            			</item>
+            		</item>
+            		<item name="中" row="2">
+            			<item name="稳健型：4.5%" row="2">
+            				<item code="ACCOUNTVALUE_J_middle" row="2" mode="add" name="进取型：4.5%" style="###############0"/>
+            			</item>
+            		</item>
+            		<item name="高" row="2">
+            			<item name="稳健型：6.0%" row="2">
+            				<item code="ACCOUNTVALUE_J_high" row="2" mode="add" name="进取型：6.0%" style="###############0"/>
+            			</item>
+            		</item>
+            	</item>
+            	<item name="保单年度末身故保险金" row="2">
+            		<item name="最低保证利率" row="2">
+            			<item name="稳健型：2.5%" row="2">
+            				<item code="SGBXJ_J_low" row="2" mode="add" name="进取型：0%" style="###############0"/>
+            			</item>
+            		</item>
+            		<item name="中" row="2">
+            			<item name="稳健型：4.5%" row="2">
+            				<item code="SGBXJ_J_middle" row="2" mode="add" name="进取型：4.5%" style="###############0"/>
+            			</item>
+            		</item>
+            		<item name="高" row="2">
+            			<item name="稳健型：6.0%" row="2">
+            				<item code="SGBXJ_J_high" row="2" mode="add" name="进取型：6.0%" style="###############0"/>
+            			</item>
+            		</item>
+            	</item>
+            </items>
+             -->
+             <items name="不同假定结算利率下" row="2">
+   				<item code="ACCOUNTVALUE_J_low" row="2" mode="add" name="进取型：0%" style="###############0"/>
+   				<item code="ACCOUNTVALUE_J_middle" row="2" mode="add" name="进取型：4.5%" style="###############0"/>
+   				<item code="ACCOUNTVALUE_J_high" row="2" mode="add" name="进取型：6.0%" style="###############0"/>
+   				<item code="SGBXJ_J_low" row="2" mode="add" name="进取型：0%" style="###############0"/>
+   				<item code="SGBXJ_J_middle" row="2" mode="add" name="进取型：4.5%" style="###############0"/>
+   				<item code="SGBXJ_J_high" row="2" mode="add" name="进取型：6.0%" style="###############0"/>
+            </items>
+            
+                <items name="不同假定结算利率下" row="2">
+   				<item code="SG_QZ_ZJ_low_new" row="2" mode="add" name="进取型：0%" style="###############0"/>
+   				<item code="SG_QZ_ZJ_middle_new" row="2" mode="add" name="进取型：4.5%" style="###############0"/>
+   				<item code="SG_QZ_ZJ_high_new" row="2" mode="add" name="进取型：6.0%" style="###############0"/>
+   				<item code="BDNDMGRZHJZ_low_new" row="2" mode="add" name="进取型：0%" style="###############0"/>
+   				<item code="BDNDMGRZHJZ_middle_new" row="2" mode="add" name="进取型：4.5%" style="###############0"/>
+   				<item code="BDNDMGRZHJZ_high_new" row="2" mode="add" name="进取型：6.0%" style="###############0"/>
+   				<item code="DBNDM_low_new" row="2" mode="add" name="进取型：0%" style="###############0"/>
+   				<item code="DBNDM_middle_new" row="2" mode="add" name="进取型：4.5%" style="###############0"/>
+   				<item code="DBNDM_high_new" row="2" mode="add" name="进取型：6.0%" style="###############0"/>
+            </items>
+        <!-- 财富至尊表头，以下内容只限本险种-->
+        <item code="age_c"  row="4" mode="cover" name="已达\n年龄"/>
+        <item code="SCZLY_C" row="4" mode="add" name="*生存\n总利益" style="###########0" value="case(v le 0,'-',value)"/>
+        <item code="SGZLY_C" row="4" mode="add" name="*身故\n总利益" style="###########0" value="case(v le 0,'-',value)"/>
+        <item code="SCJ_C" row="4" mode="add" name="*生存金" style="###########0"/>
+        <item code="ZSBXJ_C" row="4" mode="add" name="祝寿\n保险金" style="###########0"/>
+        <item code="XJJZ_C" row="4" mode="add" name="现金\n价值" style="###########0"/>
+        <items name="当年度红利" row="2">
+	        	<item code="bonus_low_C" row="2" mode="add" name="低" style="###############0"/>
+	        	<item code="bonus_middle_C" row="2" mode="add" name="中" style="###############0"/>
+	        	<item code="bonus_high_C" row="2" mode="add" name="高" style="###############0"/>
+        </items>
+        <item code="BFLQ_C" row="4" mode="add" name="部分\n领取" style="###########0"/>
+        <items name="万能账户价值\n（括号中为假设万能结算利率）" row="2">
+        		<item code="WNZHJZ_low_C" row="2" mode="add" name="低\n（2.5%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+        		<item code="WNZHJZ_middle_C" row="2" mode="add" name="中\n（4.5%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+        		<item code="WNZHJZ_high_C" row="2" mode="add" name="高\n（6.0%）" style="###########0" value="case(v le 0 ,'-',value)"></item>
+        </items>
+        <items name="*保险费" row="2">
+	        	<item code="time_premium_C" row="2" mode="add" name="*期交" style="###############0"/>
+	        	<item code="add_premium_C" row="2" mode="add" name="追加" style="###############0"/>
+	        	<item code="acc_premium_C" row="2" mode="add" name="*累计" style="###############0"/>
+        </items>
+        <!-- 爱随行B-->
+        <item code="age_a"  row="4" mode="cover" name="保单年度\n末年龄"/>
+        <item code="ZJCYWSGBXJ_A" row="4" mode="add" name="自驾车意外身故\n保险金" style="###########0"/>
+        <item code="ZJCYWQCBXJ_A" row="4" mode="add" name="自驾车意外全残\n保险金" style="###########0"/>
+        <item code="GGJTYWSGBXJ_A" row="4" mode="add" name="公共交通意外\n身故\n保险金" style="###########0"/>
+        <item code="GGJTYWQCBXJ_A" row="4" mode="add" name="公共交通意外\n全残\n保险金" style="###########0"/>
+        <item code="QTYWSGQCBXJ_A" row="4" mode="add" name="其他意外身\n故/全残\n保险金(最高)" style="###########0"/>
+        <item code="YBSGQCBXJ_A" row="4" mode="add" name="一般身故/全残\n保险金" style="###########0"/>
+        <item code="YWSCBXJ_A" row="4" mode="add" name="意外伤残保险金(最高)" style="###########0"/>
+        <item code="MQBXJ_A" row="4" mode="add" name="满期\n保险金" style="###########0"/>
+        <item code="XJJZ_A" row="4" mode="add" name="现金价值" style="###########0"/>
+        <items name="保险费" row="2">
+            <item code="premium_time_A" row="2" mode="add" name="期交" style="###############0"/>
+            <item code="premium_add_A" row="2" mode="add" name="累计" style="###############0"/>
+        </items>
+        </benefit_combo>
+    </attachment>
+</declare>
