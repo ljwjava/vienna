@@ -44,11 +44,10 @@ common.server = function() {
 }
 
 common.copy = function(a, b) {
-	if (b == null) return;
-	for (var x in b) {
-		if (b[x] != null)
-			a[x] = b[x];
- 	}
+	if (b != null)
+		for (var x in b)
+			if (b[x] != null)
+				a[x] = b[x];
 	return a;
 }
 

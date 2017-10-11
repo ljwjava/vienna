@@ -199,7 +199,11 @@ public class PackService
 		Stack stack = factorsOf(packIns, vals);
 		Plan plan = (Plan)stack.get("plan");
 
-		synchronized (plan)
+		if (plan == null)
+		{
+			return opt.run(stack);
+		}
+		else synchronized (plan)
 		{
 			reset(plan, packIns, stack);
 			return opt.run(stack);
@@ -216,7 +220,11 @@ public class PackService
 
 		Plan plan = (Plan)stack.get("plan");
 
-		synchronized (plan)
+		if (plan == null)
+		{
+			return packIns.getPerform().run(stack);
+		}
+		else synchronized (plan)
 		{
 			reset(plan, packIns, stack);
 			return packIns.getPerform().run(stack);
@@ -228,7 +236,11 @@ public class PackService
 		Stack stack = factorsOf(packIns, vals);
 		Plan plan = (Plan)stack.get("plan");
 
-		synchronized (plan)
+		if (plan == null)
+		{
+			return null;
+		}
+		else synchronized (plan)
 		{
 			reset(plan, packIns, stack);
 
@@ -262,7 +274,6 @@ public class PackService
 		synchronized (plan)
 		{
 			reset(plan, packIns, stack);
-
 			return LifeinsUtil.feeOf(plan);
 		}
 	}

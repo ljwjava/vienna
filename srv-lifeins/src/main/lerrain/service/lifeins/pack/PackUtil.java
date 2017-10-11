@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.tool.Common;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,16 @@ public class PackUtil
         else if ("string".equals(type))
             return value == null ? null : value.toString();
         else if ("date".equals(type))
-            return Common.dateOf(value);
+        {
+            if ("today".equals(value))
+                return new Date();
+            else if ("tomorrow".equals(value))
+                return new Date(new Date().getTime() + 3600000L * 24);
+            else if ("yesterday".equals(value))
+                return new Date(new Date().getTime() - 3600000L * 24);
+            else
+                return Common.dateOf(value);
+        }
         else
             return value;
     }
