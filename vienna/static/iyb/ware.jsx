@@ -42,7 +42,17 @@ var Ware = React.createClass({
 			plus = "&" + plus.substring(1);
 
 		common.save("iyb/orderId", "");
-		document.location.href = "life_apply.mobile?packId=" + env.packId + plus;
+
+		var nextUrl = null;
+		if (env.packType == 1)
+			nextUrl = "life_apply.mobile";
+		else if (env.packType == 3)
+            nextUrl = "vac_apply.mobile";
+
+		if (nextUrl != null)
+			document.location.href = nextUrl + "?packId=" + env.packId + plus;
+		else
+			alert("error");
     },
     getInitialState() {
     	let r = {quest:false, alertQuest:false, vendor:{}};
@@ -64,8 +74,9 @@ var Ware = React.createClass({
     },
     componentDidMount() {
 		env.packId = this.state.detail.target;
-		common.req("ware/detail.json", {type:1, packId: env.packId}, r => {
+		common.req("ware/detail.json", {packId: env.packId}, r => {
 			env.docs = r.docs;
+			env.packType = r.type;
 			env.vendor = r.vendor;
 			env.company = r.vendor.code;
 			this.setState({factors:r.factors, vendor:r.vendor, company: r.vendor.code}, () => {this.render();this.refreshPremium();});
