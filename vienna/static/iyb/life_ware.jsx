@@ -180,7 +180,7 @@ var Ware = React.createClass({
 					<div className="tab">
 						<div className="row">
 							{env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
-							<div className="col left">首年保费：{this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
+							<div className="col left">首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}</div>
 							<div className="col right" onClick={this.openQuest}>投保</div>
 						</div>
 					</div>
@@ -211,7 +211,8 @@ $(document).ready( function() {
 		document.title = r.name;
 		if ("undefined" != typeof iHealthBridge) {
 			env.frame = "iyb";
-			window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
+			// window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
+            window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
 			window.IYB.setTitle(r.name);
 		}
 
