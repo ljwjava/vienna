@@ -56,7 +56,7 @@ class Beneficiary extends Form {
 			{name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
 			/*{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
 			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},*/
-			{name:"受益次序", code:"order", type:"switch", options:[["1","第1顺位"],["2","第2顺位"],["3","第3顺位"]]},
+			// {name:"受益次序", code:"order", type:"switch", options:[["1","第1顺位"],["2","第2顺位"],["3","第3顺位"]]},
 			{name:"受益比例", code:"scale", type:"select", options:[["10","10%"],["20","20%"],["30","30%"],["40","40%"],["50","50%"],["60","60%"],["70","70%"],["80","80%"],["90","90%"],["100","100%"]]}
 		];
 		let form = this.buildForm(v);
@@ -373,6 +373,7 @@ var Ground = React.createClass({
 				b1 = c.verifyAll() && b1;
 				let r = c.val();
 				r.certName = c.refs.certType.text();
+				r.order = 1;	// 固定第一顺位
 				if (vv["l" + r.order] == null) vv["l" + r.order] = 0;
 				vv["l" + r.order] += Number(r.scale);
 				return r;
@@ -385,6 +386,7 @@ var Ground = React.createClass({
 				let c = this.refs["d"+i];
 				b1 = c.verifyAll() && b1;
 				let r = c.val();
+                r.order = 1;	// 固定第一顺位
 				r.certName = c.refs.certType.text();
 				if (vv["d" + r.order] == null) vv["d" + r.order] = 0;
  				vv["d" + r.order] += Number(r.scale);
@@ -519,7 +521,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					<InsurantMore ref="more" defVal={this.state.insurant ? ins : app}/>
+					{env.company == "hqlife" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app}/>) : null}
 				</div>
 				<div className="title">保险计划</div>
 				<div className="form">

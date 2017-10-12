@@ -2,10 +2,10 @@ server:
   port: 7772
 
 datasource:
-  url: jdbc:mysql://10.253.102.74:3306/vie_biz
+  url: jdbc:mysql://10.253.102.74:3306/vie_biz?useUnicode=true&characterEncoding=UTF-8
   username: iyb
   password: Abcd2017
-#  url: jdbc:mysql://120.27.167.233:2892/vie_biz
+#  url: jdbc:mysql://120.27.167.233:2892/vie_biz?useUnicode=true&characterEncoding=UTF-8
 #  username: iyb_life
 #  password: Iyblife2018!
 

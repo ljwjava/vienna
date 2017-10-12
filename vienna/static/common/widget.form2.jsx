@@ -42,11 +42,13 @@ var Form = React.createClass({
 			} else if (v.type == "number") {
 				comp = (<Inputer ref={v.code} valCode={v.code} valType="number" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={"请输入"+v.name} value={v.value}/>);
 			} else if (v.type == "static") {
-				comp = (<div>{v.value}&nbsp;</div>);
-			} else {
+                comp = (<div>{v.value}&nbsp;</div>);
+            } else if (v.type == "hidden") {
+                comp = (<div style={{display: "none"}}><input ref={v.code} value={v.value}/></div>);
+            } else {
 				return null;
 			}
-			return [v.name, comp, v.code];
+			return [v.name, comp, v.code, v.type != "hidden"];
 		});
 	},
 	verifyAll() {
@@ -87,8 +89,9 @@ var Form = React.createClass({
 		let r = this.form().map(v => {
 			if (v == null) return null;
 			let txt = this.state.alert[v[2]];
+			let canShow = v.length < 4 || v[3] ? "" : "none";
 			return (
-				<div className="row" key={v[2]}>
+				<div className="row" key={v[2]} style={{display: canShow}}>
 					<div className="col line">
 						<div className="tab">
 							<div className="row">
