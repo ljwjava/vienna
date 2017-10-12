@@ -36,7 +36,7 @@ var Summary = React.createClass({
 						});
 						return (<tr style={{textAlign:"right"}}>{row}</tr>);
 					});
-					return (<table className="bordered">
+					return (<table className="bordered" width={'100%'}>
 						<thead>{head}</thead>
 						<tbody>{body}</tbody>
 					</table>)
