@@ -466,6 +466,7 @@ var Ground = React.createClass({
 			orderId: env.orderId,
 			productId: env.packId,
 			productName: env.pack.name,
+			productType: env.pack.type,
 			vendorId: env.vendorId,
 			price: apply.premium,
 			bizNo: null,

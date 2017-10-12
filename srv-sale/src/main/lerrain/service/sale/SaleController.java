@@ -202,12 +202,8 @@ public class SaleController
     @ResponseBody
     public JSONObject detail(@RequestBody JSONObject req)
     {
-        switch (Common.intOf(req.get("type"), 0))
-        {
-            case 1:
-                return serviceMgr.req("lifeins", "pack/view.json", req);
-        }
+        return serviceMgr.req("lifeins", "pack/view.json", req);
 
-        throw new RuntimeException("无法识别的type");
+        //throw new RuntimeException("无法识别的type");
     }
 }

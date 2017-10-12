@@ -172,6 +172,8 @@ public class OrderController
             order.setProductId(p.getString("productId"));
         if (p.containsKey("productName"))
             order.setProductName(p.getString("productName"));
+        if (p.containsKey("productType"))
+            order.setProductType(p.getIntValue("productType"));
         if (p.containsKey("bizNo"))
             order.setBizNo(p.getString("bizNo"));
         if (p.containsKey("bizMsg"))

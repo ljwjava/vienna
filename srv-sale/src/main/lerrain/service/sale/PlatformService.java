@@ -115,6 +115,8 @@ public class PlatformService
         stack.put("today", today);
         stack.put("timediff", timediff);
         stack.put("reversalStr", reversalStr);
+        stack.put("md5Of", new Md5());
+        stack.put("urlParam", new UrlParam());
 
         platforms = platformDao.loadChannels(stack);
 
@@ -177,3 +179,6 @@ public class PlatformService
         platformDao.saveEnvScript(platformId, env);
     }
 }
+
+
+

@@ -13,6 +13,7 @@ public class Order
 
     String productId;
     String productName;
+    int productType; //1长期寿险 2短期健康险 3驾乘险 4自定义组合1
 
     Long vendorId;
     Long platformId;
@@ -29,13 +30,23 @@ public class Order
     Map<String, Object> factors;
     Map<String, Object> detail;
 
-    int type;           //1人身险套餐 2人身险定制
+    int type;
     int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 9支付异常
     int status  = 1;    //1填写中 2已提交 3成功 4失败 5终止 9异常
 
     public String getBizNo()
     {
         return bizNo;
+    }
+
+    public int getProductType()
+    {
+        return productType;
+    }
+
+    public void setProductType(int productType)
+    {
+        this.productType = productType;
     }
 
     public Long getVendorId()

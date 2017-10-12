@@ -16,6 +16,8 @@ public class PackIns
     String code;
     String name;
 
+    int type;
+
     List<InputField> inputForm;
 
     String planId;
@@ -30,6 +32,16 @@ public class PackIns
     Map<String, Object> docs;
 
 //    Map<String, List<SummaryBlock>> summary;
+
+    public int getType()
+    {
+        return type;
+    }
+
+    public void setType(int type)
+    {
+        this.type = type;
+    }
 
     public Formula getPretreat()
     {

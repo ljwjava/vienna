@@ -106,7 +106,7 @@ var Ground = React.createClass({
 		};
     },
     componentWillMount() {
-		common.req("ware/detail.json", {type:1, packId: env.packId}, r => {
+		common.req("ware/detail.json", {packId: env.packId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
 			env.vendorId = r.vendor.id;
@@ -222,17 +222,18 @@ var Ground = React.createClass({
 			orderId: env.orderId,
 			productId: env.packId,
 			productName: env.pack.name,
+            productType: env.pack.type,
 			vendorId: env.vendorId,
 			price: apply.premium,
 			bizNo: null,
 			platformId: 2,
-			owner: env.brokerId,
 			type: 2,
+			owner: env.brokerId,
 			detail: apply
 		};
 		common.req("ware/do/verify.json", order, r => {
 			common.req("ware/do/apply.json", order, r => {
-                common.save("iyb/orderId", env.order.id);
+                common.save("iyb/orderId", order.id);
                 document.location.href = r.nextUrl;
             });
         });
