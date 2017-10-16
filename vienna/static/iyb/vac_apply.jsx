@@ -20,11 +20,13 @@ env.parseDict = function(dict) {
 class ApplicantForm extends Form {
 	form() {
 		let v = [
-            {name:'投保人类型', code:"type", type:"switch", refresh:"yes", options:[["1","公司"],["2","个人"]]},
+            {name:'投保人类型', code:"type", type:"switch", refresh:"yes", options:[["1","个人"],["2","公司"]]},
 			{name:'投保人名称', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入名称"},
 			{name:'证件类型', code:"certType", type:"switch", options:[["1","身份证"]]},
 			{name:'证件号码', code:"certNo", type:"idcard", req:"yes"},
-            {name:'所在地区', code:"city", type:"city", company: env.company, req:"yes"},
+            {name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
+            {name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
+            {name:'所在地区', code:"city", type:"city", company: env.company},
 			{name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入通讯地址"},
 		];
 		return this.buildForm(v);
@@ -48,7 +50,7 @@ class InsurantForm extends Form {
                 };
             }
         });
-        form.push({name:'发动机号', code:"engine", type:"text", req:"yes", desc:"请输入发动机号"});
+        form.push({name:'发动机号', code:"engineNo", type:"text", req:"yes", desc:"请输入发动机号"});
         form.push({name:'车架号', code:"frameNo", type:"text", req:"yes", desc:"请输入车架号"});
 		form.push({name:'车牌号', code:"plateNo", type:"text", desc:"请输入车牌号，新车可为空"});
 		return this.buildForm(form);
