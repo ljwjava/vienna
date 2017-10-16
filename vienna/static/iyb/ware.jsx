@@ -6,7 +6,9 @@ import Tabs from '../common/widget.tabs.jsx';
 import Form from '../common/widget.form2.jsx';
 import Switcher from '../common/widget.switcher.jsx';
 import Selecter from '../common/widget.selecter.jsx';
+// import City from '../common/widget.city.jsx';
 import DateEditor from '../common/widget.date.jsx';
+// import Occupation from '../common/widget.occupation.jsx';
 import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Summary from './summary.jsx';
@@ -189,7 +191,7 @@ var Ware = React.createClass({
 					<div className="tab">
 						<div className="row">
 							{env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
-							<div className="col left">首年保费：{this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
+							<div className="col left">首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}</div>
 							<div className="col right" onClick={this.openQuest}>投保</div>
 						</div>
 					</div>
@@ -200,15 +202,15 @@ var Ware = React.createClass({
 });
 
 env.sharePrd = function() {
-	var shareObj = {
-		title: env.ware.name,
-		desc: env.ware.remark,
-		thumb: env.ware.logo,
-		imgUrl: env.ware.logo,
-		link: window.location.href
-	}
-	iHealthBridge.doAction("share", JSON.stringify(shareObj));
-}
+    var shareObj = {
+        title: env.ware.name,
+        desc: env.ware.remark,
+        thumb: env.ware.logo,
+        imgUrl: env.ware.logo,
+        link: window.location.href
+    };
+    iHealthBridge.doAction("share", JSON.stringify(shareObj));
+};
 
 $(document).ready( function() {
 	common.req("ware/view.json", {wareId:common.param("wareId")}, function (r) {
@@ -220,14 +222,31 @@ $(document).ready( function() {
 		document.title = r.name;
 		if ("undefined" != typeof iHealthBridge) {
 			env.frame = "iyb";
-			window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
-			window.IYB.setTitle(r.name);
+			// window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
+            try{
+                window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
+                window.IYB.setTitle(r.name);
+			}catch(e){}
+		}else{
+            window.wxReady({
+                title: env.ware.name,
+                desc: env.ware.remark,
+                imgUrl: env.ware.logo,
+                link: window.location.href
+            }, null);
 		}
 
-		try {
-			initShareInfo();
+		/*try {
+			initShareInfo({
+                title: env.ware.name,
+                desc: env.ware.remark,
+                imgUrl: env.ware.logo,
+                link: window.location.href
+			}, function(){
+				// console.log("rs", rs);
+			});
 		} catch (e) {
-		}
+		}*/
 	});
 
 });

@@ -147,7 +147,7 @@ class ContactForm extends Form {
 		if((!cc || cc <= 0) && k == -1){
 			cc = 60;
 		}
-		console.log(cc);
+		// console.log(cc);
 		if(!cc || cc <= 0){
 			return;
 		}
@@ -444,6 +444,7 @@ var Ground = React.createClass({
 		let apply = {
 			packId: env.packId,
 			packCode: env.pack.code,
+            // commodityId: env.
 			packDesc: this.getPlanDesc(),
             shareType: common.param("shareType"),
             couponCode: common.param("couponCode"),
@@ -477,6 +478,11 @@ var Ground = React.createClass({
 		};
 		common.req("ware/do/verify.json", order, r => {
 			document.location.href = "life_pay.mobile?orderId=" + r.orderId;
+		}, r => {
+			if(r != null){
+				alert(r);
+			}
+			console.log(r);
 		});
 	},
 	render() {
@@ -621,8 +627,12 @@ $(document).ready( function() {
 		});
 	}
 
-	pointman.use('do', () => {
-		let config = pointman.getConfig();
-		env.tokenId = encodeURIComponent(config.token);
-	});
+	try{
+        pointman.use('do', () => {
+            let config = pointman.getConfig();
+            env.tokenId = encodeURIComponent(config.token);
+        });
+	}catch(e){}
 });
+
+

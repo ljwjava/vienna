@@ -1,40 +1,104 @@
 <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script type="text/javascript" src="https://cdn-qcloud.zhongan.com/a00000/Project/HealthInsurance/iYunBao/js/common/wechatdemo.js?v=201606161609"></script>
 <script type="text/javascript" src="../js/comm.pickerStack.js?v=2017101002"></script>
-
+<style>
+    .form .alert
+    {
+        height: auto;
+    }
+</style>
 
 <script>
-    var share_info;
+    /*var share_info;
 
-    function configReady() {
-        var title = share_info.productName, desc = share_info.productDesc;
-        var link = share_info.productUrl;
-        var imgUrl = share_info.productImage;
-        WECHAT_DEMO.setShareWechat(title, link, imgUrl, null);
-        WECHAT_DEMO.setShareFriend(title, desc, link, imgUrl, null);
-        WECHAT_DEMO.setShareQzone(title, desc, link, imgUrl, null);
-        WECHAT_DEMO.setShareQQ(title, desc, link, imgUrl, null);
-    }
+     function configReady(func) {
+         var title = share_info.productName, desc = share_info.productDesc;
+         var link = share_info.productUrl;
+         var imgUrl = share_info.productImage;
+         WECHAT_DEMO.setShareWechat(title, link, imgUrl, func);
+         WECHAT_DEMO.setShareFriend(title, desc, link, imgUrl, func);
+         WECHAT_DEMO.setShareQzone(title, desc, link, imgUrl, func);
+         WECHAT_DEMO.setShareQQ(title, desc, link, imgUrl, func);
+     }
 
-    function initShareInfo() {
-        share_info = {
-            productName: env.ware.name,
-            productDesc: env.ware.remark,
-            productUrl: window.location.href ,
-            productImage: env.ware.logo
-        };
-        $.getJSON(
-                "/iybapi/open/iyb/rrd/IybWeixinConfig/getWxConfig.json"
-                , { url: window.location.href }
-                , function(response){
-                    if(response.isSuccess) {
-                        var jsapi = response.result;
-                        WECHAT_DEMO.config(jsapi.appid, jsapi.timestamp, jsapi.noncestr, jsapi.signature);
-                        WECHAT_DEMO.waitReady(configReady);
-                    } else {
-                    }
-                }
-            );
+     function initShareInfo(shareObject, func) {
+         share_info = {
+             productName: shareObject.title || env.ware.name,
+             productDesc: shareObject.desc || env.ware.remark,
+             productUrl: shareObject.link || window.location.href ,
+             productImage: shareObject.imgUrl || env.ware.logo
+         };
+         common.req('ware/do/wxconfig.json', {platformId: 2, url: location.href}, function(r){
+             if(r.isSuccess) {
+                 var jsapi = r.result;
+                 WECHAT_DEMO.config(jsapi.appid, jsapi.timestamp, jsapi.noncestr, jsapi.signature);
+                 WECHAT_DEMO.waitReady(function(){
+                     configReady(func);
+                 });
+             } else {
+             }
+         }, function(r){});
         return;
-    }
+     }*/
+
+    var isReady = false;
+    $(document).ready( function() {
+        common.req('ware/do/wxconfig.json', {platformId: 2, url: location.href}, function(r){
+            var result = r.result;
+            wx.config({
+                debug: false,
+                appId: result.appid,
+                timestamp: result.timestamp,
+                nonceStr: result.noncestr,
+                signature: result.signature,
+                jsApiList: [
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage'
+                ],
+                fail: function(res){
+                    alert(JSON.stringify(res));
+                }
+            });
+            wx.ready(function(){
+                isReady = true;
+            });
+        }, function(r){});
+    });
+
+    var wxReady = function(shareObj, shareCallback){
+        wxSet(shareObj, function(){
+            wx.onMenuShareTimeline({
+                title  : shareObj.title || "投保成功",
+                desc   : shareObj.desc || '投保成功',
+                imgUrl : shareObj.imgUrl,
+                link   : shareObj.link,
+                success: shareCallback,
+                cancel: function(){
+                    console.log('分享取消了');
+                }
+            });
+            wx.onMenuShareAppMessage({
+                title  : shareObj.title || "投保成功",
+                desc   : shareObj.desc || '投保成功',
+                imgUrl : shareObj.imgUrl,
+                link   : shareObj.link,
+                success: shareCallback,
+                cancel: function(){
+                    console.log('分享取消了');
+                }
+            });
+        });
+    };
+
+    var wxSet = function(shareObj, func){
+        setTimeout(function(){
+            if (isReady) {
+                if(func) func(wx);
+            } else {
+                wxSet(shareObj, func)
+            }
+        }, 100);
+    };
+
+
 </script>
