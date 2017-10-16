@@ -26,7 +26,7 @@ public class ForwardController
         {
             String path = request.getRequestURI();
             String str = Common.stringOfACS(request.getInputStream(), "utf-8");
-            String addr = srvUrl + path.substring(7);
+            String addr = srvUrl + path.substring(path.indexOf("/iybapi/") + 7);
 
             System.out.println("send: " + str + " to " + addr);
             String r = Network.request(addr, str, 3000);
