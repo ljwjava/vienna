@@ -1,7 +1,6 @@
 package lerrain.service.order;
 
 import com.alibaba.fastjson.JSON;
-import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,8 +28,8 @@ public class OrderDaoJdbc
 
 		if (!exists(order.getId()))
 		{
-			jdbc.update("insert into t_order(id,biz_no,product_id,product_name,vendor_id,platform_id,owner,price,pay,type,status,detail,create_time,creator,update_time,updater) " +
-					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+			jdbc.update("insert into t_order(id,biz_no,product_id,product_name,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
+					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				order.getId(),
 				order.getBizNo(),
 				order.getProductId(),
@@ -43,6 +42,7 @@ public class OrderDaoJdbc
 				order.getType(),
 				order.getStatus(),
 				order.getDetail() == null ? null : JSON.toJSONString(order.getDetail()),
+				order.getExtra() == null ? null : JSON.toJSONString(order.getExtra()),
 				order.getCreateTime(),
 				order.getOwner(),
 				order.getModifyTime(),
@@ -51,13 +51,13 @@ public class OrderDaoJdbc
 		}
 		else
 		{
-			jdbc.update("update t_order set biz_no=?, type=?, product_id=?, product_name=?, vendor_id=?, price=?, pay=?, status=?, detail=?, update_time=? where id=?", order.getBizNo(), order.getType(), order.getProductId(), order.getProductName(), order.getVendorId(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), JSON.toJSONString(order.getDetail()), order.getModifyTime(), order.getId());
+			jdbc.update("update t_order set biz_no=?, type=?, product_id=?, product_name=?, vendor_id=?, price=?, pay=?, status=?, detail=?, extra=?, update_time=? where id=?", order.getBizNo(), order.getType(), order.getProductId(), order.getProductName(), order.getVendorId(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), order.getDetail() != null ? JSON.toJSONString(order.getDetail()) : null, order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
 		}
 	}
 
 	public void update(Order order)
 	{
-		jdbc.update("update t_order set biz_no=?, pay=?, status=?, update_time=? where id=?", order.getBizNo(), order.getPay(), order.getStatus(), order.getModifyTime(), order.getId());
+		jdbc.update("update t_order set biz_no=?, pay=?, status=?, extra=?, update_time=? where id=?", order.getBizNo(), order.getPay(), order.getStatus(), order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
 	}
 
 	public boolean exists(Long orderId)
@@ -108,6 +108,9 @@ public class OrderDaoJdbc
 		String detail = m.getString("detail");
 		if (!Common.isEmpty(detail))
 			order.setDetail(JSON.parseObject(detail));
+		String extra = m.getString("extra");
+		if (!Common.isEmpty(extra))
+			order.setExtra(JSON.parseObject(extra));
 
 		return order;
 	}

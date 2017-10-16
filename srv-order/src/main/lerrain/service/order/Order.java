@@ -29,6 +29,7 @@ public class Order
 
     Map<String, Object> factors;
     Map<String, Object> detail;
+    Map<String, Object> extra;
 
     int type;
     int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 9支付异常
@@ -142,6 +143,14 @@ public class Order
     public void setDetail(Map<String, Object> detail)
     {
         this.detail = detail;
+    }
+
+    public Map<String, Object> getExtra() {
+        return extra;
+    }
+
+    public void setExtra(Map<String, Object> extra) {
+        this.extra = extra;
     }
 
     public Long getId()
