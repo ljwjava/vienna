@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ToastIt from '../common/widget.toast.jsx';
 
 var ModalLottery = React.createClass({
 	getInitialState(){
@@ -170,7 +171,7 @@ var LotteryBox = React.createClass({
 				}
 			} else {
 				this.setState({isStart: false, prizeFlag: -2, luckyNumber: -1});
-                alert(r.errorMsg);
+                ToastIt(r.errorMsg);
 			}
         });
 
@@ -296,7 +297,7 @@ var Ground = React.createClass({
 		let orderId = common.param("orderId");
 		let orderId2 = common.load("iyb/orderId", 1800000);
 		// if (orderId == null || orderId == "" || orderId != orderId2) {
-		// 	alert("已过期");
+		// 	ToastIt("已过期");
 		// } else {
 		// 	common.req("order/view.json", {orderId: orderId}, r => {
 		// 		env.order = r;

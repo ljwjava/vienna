@@ -12,6 +12,7 @@ import DateEditor from '../common/widget.date.jsx';
 import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Summary from './summary.jsx';
+import ToastIt from '../common/widget.toast.jsx';
 
 class PlanForm extends Form {
 	form() {
@@ -54,7 +55,7 @@ var Ware = React.createClass({
 		if (nextUrl != null)
 			document.location.href = nextUrl + "?packId=" + env.packId + plus;
 		else
-			alert("error");
+			ToastIt("error");
     },
     getInitialState() {
     	let r = {quest:false, alertQuest:false, vendor:{}};

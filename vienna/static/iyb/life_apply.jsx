@@ -14,6 +14,7 @@ import CertValidEditor from '../common/widget.certValidate.jsx';
 import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Form from '../common/widget.form2.jsx';
+import ToastIt from '../common/widget.toast.jsx';
 
 env.company = 'hqlife';
 env.dict = {
@@ -334,12 +335,12 @@ var Ground = React.createClass({
 	},
 	submit() {
 		if (env.brokerId == null || env.brokerId == "") {
-			alert("缺少代理人信息");
+            ToastIt("缺少代理人信息");
 			return;
 		}
 		//投保人信息校验
 		if (!this.refs.applicant.verifyAll()) {
-			alert("请检查投保人信息");
+            ToastIt("请检查投保人信息");
 			return;
 		}
 		env.relation = this.refs.relation.val();
@@ -349,7 +350,7 @@ var Ground = React.createClass({
 		env.applicant.cityName = this.refs.applicant.refs.city.val().text;
 		// 被保险人信息校验
 		if (!!this.refs.more && !this.refs.more.verifyAll()) {
-            alert("请检查被保险人信息");
+            ToastIt("请检查被保险人信息");
             return;
 		}
 
@@ -357,7 +358,7 @@ var Ground = React.createClass({
 		//被保人信息校验
 		if (this.state.insurant) {
 			if (!this.refs.insurant.verifyAll()) {
-				alert("请检查被保险人信息");
+                ToastIt("请检查被保险人信息");
 				return;
 			}
 			env.insurant = this.refs.insurant.val();
@@ -413,29 +414,29 @@ var Ground = React.createClass({
 		}
 		for (let ss in vv) {
 			if (vv[ss] != 100) {
-				alert("受益人同一次序下比例之和需要为100%");
+                ToastIt("受益人同一次序下比例之和需要为100%");
 				return;
 			}
 		}
 		if (!b1) {
-			alert("请检查受益人信息");
+            ToastIt("请检查受益人信息");
 			return;
 		}
 		//规则保费
 		if (this.state.rules != null && this.state.rules.length > 0) {
-			alert("请检查投保规则");
+            ToastIt("请检查投保规则");
 			return;
 		}
 		if (typeof this.state.premium != "number") {
-			alert("请确认保费已正确计算");
+            ToastIt("请确认保费已正确计算");
 			return;
 		}
 		if (!this.refs.contact.verifyAll()) {
-			alert("请检查通讯信息");
+            ToastIt("请检查通讯信息");
 			return;
 		}
         if (env.smsKey == null) {
-            alert("请获取并输入验证码");
+            ToastIt("请获取并输入验证码");
             return;
         }
 		let contact = this.refs.contact.val();
@@ -480,7 +481,7 @@ var Ground = React.createClass({
 			document.location.href = "life_pay.mobile?orderId=" + r.orderId;
 		}, r => {
 			if(r != null){
-				alert(r);
+                ToastIt(r);
 			}
 			console.log(r);
 		});
