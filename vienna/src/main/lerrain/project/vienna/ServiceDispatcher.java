@@ -1,8 +1,10 @@
 package lerrain.project.vienna;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
+import lerrain.tool.Common;
 import lerrain.tool.Network;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,9 +75,43 @@ public class ServiceDispatcher
     @RequestMapping("/ware/callback/**")
     @ResponseBody
     @CrossOrigin
-    public String redirect(HttpServletRequest req, @RequestBody JSONObject param)
+    public String callback(HttpServletRequest req)
     {
+        JSONObject param = null;
+
         String uri = req.getRequestURI();
+
+        String contentType = req.getContentType();
+        if (contentType != null)
+            contentType = contentType.toLowerCase();
+
+        Log.debug("CONTENT-TYPE: " + contentType);
+
+        if (contentType != null && (contentType.indexOf("text") >= 0 || contentType.indexOf("json") >= 0))
+        {
+            try (InputStream is = req.getInputStream())
+            {
+                param = JSON.parseObject(Common.stringOf(is, "UTF-8"));
+            }
+            catch (Exception e)
+            {
+                Log.error(e);
+            }
+        }
+        else
+        {
+            Enumeration<String> names = req.getParameterNames();
+            if (names != null)
+            {
+                param = new JSONObject();
+                while (names.hasMoreElements())
+                {
+                    String name = names.nextElement();
+                    param.put(name, req.getParameter(name));
+                }
+            }
+        }
+
         JSONObject res = sv.req(modules.get("ware"), uri.substring(uri.indexOf("/", 1) + 1), param);
         return res.getString("content");
     }

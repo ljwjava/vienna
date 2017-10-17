@@ -115,7 +115,7 @@ public class SaleController
 
     @RequestMapping({ "/callback/{key}.json" })
     @ResponseBody
-    public JSONObject callback(@PathVariable String key, @RequestBody JSONObject json)
+    public JSONObject callback(@PathVariable String key, @RequestBody(required=false) JSONObject json)
     {
         JSONObject res = new JSONObject();
 

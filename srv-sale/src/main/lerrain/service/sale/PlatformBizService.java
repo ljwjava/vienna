@@ -75,6 +75,7 @@ public class PlatformBizService
         Function func = (Function)val.get("callback");
         Factors factors = (Factors)val.get("factors");
 
+        Object params = val.get("with");
         return func.run(new Object[] {map, val.get("with")}, factors);
 
 //        Platform platform = platformService.getPlatform(platformId);

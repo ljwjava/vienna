@@ -14,6 +14,14 @@ public class OrderController
     @Autowired
     OrderService orderSrv;
 
+    @RequestMapping("/health")
+    @ResponseBody
+    @CrossOrigin
+    public String health()
+    {
+        return "success";
+    }
+
     @RequestMapping("/create.json")
     @ResponseBody
     @CrossOrigin
@@ -144,6 +152,8 @@ public class OrderController
                 order.setBizNo(p.getString("bizNo"));
             if (p.containsKey("bizMsg"))
                 order.setBizMsg(p.getString("bizMsg"));
+            if (p.containsKey("extra"))
+                order.setExtra(p.getJSONObject("extra"));
 
             if (pay >= 0)
                 order.setPay(pay);
@@ -189,6 +199,8 @@ public class OrderController
             order.setDetail(p.getJSONObject("detail"));
         if (p.containsKey("factors"))
             order.setFactors(p.getJSONObject("factors"));
+        if (p.containsKey("extra"))
+            order.setExtra(p.getJSONObject("extra"));
 
         if (p.containsKey("pay"))
             order.setPay(p.getIntValue("pay"));

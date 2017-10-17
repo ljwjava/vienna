@@ -15,6 +15,14 @@ public class CommissionController
 {
     @Autowired CommissionService cs;
 
+    @RequestMapping("/health")
+    @ResponseBody
+    @CrossOrigin
+    public String health()
+    {
+        return "success";
+    }
+
     @RequestMapping("/payoff.json")
     @ResponseBody
     @CrossOrigin

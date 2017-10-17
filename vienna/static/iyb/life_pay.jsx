@@ -12,6 +12,7 @@ import City from '../common/widget.city.jsx';
 import IdCard from '../common/widget.idcard.jsx';
 import Form from '../common/widget.form2.jsx';
 import Photo from '../common/widget.photo.jsx';
+import ToastIt from '../common/widget.toast.jsx';
 
 env.dict = {
 	// bank: [["0101","中国工商银行"], ["0102","中国农业银行"], ["0103","中国银行"], ["0104","中国建设银行"], ["0108","交通银行"], ["0109","中信银行"], ["0110","中国光大银行"], ["0111","华夏银行"], ["0112","中国民生银行"], ["0113","广东发展银行"], ["0115","招商银行"], ["0116","兴业银行"], ["0117","上海浦东发展银行"], ["0128","中国邮政储蓄银行"], ["0194","北京银行"], ["0197","宁波银行"], ["0198","深圳平安银行"], ["0203","东莞银行"]]
@@ -43,11 +44,11 @@ var Ground = React.createClass({
 	},
 	submit() {
 		if (!this.refs.pay.verifyAll()) {
-			alert("请检查支付信息");
+			ToastIt("请检查支付信息");
 			return;
 		}
 		if (!this.refs.agree.checked) {
-			alert("请确认客户声明信息");
+			ToastIt("请确认客户声明信息");
 			return;
 		}
 		env.order.detail.pay = this.refs.pay.val();
@@ -56,11 +57,11 @@ var Ground = React.createClass({
 		{
             env.order.detail.photos = this.refs.photos.val();
             if(env.order.detail.photos.length < 2) {
-                alert("请上传完整证件影像");
+                ToastIt("请上传完整证件影像");
                 return;
             }
             if(env.order.detail.photos.length > 2) {
-                alert("请删除多余证件影像");
+                ToastIt("请删除多余证件影像");
                 return;
             }
 		}
@@ -201,7 +202,7 @@ $(document).ready( function() {
 				<Ground/>, document.getElementById("content")
             );
         }, f => {
-        	alert("开户行列表加载失败");
+        	ToastIt("开户行列表加载失败");
 		});
 	});
 

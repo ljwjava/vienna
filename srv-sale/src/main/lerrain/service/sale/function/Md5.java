@@ -18,6 +18,8 @@ public class Md5 implements Function
     @Override
     public Object run(Object[] objects, Factors factors)
     {
+//        return Common.md5Of(objects[0].toString());
+
         try
         {
             return md5Of(objects[0].toString().getBytes("UTF-8"));
