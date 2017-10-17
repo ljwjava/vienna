@@ -227,6 +227,9 @@ $(document).ready( function() {
             try{
                 window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
                 window.IYB.setTitle(r.name);
+                try{
+                    document.title = r.name;
+                }catch(e){}
 			}catch(e){}
 		}else{
             window.wxReady({

@@ -390,6 +390,12 @@ var Ground = React.createClass({
                         imgUrl : this.state.shareObj.imgUrl,
                         link   : this.state.shareObj.link
                     }, this.shareCallback);
+                    try{
+                        window.IYB.setTitle(this.state.shareObj.title || "投保结果");
+                        try{
+                            document.title = (this.state.shareObj.title || "投保结果");
+                        }catch(e){}
+                    }catch(e){}
 				});
 
 			}
@@ -459,6 +465,10 @@ $(document).ready( function() {
 	document.title = "投保结果";
 	if ("undefined" != typeof iHealthBridge) {
         env.frame = "iyb";
-		IYB.setTitle("投保结果");
+        window.IYB.setTitle("投保结果");
+        window.IYB.setRightButton(JSON.stringify([{
+            title: '关闭',
+            func: 'IYB.back()'
+        }]));
 	}
 });

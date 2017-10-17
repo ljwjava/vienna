@@ -25,6 +25,9 @@ var ToastIt = function (text, timeout, options) {
     }
     //别被挡住了
     toast.style['z-index'] = 9999999;
+    toast.onclick = function(){
+        document.body.removeChild(this);
+    };
     document.body.appendChild(toast);
     setTimeout(function () {
         try {
