@@ -38,9 +38,12 @@ public class DipSeeker
         if (Common.isEmpty(path))
             return;
 
+        File ff = new File(path);
+        if (!ff.isDirectory())
+            return;
+
         int s = 0;
 
-        File ff = new File(path);
         for (File f : ff.listFiles())
         {
             if (!f.getName().endsWith(".dip"))
