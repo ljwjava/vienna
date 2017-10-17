@@ -25,7 +25,7 @@ public class NextId implements Function
 
     Map<Object, Long> current = new HashMap<>();
 
-    @PostConstruct
+//    @PostConstruct
     private void loadAll()
     {
         current.clear();

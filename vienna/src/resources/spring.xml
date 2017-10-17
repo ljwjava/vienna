@@ -19,5 +19,5 @@
 	<aop:config proxy-target-class="true" />
 	<mvc:annotation-driven />
 
-	<!--<bean class="lerrain.service.common.ServiceMgr"/>-->
+	<bean class="lerrain.service.common.ServiceMgr"/>
 </beans>
