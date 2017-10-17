@@ -21,7 +21,7 @@ var ModalLottery = React.createClass({
 		this.setState({isShow: false});
 	},
 	render(){
-		console.log(this.state);
+		// console.log(this.state);
 		return (<div className="ui-modal" style={{animationDuration: "300ms", display: this.state.isShow ? "" : "none"}}>
 			<div className="ui-modal-wrapper">
 				<div className="ui-modal-dialog zoom-enter">
@@ -188,7 +188,7 @@ var LotteryBox = React.createClass({
         if(this.state.prizeFlag != -1){
             let toAngle = 360 + (this.state.prizeFlag != -2 ? 60 * this.state.prizeFlag + 60/2 : 0);
             if(this.state.prizeFlag == -2){toAngle = 360;}
-			console.log(toAngle);
+			// console.log(toAngle);
             let lastAngle = this.state.lastAngle;
             $(this.refs.rotate).rotate({
                 angle: lastAngle,
