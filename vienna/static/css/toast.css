@@ -90,8 +90,24 @@
     /* center horizontally */
     top: 80%;
     left: 50%;
+    -ms-transform: translate(-50%, -80%);
+    -o-transform: translate(-50%, -80%);
+    -moz-transform: translate(-50%, -80%);
+    -webkit-transform: translate(-50%, -80%);
     transform: translate(-50%, -80%);
 
+    -ms-animation-name: TOAST-APPEAR;
+    -ms-animation-timing-function: ease-in;
+    -ms-animation-duration: 3s;
+    -o-animation-name: TOAST-APPEAR;
+    -o-animation-timing-function: ease-in;
+    -o-animation-duration: 3s;
+    -moz-animation-name: TOAST-APPEAR;
+    -moz-animation-timing-function: ease-in;
+    -moz-animation-duration: 3s;
+    -webkit-animation-name: TOAST-APPEAR;
+    -webkit-animation-timing-function: ease-in;
+    -webkit-animation-duration: 3s;
     animation-name: TOAST-APPEAR;
     animation-timing-function: ease-in;
     animation-duration: 3s;
