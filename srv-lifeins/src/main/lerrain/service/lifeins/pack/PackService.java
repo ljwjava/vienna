@@ -335,6 +335,7 @@ public class PackService
 			}
 		}
 
+		r.put("premium", total); //兼容
 		r.put("total", total);
 		r.put("rules", rules);
 

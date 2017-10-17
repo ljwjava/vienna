@@ -37,7 +37,7 @@ public class PlatformDao
                 c.setCode(m.getString("code"));
                 c.setName(m.getString("name"));
 
-//                c.setPerform(Script.scriptOf(m.getString("perform")));
+                c.setPerform(Script.scriptOf(m.getString("perform")));
 //                c.setVerify(Script.scriptOf(m.getString("verify")));
 //                c.setApply(Script.scriptOf(m.getString("apply")));
 //                c.setCallback(Script.scriptOf(m.getString("callback")));

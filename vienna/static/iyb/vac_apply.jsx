@@ -17,13 +17,34 @@ env.parseDict = function(dict) {
 	return dict.map(v => [v.code, v.text]);
 };
 
+env.checkCustomer = function(f) {
+	let r = {};
+	if ((f.certType == "1") && (f.certNo != null && f.certNo.length == 18)) {
+		if (f.birthday != null && f.birthday.length == 10) {
+			let y1 = f.certNo.substr(6, 4);
+			let m1 = f.certNo.substr(10, 2);
+			let d1 = f.certNo.substr(12, 2);
+			let y2 = f.birthday.substr(0, 4);
+			let m2 = f.birthday.substr(5, 2);
+			let d2 = f.birthday.substr(8, 2);
+			if (y1 != y2 || m1 != m2 || d1 != d2) {
+				r.birthday = "生日与证件不符";
+			}
+		}
+		let crx = Number(f.certNo.substr(16,1)) % 2;
+		if ((f.gender == "M" && crx == 0) || (f.gender == "F" && crx == 1))
+			r.gender = "性别与证件不符";
+	}
+	return r;
+};
+
 class ApplicantForm extends Form {
 	form() {
 		let v = [
             {name:'投保人类型', code:"type", type:"switch", refresh:"yes", options:[["1","个人"],["2","公司"]]},
 			{name:'投保人名称', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入名称"},
 			{name:'证件类型', code:"certType", type:"switch", options:[["1","身份证"]]},
-			{name:'证件号码', code:"certNo", type:"idcard", req:"yes"},
+			{name:'证件号码', code:"certNo", type:"idcard", req:"yes", succ:this.resetCertNo.bind(this)},
             {name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
             {name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
             {name:'所在地区', code:"city", type:"city", company: env.company},
@@ -32,7 +53,11 @@ class ApplicantForm extends Form {
 		return this.buildForm(v);
 	}
 	verify(code, val) {
-		return {};
+		return env.checkCustomer(this.val());
+	}
+	resetCertNo(certNo) {
+		this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
+		this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
 	}
 }
 
@@ -198,8 +223,8 @@ var Ground = React.createClass({
 			return;
 		}
         if (env.smsKey == null) {
-            //alert("请获取并输入验证码");
-            //return;
+            alert("请获取并输入验证码");
+            return;
         }
         let contact = this.refs.contact.val();
 		let apply = {

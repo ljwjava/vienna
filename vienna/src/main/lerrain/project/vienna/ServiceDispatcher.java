@@ -33,6 +33,7 @@ public class ServiceDispatcher
     public ServiceDispatcher()
     {
         modules.put("ware", "sale");
+        modules.put("sale", "sale");
         modules.put("printer", "printer");
         modules.put("dict", "dict");
         modules.put("order", "order");
@@ -63,7 +64,7 @@ public class ServiceDispatcher
 //        }
 //    }
 
-    @RequestMapping("/{module:ware|dict|printer|order}/**")
+    @RequestMapping("/{module:ware|sale|dict|printer|order}/**")
     @ResponseBody
     @CrossOrigin
     public JSONObject redirect(HttpServletRequest req, @PathVariable String module, @RequestBody JSONObject param)
