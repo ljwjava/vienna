@@ -60,31 +60,43 @@ var Ware = React.createClass({
     getInitialState() {
     	let r = {quest:false, alertQuest:false, vendor:{}};
     	let v = this.props.detail;
-    	if (v != null && v.detail != null && v.detail.length > 0) {
-    		if (v.detail.length > 1)
-    			r.packs = v.detail.map(d => [d.code, d.name]);
-    		r.detail = v.detail[0];
-    		if (r.detail.summary != null) {
-    			r.exps = [];
-				for (let label in r.detail.summary) {
-					r.exps.push([label, label]);
-					if (r.summary == null)
-	    				r.summary = r.detail.summary[label];
-				}
-    		}
+    	if (v != null && v.detail != null && v.detail.length > 1) {
+            r.packs = [];
+    		for (var i=0;i<v.detail.length;i++) {
+                 r.packs.push([i, v.detail[i].name]);
+            }
     	}
     	return r;
     },
     componentDidMount() {
-		env.packId = this.state.detail.target;
-		common.req("ware/detail.json", {packId: env.packId}, r => {
-			env.docs = r.docs;
-			env.packType = r.type;
-			env.vendor = r.vendor;
-			env.company = r.vendor.code;
-			this.setState({factors:r.factors, vendor:r.vendor, company: r.vendor.code}, () => {this.render();this.refreshPremium();});
-		});
+		this.changePlan(0);
     },
+	changePlan(i) {
+        let v = this.props.detail;
+        let r = {detail:v.detail[i]};
+		if (r.detail.summary != null) {
+			r.exps = [];
+			for (let label in r.detail.summary) {
+				r.exps.push([label, label]);
+				if (r.summary == null)
+					r.summary = r.detail.summary[label];
+			}
+        }
+        env.packId = r.detail.target;
+        common.req("ware/detail.json", {packId: env.packId}, s => {
+            env.docs = s.docs;
+            env.packType = s.type;
+            env.vendor = s.vendor;
+            env.company = s.vendor.code;
+            r.factors = s.factors;
+            r.vendor = s.vendor;
+            r.company = s.vendor.code;
+            this.setState(r, () => {
+            	console.log(this.state.packs);
+            	this.refreshPremium();
+            });
+        });
+	},
     getPlanFactors() {
     	let factors = {packId: this.state.detail.target};
     	let self = this.refs.plan;
@@ -164,11 +176,15 @@ var Ware = React.createClass({
 				<div>
 					<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
 					<div style={{height:"50px", top:"-50px", position:"relative", paddingTop:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
-						<div className="font-wl">{this.props.detail.name}</div>
-						<div className="font-wm">{this.props.detail.remark}</div>
+						<div className="font-wl">{v.name}</div>
+						<div className="font-wm">{v.remark}</div>
 					</div>
+					<div style={{marginTop:"-50px"}}></div>
+                    { this.state.packs == null ? null :
+						<Tabs onChange={this.changePlan} options={this.state.packs}/>
+                    }
 					{ this.state.factors == null ? null :
-						<div className="form" style={{marginTop:"-50px"}}>
+						<div className="form">
 							<PlanForm ref="plan" parent={this} fields={this.state.factors} company={this.state.company} onRefresh={this.refreshPremium}/>
 						</div>
 					}
