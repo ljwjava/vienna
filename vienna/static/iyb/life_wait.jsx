@@ -456,7 +456,6 @@ $(document).ready( function() {
 	ReactDOM.render(
 		<Ground/>, document.getElementById("content")
 	);
-    env.frame = "iyb";
 	document.title = "投保结果";
 	if ("undefined" != typeof iHealthBridge) {
         env.frame = "iyb";
