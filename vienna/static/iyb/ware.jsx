@@ -254,6 +254,12 @@ $(document).ready( function() {
                 imgUrl: env.ware.logo,
                 link: window.location.href
             }, null);
+            /*window.wxShare({
+                title: env.ware.name,
+                desc: env.ware.remark,
+                imgUrl: env.ware.logo,
+                link: window.location.href
+            }, null);*/
 		}
 
 		/*try {

@@ -15,53 +15,59 @@
 
 
 <script>
-   /* var share_info;
+    /*var share_info;
 
-    function configReady() {
+    function configReady(func) {
         var title = share_info.productName, desc = share_info.productDesc;
         var link = share_info.productUrl;
         var imgUrl = share_info.productImage;
-        WECHAT_DEMO.setShareWechat(title, link, imgUrl, null);
-        WECHAT_DEMO.setShareFriend(title, desc, link, imgUrl, null);
-        WECHAT_DEMO.setShareQzone(title, desc, link, imgUrl, null);
-        WECHAT_DEMO.setShareQQ(title, desc, link, imgUrl, null);
+        WECHAT_DEMO.setShareWechat(title, link, imgUrl, func);
+        WECHAT_DEMO.setShareFriend(title, desc, link, imgUrl, func);
+        WECHAT_DEMO.setShareQzone(title, desc, link, imgUrl, func);
+        WECHAT_DEMO.setShareQQ(title, desc, link, imgUrl, func);
     }
 
-    function initShareInfo(shareObject) {
+    function initShareInfo(shareObject, func) {
         share_info = {
             productName: shareObject.title || env.ware.name,
             productDesc: shareObject.desc || env.ware.remark,
             productUrl: shareObject.link || window.location.href ,
             productImage: shareObject.imgUrl || env.ware.logo
         };
-        common.req('ware/do/wxconfig.json', {platformId: 2, url: location.href}, function(r){
+        common.req('ware/do/wxconfig.json', {platformId: 2, url: encodeURIComponent(location.href)}, function(r){
             if(r.isSuccess) {
                 var jsapi = r.result;
                 WECHAT_DEMO.config(jsapi.appid, jsapi.timestamp, jsapi.noncestr, jsapi.signature);
-                WECHAT_DEMO.waitReady(configReady);
+                WECHAT_DEMO.waitReady(function(){
+                    configReady(func);
+                });
             } else {
             }
         }, function(r){});
         return;
     }*/
 
+
     var isReady = false;
     $(document).ready( function() {
-        common.req('ware/do/wxconfig.json', {platformId: 2, url: location.href}, function(r){
+        common.req('ware/do/wxconfig.json', {platformId: 2, url: encodeURIComponent(location.href)}, function(r){
             var result = r.result;
             wx.config({
-                    debug: false,
-                    appId: result.appid,
-                    timestamp: result.timestamp,
-                    nonceStr: result.noncestr,
-                    signature: result.signature,
-                    jsApiList: [
-                        'onMenuShareTimeline',
-                        'onMenuShareAppMessage'
-                    ],
-                    fail: function(res){
-                        alert(JSON.stringify(res));
-                    }
+                debug: false,
+                appId: result.appid,
+                timestamp: result.timestamp,
+                nonceStr: result.noncestr,
+                signature: result.signature,
+                jsApiList: [
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage',
+                    "onMenuShareQQ",
+                    "onMenuShareWeibo",
+                    "onMenuShareQZone"
+                ],
+                fail: function(res){
+                    alert(JSON.stringify(res));
+                }
             });
             wx.ready(function(){
                 isReady = true;
@@ -91,6 +97,36 @@
                     console.log('分享取消了');
                 }
             });
+            wx.onMenuShareQQ({
+                title  : shareObj.title || "投保成功",
+                desc   : shareObj.desc || '投保成功',
+                imgUrl : shareObj.imgUrl,
+                link   : shareObj.link,
+                success: shareCallback,
+                cancel: function(){
+                    console.log('分享取消了');
+                }
+            });
+            wx.onMenuShareWeibo({
+                title  : shareObj.title || "投保成功",
+                desc   : shareObj.desc || '投保成功',
+                imgUrl : shareObj.imgUrl,
+                link   : shareObj.link,
+                success: shareCallback,
+                cancel: function(){
+                    console.log('分享取消了');
+                }
+            });
+            wx.onMenuShareQZone({
+                title  : shareObj.title || "投保成功",
+                desc   : shareObj.desc || '投保成功',
+                imgUrl : shareObj.imgUrl,
+                link   : shareObj.link,
+                success: shareCallback,
+                cancel: function(){
+                    console.log('分享取消了');
+                }
+            });
         });
     };
 
@@ -104,5 +140,85 @@
         }, 100);
     };
 
+
+   /*var wxShare = function(shareObj, func) {
+       if(shareObj == null){
+           console.log('shareObj 不能为空');
+           return false;
+       }
+       try{
+           shareObj.link = shareObj.link || window.location.href;
+           common.req('ware/do/wxconfig.json', {platformId: 2, url: window.location.href}, function(r){
+               wx.config({
+                   debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                   appId: r.result.appid, // 必填，公众号的唯一标识
+                   timestamp: r.result.timestamp, // 必填，生成签名的时间戳
+                   nonceStr: r.result.noncestr, // 必填，生成签名的随机串
+                   signature: r.result.signature, // 必填，签名，见附录1
+                   jsApiList: ["onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo", "onMenuShareQZone"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+               });
+               wx.ready(function(){
+                   // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                   wx.onMenuShareTimeline({
+                       title: shareObj.title, // 分享标题
+                       link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                       imgUrl: shareObj.imgUrl, // 分享图标
+                       success: function () {
+                           if(func){
+                               func();
+                           }
+                       },
+                       cancel: function () {}
+                   });
+                   wx.onMenuShareAppMessage({
+                       title: shareObj.title, // 分享标题
+                       desc: shareObj.desc, // 分享描述
+                       link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                       imgUrl: shareObj.imgUrl, // 分享图标
+                       type: 'link', // 分享类型,music、video或link，不填默认为link
+                       dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                       success: function () {
+                           if(func){
+                               func();
+                           }
+                       },cancel: function () {}
+                   });
+                   wx.onMenuShareQQ({
+                       title: shareObj.title, // 分享标题
+                       desc: shareObj.desc, // 分享描述
+                       link: shareObj.link, // 分享链接
+                       imgUrl: shareObj.imgUrl, // 分享图标
+                       success: function () {
+                           if(func){
+                               func();
+                           }
+                       },cancel: function () {}
+                   });
+                   wx.onMenuShareWeibo({
+                       title: shareObj.title, // 分享标题
+                       desc: shareObj.desc, // 分享描述
+                       link: shareObj.link, // 分享链接
+                       imgUrl: shareObj.imgUrl, // 分享图标
+                       success: function () {
+                           if(func){
+                               func();
+                           }
+                       },cancel: function () {}
+                   });
+                   wx.onMenuShareQZone({
+                       title: shareObj.title, // 分享标题
+                       desc: shareObj.desc, // 分享描述
+                       link: shareObj.link, // 分享链接
+                       imgUrl: shareObj.imgUrl, // 分享图标
+                       success: function () {
+                           if(func){
+                               func();
+                           }
+                       },cancel: function () {}
+                   });
+               });
+           }, function(r){});
+       }catch(e){}
+   };*/
 
 </script>

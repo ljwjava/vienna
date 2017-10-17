@@ -378,18 +378,24 @@ var Ground = React.createClass({
                     imgUrl : r.result.shareImage,
                     link   : r.result.url
 				}}, ()=>{
-                    // try {
-                    //     initShareInfo(this.state.shareObj, function(){
-                    //         // console.log("rs", rs);
-                    //     });
-                    // } catch (e) {
-                    // }
+                    /*try {
+                        initShareInfo(this.state.shareObj, () => {
+                            this.shareCallback();
+                        });
+                    } catch (e) {
+                    }*/
                     window.wxReady({
                         title  : this.state.shareObj.title,
                         desc   : this.state.shareObj.desc,
                         imgUrl : this.state.shareObj.imgUrl,
                         link   : this.state.shareObj.link
                     }, this.shareCallback);
+                    /*window.wxShare({
+                        title  : this.state.shareObj.title,
+                        desc   : this.state.shareObj.desc,
+                        imgUrl : this.state.shareObj.imgUrl,
+                        link   : this.state.shareObj.link
+                    }, null);*/
                     try{
                         window.IYB.setTitle(this.state.shareObj.title || "投保结果");
                         try{
