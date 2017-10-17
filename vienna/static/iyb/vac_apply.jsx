@@ -196,8 +196,8 @@ var Ground = React.createClass({
 			return;
 		}
         if (env.smsKey == null) {
-            alert("请获取并输入验证码");
-            return;
+            //alert("请获取并输入验证码");
+            //return;
         }
         let contact = this.refs.contact.val();
 		let apply = {
@@ -244,6 +244,7 @@ var Ground = React.createClass({
             return null;
 		let app = this.props.defVal.applicant == null ? {} : this.props.defVal.applicant;
 		let ins = this.props.defVal.insurant == null ? {} : this.props.defVal.insurant;
+		let cnt = this.props.defVal.contact == null ? {} : this.props.defVal.contact;
 		return (
 			<div className="common">
 				<div className="title">投保人信息</div>
@@ -265,7 +266,7 @@ var Ground = React.createClass({
 				}
 				<div className="title">通讯信息</div>
 				<div className="form">
-					<ContactForm ref="contact" defVal={app}/>
+					<ContactForm ref="contact" defVal={cnt}/>
 				</div>
 				<div className="console">
 					<div className="tab">

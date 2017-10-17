@@ -22,7 +22,7 @@ public class UrlParam implements Function
         if (map == null)
             return null;
 
-        String url = "";
+        String url = null;
         for (Map.Entry e : map.entrySet())
             url = (url == null ? "" : url + "&") + e.getKey() + "=" + e.getValue();
 
