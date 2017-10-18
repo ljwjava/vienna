@@ -301,7 +301,7 @@ var Ground = React.createClass({
 		// } else {
 		// 	common.req("order/view.json", {orderId: orderId}, r => {
 		// 		env.order = r;
-				this.countDown(60);
+				this.countDown(160);
 			// });
 		// }
 	},
