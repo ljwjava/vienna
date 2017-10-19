@@ -285,7 +285,7 @@ var LotteryBox = React.createClass({
 var Ground = React.createClass({
 	intervalId: null,
 	getInitialState() {
-		return {asking:0, title:"处理中", text:"正在处理，请稍候...", memo:"", modify:0, icon:"images/insure_succ.png"};
+		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面，投保成功后可获得抽奖机会哦", memo:"", modify:0, icon:"images/insure_succ.png"};
 	},
 	back(step) {
 		common.req("order/restore.json", {orderId: env.order.id}, r => {
@@ -333,7 +333,6 @@ var Ground = React.createClass({
 			s = {modify:0, title:"处理中", text:text, icon:"images/insure_succ.png"};
 
 		s.asking = 0;
-
 		this.setState(s);
 		common.save("iyb/orderId", "");
 	},
@@ -444,7 +443,7 @@ var Ground = React.createClass({
 					{
 						this.state.asking > 0 || this.state.modify == 0 ? null :
 						<div style={{paddingBottom:"5px"}}>
-							<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.back.bind(this,-this.state.modify)}>修改信息</div>
+							<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.back.bind(this,-1*this.state.modify)}>修改信息</div>
 						</div>
 					}
 				</div>

@@ -15,7 +15,11 @@ var OccupationPicker = React.createClass({
 	},
 	// 真实的DOM被渲染出来后调用，在该方法中可通过this.getDOMNode()访问到真实的DOM元素。此时已可以使用其他类库来操作这个DOM。
     componentDidMount() {
-        common.req("dict/view.json", {company:"hqlife", name:"occupation"}, r => {
+        let company = (!env.company ? "hqlife" : env.company);
+        if(!!this.props.company){
+            company = this.props.company;
+        }
+        common.req("dict/view.json", {company: company, name: "occupation", version: "new"}, r => {
             let val = this.state.value;
             var proPickerVal = [];
             if(val != null && val != '') {
