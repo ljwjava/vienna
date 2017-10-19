@@ -1,5 +1,6 @@
 package lerrain.service.commission;
 
+import lerrain.service.common.Log;
 import lerrain.tool.Network;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -80,6 +81,7 @@ public class IybPay
 		}
 		catch (Exception e)
 		{
+			Log.error(e);
 			return null;
 		}
 	}
