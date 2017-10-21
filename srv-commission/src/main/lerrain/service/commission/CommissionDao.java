@@ -41,6 +41,17 @@ public class CommissionDao
 		return r;
 	}
 
+	public Commission loadCommissionById(Long id)
+	{
+		Commission c = null;
+		Map<String, Object> map = jdbc.queryForMap("select * from t_commission where status in (0,9) and estimate <= now() and id = ?", id);
+		if(map != null)
+		{
+			c = Commission.commissionOf(map);
+		}
+		return c;
+	}
+
 	public void pay(Long id, int status, Date time)
 	{
 		jdbc.update("update t_commission set pay = ?, status = ? where id = ?", time, status, id);

@@ -545,7 +545,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					{env.company == "hqlife" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app}/>) : null}
+					{env.company != "bobcardif" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app}/>) : null}
 				</div>
 				<div className="title">保险计划</div>
 				<div className="form">

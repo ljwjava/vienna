@@ -451,29 +451,30 @@ input[type="checkbox"]
 
 .summary .html table
 {
-	background-color: #AAA;
+	background-color: #2db7f5;
 	margin: 10px 0 0 0;
 	padding: 0;
 	border-spacing: 1px;
+	font-size: 12px;
 }
 
 .summary .html table tr
 {
-	height: 44px;
+	/*height: 44px;*/
 }
 
 .summary .html table tr th
 {
-	padding: 0;
+	padding: 5px 0;
 	weight: 800;
-	color: #000;
+	color: #fff;
 	text-align: center;
-	background-color: #FFF;
+	background-color: #2db7f5;
 }
 
 .summary .html table tr td
 {
-	padding: 0;
+	padding: 5px 0;
 	weight: 0;
 	color: #000;
 	text-align: center;
@@ -508,6 +509,7 @@ input[type="checkbox"]
 	line-height: 44px;
 	padding: 0 10px 0 10px;
 	border-bottom: 1px solid #CCC;
+	font-weight: bold;
 }
 
 .view

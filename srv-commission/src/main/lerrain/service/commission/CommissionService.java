@@ -35,6 +35,18 @@ public class CommissionService
 			payoff(commission);
 	}
 
+	public void retry(List<Long> ids)
+	{
+		if(ids != null && ids.size() > 0){
+			for (Long id: ids) {
+				Commission c = commissionDao.loadCommissionById(id);
+				if(c != null && c.getAmount() > 0){
+					payoff(c);
+				}
+			}
+		}
+	}
+
 	/**
 	 * 该方法执行未结束的时候
 	 * 再次执行该方法会出现问题，需要加同步锁

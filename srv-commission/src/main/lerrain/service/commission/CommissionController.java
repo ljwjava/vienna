@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -42,4 +44,24 @@ public class CommissionController
 
         return res;
     }
+
+    @RequestMapping("/retry.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject retry(@RequestBody JSONArray ids)
+    {
+        List<Long> idlist = new ArrayList<Long>();
+        for (int i=0;i<ids.size();i++)
+        {
+            Long id = ids.getLong(i);
+            idlist.add(id);
+        }
+        cs.retry(idlist);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
 }
