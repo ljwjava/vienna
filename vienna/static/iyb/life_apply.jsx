@@ -628,12 +628,12 @@ $(document).ready( function() {
 		});
 	}
 
-	try{
+	try {
         pointman.use('do', () => {
             let config = pointman.getConfig();
             env.tokenId = encodeURIComponent(config.token);
         });
-	}catch(e){}
+	} catch(e){}
 });
 
 

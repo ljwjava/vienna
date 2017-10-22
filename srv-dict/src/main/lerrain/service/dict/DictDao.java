@@ -31,12 +31,20 @@ public class DictDao
 	@Autowired
 	JdbcTemplate jdbc;
 
-	public Object load(String company, String name)
+	public Object load(String company, String name, String version)
 	{
 		try
 		{
-			String c = jdbc.queryForObject("select content from t_dict where code = ? and company = ? order by version desc limit 0, 1", String.class, name, company);
-			return JSON.parse(c);
+			if ("0".equals(version) || "new".equalsIgnoreCase(version))
+			{
+				String c = jdbc.queryForObject("select content from t_dict where code = ? and company = ? order by version desc limit 0, 1", String.class, name, company);
+				return JSON.parse(c);
+			}
+			else
+			{
+				String c = jdbc.queryForObject("select content from t_dict where code = ? and company = ? and version = ?", String.class, name, company, version);
+				return JSON.parse(c);
+			}
 		}
 		catch (Exception e)
 		{
@@ -44,12 +52,20 @@ public class DictDao
 		}
 	}
 
-	public Object load(String name)
+	public Object load(String name, String version)
 	{
 		try
 		{
-			String c = jdbc.queryForObject("select content from t_dict where code = ? and company is null order by version desc limit 0, 1", String.class, name);
-			return JSON.parse(c);
+			if ("0".equals(version) || "new".equalsIgnoreCase(version))
+			{
+				String c = jdbc.queryForObject("select content from t_dict where code = ? and company is null order by version desc limit 0, 1", String.class, name);
+				return JSON.parse(c);
+			}
+			else
+			{
+				String c = jdbc.queryForObject("select content from t_dict where code = ? and company is null and version = ?", String.class, name, version);
+				return JSON.parse(c);
+			}
 		}
 		catch (Exception e)
 		{

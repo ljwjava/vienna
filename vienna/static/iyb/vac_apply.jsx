@@ -13,9 +13,20 @@ import CityPicker from '../common/widget.cityPicker.jsx';
 import Form from '../common/widget.form2.jsx';
 
 env.company = 'zhongan';
-env.parseDict = function(dict) {
-	return dict.map(v => [v.code, v.text]);
-};
+env.certType = [["1","身份证"]];
+env.mapping = {
+	certType: {
+		"1" : "I"
+	}
+}
+
+env.translate = function(vals) {
+	for (var k in env.mapping) {
+		if (vals[k]) {
+			vals["_" + k] = env.mapping[k][vals[k]];
+		}
+	}
+}
 
 env.checkCustomer = function(f) {
 	let r = {};
@@ -43,7 +54,7 @@ class ApplicantForm extends Form {
 		let v = [
             {name:'投保人类型', code:"type", type:"switch", refresh:"yes", options:[["1","个人"],["2","公司"]]},
 			{name:'投保人名称', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入名称"},
-			{name:'证件类型', code:"certType", type:"switch", options:[["1","身份证"]]},
+			{name:'证件类型', code:"certType", type:"switch", options:env.certType},
 			{name:'证件号码', code:"certNo", type:"idcard", req:"yes", succ:this.resetCertNo.bind(this)},
             {name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
             {name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
@@ -204,6 +215,7 @@ var Ground = React.createClass({
 		env.applicant = this.refs.applicant.val();
 		env.applicant.certName = this.refs.applicant.refs.certType.text();
 		env.applicant.cityName = this.refs.applicant.refs.city.val().text;
+		env.translate(env.applicant);
 		// 被保险人信息校验
 		if (!this.refs.insurant.verifyAll()) {
             alert("请检查被车辆信息");
@@ -347,8 +359,10 @@ $(document).ready( function() {
 		});
 	}
 
-	pointman.use('do', () => {
-		let config = pointman.getConfig();
-		env.tokenId = encodeURIComponent(config.token);
-	});
+	try {
+		pointman.use('do', () => {
+			let config = pointman.getConfig();
+			env.tokenId = encodeURIComponent(config.token);
+		});
+	} catch(e){}
 });

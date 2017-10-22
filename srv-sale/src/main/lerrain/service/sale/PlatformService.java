@@ -117,6 +117,7 @@ public class PlatformService
         stack.put("reversalStr", reversalStr);
         stack.put("md5Of", new Md5());
         stack.put("urlParam", new UrlParam());
+        stack.put("Encrypt", new Encrypt());
 
         platforms = platformDao.loadChannels(stack);
 

@@ -224,8 +224,13 @@ public class PlatformDao
         {
             Stack s = new Stack(factors);
             if (params != null && objects != null)
+            {
                 for (int i = 0; i < params.length && i < objects.length; i++)
+                {
+                    s.declare(params[i]);
                     s.set(params[i], objects[i]);
+                }
+            }
 
             return f.run(s);
         }
