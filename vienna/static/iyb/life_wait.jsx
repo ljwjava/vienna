@@ -314,7 +314,7 @@ var Ground = React.createClass({
 
 		if (t == 1){
 			var vd = env.order.detail.vendor;
-			s = {modify:0, title:"投保成功", text:vd.succTips ? vd.succTips : "投保成功，"+vd.name+"会在承包后进行回访，回访重要，请注意接听", memo:text, icon:"images/insure_succ.png"};
+			s = {modify:0, title:"投保成功", text: !!vd.succTips ? vd.succTips : "投保成功，"+vd.name+"会在承保后进行回访，回访重要，请注意接听", memo:text, icon:"images/insure_succ.png"};
             this.getUseableCountByOrderNo();
         }else if (t == 20)
 			s = {modify:2, title:"核保失败", text:text, memo:"请修改后重新提交", icon:"images/insure_fail.png"};
