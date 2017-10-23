@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Map;
 
 @Controller
 public class OrderController
@@ -153,7 +154,7 @@ public class OrderController
             if (p.containsKey("bizMsg"))
                 order.setBizMsg(p.getString("bizMsg"));
             if (p.containsKey("extra"))
-                order.setExtra(p.getJSONObject("extra"));
+                fillExtra(order, p.getJSONObject("extra"));
 
             if (pay >= 0)
                 order.setPay(pay);
@@ -206,5 +207,24 @@ public class OrderController
             order.setPay(p.getIntValue("pay"));
 //        if (p.containsKey("status"))
 //            order.setStatus(p.getIntValue("status"));
+    }
+
+    /**
+     * 保留extra下一级属性，其他覆盖
+     * @param order
+     * @param p
+     */
+    private void fillExtra(Order order, JSONObject p){
+        if(p == null || p.size() <= 0){
+            return;
+        }
+        Map<String, Object> extra = order.getExtra();
+        if(extra == null){
+            order.setExtra(p);
+            return;
+        }
+        for (String key: p.keySet()) {
+            extra.put(key, p.get(key));
+        }
     }
 }
