@@ -1,5 +1,6 @@
 package lerrain.service.sale;
 
+import lerrain.service.common.Log;
 import lerrain.service.sale.function.*;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
@@ -33,6 +34,7 @@ public class PlatformService
     Function today;
     Function timediff;
     Function reversalStr;
+    Function log, err;
 
     public PlatformService(){
         today = new Function()
@@ -93,12 +95,32 @@ public class PlatformService
                 return null;
             }
         };
+        log = new Function()
+        {
+            @Override
+            public Object run(Object[] objects, Factors factors)
+            {
+                Log.debug(objects[0]);
+                return null;
+            }
+        };
+        err = new Function()
+        {
+            @Override
+            public Object run(Object[] objects, Factors factors)
+            {
+                Log.error(objects[0]);
+                return null;
+            }
+        };
     }
 
     @PostConstruct
     public void initiate()
     {
         Map stack = new HashMap();
+        stack.put("log", log);
+        stack.put("err", err);
         stack.put("biz", callLife);
         stack.put("life", callLife);
         stack.put("nextId", nextId);

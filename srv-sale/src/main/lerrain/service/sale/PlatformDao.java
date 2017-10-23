@@ -122,28 +122,44 @@ public class PlatformDao
             public void processRow(ResultSet rs) throws SQLException
             {
                 String consName = rs.getString("name");
+                String otherNames = rs.getString("other_names");
                 String params = rs.getString("params");
                 String script = rs.getString("script");
 
-                Log.debug("loading... " + consName);
-
                 Function f = new SelfFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","));
-
                 Stack s = p.getEnv();
-                String[] name = consName.split("[.]");
-                if (name.length == 1)
+
+                String[] allName;
+                if (Common.isEmpty(otherNames))
                 {
-                    s.set(name[0], f);
+                    allName = new String[] {consName};
                 }
-                else if (name.length == 2)
+                else
                 {
-                    Map map = (Map) s.get(name[0]);
-                    if (map == null)
+                    String[] append = otherNames.split(",");
+                    allName = Arrays.copyOf(append, append.length + 1);
+                    allName[allName.length - 1] = consName;
+                }
+
+                for (String fe : allName)
+                {
+                    Log.debug("loading... " + fe);
+
+                    String[] name = fe.split("[.]");
+                    if (name.length == 1)
                     {
-                        map = new HashMap();
-                        s.set(name[0], map);
+                        s.set(name[0], f);
                     }
-                    map.put(name[1], f);
+                    else if (name.length == 2)
+                    {
+                        Map map = (Map) s.get(name[0]);
+                        if (map == null)
+                        {
+                            map = new HashMap();
+                            s.set(name[0], map);
+                        }
+                        map.put(name[1], f);
+                    }
                 }
             }
 
