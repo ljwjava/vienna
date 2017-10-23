@@ -37,7 +37,7 @@
 
 		<rule>
 			<if condition="AGE lt 18 or AGE > 50" type="customer">
-				投保年龄：18~45周岁
+				投保年龄：18~50周岁
 			</if>
 			<if condition="AMOUNT lt 10000 or AMOUNT % 10000 > 0">
 				最低投保基本保险金额：10000元，且需要为10000元的整数倍
@@ -54,12 +54,6 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不能长于保障期间
 			</if>
-			<!--<if condition="AGE >= 31 and AGE le 40 and PAY_VALUE == 30 and (INSURE_VALUE == 20 or INSURE_VALUE == 60))">-->
-				<!--大于40周岁时，不可选择30年交，只可以选择10年交-->
-			<!--</if>-->
-			<!--<if condition="AGE >= 18 and AGE le 30 and PAY_VALUE == 30 and INSURE_VALUE == 20">-->
-				<!--大于40周岁时，不可选择30年交，只可以选择10年交-->
-			<!--</if>-->
 			<if condition="ZONE == null" level="alert">
 				请选择所在地区
 			</if>
