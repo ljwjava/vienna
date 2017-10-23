@@ -74,7 +74,6 @@ public class ServiceDispatcher
     }
 
     @RequestMapping("/ware/callback/**")
-    @ResponseBody
     @CrossOrigin
     public String callback(HttpServletRequest req)
     {
@@ -114,7 +113,9 @@ public class ServiceDispatcher
         }
 
         JSONObject res = sv.req(modules.get("ware"), uri.substring(uri.indexOf("/", 1) + 1), param);
-        return res.getString("content");
+        String str = res.getString("content");
+
+        return str;
     }
 
 //    @RequestMapping("/{module}/{action}.{type:json|do}")
