@@ -628,12 +628,7 @@ $(document).ready( function() {
 		});
 	}
 
-	try {
-        pointman.use('do', () => {
-            let config = pointman.getConfig();
-            env.tokenId = encodeURIComponent(config.token);
-        });
-	} catch(e){}
+
 });
 
 

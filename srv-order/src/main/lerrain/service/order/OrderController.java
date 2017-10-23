@@ -154,7 +154,7 @@ public class OrderController
             if (p.containsKey("bizMsg"))
                 order.setBizMsg(p.getString("bizMsg"));
             if (p.containsKey("extra"))
-                fillExtra(order, p.getJSONObject("extra"));
+                order.setExtra(fill(order.getExtra(), p.getJSONObject("extra")));
 
             if (pay >= 0)
                 order.setPay(pay);
@@ -197,34 +197,24 @@ public class OrderController
             order.setOwner(p.getString("owner"));
 
         if (p.containsKey("detail"))
-            order.setDetail(p.getJSONObject("detail"));
-        if (p.containsKey("factors"))
-            order.setFactors(p.getJSONObject("factors"));
+            order.setDetail(fill(order.getDetail(), p.getJSONObject("detail")));
         if (p.containsKey("extra"))
-            order.setExtra(p.getJSONObject("extra"));
+            order.setExtra(fill(order.getExtra(), p.getJSONObject("extra")));
 
-        if (p.containsKey("pay"))
-            order.setPay(p.getIntValue("pay"));
+//        if (p.containsKey("pay"))
+//            order.setPay(p.getIntValue("pay"));
 //        if (p.containsKey("status"))
 //            order.setStatus(p.getIntValue("status"));
     }
 
-    /**
-     * 保留extra下一级属性，其他覆盖
-     * @param order
-     * @param p
-     */
-    private void fillExtra(Order order, JSONObject p){
-        if(p == null || p.size() <= 0){
-            return;
-        }
-        Map<String, Object> extra = order.getExtra();
-        if(extra == null){
-            order.setExtra(p);
-            return;
-        }
-        for (String key: p.keySet()) {
-            extra.put(key, p.get(key));
-        }
+    private Map fill(Map m1, Map m2)
+    {
+        if (m1 == null)
+            return m2;
+        if (m2 == null)
+            return m1;
+
+        m1.putAll(m2);
+        return m1;
     }
 }
