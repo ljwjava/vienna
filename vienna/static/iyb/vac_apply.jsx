@@ -13,10 +13,15 @@ import CityPicker from '../common/widget.cityPicker.jsx';
 import Form from '../common/widget.form2.jsx';
 
 env.company = 'zhongan';
-env.certType = [["1","身份证"]];
+env.certType1 = [["1","身份证"]];
+env.certType2 = [["101","税务登记证"],["102","营业执照"],["103","组织机构代码证"],["104","统一社会信用代码"]];
 env.mapping = {
 	certType: {
-		"1" : "I"
+		"1" : "I",
+		"101" : "T",
+		"102" : "L",
+		"103" : "Z",
+		"104" : "TY"
 	}
 }
 
@@ -50,25 +55,59 @@ env.checkCustomer = function(f) {
 };
 
 class ApplicantForm extends Form {
+	refreshAll(c) {
+		var cusType = c.val();
+		if (cusType == "2" && (this.state.cusType == null || this.state.cusType == "1")) {
+			this.setState({cusType: cusType}, () => {
+				this.refs.certType.change("101");
+				this.refs.certNo.change("");
+			});
+		} else if (cusType == "1" && this.state.cusType == "2") {
+			this.setState({cusType: cusType}, () => {
+				this.refs.certType.change("1");
+				this.refs.certNo.change("");
+			});
+		}
+	}
 	form() {
+		var cusType ="1";
+		if (this.state.cusType != null)
+			cusType = this.state.cusType;
+		else if (this.props.defVal != null && this.props.defVal.applicant != null)
+			cusType = this.props.defVal.applicant.type;
 		let v = [
-            {name:'投保人类型', code:"type", type:"switch", refresh:"yes", options:[["1","个人"],["2","公司"]]},
-			{name:'投保人名称', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入名称"},
-			{name:'证件类型', code:"certType", type:"switch", options:env.certType},
-			{name:'证件号码', code:"certNo", type:"idcard", req:"yes", succ:this.resetCertNo.bind(this)},
-            {name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
-            {name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
-            {name:'所在地区', code:"city", type:"city", company: env.company},
-			{name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入通讯地址"},
+            {name:'投保人类型', code:"type", type:"switch", onChange:this.refreshAll.bind(this), options:[["1","个人"],["2","公司"]], value:cusType},
+			{name:'投保人名称', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入名称"}
 		];
+		if (cusType == "1") {
+			v.push({name: '证件类型', code: "certType", type: "switch", options: env.certType1});
+			v.push({name: '证件号码', code: "certNo", type: "idcard", req: "yes", succ: this.resetCertNo.bind(this)});
+			v.push({name: '性别', code: "gender", type: "switch", options: [["M", "男"], ["F", "女"]]});
+			v.push({name: '出生日期', code: "birthday", type: "date", req: "yes", desc: "请选择出生日期"});
+		} else if (cusType == "2") {
+			v.push({name: '证件类型', code: "certType", type: "select", options: env.certType2});
+			v.push({name: '证件号码', code: "certNo", type: "text", req: "yes"});
+		}
+		v.push({name: '所在地区', code: "city", type: "city", company: env.company});
+		v.push({
+			name: '通讯地址',
+			code: "address",
+			type: "text",
+			reg: "^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$",
+			req: "yes",
+			mistake: "字数过少或有特殊符号",
+			desc: "请输入通讯地址"
+		});
 		return this.buildForm(v);
 	}
 	verify(code, val) {
-		return env.checkCustomer(this.val());
+		if (this.refs.type.val() == "1")
+			return env.checkCustomer(this.val());
+		return {};
 	}
 	resetCertNo(certNo) {
 		this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
-		this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
+		this.refs.gender.change(Number(certNo.substr(16, 1)) % 2 == 1 ? "M" : "F");
 	}
 }
 
@@ -288,7 +327,7 @@ var Ground = React.createClass({
 			<div className="common">
 				<div className="title">投保人信息</div>
 				<div className="form">
-					<ApplicantForm ref="applicant" defVal={app} onRefresh={this.refreshPremium}/>
+					<ApplicantForm ref="applicant" defVal={app}/>
 				</div>
 				<div className="title">车辆信息</div>
 				<div className="form">

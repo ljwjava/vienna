@@ -22,7 +22,7 @@ var Form = React.createClass({
 				if (vv) v.value = vv;
 			}
 			let comp;
-			let opt = v.refresh?this.onRefresh:this.onChange;
+			let opt = v.onChange != null ? v.onChange : (v.refresh?this.onRefresh:this.onChange);
 			if (v.type == "text") {
 				comp = (<Inputer ref={v.code} valCode={v.code} valType="text" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={v.desc} value={v.value}/>);
 			} else if (v.type == "switch") {

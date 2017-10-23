@@ -24,6 +24,9 @@ var Selecter = React.createClass({
 		if (this.props.onChange)
 			this.props.onChange(this, this.val());
 	},
+	change(code) {
+		this.refs.self.value = code;
+	},
 	render() {
 		if (this.props.options == null || this.props.options.length == 0)
 			return (<span ref="self"></span>);
