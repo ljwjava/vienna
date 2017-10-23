@@ -448,8 +448,8 @@ input[type="checkbox"]
 {
 	padding: 0 0 10px 0;
 }
-
-.summary .html table
+/*.summary*/
+.html table
 {
 	background-color: #2db7f5;
 	margin: 10px 0 0 0;
@@ -457,13 +457,13 @@ input[type="checkbox"]
 	border-spacing: 1px;
 	font-size: 12px;
 }
-
-.summary .html table tr
+/*.summary*/
+.html table tr
 {
 	/*height: 44px;*/
 }
-
-.summary .html table tr th
+/*.summary*/
+.html table tr th
 {
 	padding: 5px 0;
 	weight: 800;
@@ -471,8 +471,8 @@ input[type="checkbox"]
 	text-align: center;
 	background-color: #2db7f5;
 }
-
-.summary .html table tr td
+/*.summary*/
+.html table tr td
 {
 	padding: 5px 0;
 	weight: 0;
@@ -480,8 +480,8 @@ input[type="checkbox"]
 	text-align: center;
 	background-color: #FFF;
 }
-
-.summary .html span
+/*.summary*/
+.html span
 {
 	display: block;
 	padding: 5px 5px 5px 5px;
@@ -492,7 +492,7 @@ input[type="checkbox"]
 
 .summary
 {
-	background-color: #EEE;
+	/*background-color: #EEE;*/
 	padding: 10px 0px 10px 0px;
 }
 

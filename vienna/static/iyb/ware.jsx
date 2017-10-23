@@ -137,7 +137,8 @@ var Ware = React.createClass({
 				<div className="common">
 					<div className="title">健康及财务告知</div>
 					<div className="text">
-						{ env.docs.quests.map(v => <p>{v}</p>) }
+						{/*{ env.docs.quests.map(v => <p className="html" dangerouslySetInnerHTML={{__html:v}}></p>) }*/}
+						<Summary content={env.docs.quests}/>
 					</div>
 					<div className="console">
 						<div className="tab">
