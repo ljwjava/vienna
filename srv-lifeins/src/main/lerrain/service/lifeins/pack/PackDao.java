@@ -119,7 +119,7 @@ public class PackDao
     {
         final Map<Long, Map> res = new HashMap<>();
 
-        jdbc.query("select id, code, name, logo from t_company", new RowCallbackHandler()
+        jdbc.query("select id, code, name, logo, succ_tips from t_company", new RowCallbackHandler()
         {
             @Override
             public void processRow(ResultSet rs) throws SQLException
@@ -129,6 +129,7 @@ public class PackDao
                 r.put("code", rs.getString("code"));
                 r.put("name", rs.getString("name"));
                 r.put("logo", rs.getString("logo"));
+                r.put("succTips", rs.getString("succ_tips"));
 
                 res.put(rs.getLong("id"), r);
             }

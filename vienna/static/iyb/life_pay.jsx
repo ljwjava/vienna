@@ -23,9 +23,9 @@ class PayForm extends Form {
 	form() {
 	    let bc = null;
 	    let bk = null;
-	    if(env.order.detail.pay != null) {
-            bc = env.order.detail.pay.bankCard;
-            bk = env.order.detail.pay.bank;
+	    if(env.order.extra != null && env.order.extra.pay != null) {
+            bc = env.order.extra.pay.bankCard;
+            bk = env.order.extra.pay.bank;
 		}
 		let v = [
 			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank},
@@ -51,8 +51,9 @@ var Ground = React.createClass({
 			ToastIt("请确认客户声明信息");
 			return;
 		}
-		env.order.detail.pay = this.refs.pay.val();
-        env.order.detail.pay.bankText = this.refs.pay.refs.bank.text();
+        env.order.extra = (env.order.extra == null ? {} : env.order.extra);
+		env.order.extra.pay = this.refs.pay.val();
+        env.order.extra.pay.bankText = this.refs.pay.refs.bank.text();
 		if (this.refs.photos)
 		{
             env.order.detail.photos = this.refs.photos.val();
@@ -77,7 +78,8 @@ var Ground = React.createClass({
 	// },
 	openDoc(link) {
 		try{
-			env.order.detail.pay = this.refs.pay.val();
+            env.order.extra = (env.order.extra == null ? {} : env.order.extra);
+			env.order.extra.pay = this.refs.pay.val();
 			if(this.refs.photos != null) {
 				env.order.detail.photos = this.refs.photos.val();
             }

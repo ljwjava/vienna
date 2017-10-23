@@ -313,7 +313,8 @@ var Ground = React.createClass({
 		let s = {};
 
 		if (t == 1){
-			s = {modify:0, title:"投保成功", text:"您的保单已承保，中荷人寿会在承保后进行回访，拨出电话为：400-816-1688或0411-82531688，回访重要，请注意接听", memo:text, icon:"images/insure_succ.png"};
+			var vd = env.order.detail.vendor;
+			s = {modify:0, title:"投保成功", text:vd.succTips ? vd.succTips : "投保成功，"+vd.name+"会在承包后进行回访，回访重要，请注意接听", memo:text, icon:"images/insure_succ.png"};
             this.getUseableCountByOrderNo();
         }else if (t == 20)
 			s = {modify:2, title:"核保失败", text:text, memo:"请修改后重新提交", icon:"images/insure_fail.png"};
