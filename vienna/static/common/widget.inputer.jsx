@@ -15,6 +15,9 @@ var Inputer = React.createClass({
 	val() {
 		return $.trim(this.refs.self.value);
 	},
+	change(val) {
+		this.refs.self.value = val;
+	},
 	verify() {
 		let alert = null;
 		let val = this.val();
