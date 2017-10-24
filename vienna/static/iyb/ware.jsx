@@ -26,8 +26,13 @@ class PlanForm extends Form {
 }
 
 var Ware = React.createClass({
+	saveAndNext(func){
+        common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
+        if(func){
+            func();
+		}
+	},
 	openQuest() {
-		common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
 		this.quest();
 	},
 	quest() {
@@ -132,7 +137,7 @@ var Ware = React.createClass({
 		document.location.href = "iyunbao://poster?code=" + env.ware.code;
 	},
    	render() {
-		if (this.state.quest) {
+		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
 			return (
 				<div className="common">
 					<div className="title">健康及财务告知</div>
@@ -210,7 +215,7 @@ var Ware = React.createClass({
 						<div className="row">
 							{env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
 							<div className="col left">首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}</div>
-							<div className="col right" onClick={this.openQuest}>投保</div>
+							<div className="col right" onClick={(!!env.docs && !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>投保</div>
 						</div>
 					</div>
 				</div>

@@ -11,6 +11,7 @@ import IdCard from '../common/widget.idcard.jsx';
 import CertValidEditor from '../common/widget.certValidate.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Form from '../common/widget.form2.jsx';
+import ToastIt from '../common/widget.toast.jsx';
 
 env.company = 'zhongan';
 env.certType1 = [["1","身份证"]];
@@ -199,7 +200,7 @@ var Ground = React.createClass({
 			if (x != null)
 				factors[v.name] = x.val();
 		});
-		factors["ZONE"] = this.refs.applicant.refs.city.val().code;
+		// factors["ZONE"] = this.refs.applicant.refs.city.val().code;
     	return factors;
     },
 	getPlanDesc() {
@@ -233,38 +234,38 @@ var Ground = React.createClass({
 	},
 	submit() {
 		if (env.brokerId == null || env.brokerId == "") {
-			alert("缺少代理人信息");
+			ToastIt("缺少代理人信息");
 			return;
 		}
 		//投保人信息校验
 		if (!this.refs.applicant.verifyAll()) {
-			alert("请检查投保人信息");
+			ToastIt("请检查投保人信息");
 			return;
 		}
 		env.applicant = this.refs.applicant.val();
 		env.applicant.certName = this.refs.applicant.refs.certType.text();
-		env.applicant.cityName = this.refs.applicant.refs.city.val().text;
+		// env.applicant.cityName = this.refs.applicant.refs.city.val().text;
 		env.translate(env.applicant);
 		// 被保险人信息校验
 		if (!this.refs.insurant.verifyAll()) {
-            alert("请检查被车辆信息");
+            ToastIt("请检查被车辆信息");
             return;
 		}
 		//规则保费
 		if (this.state.rules != null && this.state.rules.length > 0) {
-			alert("请检查投保规则");
+			ToastIt("请检查投保规则");
 			return;
 		}
 		if (typeof this.state.premium != "number") {
-			alert("请确认保费已正确计算");
+			ToastIt("请确认保费已正确计算");
 			return;
 		}
 		if (!this.refs.contact.verifyAll()) {
-			alert("请检查通讯信息");
+			ToastIt("请检查通讯信息");
 			return;
 		}
         if (env.smsKey == null) {
-            alert("请获取并输入验证码");
+            ToastIt("请获取并输入验证码");
             return;
         }
         let contact = this.refs.contact.val();
@@ -370,8 +371,8 @@ $(document).ready( function() {
 			let init = {};
 			if (planFactors) {
 				init.applicant = {};
-				if (planFactors.ZONE)
-					init.applicant.city = planFactors.ZONE;
+				// if (planFactors.ZONE)
+				// 	init.applicant.city = planFactors.ZONE;
 				init.factors = planFactors;
 			}
 			draw(init);
