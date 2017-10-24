@@ -88,16 +88,6 @@ class ApplicantForm extends Form {
 			v.push({name: '证件类型', code: "certType", type: "select", options: env.certType2});
 			v.push({name: '证件号码', code: "certNo", type: "text", req: "yes"});
 		}
-		v.push({name: '所在地区', code: "city", type: "city", company: env.company});
-		v.push({
-			name: '通讯地址',
-			code: "address",
-			type: "text",
-			reg: "^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$",
-			req: "yes",
-			mistake: "字数过少或有特殊符号",
-			desc: "请输入通讯地址"
-		});
 		return this.buildForm(v);
 	}
 	verify(code, val) {
