@@ -8,6 +8,7 @@ var CityPicker = React.createClass({
 	getInitialState() {
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
+	    // console.log('init', v);
 		return {value: v.code, text: v.text, city:[], proPickerVal:[]};
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state
@@ -47,6 +48,7 @@ var CityPicker = React.createClass({
                     }
                 }
             }
+            // console.log('compdid', this.state);
             this.setState({
                 city: r.city,
                 proPickerVal: proPickerVal
@@ -54,6 +56,7 @@ var CityPicker = React.createClass({
         });
     },
    	val() {
+        // console.log('val', this.state.value);
 		return {code: this.state.value, text: this.getFullName(this.state.text, this.state.value)};
 	},
 	verify() {
@@ -74,14 +77,16 @@ var CityPicker = React.createClass({
         obj.setState(v);
         var vv = proPickerVal[proPickerVal.length - 1];
         // this.state.value = {occCode: vv.value, occDesc: vv.label, occLevel: vv.level};
-        this.setState({
+        // console.log('update', vv);
+        this.setState({isCalculated: 'N', proPickerV: false, open:false,
             value: vv.value, text: vv.label, proPickerVal: proPickerVal
         },() => this.props.onChange(this));
         return [];
     },
     getFullName(label, value) {
+	    // console.log('full', label, value);
 	    if(value == null || value.length < 6) return '';
-	    if(this.state.city == null || this.state.city.length <= 0) return label;
+	    if(this.state.city == null || this.state.city.length <= 0 || value == null || value == "") return label;
         var cv1 = value.substr(0, 2) + "0000";
         var cv2 = value.substr(0, 4) + "00";
         var cv3 = value;
@@ -90,12 +95,12 @@ var CityPicker = React.createClass({
         var desc3 = '';
 	    for(var co1 in this.state.city) {
             var v1 = this.state.city[co1];
-            if(cv1 == v1.value) {
+            if(cv1 == v1.value || cv2 == v1.value) {    // 处理跨级情况，如直接写XX市，不过一般不会有这种情况
                 desc1 = v1.label;
                 var cc1 = v1.children;
                 for(var co2 in cc1) {
                     var v2 = cc1[co2];
-                    if(cv2 == v2.value) {
+                    if(cv2 == v2.value || cv3 == v2.value) {    // 处理跨级情况，如直接写XX区，“市辖区”和“县”直接忽略的那种，有这种情况存在，比如上海人寿
                         desc2 = v2.label == desc1 ? '' : v2.label;
                         var cc2 = v2.children;
                         for(var co3 in cc2) {

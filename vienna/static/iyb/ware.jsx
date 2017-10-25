@@ -57,8 +57,13 @@ var Ware = React.createClass({
 		else if (env.packType == 3)
             nextUrl = "vac_apply.mobile";
 
-		if (nextUrl != null)
-			document.location.href = nextUrl + "?packId=" + env.packId + plus;
+		if (nextUrl != null){
+			if(plus.indexOf("packId=") >= 0){
+                document.location.href = nextUrl + "?" + (plus.replace(/(packId=)([^&]*)/gi, "packId=" + env.packId));
+			}else{
+                document.location.href = nextUrl + "?packId=" + env.packId + plus;
+			}
+		}
 		else
 			ToastIt("error");
     },

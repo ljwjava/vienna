@@ -117,7 +117,7 @@ class InsurantForm extends Form {
             }
         });
         form.push({name:'发动机号', code:"engineNo", type:"text", req:"yes", desc:"请输入发动机号"});
-        form.push({name:'车架号', code:"frameNo", type:"text", req:"yes", desc:"请输入车架号"});
+        form.push({name:'车架号', code:"frameNo", type:"text", req:"yes", desc:"请输入车架号", reg:"^.{17}$", mistake:"请输入正确的车架号"});
 		form.push({name:'车牌号', code:"plateNo", type:"text", desc:"请输入车牌号，新车可为空"});
 		return this.buildForm(form);
 	}
@@ -125,11 +125,27 @@ class InsurantForm extends Form {
 
 class ContactForm extends Form {
 	sendSms() {
+        if(!!this.state.show && this.state.show > 0){
+            return;
+        }
+        this.countDown(-1);
 		let phone = this.refs.mobile.val();
 		common.req("ware/do/sms.json", {platformId: 2, tokenId:env.tokenId, phone:phone}, r => {
 			env.smsKey = phone;
 		});
 	}
+    countDown(k){
+        let cc = this.state.show;
+        if((!cc || cc <= 0) && k == -1){
+            cc = 60;
+        }
+        // console.log(cc);
+        if(!cc || cc <= 0){
+            return;
+        }
+        this.setState({show: cc-1});
+        setTimeout(()=>{this.countDown()}, 1000);
+    }
 	form() {
 		let v = [
             {name:'联系人姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入联系人姓名"},
@@ -140,7 +156,7 @@ class ContactForm extends Form {
 		form.push(['短信验证码', (
 			<div>
 				<div style={{display:"inline-block"}}><Inputer ref="smsCode" valCode="smsCode" valType="number" valReg="^\d{6}$" valMistake="验证码为6位数字" valReq="yes" onChange={this.onChange} placeholder="请输入验证码"/></div>
-				<span className="blockSel" onClick={this.sendSms.bind(this)}>发送</span>
+				<span className="blockSel" onClick={this.sendSms.bind(this)}>{!this.state.show || this.state.show <= 0 ? "发送" : (this.state.show+"s")}</span>
 			</div>
 		), "smsCode"]);
 		return form;
@@ -248,7 +264,7 @@ var Ground = React.createClass({
 		env.translate(env.applicant);
 		// 被保险人信息校验
 		if (!this.refs.insurant.verifyAll()) {
-            ToastIt("请检查被车辆信息");
+            ToastIt("请检查车辆信息");
             return;
 		}
 		//规则保费
@@ -301,8 +317,8 @@ var Ground = React.createClass({
 			detail: apply
 		};
 		common.req("ware/do/verify.json", order, r => {
+            common.save("iyb/orderId", r.orderId);
 			common.req("ware/do/apply.json", order, r => {
-                common.save("iyb/orderId", order.id);
                 document.location.href = r.nextUrl;
             });
         });
@@ -341,7 +357,7 @@ var Ground = React.createClass({
 					<div className="tab">
 						<div className="row">
 							<div className="col left">
-								首年保费：{this.state.premium <= 0 ? "无法计算" : this.state.premium}
+								首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
 							<div className="col right" onClick={this.submit}>下一步</div>
 						</div>
@@ -374,6 +390,7 @@ $(document).ready( function() {
 				// if (planFactors.ZONE)
 				// 	init.applicant.city = planFactors.ZONE;
 				init.factors = planFactors;
+				init.insurant = planFactors;
 			}
 			draw(init);
 		});
