@@ -52,6 +52,7 @@ public class IybFunc implements Factors
     {
         return map.get(s);
     }
+
 /*
     private class Sofa implements Function
     {
@@ -104,4 +105,5 @@ public class IybFunc implements Factors
         }
     }
 */
+
 }

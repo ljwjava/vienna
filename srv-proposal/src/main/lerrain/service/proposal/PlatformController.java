@@ -13,47 +13,6 @@ public class PlatformController
 	@Autowired
 	ServiceMgr serviceMgr;
 
-	@RequestMapping("/iyb/{path}")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject iyb(@PathVariable String path, @RequestBody JSONObject p)
-	{
-		return t(serviceMgr.req("proposal", path, p));
-	}
-
-//	@RequestMapping("/iyb/plan/{path}.json")
-//	@ResponseBody
-//	@CrossOrigin
-//	public JSONObject redirect(@PathVariable String path, @RequestBody JSONObject p)
-//	{
-//		return t(serviceMgr.req("lifeins", path, p));
-//	}
-//
-//	@RequestMapping("iyb/bless/{srv}.json")
-//	@ResponseBody
-//	@CrossOrigin
-//	public JSONObject bless(@PathVariable String path, @RequestBody JSONObject p)
-//	{
-//		return t(serviceMgr.req("proposal", path, p));
-//	}
-
-	private JSONObject t(JSONObject r)
-	{
-		JSONObject res = new JSONObject();
-		if ("success".equals(r.get("result")))
-		{
-			res.put("isSuccess", true);
-			res.put("result", r.get("content"));
-		}
-		else
-		{
-			res.put("errorCode", 101);
-			res.put("errorMsg", r.get("reason"));
-		}
-
-		return res;
-	}
-
 	@RequestMapping("/list_adv.json")
 	@ResponseBody
 	@CrossOrigin
