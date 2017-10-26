@@ -118,7 +118,7 @@ class InsurantForm extends Form {
         });
         form.push({name:'发动机号', code:"engineNo", type:"text", req:"yes", desc:"请输入发动机号"});
         form.push({name:'车架号', code:"frameNo", type:"text", req:"yes", desc:"请输入车架号", reg:"^.{17}$", mistake:"请输入正确的车架号"});
-		form.push({name:'车牌号', code:"plateNo", type:"text", desc:"请输入车牌号，新车可为空"});
+		form.push({name:'车牌号', code:"plateNo", type:"text", desc:"请输入车牌号，新车可为空", reg:"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$", mistake:"请输入正确的车牌号"});
 		return this.buildForm(form);
 	}
 }
@@ -320,8 +320,18 @@ var Ground = React.createClass({
             common.save("iyb/orderId", r.orderId);
 			common.req("ware/do/apply.json", order, r => {
                 document.location.href = r.nextUrl;
+            }, r => {
+                if(r != null){
+                    ToastIt(r);
+                }
+                console.log(r);
             });
-        });
+        }, r => {
+            if(r != null){
+                ToastIt(r);
+            }
+            console.log(r);
+		});
 	},
 	render() {
 		// 若没有机构信息，则不进行渲染
