@@ -9,7 +9,7 @@ import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 /**
- * iyb sofa特立独行的base64转码方式，除了制造开发负担，看不出有任何意义
+ * iyb sofa特立独行的base64转码方式，为什么不和大家统一？
  */
 public class EncryptIybSofa
 {
