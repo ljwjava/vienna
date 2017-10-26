@@ -8,7 +8,7 @@ var OccupationPicker = React.createClass({
 	getInitialState() {
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
-		return {value: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[]};
+		return {value: v.value||v.code, code: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[]};
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state
     componentWillMount() {
@@ -49,7 +49,7 @@ var OccupationPicker = React.createClass({
         });
     },
    	val() {
-		return {code: this.state.value, text: this.state.text, level: this.state.level};
+		return {value: this.state.value, code: this.state.code, text: this.state.text, level: this.state.level};
 	},
 	verify() {
 		let alert = null;
@@ -60,6 +60,9 @@ var OccupationPicker = React.createClass({
 		}
 		return alert;
 	},
+    validateChange(data){
+
+    },
     updateProfession(obj, value, proPickerVal) {
         let { occupation_level, premium, commission } = obj.state;
         occupation_level = value;
@@ -73,7 +76,7 @@ var OccupationPicker = React.createClass({
         var vv = proPickerVal[proPickerVal.length - 1];
         // this.state.value = {occCode: vv.value, occDesc: vv.label, occLevel: vv.level};
         this.setState({
-            value: vv.value, text: vv.label, level: vv.level, open:false, proPickerVal: proPickerVal
+            value: vv.value, code: vv.code || vv.value, text: vv.label, level: vv.level, open:false, proPickerVal: proPickerVal
         },() => this.props.onChange(this));
         return [];
     },

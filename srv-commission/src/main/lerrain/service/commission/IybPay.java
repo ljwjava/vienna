@@ -76,8 +76,10 @@ public class IybPay
 			req.put("serviceName", "iybCommissionPayNotify");//iybOrderNotify or iybAccountInfoProvider 
 			req.put("sign_type", "RSA"); 
 			req.put("timestamp", System.currentTimeMillis()); 
-			
-			return Network.request(serviceIyb + SERVER_URL, req.toJSONString());
+
+			String res = Network.request(serviceIyb + SERVER_URL, req.toJSONString());
+			Log.info(serviceIyb+">>> request:"+content.toJSONString()+" <<< response:"+res);
+			return res;
 		}
 		catch (Exception e)
 		{

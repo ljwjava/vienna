@@ -26,8 +26,13 @@ class PlanForm extends Form {
 }
 
 var Ware = React.createClass({
+	saveAndNext(func){
+        common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
+        if(func){
+            func();
+		}
+	},
 	openQuest() {
-		common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
 		this.quest();
 	},
 	quest() {
@@ -52,8 +57,13 @@ var Ware = React.createClass({
 		else if (env.packType == 3)
             nextUrl = "vac_apply.mobile";
 
-		if (nextUrl != null)
-			document.location.href = nextUrl + "?packId=" + env.packId + plus;
+		if (nextUrl != null){
+			if(plus.indexOf("packId=") >= 0){
+                document.location.href = nextUrl + "?" + (plus.replace(/(packId=)([^&]*)/gi, "packId=" + env.packId));
+			}else{
+                document.location.href = nextUrl + "?packId=" + env.packId + plus;
+			}
+		}
 		else
 			ToastIt("error");
     },
@@ -92,7 +102,10 @@ var Ware = React.createClass({
             r.vendor = s.vendor;
             r.company = s.vendor.code;
             this.setState(r, () => {
-            	console.log(this.state.packs);
+            	// console.log(this.state.packs);
+            	if(this.refs.detailTabs){
+                    this.refs.detailTabs.setState({code: this.refs.detailTabs.props.options[0][0]});
+				}
             	this.refreshPremium();
             });
         });
@@ -132,7 +145,7 @@ var Ware = React.createClass({
 		document.location.href = "iyunbao://poster?code=" + env.ware.code;
 	},
    	render() {
-		if (this.state.quest) {
+		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
 			return (
 				<div className="common">
 					<div className="title">健康及财务告知</div>
@@ -175,12 +188,14 @@ var Ware = React.createClass({
 		return (
 			<div className="common">
 				<div>
-					<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
-					<div style={{height:"50px", top:"-50px", position:"relative", paddingTop:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
-						<div className="font-wl">{v.name}</div>
-						<div className="font-wm">{v.remark}</div>
+					<div style={{position: "relative"}}>
+						<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
+						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
+							<div className="font-wl">{v.name}</div>
+							<div className="font-wm">{v.remark}</div>
+						</div>
 					</div>
-					<div style={{marginTop:"-50px"}}></div>
+					<div style={{}}></div>
                     { this.state.packs == null ? null :
 						<Tabs onChange={this.changePlan} options={this.state.packs}/>
                     }
@@ -200,7 +215,7 @@ var Ware = React.createClass({
 					由{this.state.vendor.name}承保并负责理赔
 				</div>
 				{ this.state.exps == null ? null :
-					<Tabs onChange={this.onSummary} options={this.state.exps}/>
+					<Tabs ref="detailTabs" onChange={this.onSummary} options={this.state.exps}/>
 				}
 				{ this.state.summary == null ? null :
 					<Summary content={this.state.summary} vals={this.state.vals == null ? null : this.state.vals.summary}/>
@@ -210,7 +225,7 @@ var Ware = React.createClass({
 						<div className="row">
 							{env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
 							<div className="col left">首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}</div>
-							<div className="col right" onClick={this.openQuest}>投保</div>
+							<div className="col right" onClick={(!!env.docs && !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>投保</div>
 						</div>
 					</div>
 				</div>
