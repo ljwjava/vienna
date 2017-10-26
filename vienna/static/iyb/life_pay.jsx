@@ -211,5 +211,6 @@ $(document).ready( function() {
 	document.title = "投保确认";
 	if ("undefined" != typeof iHealthBridge) {
 		IYB.setTitle("投保确认");
+        window.IYB.setRightButton(JSON.stringify([]));
 	}
 });

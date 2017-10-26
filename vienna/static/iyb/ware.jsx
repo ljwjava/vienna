@@ -102,7 +102,10 @@ var Ware = React.createClass({
             r.vendor = s.vendor;
             r.company = s.vendor.code;
             this.setState(r, () => {
-            	console.log(this.state.packs);
+            	// console.log(this.state.packs);
+            	if(this.refs.detailTabs){
+                    this.refs.detailTabs.setState({code: this.refs.detailTabs.props.options[0][0]});
+				}
             	this.refreshPremium();
             });
         });
@@ -185,12 +188,14 @@ var Ware = React.createClass({
 		return (
 			<div className="common">
 				<div>
-					<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
-					<div style={{height:"50px", top:"-50px", position:"relative", paddingTop:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
-						<div className="font-wl">{v.name}</div>
-						<div className="font-wm">{v.remark}</div>
+					<div style={{position: "relative"}}>
+						<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
+						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
+							<div className="font-wl">{v.name}</div>
+							<div className="font-wm">{v.remark}</div>
+						</div>
 					</div>
-					<div style={{marginTop:"-50px"}}></div>
+					<div style={{}}></div>
                     { this.state.packs == null ? null :
 						<Tabs onChange={this.changePlan} options={this.state.packs}/>
                     }
@@ -210,7 +215,7 @@ var Ware = React.createClass({
 					由{this.state.vendor.name}承保并负责理赔
 				</div>
 				{ this.state.exps == null ? null :
-					<Tabs onChange={this.onSummary} options={this.state.exps}/>
+					<Tabs ref="detailTabs" onChange={this.onSummary} options={this.state.exps}/>
 				}
 				{ this.state.summary == null ? null :
 					<Summary content={this.state.summary} vals={this.state.vals == null ? null : this.state.vals.summary}/>
