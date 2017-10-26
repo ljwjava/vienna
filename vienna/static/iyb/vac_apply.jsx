@@ -412,4 +412,8 @@ $(document).ready( function() {
 			env.tokenId = encodeURIComponent(config.token);
 		});
 	} catch(e){}
+
+    if ("undefined" != typeof iHealthBridge) {
+        window.IYB.setRightButton(JSON.stringify([]));
+    }
 });
