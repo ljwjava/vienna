@@ -33,6 +33,7 @@
 		</param>
 
 		<init>
+			<item name="ZONE_CITY" value="str(ZONE,0,4)+'00'"/>
 		</init>
 
 		<rule>

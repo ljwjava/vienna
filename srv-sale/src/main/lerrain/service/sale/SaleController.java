@@ -203,8 +203,15 @@ public class SaleController
     @ResponseBody
     public JSONObject detail(@RequestBody JSONObject req)
     {
-        return serviceMgr.req("lifeins", "pack/view.json", req);
+        JSONObject json = serviceMgr.req("lifeins", "pack/view.json", req);
+        if (json.containsKey("wareId"))
+        {
+            Ware ware = wareSrv.getWare(json.getLong("wareId"));
+            JSONObject wareJson = new JSONObject();
+            wareJson.put("code", ware.getCode());
+            json.put("ware", wareJson);
+        }
 
-        //throw new RuntimeException("无法识别的type");
+        return json;
     }
 }
