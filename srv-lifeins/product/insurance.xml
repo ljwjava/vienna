@@ -45,6 +45,10 @@
     <item src="fwd/*.xml"/>
   </corporation>
 
+  <corporation id="fubon" name="富邦人壽" extends="insurance">
+    <item src="fubon/*.xml"/>
+  </corporation>
+
   <corporation id="hexie" name="和谐健康" extends="insurance">
     <item src="hexie/*.xml"/>
   </corporation>

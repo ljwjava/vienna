@@ -214,11 +214,12 @@ var Ground = React.createClass({
 		};
     },
     componentWillMount() {
-		common.req("ware/detail.json", {type:1, packId: env.packId}, r => {
+		common.req("ware/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
 			env.vendorId = r.vendor.id;
 			env.company = r.vendor.code;
+			env.wareCode = r.ware.code;
 			this.setState({factors:r.factors}, () => {
                 this.render();
 				if (this.props.defVal.factors != null)
@@ -443,6 +444,8 @@ var Ground = React.createClass({
 		env.applicant.mobile = contact.mobile;
 		env.applicant.email = contact.email;
 		let apply = {
+			wareId: env.wareId,
+			wareCode: env.wareCode,
 			packId: env.packId,
 			packCode: env.pack.code,
             // commodityId: env.
@@ -596,6 +599,7 @@ $(document).ready( function() {
 	if (env.orderId == null)
 		env.orderId = common.load("iyb/orderId", 1800000);
 	if (env.orderId == null || env.orderId == "") {
+		env.wareId = common.param("wareId");
 		env.packId = common.param("packId");
 		env.brokerId = common.param("accountId");
 		common.req("order/create.json", {}, r => {
@@ -618,6 +622,7 @@ $(document).ready( function() {
 		});
 	} else {
 		common.req("order/view.json", {orderId: env.orderId}, r => {
+			env.wareId = r.detail.wareId;
 			env.packId = r.productId;
 			env.brokerId = r.owner;
 			if (r.detail != null) {
