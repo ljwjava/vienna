@@ -26,6 +26,7 @@ public class RequestPost implements Function
     {
         int time = objects.length > 2 ? Common.intOf(objects[2], 10000) : 10000;
         String method = objects.length > 3 ? ("GET".equalsIgnoreCase(Common.trimStringOf(objects[3])) ? "GET" : "POST") : "POST";
+
         return request((String)objects[0], (String)objects[1], time, method);
     }
 

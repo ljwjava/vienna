@@ -2,7 +2,7 @@ server:
   port: 7776
 
 datasource:
-  url: jdbc:mysql://10.253.102.74:3306/vie_biz
+  url: jdbc:mysql://10.253.102.74:3306/vie_biz_test
   username: iyb
   password: Abcd2017
 

@@ -204,14 +204,20 @@ public class SaleController
     public JSONObject detail(@RequestBody JSONObject req)
     {
         JSONObject json = serviceMgr.req("lifeins", "pack/view.json", req);
-        if (json.containsKey("wareId"))
+        JSONObject content = json.getJSONObject("content");
+
+        if (req.containsKey("wareId"))
         {
-            Ware ware = wareSrv.getWare(json.getLong("wareId"));
+            Ware ware = wareSrv.getWare(req.getLong("wareId"));
             JSONObject wareJson = new JSONObject();
             wareJson.put("code", ware.getCode());
-            json.put("ware", wareJson);
+            content.put("ware", wareJson);
         }
 
-        return json;
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", content);
+
+        return res;
     }
 }
