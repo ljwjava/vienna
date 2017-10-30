@@ -28,11 +28,12 @@ public class OrderDaoJdbc
 
 		if (!exists(order.getId()))
 		{
-			jdbc.update("insert into t_order(id,biz_no,product_id,product_name,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
-					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+			jdbc.update("insert into t_order(id,biz_no,product_id,product_type,product_name,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
+					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				order.getId(),
 				order.getBizNo(),
 				order.getProductId(),
+				order.getProductType(),
 				order.getProductName(),
 				order.getVendorId(),
 				order.getPlatformId(),
@@ -51,7 +52,7 @@ public class OrderDaoJdbc
 		}
 		else
 		{
-			jdbc.update("update t_order set biz_no=?, type=?, product_id=?, product_name=?, vendor_id=?, price=?, pay=?, status=?, detail=?, extra=?, update_time=? where id=?", order.getBizNo(), order.getType(), order.getProductId(), order.getProductName(), order.getVendorId(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), order.getDetail() != null ? JSON.toJSONString(order.getDetail()) : null, order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
+			jdbc.update("update t_order set biz_no=?, type=?, product_id=?, product_type=?, product_name=?, vendor_id=?, price=?, pay=?, status=?, detail=?, extra=?, update_time=? where id=?", order.getBizNo(), order.getType(), order.getProductId(), order.getProductType(), order.getProductName(), order.getVendorId(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), order.getDetail() != null ? JSON.toJSONString(order.getDetail()) : null, order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
 		}
 	}
 
@@ -95,6 +96,7 @@ public class OrderDaoJdbc
 		order.setBizNo(m.getString("biz_no"));
 		order.setType(m.getInt("type"));
 		order.setProductId(m.getString("product_id"));
+		order.setProductType(m.getInt("product_type"));
 		order.setProductName(m.getString("product_name"));
 		order.setVendorId(m.getLong("vendor_id"));
 		order.setCreateTime(m.getTimestamp("create_time"));
