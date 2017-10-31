@@ -37,6 +37,7 @@ public class ServiceDispatcher
         modules.put("printer", "printer");
         modules.put("dict", "dict");
         modules.put("order", "order");
+        modules.put("proposal", "proposal");
     }
 
     private void verify(HttpSession session)
@@ -64,11 +65,24 @@ public class ServiceDispatcher
 //        }
 //    }
 
-    @RequestMapping("/{module:ware|sale|dict|printer|order}/**")
+    @RequestMapping({"/{module:ware|sale|dict|printer|order}/*.json", "/{module:ware|sale|dict|printer|order}/*/*.json"})
     @ResponseBody
     @CrossOrigin
     public JSONObject redirect(HttpServletRequest req, @PathVariable String module, @RequestBody JSONObject param)
     {
+        String uri = req.getRequestURI();
+        return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
+    }
+
+    @RequestMapping({"/{module:proposal}/*.json", "/{module:proposal}/*/*.json"})
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject redirectWithLogin(HttpServletRequest req, @PathVariable String module, @RequestBody JSONObject param)
+    {
+        HttpSession session = req.getSession();
+        verify(session);
+        param.put("platformId", session.getAttribute("platformId"));
+
         String uri = req.getRequestURI();
         return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
     }

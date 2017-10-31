@@ -398,63 +398,6 @@ public class ProposalController
 		return res;
 	}
 
-	@RequestMapping("/bless/list.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject listBless(@RequestBody JSONObject p)
-	{
-		String owner = p.getString("owner");
-		Long platformId = p.getLong("platformId");
-
-		JSONArray c = new JSONArray();
-		List<Object[]> r = ps.listBless(owner, platformId);
-		if (r != null) for (Object[] l : r)
-		{
-			JSONObject j = new JSONObject();
-			j.put("id", l[0]);
-			j.put("text", l[1]);
-			c.add(j);
-		}
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", c);
-
-		return res;
-	}
-
-	@RequestMapping("/bless/save.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject saveBless(@RequestBody JSONObject p)
-	{
-		String owner = p.getString("owner");
-		Long platformId = p.getLong("platformId");
-		Long blessId = p.getLong("blessId");
-		String text = p.getString("text");
-
-		ps.saveBless(blessId, text, owner, platformId);
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-
-		return res;
-	}
-
-	@RequestMapping("/bless/delete.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject deleteBless(@RequestBody JSONObject p)
-	{
-		Long blessId = p.getLong("blessId");
-		ps.deleteBless(blessId);
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-
-		return res;
-	}
-
 	@RequestMapping("/delete_plan.json")
 	@ResponseBody
 	@CrossOrigin
@@ -497,21 +440,6 @@ public class ProposalController
 		res.put("content", prds);
 
 		return res;
-
-//		Long platformId = p.getLong("platformId");
-//		String planId = p.getString("planId");
-//		int index = Common.intOf(p.getInteger("index"), -1);
-//
-//		if (index < 0)
-//		{
-//
-//		}
-//		else if (planId != null)
-//		{
-//			return serviceMgr.req("lifeins", "plan/list_clause.json", p);
-//		}
-//
-//		throw new RuntimeException("planId is null");
 	}
 	
 	private Proposal getProposal(JSONObject p)
@@ -599,12 +527,6 @@ public class ProposalController
 	@CrossOrigin
 	public JSONObject redirect(@PathVariable String path, @RequestBody JSONObject req)
 	{
-		System.out.println(path + " -> " + req.toString());
-
-		JSONObject res = serviceMgr.req("lifeins", "plan/" + path + ".json", req);
-
-		System.out.println("response -> " + res.toString());
-
-		return res;
+		return serviceMgr.req("lifeins", "plan/" + path + ".json", req);
 	}
 }
