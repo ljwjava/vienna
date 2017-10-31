@@ -28,7 +28,7 @@ class PayForm extends Form {
             bk = env.order.extra.pay.bank;
 		}
 		let v = [
-			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank},
+			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank, onChange: (r)=>{console.log(r);}},
 			{name:'银行帐号', code:"bankCard", type:"number", req:"yes", value: bc, mistake:"请输入正确的银行卡号", desc:"银行卡号码"},
 			{name:'开户人', code:"bankUser", type:"static", req:"yes", value:env.order.detail.applicant.name},
 		];
@@ -70,6 +70,10 @@ var Ground = React.createClass({
 		common.req("ware/do/apply.json", env.order, r => {
 			common.save("iyb/orderId", env.order.id);
 			document.location.href = r.nextUrl;
+		}, r => {
+			if(r != null){
+				ToastIt(r);
+			}
 		});
 	},
 	// changePhotos() {
@@ -179,7 +183,7 @@ var Ground = React.createClass({
 					<div className="tab">
 						<div className="row">
 							<div className="col left">
-								首年保费：{env.order.price}
+								首年保费：{!env.order.price || env.order.price <= 0 ? "无法计算" : env.order.price.toFixed(2)}
 							</div>
 							<div className="col right" onClick={this.submit}>下一步</div>
 						</div>
@@ -198,7 +202,7 @@ $(document).ready( function() {
 		}
 		common.save("iyb/orderId", env.order.id);
 
-        common.req("dict/view.json", {company: env.company, name:"bank"}, r => {
+        common.req("dict/view.json", {company: env.company, name: "bank", version: "new"}, r => {
             env.dict.bank = r.bank;
             ReactDOM.render(
 				<Ground/>, document.getElementById("content")
