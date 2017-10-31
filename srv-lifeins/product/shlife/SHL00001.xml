@@ -55,6 +55,9 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不能长于保障期间
 			</if>
+			<if condition="OCCUPATION_L != null and (OCCUPATION_L lt 1 or OCCUPATION_L > 5)">
+				职业要求必填且为1~5类
+			</if>
 			<if condition="ZONE == null" level="alert">
 				请选择所在地区
 			</if>

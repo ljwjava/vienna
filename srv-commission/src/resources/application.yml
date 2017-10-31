@@ -7,5 +7,5 @@ datasource:
   password: Abcd2017
 
 service:
-  iyb: https://uat.iyunbao.com
+  iyb: https://test.iyunbao.com
 
