@@ -61,7 +61,7 @@ var Console = React.createClass({
 		return {};
 	},
 	componentDidMount() {
-		common.req("proposal/list_clauses.json", {platformId:2}, r => {
+		common.req("proposal/list_clauses.json", {}, r => {
 			this.setState({clauses: r.map(v => (
 				<li key={v.code}>
 					<table style={{margin:"10px 24px 10px 10px"}}>

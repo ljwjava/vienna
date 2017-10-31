@@ -89,14 +89,14 @@
 			<if condition="AMOUNT == 1500000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 25 and INSURE_PERIOD != 30">
 				保额选择150万时，保障期间只可以选择10/15/25/30年期
 			</if>
-			<if>
-				if(INSURE_PERIOD > 25 and AGE > (45+25-INSURE_PERIOD)){
-					return '当保障期间选择为'+INSURE_PERIOD+'年时，投保年龄不能超过'+round(45+25-INSURE_PERIOD,0)+'周岁';
-				}
-				if(INSURE_PERIOD != PAY_PERIOD+5){
-					return '当保障期间选择为'+INSURE_PERIOD+'年时，缴费期间只能选择'+round(INSURE_PERIOD-5,0)+'年交';
-				}
-				return null;
+			<if condition="INSURE_PERIOD > 25 and AGE > 45+25-INSURE_PERIOD" desc="formula">
+				'当保障期间选择为'+INSURE_PERIOD+'年时，投保年龄不能超过'+round(45+25-INSURE_PERIOD,0)+'周岁'
+			</if>
+			<if condition="INSURE_PERIOD != PAY_PERIOD+5" desc="formula">
+				'当保障期间选择为'+INSURE_PERIOD+'年时，缴费期间只能选择'+round(INSURE_PERIOD-5,0)+'年交'
+			</if>
+			<if condition="OCCUPATION_L != null and (OCCUPATION_L lt 1 or OCCUPATION_L > 5)">
+				职业要求为1~5类
 			</if>
 			<if condition="ZONE == null" level="alert">
 				请选择所在地区

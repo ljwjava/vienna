@@ -92,6 +92,9 @@
 			<if condition="AGE >= 51 and AGE le 60 and PAY_VALUE > 10">
 				51-60周岁，可选缴费期间：5/10年交
 			</if>
+			<if condition="OCCUPATION_L != null and (OCCUPATION_L lt 1 or OCCUPATION_L > 5)">
+				职业要求为1~5类
+			</if>
 			<if condition="ZONE == null" level="alert">
 				请选择所在地区
 			</if>
