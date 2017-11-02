@@ -16,6 +16,7 @@ import Photo from '../common/widget.photo.jsx';
 import ToastIt from '../common/widget.toast.jsx';
 
 env.dict = {
+    relation: {2: "配偶", 3: "子女", 4: "父母"},
 	// bank: [["0101","中国工商银行"], ["0102","中国农业银行"], ["0103","中国银行"], ["0104","中国建设银行"], ["0108","交通银行"], ["0109","中信银行"], ["0110","中国光大银行"], ["0111","华夏银行"], ["0112","中国民生银行"], ["0113","广东发展银行"], ["0115","招商银行"], ["0116","兴业银行"], ["0117","上海浦东发展银行"], ["0128","中国邮政储蓄银行"], ["0194","北京银行"], ["0197","宁波银行"], ["0198","深圳平安银行"], ["0203","东莞银行"]]
 	bank: [["0101", "中国工商银行"], ["0102", "中国农业银行"], ["0103", "中国银行"], ["0104", "中国建设银行"], ["0108", "交通银行"], ["0109", "中信银行"], ["0110", "中国光大银行"], ["0111", "华夏银行"], ["0112", "中国民生银行"], ["0113", "广东发展银行"], ["0115","招商银行"], ["0116", "兴业银行"], ["0117", "上海浦东发展银行"], ["0128", "中国邮政储蓄银行"], ["0198", "平安银行"]]
 };
@@ -31,7 +32,7 @@ class PayForm extends Form {
             bcity = env.order.extra.pay.bankCity;
 		}
 		let v = [
-			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank, onChange: (r)=>{console.log(r);}},
+			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank},
             {name:'银行帐号', code:"bankCard", type:"number", req:"yes", value: bc, mistake:"请输入正确的银行卡号", desc:"银行卡号码"}
 		];
 	    if(env.company == "shlife"){
@@ -44,7 +45,7 @@ class PayForm extends Form {
 
 var Ground = React.createClass({
 	getInitialState() {
-		return {};
+		return {isSubmit: false};
 	},
 	componentWillMount() {
 	},
@@ -73,14 +74,22 @@ var Ground = React.createClass({
             }
 		}
 		//console.log(env.order);
-		common.req("ware/do/apply.json", env.order, r => {
-			common.save("iyb/orderId", env.order.id);
-			document.location.href = r.nextUrl;
-		}, r => {
-			if(r != null){
-				ToastIt(r);
-			}
-		});
+        // 判断是否可提交
+        if(this.state.isSubmit){
+            ToastIt("数据提交中，请耐心等待");
+            return false;
+        }
+        this.setState({isSubmit: true}, ()=>{
+            common.req("ware/do/apply.json", env.order, r => {
+                common.save("iyb/orderId", env.order.id);
+                document.location.href = r.nextUrl;
+            }, r => {
+                if(r != null){
+                    ToastIt(r);
+                }
+                this.setState({isSubmit: false});
+            });
+        });
 	},
 	// changePhotos() {
      //    env.order.detail.photos = this.refs.photos.val();
@@ -155,7 +164,7 @@ var Ground = React.createClass({
 							return (
 								<div>
 									(第{v.order}顺位)
-									<span>　姓名</span>{v.name}
+									<span>　姓名</span>{v.name} [{env.dict.relation[v.relation]}]
 									<br/>
 									<span>　　　　　 {v.certName}</span>{v.certNo}
 									<br/>

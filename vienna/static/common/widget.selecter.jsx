@@ -30,7 +30,7 @@ var Selecter = React.createClass({
 	render() {
 		if (this.props.options == null || this.props.options.length == 0)
 			return (<span ref="self"></span>);
-		let btns = this.props.options.map(v => (<option key={v[0]} value={v[0]}>{v[1]}</option>));
+		let btns = this.props.options.map(v => (<option key={v[0]} value={v[0]}>{v[1]+(v.length > 2 ? ">"+v[2] : "")}</option>));
 		return (<select ref="self" onChange={this.onChange} defaultValue={this.props.value}>{btns}</select>);
 	}
 });

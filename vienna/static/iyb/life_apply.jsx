@@ -138,6 +138,10 @@ class ContactForm extends Form {
         if(!!this.state.show && this.state.show > 0){
             return;
         }
+        if(!!this.refs.mobile.verify()){
+			ToastIt("请先输入有效手机号");
+			return;
+		}
         this.countDown(-1);
 		let phone = this.refs.mobile.val();
 		common.req("ware/do/sms.json", {platformId: 2, tokenId:env.tokenId, phone:phone}, r => {
@@ -211,7 +215,8 @@ var Ground = React.createClass({
 			benefitDeathType: common.ifNull(this.props.defVal.beneficiaryDeathType, "law"),
 			benefitDeathNum: d,
 			benefitDeath: dd,
-			dict: false
+			dict: false,
+			isSubmit: false
 		};
     },
     componentWillMount() {
@@ -492,13 +497,22 @@ var Ground = React.createClass({
 			type: 2,
 			detail: apply
 		};
-		common.req("ware/do/verify.json", order, r => {
-			document.location.href = "life_pay.mobile?orderId=" + r.orderId;
-		}, r => {
-			if(r != null){
-                ToastIt(r);
-			}
-			console.log(r);
+
+		// 判断是否可提交
+		if(this.state.isSubmit){
+			ToastIt("数据提交中，请耐心等待");
+			return false;
+		}
+		this.setState({isSubmit: true}, ()=>{
+            common.req("ware/do/verify.json", order, r => {
+                document.location.href = "life_pay.mobile?orderId=" + r.orderId;
+            }, r => {
+                if(r != null){
+                    ToastIt(r);
+                }
+                console.log(r);
+                this.setState({isSubmit: false});
+            });
 		});
 	},
 	render() {

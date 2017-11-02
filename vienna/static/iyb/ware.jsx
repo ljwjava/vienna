@@ -174,7 +174,7 @@ var Ware = React.createClass({
 								很抱歉，被保险人的健康状况不满足该保险的投保规定<br/>
 								如有疑问，请联系{this.state.vendor.name}客服<br/>
 								<br/>
-								<a href="tel:{env.docs.telephone}">{env.docs.telephone}</a>
+								<a href={"tel:"+env.docs.telephone}>{env.docs.telephone}</a>
 								<div className="console">
 									<div className="tab">
 										<div className="row">
