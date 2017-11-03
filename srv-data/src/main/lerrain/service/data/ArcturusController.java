@@ -21,18 +21,17 @@ public class ArcturusController
 	@Autowired
 	SourceMgr sourceMgr;
 
-	ArcMap lsm;// = new ArcMap("./arcturus/", "user");
+	ArcMap lsm;
 
-	@PostConstruct
-	private void init()
-	{
-		lsm = (ArcMap)sourceMgr.getSource(2L);
-	}
-
-	@RequestMapping("/user/{key}.json")
+	@RequestMapping("/user.json")
 	@ResponseBody
-	public JSONObject user(@PathVariable Long key)
+	public JSONObject user(@RequestBody JSONObject param)
 	{
+		if (lsm == null)
+			lsm = (ArcMap)sourceMgr.getSource(2L);
+
+		Long key = param.getLong("id");
+
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
 		res.put("content", lsm.get(key));
@@ -40,19 +39,25 @@ public class ArcturusController
 		return res;
 	}
 
-	@RequestMapping("/user/save")
+	@RequestMapping("/user/{key}")
 	@ResponseBody
-	public String save(@RequestBody JSONObject param)
+	public String save(@PathVariable Long key, @RequestBody JSONObject param)
 	{
-		lsm.put(param.getLong("id"), param);
+		if (lsm == null)
+			lsm = (ArcMap)sourceMgr.getSource(2L);
+
+		lsm.put(key, param);
 
 		return "success";
 	}
 
-	@RequestMapping("/user/save_all")
+	@RequestMapping("/user/save")
 	@ResponseBody
 	public String saveAll(@RequestBody JSONArray list)
 	{
+		if (lsm == null)
+			lsm = (ArcMap)sourceMgr.getSource(2L);
+
 		for (int i=0;i<list.size();i++)
 		{
 			JSONObject param = list.getJSONObject(i);

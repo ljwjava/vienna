@@ -3,6 +3,9 @@ code: data
 server:
   port: 7766
 
+path:
+ arcturus: x:/arcturus/
+
 datasource:
   url: jdbc:mysql://10.253.102.74:3306/rome
   username: iyb

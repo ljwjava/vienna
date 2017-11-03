@@ -35,6 +35,7 @@ public class ServiceDispatcher
         modules.put("dict", "dict");
         modules.put("order", "order");
         modules.put("proposal", "proposal");
+        modules.put("data", "rome");
     }
 
     private void verify(HttpSession session)
@@ -62,16 +63,25 @@ public class ServiceDispatcher
 //        }
 //    }
 
-    @RequestMapping({"/{module:ware|sale|dict|printer|order}/*.json", "/{module:ware|sale|dict|printer|order}/*/*.json"})
+    @RequestMapping({"/{module:ware|sale|dict|printer|order|data}/*.json", "/{module:ware|sale|dict|printer|order|data}/*/*.json"})
     @ResponseBody
     @CrossOrigin
-    public JSONObject redirect(HttpServletRequest req, @PathVariable String module)
+    public JSONObject redirectJson(HttpServletRequest req, @PathVariable String module)
     {
-        return call(req, module);
+        return JSON.parseObject(call(req, module));
 
 //        String uri = req.getRequestURI();
 //        return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
     }
+
+    @RequestMapping({"/{module:ware|sale|dict|printer|order|data}/*", "/{module:ware|sale|dict|printer|order|data}/*/*"})
+    @ResponseBody
+    @CrossOrigin
+    public String redirect(HttpServletRequest req, @PathVariable String module)
+    {
+        return call(req, module);
+    }
+
 
     @RequestMapping({"/{module:proposal}/*.json", "/{module:proposal}/*/*.json"})
     @ResponseBody
@@ -86,7 +96,7 @@ public class ServiceDispatcher
         return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
     }
 
-    private JSONObject call(HttpServletRequest req, String module)
+    private String call(HttpServletRequest req, String module)
     {
         JSONObject param = null;
 
@@ -124,13 +134,13 @@ public class ServiceDispatcher
         }
 
         String url = uri.substring(uri.indexOf("/", 1) + 1);
-        int pos = url.lastIndexOf(".");
-        if (pos > 0)
-            url = url.substring(0, pos) + ".json";
-        else
-            url += ".json";
+//        int pos = url.lastIndexOf(".");
+//        if (pos > 0)
+//            url = url.substring(0, pos) + ".json";
+//        else
+//            url += ".json";
 
-        return sv.req(modules.get(module), url, param);
+        return sv.reqStr(modules.get(module), url, param);
     }
 
     @RequestMapping("/ware/callback/*.json")
@@ -138,24 +148,15 @@ public class ServiceDispatcher
     @CrossOrigin
     public JSONObject callbackJson(HttpServletRequest req)
     {
-        return call(req, "ware");
+        return JSON.parseObject(call(req, "ware"));
     }
 
-    @RequestMapping("/ware/callback/*.html")
+    @RequestMapping({ "/ware/callback/*.html", "/ware/callback/*.do" })
     @ResponseBody
     @CrossOrigin
     public String callbackHtml(HttpServletRequest req)
     {
-        JSONObject res = call(req, "ware");
-        return res.getString("content");
-    }
-
-    @RequestMapping("/ware/callback/*.do")
-    @CrossOrigin
-    public String callbackAction(HttpServletRequest req)
-    {
-        JSONObject res = call(req, "ware");
-        return res.getString("content");
+        return call(req, "ware");
     }
 
 //    @RequestMapping("/{module}/{action}.{type:json|do}")

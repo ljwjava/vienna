@@ -26,14 +26,8 @@ public class ArcMap implements Map<Long, Map>
     String name;
 
     String primary;
-    String[] keys;
 
     public ArcMap(String root, String name)
-    {
-        this(root, name, null);
-    }
-
-    public ArcMap(String root, String name, String[] keys)
     {
         this.root = root;
         this.name = name;
@@ -56,21 +50,13 @@ public class ArcMap implements Map<Long, Map>
             }
 
             primary = prop.getProperty("primary");
-
-            if (keys == null)
-                keys = prop.getProperty("keys").split(",");
         }
         else
         {
             primary = "primary";
 
-            String str = null;
-            for (String k : keys)
-                str = str == null ? k : (str + "," + k);
-
             Properties prop = new Properties();
             prop.put("primary", primary);
-            prop.put("keys", str);
 
             try (FileOutputStream fos = new FileOutputStream(config))
             {
@@ -81,8 +67,6 @@ public class ArcMap implements Map<Long, Map>
                 throw new RuntimeException(e);
             }
         }
-
-        this.keys = keys;
     }
 
     @Override
@@ -147,16 +131,12 @@ public class ArcMap implements Map<Long, Map>
 
         synchronized (this)
         {
-            JSONObject r = new JSONObject();
-            for (String k : keys)
-                r.put(k, value.get(k));
-
             new File(path).mkdirs();
 
             File f = new File(path + "/" + primary);
             try (OutputStream os = new FileOutputStream(f))
             {
-                os.write(r.toJSONString().getBytes("utf-8"));
+                os.write(JSON.toJSONString(value).getBytes("utf-8"));
             }
             catch (Exception e)
             {

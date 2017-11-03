@@ -18,14 +18,6 @@ public class WebController
     @Autowired
     WebService jsxSrv;
 
-    @RequestMapping("/health")
-    @ResponseBody
-    @CrossOrigin
-    public String health()
-    {
-        return "success";
-    }
-
     @RequestMapping("/{path}/{file}.{type:web|mobile}")
     @CrossOrigin
     public void web2(@PathVariable String path, @PathVariable String file, @PathVariable String type, HttpServletResponse resp)

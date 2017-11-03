@@ -12,7 +12,7 @@ public class Test
 {
     public static void main(String[] s)
     {
-        ArcMap arc = new ArcMap("x:/arcturus/", "user", new String[] {"id", "parentId", "name", "mobile", "certNo"});
+        ArcMap arc = new ArcMap("x:/arcturus/", "user");
 
         long t1 = System.currentTimeMillis();
         long t2 = System.currentTimeMillis();

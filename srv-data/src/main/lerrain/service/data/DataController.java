@@ -20,8 +20,6 @@ public class DataController
 	@Autowired TaskService taskService;
 	@Autowired ModelService modelService;
 
-	Map map = new HashMap();
-
 	@PostConstruct
 	@RequestMapping("/reset")
 	@ResponseBody
@@ -38,11 +36,25 @@ public class DataController
 
 	@RequestMapping({"/run/{optId}"})
 	@ResponseBody
-	public JSONObject run(@PathVariable Long optId, @RequestBody(required = false) JSONObject param)
+	public String run(@PathVariable Long optId, @RequestBody(required = false) JSONObject param)
 	{
+		long t1 = System.currentTimeMillis();
+		return "result: " + taskService.run(optId, param) + ", in " + (System.currentTimeMillis() - t1) / 1000.0f + "s";
+	}
+
+	@RequestMapping({"/run.json"})
+	@ResponseBody
+	public JSONObject runTask( @RequestBody JSONObject param)
+	{
+		Long optId = param.getLong("id");
+
+		long t1 = System.currentTimeMillis();
+		Object result = taskService.run(optId, param);
+
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", taskService.run(optId, param));
+		res.put("content", result);
+		res.put("time", System.currentTimeMillis() - t1);
 
 		return res;
 	}
