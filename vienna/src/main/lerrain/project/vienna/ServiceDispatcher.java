@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
-import lerrain.tool.Network;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,10 +65,12 @@ public class ServiceDispatcher
     @RequestMapping({"/{module:ware|sale|dict|printer|order}/*.json", "/{module:ware|sale|dict|printer|order}/*/*.json"})
     @ResponseBody
     @CrossOrigin
-    public JSONObject redirect(HttpServletRequest req, @PathVariable String module, @RequestBody JSONObject param)
+    public JSONObject redirect(HttpServletRequest req, @PathVariable String module)
     {
-        String uri = req.getRequestURI();
-        return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
+        return call(req, module);
+
+//        String uri = req.getRequestURI();
+//        return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
     }
 
     @RequestMapping({"/{module:proposal}/*.json", "/{module:proposal}/*/*.json"})
@@ -87,7 +86,7 @@ public class ServiceDispatcher
         return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
     }
 
-    private JSONObject callback(HttpServletRequest req)
+    private JSONObject call(HttpServletRequest req, String module)
     {
         JSONObject param = null;
 
@@ -131,7 +130,7 @@ public class ServiceDispatcher
         else
             url += ".json";
 
-        return sv.req(modules.get("ware"), url, param);
+        return sv.req(modules.get(module), url, param);
     }
 
     @RequestMapping("/ware/callback/*.json")
@@ -139,7 +138,7 @@ public class ServiceDispatcher
     @CrossOrigin
     public JSONObject callbackJson(HttpServletRequest req)
     {
-        return callback(req);
+        return call(req, "ware");
     }
 
     @RequestMapping("/ware/callback/*.html")
@@ -147,7 +146,7 @@ public class ServiceDispatcher
     @CrossOrigin
     public String callbackHtml(HttpServletRequest req)
     {
-        JSONObject res = callback(req);
+        JSONObject res = call(req, "ware");
         return res.getString("content");
     }
 
@@ -155,7 +154,7 @@ public class ServiceDispatcher
     @CrossOrigin
     public String callbackAction(HttpServletRequest req)
     {
-        JSONObject res = callback(req);
+        JSONObject res = call(req, "ware");
         return res.getString("content");
     }
 
