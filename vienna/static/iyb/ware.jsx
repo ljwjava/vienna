@@ -128,6 +128,12 @@ var Ware = React.createClass({
 		}else{
             factors.ZONE = null;
 		}
+		if(factors.OCCUPATION_C != null) {
+            factors.OCCUPATION_L = factors.OCCUPATION_C.level != null ? factors.OCCUPATION_C.level : null;
+            factors.OCCUPATION_C = factors.OCCUPATION_C.code != null ? factors.OCCUPATION_C.code : null;
+		}else{
+        	factors.OCCUPATION_L = null;
+		}
 		common.req("ware/do/life.json", {platformId:2, opt:"try", content:factors}, r => {
 			var factors = this.state.factors;
 			if (r.form != null) factors.map(function(e) {

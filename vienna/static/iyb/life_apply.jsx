@@ -18,6 +18,7 @@ import ToastIt from '../common/widget.toast.jsx';
 
 env.company = 'hqlife';
 env.dict = {
+	cert: [["1","身份证"]],
     relation: [["1","本人"]],
 	relation2: [["4","父母"],["2","配偶"],["3","子女"]]
 };
@@ -45,7 +46,7 @@ env.checkCustomer = function(f) {
 			r.gender = "性别与证件不符";
 	}
 	return r;
-}
+};
 
 class Beneficiary extends Form {
 	form() {
@@ -76,7 +77,7 @@ class ApplicantForm extends Form {
 	form() {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:[["1","身份证"]]},
+			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.dict.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
             {name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
 			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
@@ -100,7 +101,7 @@ class InsurantForm extends Form {
 	form() {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:[["1","身份证"]]},
+			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.dict.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
             {name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
 			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
@@ -220,11 +221,17 @@ var Ground = React.createClass({
 			env.vendorId = r.vendor.id;
 			env.company = r.vendor.code;
 			env.wareCode = r.ware.code;
-			this.setState({factors:r.factors}, () => {
+
+            this.setState({factors:r.factors}, () => {
                 this.render();
-				if (this.props.defVal.factors != null)
-					this.refreshPremium();
-			});
+                if (this.props.defVal.factors != null)
+                    this.refreshPremium();
+            });
+            /*common.req("dict/view.json", {company: env.company, name: "cert", version: "new"}, r => {
+                env.dict.cert = r.cert;
+            }, f => {
+                ToastIt("开户行列表加载失败");
+            });*/
 
             document.title = r.name;
             if ("undefined" != typeof iHealthBridge) {
@@ -260,6 +267,11 @@ var Ground = React.createClass({
 			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
 			factors["RELATION"] = "self";
 		}
+		if(this.refs.more){
+            factors["OCCUPATION_L"] = this.refs.more.refs.occupation.val().level;
+            factors["OCCUPATION_C"] = this.refs.more.refs.occupation.val().code;
+		}
+		// console.log(factors);
     	return factors;
     },
 	getPlanDesc() {

@@ -36,7 +36,9 @@ var Form = React.createClass({
 			} else if (v.type == "select") {
 				comp = (<Selecter ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value}/>);
             } else if (v.type == "city") {
-                comp = (<CityPicker ref={v.code} valCode={v.code} company={v.company} onChange={opt} valReq={v.req} value={v.value}/>);
+                comp = (<CityPicker ref={v.code} valCode={v.code} valType="city" company={v.company} onChange={opt} valReq={v.req} value={v.value}/>);
+            } else if (v.type == "bankCity") {
+                comp = (<CityPicker ref={v.code} valCode={v.code} valType="bankCity" company={v.company} onChange={opt} valReq={v.req} value={v.value}/>);
             } else if (v.type == "occupation") {
                 comp = (<OccupationPicker ref={v.code} valCode={v.code} onChange={opt} valReq={v.req} value={v.value}/>);
 			} else if (v.type == "number") {

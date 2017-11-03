@@ -1,6 +1,7 @@
 "use strict";
 
 import React from 'react';
+import React from 'react';
 // import Selecter from './widget.selecter.jsx';
 
 var OccupationPicker = React.createClass({
@@ -107,13 +108,13 @@ var OccupationPicker = React.createClass({
                                  this.updateProfession(obj, value, data);
                              }}
 							 validate={data => {
-                                 if (data.length === 3) {
-                                     let { level } = data[2];
-
-                                     if (level < 1 || level > 4) {
-                                         return `职业类别不符合投保要求，仅限1-4类职业类别`;
-                                     }
-                                 }
+                                 // if (data.length === 3) {
+                                 //     let { level } = data[2];
+                                 //
+                                 //     if (level < 1 || level > 4) {
+                                 //         return `职业类别不符合投保要求，仅限1-4类职业类别`;
+                                 //     }
+                                 // }
                              }}/>);
 	}
 });

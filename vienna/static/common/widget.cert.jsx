@@ -95,7 +95,9 @@ function IdentityCodeValid(code) {
             }
             
            else if(!city[code.substr(0,2)]){
-                tip = "证件号码地址编码错误";
+            	console.log("证件号码地址编码错误");
+                // tip = "证件号码地址编码错误";
+                tip = "请输入有效证件号码";
             }
             else{
                 if(code.length == 18){
@@ -113,7 +115,9 @@ function IdentityCodeValid(code) {
                     }
                     var last = parity[sum % 11];
                     if(parity[sum % 11] != code[17]){
-                        tip = "证件号码校验位错误";
+                    	console.log("证件号码校验位错误");
+                        // tip = "证件号码校验位错误";
+                        tip = "请输入有效证件号码";
                     }
                 } else {
 					tip = "证件号码需要为18位";

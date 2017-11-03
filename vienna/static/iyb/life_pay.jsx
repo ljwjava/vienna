@@ -10,6 +10,7 @@ import CertEditor from '../common/widget.cert.jsx';
 import DateEditor from '../common/widget.date.jsx';
 import City from '../common/widget.city.jsx';
 import IdCard from '../common/widget.idcard.jsx';
+import CityPicker from '../common/widget.cityPicker.jsx';
 import Form from '../common/widget.form2.jsx';
 import Photo from '../common/widget.photo.jsx';
 import ToastIt from '../common/widget.toast.jsx';
@@ -23,15 +24,20 @@ class PayForm extends Form {
 	form() {
 	    let bc = null;
 	    let bk = null;
+	    let bcity = null;
 	    if(env.order.extra != null && env.order.extra.pay != null) {
             bc = env.order.extra.pay.bankCard;
             bk = env.order.extra.pay.bank;
+            bcity = env.order.extra.pay.bankCity;
 		}
 		let v = [
-			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank},
-			{name:'银行帐号', code:"bankCard", type:"number", req:"yes", value: bc, mistake:"请输入正确的银行卡号", desc:"银行卡号码"},
-			{name:'开户人', code:"bankUser", type:"static", req:"yes", value:env.order.detail.applicant.name},
+			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank, onChange: (r)=>{console.log(r);}},
+            {name:'银行帐号', code:"bankCard", type:"number", req:"yes", value: bc, mistake:"请输入正确的银行卡号", desc:"银行卡号码"}
 		];
+	    if(env.company == "shlife"){
+            v.push({name:'开户行所在地区', code:"bankCity", type:"bankCity", value: bcity, company: env.company, refresh:"yes", req:"yes", desc:"开户行所在地"});
+		}
+	    v.push({name:'开户人', code:"bankUser", type:"static", req:"yes", value:env.order.detail.applicant.name});
 		return this.buildForm(v);
 	}
 }
@@ -70,6 +76,10 @@ var Ground = React.createClass({
 		common.req("ware/do/apply.json", env.order, r => {
 			common.save("iyb/orderId", env.order.id);
 			document.location.href = r.nextUrl;
+		}, r => {
+			if(r != null){
+				ToastIt(r);
+			}
 		});
 	},
 	// changePhotos() {
@@ -179,7 +189,7 @@ var Ground = React.createClass({
 					<div className="tab">
 						<div className="row">
 							<div className="col left">
-								首年保费：{env.order.price}
+								首年保费：{!env.order.price || env.order.price <= 0 ? "无法计算" : env.order.price.toFixed(2)}
 							</div>
 							<div className="col right" onClick={this.submit}>下一步</div>
 						</div>
@@ -198,7 +208,7 @@ $(document).ready( function() {
 		}
 		common.save("iyb/orderId", env.order.id);
 
-        common.req("dict/view.json", {company: env.company, name:"bank"}, r => {
+        common.req("dict/view.json", {company: env.company, name: "bank", version: "new"}, r => {
             env.dict.bank = r.bank;
             ReactDOM.render(
 				<Ground/>, document.getElementById("content")
