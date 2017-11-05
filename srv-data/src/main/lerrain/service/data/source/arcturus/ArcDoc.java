@@ -6,6 +6,7 @@ import com.alibaba.fastjson.parser.ParserConfig;
 import lerrain.tool.Common;
 import lerrain.tool.Disk;
 import lerrain.tool.formula.Factors;
+import lerrain.tool.formula.Function;
 
 import java.io.File;
 import java.util.HashMap;
@@ -35,10 +36,14 @@ public class ArcDoc extends HashMap<String, Object> implements Factors
         if (!super.containsKey(s))
         {
             File f = new File(Common.pathOf(path, s));
-            String str = f.exists() ? Disk.load(f, "utf-8") : null;
+            Object res = f.exists() ? Disk.load(f, "utf-8") : null;
 
-            super.put(s, str);
-            return str;
+            Integer type = arc.files.getInteger(s);
+            if (type != null && type == 2)
+                res = JSON.parseObject((String)res);
+
+            super.put(s, res);
+            return res;
         }
 
         return super.get(s);

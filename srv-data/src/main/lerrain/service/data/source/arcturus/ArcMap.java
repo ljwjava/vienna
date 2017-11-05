@@ -1,15 +1,14 @@
 package lerrain.service.data.source.arcturus;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import lerrain.tool.Common;
 import lerrain.tool.Disk;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lerrain on 2017/9/27.
@@ -20,12 +19,13 @@ public class ArcMap implements Map<Long, Map>
     public final static long K2        = 250L;
     public final static long K3        = 250L;
 
-    private static final int MAX_CACHE = 10000;
-
     String root;
     String name;
 
     String primary;
+
+    JSONObject files;
+    JSONObject index;
 
     public ArcMap(String root, String name)
     {
@@ -36,31 +36,25 @@ public class ArcMap implements Map<Long, Map>
         if (!f.exists())
             f.mkdirs();
 
-        File config = new File(Common.pathOf(root, name + ".prop"));
+        File config = new File(Common.pathOf(root, name + ".json"));
         if (config.exists())
         {
-            Properties prop = new Properties();
-            try (FileInputStream is = new FileInputStream(config))
-            {
-                prop.load(is);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
+            JSONObject prop = JSON.parseObject(Disk.load(config, "utf-8"));
 
-            primary = prop.getProperty("primary");
+            primary = prop.getString("primary");
+            files = prop.getJSONObject("files");
+            index = prop.getJSONObject("index");
         }
         else
         {
             primary = "primary";
 
-            Properties prop = new Properties();
+            JSONObject prop = new JSONObject();
             prop.put("primary", primary);
 
-            try (FileOutputStream fos = new FileOutputStream(config))
+            try (ByteArrayInputStream is = new ByteArrayInputStream(prop.toJSONString().getBytes("utf-8")))
             {
-                prop.store(fos, null);
+                Disk.saveToDisk(is, config);
             }
             catch (Exception e)
             {
@@ -80,11 +74,10 @@ public class ArcMap implements Map<Long, Map>
     {
         return false;
     }
-
     @Override
     public boolean containsKey(Object key)
     {
-        String path = getPath(key);
+        String path = getPath((Long)key);
 
         synchronized (this)
         {
@@ -102,18 +95,31 @@ public class ArcMap implements Map<Long, Map>
     @Override
     public Map get(Object key)
     {
-        String path = getPath(key);
+        String path = getPath((Long)key);
+        String file = path + "/" + primary;
 
-        synchronized (this)
+        byte[] b;
+
+        synchronized (ArcTool.text.map)
         {
-            JSONObject json = JSON.parseObject(Disk.load(new File(path + "/" + primary), "utf-8"));
-            return new ArcDoc(this, path, json);
+            b = ArcTool.text.map.get(file);
         }
+
+        if (b == null) synchronized (ArcTool.text.pack)
+        {
+            b = ArcTool.text.pack.get(file);
+        }
+
+        if (b == null)
+            b = Disk.load(new File(file));
+
+        JSONObject json = (JSONObject)JSON.parse(b, Feature.AllowUnQuotedFieldNames);
+        return new ArcDoc(this, path, json);
     }
 
-    public String getPath(Object key)
+    public String getPath(Long key)
     {
-        long kk = (Long)key;
+        long kk = key.longValue();
         long k1 = kk % ArcMap.K1;
         kk /= ArcMap.K1;
         long k2 = kk % ArcMap.K2;
@@ -129,18 +135,21 @@ public class ArcMap implements Map<Long, Map>
     {
         String path = getPath(key);
 
-        synchronized (this)
-        {
-            new File(path).mkdirs();
+        ArcTool.text.push(path + "/" + primary, JSON.toJSONBytes(value));
 
-            File f = new File(path + "/" + primary);
-            try (OutputStream os = new FileOutputStream(f))
+        if (value != null && index != null) for (Entry<String, Object> e : index.entrySet())
+        {
+            JSONArray list = (JSONArray)JSON.toJSON(e.getValue());
+            for (Object k : list)
             {
-                os.write(JSON.toJSONString(value).getBytes("utf-8"));
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
+                Object val = value.get(k);
+                if (val != null)
+                {
+                    String valStr = val.toString();
+                    String valPath = getPath(ArcTool.getSign(valStr));
+
+                    ArcTool.seek.push(valPath + "/" + e.getKey() + "." + valStr, key);
+                }
             }
         }
 

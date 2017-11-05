@@ -44,6 +44,7 @@ public class IybUtil extends HashMap<String, Object>
     private JSONObject request(String url, String publicKey, String privateKey, String serviceName, JSON req) throws Exception
     {
         String bizContent = req.toJSONString();
+        Log.debug("service << " + bizContent);
 
         byte[] encodedData = CipherUtil.encryptByPublicKey(bizContent.getBytes(), publicKey);
         bizContent = Common.encodeToString(encodedData);

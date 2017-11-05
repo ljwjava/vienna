@@ -29,7 +29,7 @@ public class ArcIterator
     {
         this.lsm = lsm;
 
-        synchronized (lsm)
+//        synchronized (lsm)
         {
             dir1 = new File(Common.pathOf(lsm.root, lsm.name)).listFiles();
             k1 = 0;
@@ -50,7 +50,7 @@ public class ArcIterator
 
     public boolean hasNext()
     {
-        synchronized (lsm)
+//        synchronized (lsm)
         {
             if (valf == null)
                 return false;
@@ -73,7 +73,7 @@ public class ArcIterator
 
     public void next()
     {
-        synchronized (lsm)
+//        synchronized (lsm)
         {
             k4++;
 
