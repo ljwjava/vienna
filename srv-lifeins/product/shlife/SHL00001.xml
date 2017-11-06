@@ -61,6 +61,9 @@
 			<if condition="ZONE == null" level="alert">
 				请选择所在地区
 			</if>
+			<if condition="PAY_PERIOD * PREMIUM >= 200000">
+				累计总保费不能超过20万
+			</if>
 			<if>
 				if (ZONE == null)
 					return null;
