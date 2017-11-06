@@ -32,4 +32,10 @@ public class ArcDocIterator implements Iterator<Map>
         arc.next();
         return arc.getValue();
     }
+
+    @Override
+    public void remove()
+    {
+        throw new RuntimeException("not support");
+    }
 }

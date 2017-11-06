@@ -91,6 +91,6 @@ public class ArcDocCol implements Collection<Map>
     @Override
     public void clear()
     {
-
+        throw new RuntimeException("not support");
     }
 }

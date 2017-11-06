@@ -29,4 +29,10 @@ public class ArcKeyIterator implements Iterator<Long>
         arc.next();
         return arc.getKey();
     }
+
+    @Override
+    public void remove()
+    {
+        throw new RuntimeException("not support");
+    }
 }

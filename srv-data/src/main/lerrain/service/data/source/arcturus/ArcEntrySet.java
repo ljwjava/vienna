@@ -94,6 +94,6 @@ public class ArcEntrySet implements Set<Map.Entry<Long, Map>>
     @Override
     public void clear()
     {
-
+        throw new RuntimeException("not support");
     }
 }

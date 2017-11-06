@@ -34,6 +34,12 @@ public class ArcEntryIterator implements Iterator<Map.Entry<Long, Map>>
         return new Entry(arc.getKey(), arc.getValue());
     }
 
+    @Override
+    public void remove()
+    {
+        throw new RuntimeException("not support");
+    }
+
     private class Entry implements Map.Entry<Long, Map>
     {
         Long key;

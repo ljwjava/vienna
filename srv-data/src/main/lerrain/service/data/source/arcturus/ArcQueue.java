@@ -27,11 +27,8 @@ public abstract class ArcQueue<T1, T2>
 
 	public void stop()
 	{
-		synchronized (map)
-		{
-			play = false;
-			map.notify();
-		}
+		play = false;
+		map.notify();
 	}
 
 	protected abstract void add(String file, T1 id);
@@ -43,8 +40,14 @@ public abstract class ArcQueue<T1, T2>
 		synchronized (map)
 		{
 			add(file, id);
-			map.notify();
 		}
+
+		map.notify();
+	}
+
+	public int getNumber()
+	{
+		return map.size() + pack.size() - temp;
 	}
 
 	public void write()
@@ -63,20 +66,21 @@ public abstract class ArcQueue<T1, T2>
 				temp++;
 			}
 
-			pack.clear();
+			synchronized (pack)
+			{
+				pack.clear();
+			}
+
 			temp = 0;
 
-			synchronized (map)
+			try
 			{
-				try
-				{
-					if (map.isEmpty() && play)
-						map.wait();
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
+				if (map.isEmpty() && play)
+					map.wait();
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
 			}
 		}
 	}

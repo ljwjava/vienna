@@ -66,7 +66,7 @@ public class ArcMap implements Map<Long, Map>
     @Override
     public int size()
     {
-        return 0;
+        throw new RuntimeException("not support");
     }
 
     @Override
@@ -74,16 +74,14 @@ public class ArcMap implements Map<Long, Map>
     {
         return false;
     }
+
     @Override
     public boolean containsKey(Object key)
     {
         String path = getPath((Long)key);
 
-        synchronized (this)
-        {
-            File f = new File(path);
-            return f.exists();
-        }
+        File f = new File(path);
+        return f.exists();
     }
 
     @Override
@@ -98,17 +96,10 @@ public class ArcMap implements Map<Long, Map>
         String path = getPath((Long)key);
         String file = path + "/" + primary;
 
-        byte[] b;
+        byte[] b = ArcTool.text.map.get(file);
 
-        synchronized (ArcTool.text.map)
-        {
-            b = ArcTool.text.map.get(file);
-        }
-
-        if (b == null) synchronized (ArcTool.text.pack)
-        {
+        if (b == null)
             b = ArcTool.text.pack.get(file);
-        }
 
         if (b == null)
             b = Disk.load(new File(file));
