@@ -30,7 +30,7 @@ var Form = React.createClass({
 			} else if (v.type == "date") {
 				comp = (<DateEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} placeholder={v.desc} options={v.options} value={v.value}/>);
 			} else if (v.type == "idcard") {
-				comp = (<IdCard ref={v.code} valCode={v.code} valReq={v.req} onSucc={v.succ} onChange={opt} placeholder={v.desc} value={v.value}/>);
+				comp = (<IdCard ref={v.code} valCode={v.code} valReq={v.req} valRelation={this.refs[v.relation]} onSucc={v.succ} onChange={opt} placeholder={v.desc} value={v.value}/>);
 			} else if (v.type == "certValidate") {
 				comp = (<CertValidEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} value={v.value}/>);
 			} else if (v.type == "select") {

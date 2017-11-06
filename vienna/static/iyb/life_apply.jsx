@@ -53,11 +53,11 @@ class Beneficiary extends Form {
 		var v = [
             {name:"是被保险人的", code:"relation", type:"select", options:env.dict.relation2},
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:[["1","身份证"]]},
-			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes"},
+			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.dict.cert},
+			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
 			{name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
-			/*{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
-			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},*/
+			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
+			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
 			// {name:"受益次序", code:"order", type:"switch", options:[["1","第1顺位"],["2","第2顺位"],["3","第3顺位"]]},
 			{name:"受益比例", code:"scale", type:"select", options:[["10","10%"],["20","20%"],["30","30%"],["40","40%"],["50","50%"],["60","60%"],["70","70%"],["80","80%"],["90","90%"],["100","100%"]]}
 		];
@@ -71,6 +71,12 @@ class Beneficiary extends Form {
 	removeSelf() {
 		this.props.onRemove(this.props.index);
 	}
+    resetCertNo(certNo) {
+        if(this.refs.certType.val() == "1"){
+            this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
+            this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
+        }
+    }
 }
 
 class ApplicantForm extends Form {
@@ -78,7 +84,7 @@ class ApplicantForm extends Form {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.dict.cert},
-			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
+			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
             {name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
 			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
 			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
@@ -92,8 +98,10 @@ class ApplicantForm extends Form {
 		return env.checkCustomer(this.val());
 	}
 	resetCertNo(certNo) {
-		this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
-		this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
+		if(this.refs.certType.val() == "1"){
+            this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
+            this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
+		}
 	}
 }
 
@@ -227,28 +235,28 @@ var Ground = React.createClass({
 			env.company = r.vendor.code;
 			env.wareCode = r.ware.code;
 
-            this.setState({factors:r.factors}, () => {
-                this.render();
-                if (this.props.defVal.factors != null)
-                    this.refreshPremium();
-            });
-            /*common.req("dict/view.json", {company: env.company, name: "cert", version: "new"}, r => {
-                env.dict.cert = r.cert;
+            common.req("dict/view.json", {company: env.company, name: "cert", version: "new"}, r0 => {
+                env.dict.cert = r0.cert;
+                this.setState({factors:r.factors}, () => {
+                    this.render();
+                    if (this.props.defVal.factors != null)
+                        this.refreshPremium();
+                });
             }, f => {
-                ToastIt("开户行列表加载失败");
-            });*/
+                ToastIt("证件类型加载失败");
+            });
 
             document.title = r.name;
             if ("undefined" != typeof iHealthBridge) {
                 IYB.setTitle(r.name);
             }
 		});
-		//common.req("dict/view.json", {company: env.company, name:"relation"}, r => {
-		//	// env.dict.relation = env.parseDict(r.relation);
-		//	env.dict.relation2 = env.parseDict(r.relation).slice(1);
-		//	//env.dict.nation = env.parseDict(r.nation);
-		//	this.setState({dict:true});
-		//});
+		// common.req("dict/view.json", {company: env.company, name:"relation"}, r => {
+		// 	// env.dict.relation = env.parseDict(r.relation);
+		// 	env.dict.relation2 = env.parseDict(r.relation).slice(1);
+		// 	//env.dict.nation = env.parseDict(r.nation);
+		// 	this.setState({dict:true});
+		// });
     },
 	getPlanFactors() {
     	let factors = {packId: env.packId};
@@ -506,6 +514,7 @@ var Ground = React.createClass({
 		this.setState({isSubmit: true}, ()=>{
             common.req("ware/do/verify.json", order, r => {
                 document.location.href = "life_pay.mobile?orderId=" + r.orderId;
+                this.setState({isSubmit: false});
             }, r => {
                 if(r != null){
                     ToastIt(r);
@@ -574,7 +583,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					{env.company != "bobcardif" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app}/>) : null}
+					{env.company != "bobcardif" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}`
 				</div>
 				<div className="title">保险计划</div>
 				<div className="form">

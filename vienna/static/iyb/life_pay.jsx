@@ -83,6 +83,7 @@ var Ground = React.createClass({
             common.req("ware/do/apply.json", env.order, r => {
                 common.save("iyb/orderId", env.order.id);
                 document.location.href = r.nextUrl;
+                this.setState({isSubmit: false});
             }, r => {
                 if(r != null){
                     ToastIt(r);
@@ -200,7 +201,7 @@ var Ground = React.createClass({
 							<div className="col left">
 								首年保费：{!env.order.price || env.order.price <= 0 ? "无法计算" : env.order.price.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>下一步</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "核保中..." : "下一步"}</div>
 						</div>
 					</div>
 				</div>

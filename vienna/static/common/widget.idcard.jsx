@@ -8,6 +8,7 @@ var IdCard = React.createClass({
 		return this.refs.certNo.val();
 	},
 	verify() {
+	    let certType = this.props.valRelation != null ? this.props.valRelation.val() : "1";    // 证件类型
 		let alert = null;
 		let val = this.refs.certNo.val();
 		if (val == null || val == "") {
@@ -15,7 +16,7 @@ var IdCard = React.createClass({
 				alert = "此项为必填项";
 			else
 				alert = null;
-		} else {
+		} else if(certType == "1"){
 			alert = IdentityCodeValid(val);
 		}
 
