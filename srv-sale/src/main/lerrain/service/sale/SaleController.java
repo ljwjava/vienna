@@ -19,13 +19,13 @@ public class SaleController
     @Autowired PlatformBizService platformBizSrv;
     @Autowired ServiceMgr serviceMgr;
 
-    @RequestMapping("/health")
+    /*@RequestMapping("/health")
     @ResponseBody
     @CrossOrigin
     public String health()
     {
         return "success";
-    }
+    }*/
 
     @RequestMapping({ "/reset" })
     @ResponseBody

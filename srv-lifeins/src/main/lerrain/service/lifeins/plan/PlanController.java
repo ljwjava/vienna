@@ -32,13 +32,13 @@ public class PlanController
     @Autowired
     LifeinsService lifeins;
 
-    @RequestMapping("/health")
+    /*@RequestMapping("/health")
     @ResponseBody
     @CrossOrigin
     public String health()
     {
         return "success";
-    }
+    }*/
 
     @RequestMapping({"/plan/create.json"})
     @ResponseBody

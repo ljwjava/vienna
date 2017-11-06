@@ -15,13 +15,13 @@ public class OrderController
     @Autowired
     OrderService orderSrv;
 
-    @RequestMapping("/health")
+    /*@RequestMapping("/health")
     @ResponseBody
     @CrossOrigin
     public String health()
     {
         return "success";
-    }
+    }*/
 
     @RequestMapping("/create.json")
     @ResponseBody
