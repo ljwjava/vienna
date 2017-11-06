@@ -5,7 +5,6 @@ import lerrain.tool.Common;
 import lerrain.tool.Disk;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -29,7 +28,7 @@ public class ArcIterator
     {
         this.lsm = lsm;
 
-//        synchronized (lsm)
+        synchronized (ArcTool.text.pack)
         {
             dir1 = new File(Common.pathOf(lsm.root, lsm.name)).listFiles();
             k1 = 0;
@@ -50,7 +49,7 @@ public class ArcIterator
 
     public boolean hasNext()
     {
-//        synchronized (lsm)
+        synchronized (ArcTool.text.pack)
         {
             if (valf == null)
                 return false;
@@ -73,7 +72,7 @@ public class ArcIterator
 
     public void next()
     {
-//        synchronized (lsm)
+        synchronized (ArcTool.text.pack)
         {
             k4++;
 
@@ -117,7 +116,7 @@ public class ArcIterator
 
     public Map getValue()
     {
-        synchronized (lsm)
+        synchronized (ArcTool.text.pack)
         {
             return JSON.parseObject(Disk.load(new File(Common.pathOf(valf[k4].getAbsolutePath(), lsm.primary)), "utf-8"));
         }

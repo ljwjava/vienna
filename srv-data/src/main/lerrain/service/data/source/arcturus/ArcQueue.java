@@ -45,7 +45,7 @@ public abstract class ArcQueue<T1, T2>
 		map.notify();
 	}
 
-	public int getNumber()
+	public int getQueueSize()
 	{
 		return map.size() + pack.size() - temp;
 	}
