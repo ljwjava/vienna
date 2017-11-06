@@ -116,7 +116,7 @@ public class SaleController
 
     @RequestMapping({ "/callback/{key}.json" })
     @ResponseBody
-    public JSONObject callback(@PathVariable String key, @RequestBody(required=false) JSONObject json)
+    public JSONObject callbackJson(@PathVariable String key, @RequestBody(required=false) JSONObject json)
     {
         JSONObject res = new JSONObject();
 
@@ -134,6 +134,21 @@ public class SaleController
         }
 
         return res;
+    }
+
+    @RequestMapping({ "/callback/{key}.html", "/callback/{key}.do" })
+    @ResponseBody
+    public String callbackHtml(@PathVariable String key, @RequestBody(required=false) JSONObject json)
+    {
+        try
+        {
+            Object str = platformBizSrv.callback(key, json);
+            return str == null ? "" : str.toString();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
     }
 
     private Platform getPlatform(JSONObject json)

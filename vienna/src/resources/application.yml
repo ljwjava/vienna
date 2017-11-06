@@ -25,5 +25,6 @@ service:
   printer: http://localhost:7511
   vienna: http://localhost:7701
   iyb: http://uat.iyunbao.com
+  rome: http://localhost:7766
 
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000

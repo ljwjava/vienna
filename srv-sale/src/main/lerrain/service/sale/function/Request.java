@@ -19,10 +19,6 @@ public class Request implements Function
         int time = objects.length > 2 ? Common.intOf(objects[2], 10000) : 10000;
         String method = objects.length > 3 ? ("GET".equalsIgnoreCase(Common.trimStringOf(objects[3])) ? "GET" : "POST") : "POST";
         String res = RequestPost.request((String) objects[0], JSONObject.toJSONString(objects[1]), time, method);
-        try{
-            return JSONObject.parse(res);
-        }catch(Exception e){
-            return res;
-        }
+        return JSONObject.parse(res);
     }
 }
