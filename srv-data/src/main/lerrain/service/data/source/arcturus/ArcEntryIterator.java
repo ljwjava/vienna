@@ -16,7 +16,7 @@ public class ArcEntryIterator implements Iterator<Map.Entry<Long, Map>>
 {
     ArcIterator arc;
 
-    public ArcEntryIterator(ArcMap lsm)
+    public ArcEntryIterator(Arcturus lsm)
     {
         arc = new ArcIterator(lsm);
     }

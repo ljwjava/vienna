@@ -8,11 +8,11 @@ import java.util.Iterator;
 /**
  * Created by lerrain on 2017/9/27.
  */
-public class ArcKeyIterator implements Iterator<Long>
+public class ArcKeyIterator implements Iterator<Object>
 {
     ArcIterator arc;
 
-    public ArcKeyIterator(ArcMap lsm)
+    public ArcKeyIterator(Arcturus lsm)
     {
         arc = new ArcIterator(lsm);
     }
@@ -24,7 +24,7 @@ public class ArcKeyIterator implements Iterator<Long>
     }
 
     @Override
-    public Long next()
+    public Object next()
     {
         arc.next();
         return arc.getKey();

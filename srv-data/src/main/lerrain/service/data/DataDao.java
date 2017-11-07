@@ -169,7 +169,6 @@ public class DataDao
 		stack.set("unfold", unfold);
 		stack.set("daystr", daystr);
 
-		stack.set("ARC", new ArcUtil());
 		stack.set("MODEL", model);
 		stack.set("IYB", iyb);
 

@@ -1,9 +1,7 @@
 package lerrain.service.data.source.arcturus;
 
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by lerrain on 2017/11/3.
@@ -36,26 +34,33 @@ public class ArcTool
         return key >= 0 ? key : Integer.MAX_VALUE - key;
     }
 
-    public static List find(ArcMap arcMap, String indexName, String valStr)
+    public static List find(Arcturus arc, String indexName, String valStr)
     {
-        List<Map> r = new ArrayList();
+        Set<Long> temp = new java.util.HashSet<>();
 
         Long valSign = ArcTool.getSign(valStr);
 
-        String path = arcMap.getPath(valSign) + "/" + indexName + "." + valStr;
+        String path = arc.getPath(valSign) + "/" + indexName + "." + valStr;
 
-        try (RandomAccessFile fos = new RandomAccessFile(path, "r"))
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(path)))
         {
-            long len = fos.length();
-            for (int i = 0; i < len; i += 8)
-            {
-                r.add(arcMap.get(fos.readLong()));
-            }
+            long id = dis.readLong();
+            if (id > 0)
+                temp.add(id);
+            else
+                temp.remove((Long) (-id));
         }
-        catch (Exception e2)
+        catch (EOFException e1)
+        {
+        }
+        catch (IOException e2)
         {
             throw new RuntimeException(e2);
         }
+
+        List r = new ArrayList();
+        for (Long id : temp)
+            r.add(arc.get(id));
 
         return r;
     }

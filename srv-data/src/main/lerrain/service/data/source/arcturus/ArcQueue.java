@@ -28,7 +28,11 @@ public abstract class ArcQueue<T1, T2>
 	public void stop()
 	{
 		play = false;
-		map.notify();
+
+		synchronized (map)
+		{
+			map.notify();
+		}
 	}
 
 	protected abstract void add(String file, T1 id);
@@ -40,9 +44,8 @@ public abstract class ArcQueue<T1, T2>
 		synchronized (map)
 		{
 			add(file, id);
+			map.notify();
 		}
-
-		map.notify();
 	}
 
 	public int getQueueSize()
@@ -75,8 +78,11 @@ public abstract class ArcQueue<T1, T2>
 
 			try
 			{
-				if (map.isEmpty() && play)
-					map.wait();
+				synchronized (map)
+				{
+					if (map.isEmpty() && play)
+						map.wait();
+				}
 			}
 			catch (InterruptedException e)
 			{

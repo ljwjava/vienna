@@ -1,66 +1,37 @@
 package lerrain.service.data.source.arcturus;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
 import lerrain.tool.Common;
-import lerrain.tool.Disk;
+import lerrain.tool.formula.Factors;
+import lerrain.tool.formula.Function;
 
-import java.io.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lerrain on 2017/9/27.
  */
-public class ArcMap implements Map<Long, Map>
+public class ArcMap implements Map<Object, Object>
 {
-    public final static long K1        = 250L;
-    public final static long K2        = 250L;
-    public final static long K3        = 250L;
+    Arcturus arc;
 
-    String root;
-    String name;
+    Function find;
 
-    String primary;
-
-    JSONObject files;
-    JSONObject index;
-
-    public ArcMap(String root, String name)
+    public ArcMap(String[] root, String name)
     {
-        this.root = root;
-        this.name = name;
+        this(root, name, "content", null, null);
+    }
 
-        File f = new File(Common.pathOf(root, name));
-        if (!f.exists())
-            f.mkdirs();
+    public ArcMap(String[] root, String name, String content, Map files, Map index)
+    {
+        this.arc = new Arcturus(root, name, content, files, index);
 
-        File config = new File(Common.pathOf(root, name + ".json"));
-        if (config.exists())
-        {
-            JSONObject prop = JSON.parseObject(Disk.load(config, "utf-8"));
+        find = new ArcFind();
+    }
 
-            primary = prop.getString("primary");
-            files = prop.getJSONObject("files");
-            index = prop.getJSONObject("index");
-        }
-        else
-        {
-            primary = "primary";
-
-            JSONObject prop = new JSONObject();
-            prop.put("primary", primary);
-
-            try (ByteArrayInputStream is = new ByteArrayInputStream(prop.toJSONString().getBytes("utf-8")))
-            {
-                Disk.saveToDisk(is, config);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
+    public Arcturus getArcturus()
+    {
+        return arc;
     }
 
     @Override
@@ -78,10 +49,7 @@ public class ArcMap implements Map<Long, Map>
     @Override
     public boolean containsKey(Object key)
     {
-        String path = getPath((Long)key);
-
-        File f = new File(path);
-        return f.exists();
+        return arc.has(Common.toLong(key));
     }
 
     @Override
@@ -91,72 +59,30 @@ public class ArcMap implements Map<Long, Map>
     }
 
     @Override
-    public Map get(Object key)
+    public Object get(Object key)
     {
-        String path = getPath((Long)key);
-        String file = path + "/" + primary;
+        if ("find".equals(key))
+            return find;
 
-        byte[] b = ArcTool.text.map.get(file);
-
-        if (b == null)
-            b = ArcTool.text.pack.get(file);
-
-        if (b == null)
-            b = Disk.load(new File(file));
-
-        JSONObject json = (JSONObject)JSON.parse(b, Feature.AllowUnQuotedFieldNames);
-        return new ArcDoc(this, path, json);
-    }
-
-    public String getPath(Long key)
-    {
-        long kk = key.longValue();
-        long k1 = kk % ArcMap.K1;
-        kk /= ArcMap.K1;
-        long k2 = kk % ArcMap.K2;
-        kk /= ArcMap.K2;
-        long k3 = kk % ArcMap.K3;
-        kk /= ArcMap.K3;
-
-        return Common.pathOf(root, name, k1 + "/" + k2 + "/" + k3 + "/" + kk);
+        return arc.get(Common.toLong(key));
     }
 
     @Override
-    public Map put(Long key, Map value)
+    public Object put(Object key, Object value)
     {
-        String path = getPath(key);
-
-        ArcTool.text.push(path + "/" + primary, JSON.toJSONBytes(value));
-
-        if (value != null && index != null) for (Entry<String, Object> e : index.entrySet())
-        {
-            JSONArray list = (JSONArray)JSON.toJSON(e.getValue());
-            for (Object k : list)
-            {
-                Object val = value.get(k);
-                if (val != null)
-                {
-                    String valStr = val.toString();
-                    String valPath = getPath(ArcTool.getSign(valStr));
-
-                    ArcTool.seek.push(valPath + "/" + e.getKey() + "." + valStr, key);
-                }
-            }
-        }
-
-        return null;
+        return arc.put(Common.toLong(key), (Map)value);
     }
 
     @Override
-    public JSONObject remove(Object key)
+    public Map remove(Object key)
     {
-        throw new RuntimeException("not support");
+        return arc.remove(Common.toLong(key));
     }
 
     @Override
-    public void putAll(Map<? extends Long, ? extends Map> m)
+    public void putAll(Map<?, ?> m)
     {
-        for (Map.Entry<? extends Long, ? extends Map> e : m.entrySet())
+        for (Map.Entry<?, ?> e : m.entrySet())
             put(e.getKey(), e.getValue());
     }
 
@@ -167,20 +93,29 @@ public class ArcMap implements Map<Long, Map>
     }
 
     @Override
-    public Set<Long> keySet()
+    public Set<Object> keySet()
     {
-        return new ArcKeySet(this);
+        return new ArcKeySet(this.arc);
     }
 
     @Override
-    public Collection<Map> values()
+    public Collection<Object> values()
     {
-        return new ArcDocCol(this);
+        return new ArcDocCol(this.arc);
     }
 
     @Override
-    public Set<Entry<Long, Map>> entrySet()
+    public Set<Entry<Object, Object>> entrySet()
     {
         throw new RuntimeException("not support");
+    }
+
+    public class ArcFind implements Function
+    {
+        @Override
+        public Object run(Object[] objects, Factors factors)
+        {
+            return ArcTool.find(arc, objects[0].toString(), objects[1].toString());
+        }
     }
 }

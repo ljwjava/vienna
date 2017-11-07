@@ -11,11 +11,11 @@ import java.util.Map;
 /**
  * Created by lerrain on 2017/9/27.
  */
-public class ArcDocIterator implements Iterator<Map>
+public class ArcDocIterator implements Iterator<Object>
 {
     ArcIterator arc;
 
-    public ArcDocIterator(ArcMap lsm)
+    public ArcDocIterator(Arcturus lsm)
     {
         arc = new ArcIterator(lsm);
     }
@@ -27,7 +27,7 @@ public class ArcDocIterator implements Iterator<Map>
     }
 
     @Override
-    public Map next()
+    public Object next()
     {
         arc.next();
         return arc.getValue();

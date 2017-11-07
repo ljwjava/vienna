@@ -7,11 +7,11 @@ import java.util.Map;
 /**
  * Created by lerrain on 2017/9/27.
  */
-public class ArcDocCol implements Collection<Map>
+public class ArcDocCol implements Collection<Object>
 {
-    ArcMap lsm;
+    Arcturus lsm;
 
-    public ArcDocCol(ArcMap lsm)
+    public ArcDocCol(Arcturus lsm)
     {
         this.lsm = lsm;
     }
@@ -35,7 +35,7 @@ public class ArcDocCol implements Collection<Map>
     }
 
     @Override
-    public Iterator<Map> iterator()
+    public Iterator<Object> iterator()
     {
         return new ArcDocIterator(lsm);
     }
@@ -53,7 +53,7 @@ public class ArcDocCol implements Collection<Map>
     }
 
     @Override
-    public boolean add(Map doc)
+    public boolean add(Object doc)
     {
         return false;
     }
@@ -71,7 +71,7 @@ public class ArcDocCol implements Collection<Map>
     }
 
     @Override
-    public boolean addAll(Collection<? extends Map> c)
+    public boolean addAll(Collection<?> c)
     {
         return false;
     }

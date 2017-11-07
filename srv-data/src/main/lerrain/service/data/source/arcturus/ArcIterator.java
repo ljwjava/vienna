@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class ArcIterator
 {
-    ArcMap lsm;
+    Arcturus lsm;
 
     File[] dir1;
     File[] dir2;
@@ -24,26 +24,40 @@ public class ArcIterator
     int k3;
     int k4;
 
-    public ArcIterator(ArcMap lsm)
+    public ArcIterator(Arcturus lsm)
     {
         this.lsm = lsm;
 
         synchronized (ArcTool.text.pack)
         {
-            dir1 = new File(Common.pathOf(lsm.root, lsm.name)).listFiles();
             k1 = 0;
+            dir1 = new File[(int)Arcturus.K1];
+            for (int i=0;i<Arcturus.K1;i++)
+                dir1[i] = new File(Common.pathOf(lsm.root[i], lsm.name + "." + i));
 
-            if (dir1.length > k1)
-                dir2 = dir1[k1].listFiles();
             k2 = 0;
+            if (dir1.length > k1)
+            {
+                dir2 = dir1[k1].listFiles();
 
+                while (dir2 == null || dir2.length == 0)
+                {
+                    k1++;
+
+                    if (dir1.length <= k1)
+                        throw new RuntimeException("eof exception");
+
+                    dir2 = dir1[k1].listFiles();
+                }
+            }
+
+            k3 = 0;
             if (dir2 != null && dir2.length > k2)
                 dir3 = dir2[k2].listFiles();
-            k3 = 0;
 
+            k4 = -1;
             if (dir3 != null && dir3.length > k3)
                 valf = dir3[k3].listFiles();
-            k4 = -1;
         }
     }
 
@@ -64,7 +78,22 @@ public class ArcIterator
                 return true;
 
             if (dir1.length > k1 + 1)
+            {
+                int w = 1;
+                File[] dir = dir1[k1 + w].listFiles();
+
+                while (dir == null || dir.length == 0)
+                {
+                    w++;
+
+                    if (dir1.length <= k1 + w)
+                        return false;
+
+                    dir = dir1[k1 + w].listFiles();
+                }
+
                 return true;
+            }
         }
 
         return false;
@@ -95,30 +124,45 @@ public class ArcIterator
             }
 
             if (dir1.length <= k1)
-                throw new RuntimeException("already finish");
+                throw new RuntimeException("eof exception");
 
-            if (k2 == 0)
+            if (k2 == 0) //第一层目录一直存在，但内容可能是全空的
+            {
                 dir2 = dir1[k1].listFiles();
 
+                while (dir2 == null || dir2.length == 0)
+                {
+                    k1++;
+
+                    if (dir1.length <= k1)
+                        throw new RuntimeException("eof exception");
+
+                    dir2 = dir1[k1].listFiles();
+                }
+            }
+
             if (k3 == 0)
+            {
                 dir3 = dir2[k2].listFiles();
+            }
 
             if (k4 == 0)
+            {
                 valf = dir3[k3].listFiles();
+            }
         }
     }
 
     public Long getKey()
     {
-        return Integer.parseInt(valf[k4].getName()) * ArcMap.K3 * ArcMap.K2 * ArcMap.K1 + Integer.parseInt(dir3[k3].getName()) * ArcMap.K2 * ArcMap.K1 + Integer.parseInt(dir2[k2].getName()) * ArcMap.K1 + Integer.parseInt(dir1[k1].getName());
-//        return Integer.parseInt(valf[k4].getName()) * ArcMap.K2 * ArcMap.K1 + Integer.parseInt(dir2[k2].getName()) * ArcMap.K1 + Integer.parseInt(dir1[k1].getName());
+        return Integer.parseInt(valf[k4].getName()) * Arcturus.K3 * Arcturus.K2 * Arcturus.K1 + Integer.parseInt(dir3[k3].getName()) * Arcturus.K2 * Arcturus.K1 + Integer.parseInt(dir2[k2].getName()) * Arcturus.K1 + k1;
     }
 
     public Map getValue()
     {
         synchronized (ArcTool.text.pack)
         {
-            return JSON.parseObject(Disk.load(new File(Common.pathOf(valf[k4].getAbsolutePath(), lsm.primary)), "utf-8"));
+            return JSON.parseObject(Disk.load(new File(Common.pathOf(valf[k4].getAbsolutePath(), lsm.content)), "utf-8"));
         }
     }
 }

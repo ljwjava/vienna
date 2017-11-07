@@ -1,19 +1,20 @@
 package lerrain.service.data;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.data.source.SourceMgr;
 import lerrain.service.data.source.arcturus.ArcMap;
+import lerrain.service.data.source.arcturus.ArcTool;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 @Controller
 public class ArcturusController
@@ -21,68 +22,74 @@ public class ArcturusController
 	@Autowired
 	SourceMgr sourceMgr;
 
-	ArcMap lsm;
-
-	@RequestMapping("/user.json")
+	@RequestMapping("/{db}/get.json")
 	@ResponseBody
-	public JSONObject user(@RequestBody JSONObject param)
+	public JSONObject get(@PathVariable String db, @RequestParam("id") Long id)
 	{
-		if (lsm == null)
-			lsm = (ArcMap)sourceMgr.getSource(2L);
-
-		Long key = param.getLong("id");
+		ArcMap lsm = (ArcMap)sourceMgr.getSource(db);
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", lsm.get(key));
+		res.put("content", lsm.get(id));
 
 		return res;
 	}
 
-	@RequestMapping("/user/{key}")
+	@RequestMapping("/{db}/put.json")
 	@ResponseBody
-	public String save(@PathVariable Long key, @RequestBody JSONObject param)
+	public JSONObject put(@PathVariable String db, @RequestBody JSON param)
 	{
-		if (lsm == null)
-			lsm = (ArcMap)sourceMgr.getSource(2L);
+		ArcMap lsm = (ArcMap)sourceMgr.getSource(db);
 
-		lsm.put(key, param);
-
-		return "success";
-	}
-
-	@RequestMapping("/user/save")
-	@ResponseBody
-	public String saveAll(@RequestBody JSONArray list)
-	{
-		if (lsm == null)
-			lsm = (ArcMap)sourceMgr.getSource(2L);
-
-		for (int i=0;i<list.size();i++)
+		if (param instanceof JSONObject)
 		{
-			JSONObject param = list.getJSONObject(i);
-			lsm.put(param.getLong("id"), param);
+			JSONObject js = (JSONObject)param;
+			lsm.put(js.getLong("id"), js);
 		}
-
-		return "success";
-	}
-
-	@RequestMapping("/user/iterator")
-	@ResponseBody
-	public JSONObject iterator()
-	{
-		JSONArray j = new JSONArray();
-
-		long t1 = System.currentTimeMillis();
-
-		for (Long k : lsm.keySet())
-			j.add(new Object[] {k, lsm.get(k)});
-
-		long t2 = System.currentTimeMillis() - t1;
+		else
+		{
+			JSONArray list = (JSONArray)param;
+			for (int i=0;i<list.size();i++)
+			{
+				JSONObject js = list.getJSONObject(i);
+				lsm.put(js.getLong("id"), js);
+			}
+		}
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", new Object[] { t2, j.toString() });
+
+		return res;
+	}
+
+	@RequestMapping("/{db}/put/{id}")
+	@ResponseBody
+	public int put(@PathVariable String db, @PathVariable Long id, @RequestBody JSONObject param)
+	{
+		ArcMap lsm = (ArcMap)sourceMgr.getSource(db);
+		lsm.put(id, param);
+
+		return 1;
+	}
+
+	@RequestMapping("/{db}/find.json")
+	@ResponseBody
+	public JSONObject find(@PathVariable String db, HttpServletRequest req)
+	{
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+
+		ArcMap lsm = (ArcMap)sourceMgr.getSource(db);
+
+		Enumeration<String> names = req.getParameterNames();
+		if (names != null)
+		{
+			while (names.hasMoreElements())
+			{
+				String name = names.nextElement();
+				res.put("content", ArcTool.find(lsm.getArcturus(), name, req.getParameter(name)));
+			}
+		}
 
 		return res;
 	}
