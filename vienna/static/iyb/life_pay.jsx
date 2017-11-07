@@ -192,7 +192,7 @@ var Ground = React.createClass({
 				<div className="title">客户声明信息</div>
 				<div className="view">
 					<div className="doc">
-						<input type="checkbox" ref="agree"/>我已阅读并同意{docs}，且声明本人仅为中国税收居民。
+						<input type="checkbox" ref="agree"/>本人已了解并接受保险公司关于产品的{docs}{env.order.detail.readAddDesc}
 					</div>
 				</div>
 				<div className="console">
