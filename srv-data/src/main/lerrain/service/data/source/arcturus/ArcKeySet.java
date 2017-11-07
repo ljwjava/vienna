@@ -7,11 +7,11 @@ import java.util.Set;
 /**
  * Created by lerrain on 2017/9/27.
  */
-public class ArcKeySet implements Set<Long>
+public class ArcKeySet implements Set<Object>
 {
-    ArcMap lsm;
+    Arcturus lsm;
 
-    public ArcKeySet(ArcMap lsm)
+    public ArcKeySet(Arcturus lsm)
     {
         this.lsm = lsm;
     }
@@ -35,7 +35,7 @@ public class ArcKeySet implements Set<Long>
     }
 
     @Override
-    public Iterator<Long> iterator()
+    public Iterator<Object> iterator()
     {
         return new ArcKeyIterator(lsm);
     }
@@ -53,7 +53,7 @@ public class ArcKeySet implements Set<Long>
     }
 
     @Override
-    public boolean add(Long aLong)
+    public boolean add(Object aLong)
     {
         return false;
     }
@@ -71,7 +71,7 @@ public class ArcKeySet implements Set<Long>
     }
 
     @Override
-    public boolean addAll(Collection<? extends Long> c)
+    public boolean addAll(Collection<?> c)
     {
         return false;
     }
@@ -91,6 +91,5 @@ public class ArcKeySet implements Set<Long>
     @Override
     public void clear()
     {
-
     }
 }

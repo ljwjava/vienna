@@ -12,9 +12,9 @@ import java.util.Set;
  */
 public class ArcEntrySet implements Set<Map.Entry<Long, Map>>
 {
-    ArcMap lsm;
+    Arcturus lsm;
 
-    public ArcEntrySet(ArcMap lsm)
+    public ArcEntrySet(Arcturus lsm)
     {
         this.lsm = lsm;
     }

@@ -363,6 +363,26 @@ public class PackService
 		return total;
 	}
 
+	private Map<String, Double> getPremiumDetail(Plan plan)
+	{
+		Map<String, Double> r = new HashMap<>();
+
+		for (int i=0;i<plan.size();i++)
+		{
+			Commodity c = plan.getCommodity(i);
+
+			try
+			{
+				r.put(c.getCode(), c.getPremium());
+			}
+			catch (Exception e)
+			{
+			}
+		}
+
+		return r;
+	}
+
 	private List<String> getRule(Plan plan)
 	{
 		List<String> rules = new ArrayList<>();

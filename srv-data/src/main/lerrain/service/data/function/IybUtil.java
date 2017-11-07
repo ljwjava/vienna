@@ -69,4 +69,10 @@ public class IybUtil extends HashMap<String, Object>
 
         return resObj;
     }
+
+    public static void main(String[] str) throws Exception
+    {
+        JSONObject json = JSON.parseObject("{\"endDate\":\"2017-09-02 00:00:00\",\"mode\":\"summary\",\"startDate\":\"2017-09-01 00:00:00\",\"time\":\"modify\",\"type\":\"account\"}");
+        new IybUtil().request("https://www.iyunbao.com/open/iyb/openapi/IybBizOpenDispatcher.do", "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChNwVveOgmYOOw6RiEOmXgn2H+Obeb10vVrdNMk80PS3KeeiXG55DGyoK8SOgq9QEO20NMwnWap9GCRPIdaLREq0+uDAwNkX4ebCUvLPety5mFRHUdzoQvD1KxEl7Uh+OyhylDUpV2qXKBr1K1pfMqvgI1HMcV/goVhpnL2iLdbwIDAQAB", "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIE2Pbwi54ShvxRTKAC75jadv5JrI8IzZNJKVTHx9HJSyRD5odvR3wtjtEcaYAEUazeMasRBPh6+tqCdEiY68VWylwIEsNqXSMbbSgcdSPABUhcKUqFSrYRbHjqgOkWy+GlLSbGOK4azzwMA4lJ0zZ5qZVAv9ALy946tdqoMD1HdAgMBAAECgYAoi7HBmJ5Xsz23jgSOfmfWGZgkxPP6m4/2oRaszoTrXujzJ7JPvUKlW0sVyMP5csPWMXzLSsHIegXqzn8EehiCXpxOUzKXSnR7lxsPQ5a5y2OoT0DKIrHCyuPWLLqsS67y3Gww+ICfzxjQygSZHhu0yIhf/qJMrMD29Sn0wt4IgQJBALZ4i+jmzm5rNoPnMXa6IWerl3HUkgOXvUgkeODun1LNEijQ1eOYK09enBfS9z4uE3MnJAn8kBYJAiK6696fjP0CQQC1R5EKXNUJr2rTwwF8Tu4LEvCKX/FD26NKHSi5q7ag9bf3M3dWJ/LqvIM1IH73+RKWYWHZrfZapuzEFXveDl5hAkB6FKbOuPUuDQ8ZKun+HEPTP4uAfg7+1luuU7CIFT6FQGzA4A/qSNnZLVxT2DLQ6DTdGzfScqbYB0jlgZfjh23lAkA7zWQ3uvA8xbXELiyrSY6V8KWRwJzi+e4gYQYyWkdhSi5qSnwv2/XzIkVWnWXFgFF1cqLJIO6IcVDiTwQR+UOBAkEAivs58l2pQN+Ex+F5Tl40EnuucDq37XGGcpBGAWiWpg7COpnaJKg8qeK5Mqd3Ue8+a1zxZ9NblwJlKAwDu6pMRw==", "iybTableSyncNotify", json);
+    }
 }

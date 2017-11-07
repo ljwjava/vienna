@@ -13,44 +13,57 @@ import java.util.Random;
  */
 public class Test implements Runnable
 {
-    static int q1 = 10000;
+    static int q1 = 100;
     static int times = 10;
+
+    static Random ran = new Random();
 
     public static void main(String[] s) throws Exception
     {
+
+        long tt = System.currentTimeMillis();
+
+        ArcMap arc = new ArcMap(new String[] { "d:/arcturus/", "d:/arcturus/", "d:/arcturus/", "d:/arcturus/" }, "biz");
+
         ArcTool.start();
+        int t = times;
+        for (int i=0;i<t;i++)
+            new Thread(new Test(arc, i)).start();
 
-        ArcMap arc = new ArcMap("x:/arcturus/", "biz");
-
-//        int t = times;
-//        for (int i=0;i<t;i++)
-//            new Thread(new Test(arc, i)).start();
-
-        long t1 = System.currentTimeMillis();
-        int q2 = 100000;
-
-        Random ran = new Random();
-        for (long i=0;i<q2;i++)
+        for (int i=0;i<3600;i++)
         {
-            arc.get((long) ran.nextInt(q1 * times));
+            Thread.sleep(1000);
 
-            if (i % 1000 == 0)
-                System.out.println(i);
+            int len1 = ArcTool.text.getQueueSize();
+            int len2 = ArcTool.seek.getQueueSize();
+            System.out.println(len1 + ", " + len2);
+
+            if (len1 <= 0 && len2 <= 0)
+                break;
         }
 
-        System.out.println((System.currentTimeMillis() - t1) / 1.0f / q2 + "ms per record");
+        System.out.println("COST: " + (System.currentTimeMillis() - tt) / 1000 + "s");
 
-//        for (int i=0;i<100;i++)
+//          int q2 = 100000;
+//        long t1 = System.currentTimeMillis();
+//
+//        for (long i=0;i<q2;i++)
 //        {
-//            Thread.sleep(5000);
+//            arc.get((long) ran.nextInt(q1 * times));
 //
-//            int len1 = ArcTool.text.map.size() + (ArcTool.text.pack.size() - ArcTool.text.temp);
-//            int len2 = ArcTool.seek.map.size() + (ArcTool.seek.pack.size() - ArcTool.seek.temp);
-//            System.out.println(len1 + ", " + len2);
-//
-//            if (len1 <= 0 && len2 <= 0)
-//                break;
+//            if (i % 1000 == 0)
+//                System.out.println(i);
 //        }
+//
+
+
+//        long t1 = System.currentTimeMillis();
+//        for (long i=0;i<q2;i++)
+//        {
+//            ArcTool.find(arc.arc, "mobile", String.format("131%08d", i));
+//        }
+//
+//        System.out.println((System.currentTimeMillis() - t1) / 1.0f / q2 + "ms per record");
     }
 
     int j = 0;
@@ -72,9 +85,9 @@ public class Test implements Runnable
         for (long i=0;i<q1;i++)
         {
             json.put("name", "王老"+i+j);
-            json.put("mobile", String.format("131%05d%03d", i, j));
+            json.put("mobile", String.format("131%08d", j * q1 + i));
 
-            arc.put(j * q1 + i, json);
+            arc.put(j * q1 + i + 1, json);
         }
 
         System.out.println((System.currentTimeMillis() - t2) / 1.0f / q1 + "ms per record");

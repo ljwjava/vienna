@@ -28,18 +28,15 @@ public class PackController
     @Autowired
     LifeinsService lifeins;
 
-    @RequestMapping({"/pack/reset.do"})
+    @RequestMapping({"/reset"})
     @ResponseBody
-    public JSONObject reset()
+    public String reset()
     {
         lifeins.initiate();
         planSrv.initiate();
         packSrv.initiate();
 
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-
-        return res;
+        return "success";
     }
 
     @RequestMapping({ "/pack/perform.json" })

@@ -1,6 +1,8 @@
 package lerrain.service.data.source.arcturus;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,8 @@ public class ArcSeekQueue extends ArcQueue<Long, ArcSeekQueue.FileContent>
 		public FileContent(Long id)
 		{
 			seeks = new ArrayList<>();
-			seeks.add(id);
+
+			add(id);
 		}
 
 		public void add(Long id)
@@ -52,9 +55,29 @@ public class ArcSeekQueue extends ArcQueue<Long, ArcSeekQueue.FileContent>
 			File f = new File(file);
 			f.getParentFile().mkdirs();
 
-			try (RandomAccessFile os = new RandomAccessFile(f, "rw"))
+//			if (!moves.isEmpty())
+//			{
+//				try (RandomAccessFile os = new RandomAccessFile(f, "rw"))
+//				{
+//					long len = os.length();
+//					for (long i=0;i<len;i+=8)
+//					{
+//						Long v = os.readLong();
+//						if (moves.indexOf(v) >= 0)
+//						{
+//							os.seek(os.getFilePointer() - 8);
+//							os.writeLong(0);
+//						}
+//					}
+//				}
+//				catch (Exception e1)
+//				{
+//					throw new RuntimeException(e1);
+//				}
+//			}
+
+			try (DataOutputStream os = new DataOutputStream(new FileOutputStream(f, f.exists())))
 			{
-				os.seek(os.length());
 				for (Long l : seeks)
 					os.writeLong(l);
 			}

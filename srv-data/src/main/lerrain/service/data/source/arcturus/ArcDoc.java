@@ -17,13 +17,13 @@ import java.util.Map;
  */
 public class ArcDoc extends HashMap<String, Object> implements Factors
 {
-    ArcMap arc;
+    Map files;
 
     String path;
 
-    public ArcDoc(ArcMap arc, String path, Map map)
+    public ArcDoc(Map files, String path, Map map)
     {
-        this.arc = arc;
+        this.files = files;
         this.path = path;
 
         if (map != null)
@@ -38,8 +38,8 @@ public class ArcDoc extends HashMap<String, Object> implements Factors
             File f = new File(Common.pathOf(path, s));
             Object res = f.exists() ? Disk.load(f, "utf-8") : null;
 
-            Integer type = arc.files.getInteger(s);
-            if (type != null && type == 2)
+            int type = Common.intOf(files.get(s), 0);
+            if (type == 2)
                 res = JSON.parseObject((String)res);
 
             super.put(s, res);
