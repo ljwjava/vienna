@@ -151,10 +151,17 @@ public class ServiceDispatcher
         return JSON.parseObject(call(req, "ware"));
     }
 
-    @RequestMapping({ "/ware/callback/*.html", "/ware/callback/*.do" })
+    @RequestMapping({ "/ware/callback/*.html"})
     @ResponseBody
     @CrossOrigin
     public String callbackHtml(HttpServletRequest req)
+    {
+        return call(req, "ware");
+    }
+
+    @RequestMapping("/ware/callback/*.do")
+    @CrossOrigin
+    public String callbackAction(HttpServletRequest req)
     {
         return call(req, "ware");
     }
