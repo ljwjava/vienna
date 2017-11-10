@@ -1,45 +1,32 @@
 package lerrain.service.lifeins.plan;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.Company;
 import lerrain.project.insurance.product.Insurance;
 import lerrain.tool.Cache;
-import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lerrain.service.lifeins.Customer;
-
-import lerrain.project.insurance.plan.Plan;
-
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 public class PlanService
 {
-	@Autowired
-	PlanDao pd;
-	
+	@Autowired PlanDao pd;
+	@Autowired PlanDao2 pd2;
+
 	Cache cache = new Cache();
 
-	public void initiate()
+	@PostConstruct
+	public void reset()
 	{
-		cache = new Cache();
+		List<Plan> list = pd2.loadAll();
+		if (list != null) for (Plan plan : list)
+			cache.put(plan.getId(), plan);
 	}
-	
-//	public Plan newPlan(Customer applicant, Customer insurant)
-//	{
-//		Plan plan = new Plan(applicant, insurant);
-//		plan.setId(Common.nextId());
-//
-//		cache.put(plan.getId(), plan);
-//
-//		return plan;
-//	}
-	
+
 	public Plan getPlan(String planId)
 	{
 		if (planId == null)

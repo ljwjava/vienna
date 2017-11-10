@@ -117,6 +117,11 @@ var OptionBar = React.createClass({
 			alert("已保存");
 		});
 	},
+	overview() {
+		common.req("proposal/overview.json", {proposalId:env.proposalId}, r => {
+			console.log(r);
+		});
+	},
 	apply() {
 		alert("暂不支持");
 	},
@@ -125,7 +130,8 @@ var OptionBar = React.createClass({
 			<div className="container-fluid">
 				<div className="collapse navbar-collapse">
 					<div className="nav navbar-nav">
-						<button type="button" className="btn btn-primary" onClick={this.save}>保存</button>　
+						<button type="button" className="btn btn-primary" onClick={this.save}>保存</button>
+						<button type="button" className="btn btn-primary" onClick={this.overview}>总览</button>
 						<button type="button" className="btn btn-primary" onClick={this.apply}>在线投保</button>
 					</div>
 					<div className="nav navbar-nav navbar-right">

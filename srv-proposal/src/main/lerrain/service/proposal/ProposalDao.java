@@ -101,6 +101,7 @@ public class ProposalDao
 		
 		String proposalId = c.getId();
 		String applicant = JSON.toJSONString(c.getApplicant());
+		String other = c.getOther() == null ? null : JSON.toJSONString(c.getOther());
 
 		boolean isNew = true;
 		
@@ -143,13 +144,13 @@ public class ProposalDao
 
 		if (isNew)
 		{
-			String sql = "insert into t_proposal(proposal_id, proposal_name, remark, applicant, insure_time, cover, plans, tag, premium, platform_id, creator, create_time, updater, update_time) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			jdbc.update(sql, proposalId, c.getName(), c.getRemark(), applicant, c.getInsureTime(), c.getCover(), plans.toString(), tag, total, c.getPlatformId(), c.getOwner(), now, c.getOwner(), now);
+			String sql = "insert into t_proposal(proposal_id, proposal_name, bless, other, remark, applicant, insure_time, cover, plans, tag, premium, platform_id, creator, create_time, updater, update_time) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			jdbc.update(sql, proposalId, c.getName(), c.getBless(), other, c.getRemark(), applicant, c.getInsureTime(), c.getCover(), plans.toString(), tag, total, c.getPlatformId(), c.getOwner(), now, c.getOwner(), now);
 		}
 		else
 		{
-			String sql = "update t_proposal set proposal_name = ?, remark = ?, applicant = ?, insure_time = ?, cover = ?, plans = ?, tag = ?, premium = ?, updater = ?, update_time = ? where proposal_id = ?";
-			jdbc.update(sql, c.getName(), c.getRemark(), applicant, c.getInsureTime(), c.getCover(), plans.toString(), tag, total, c.getOwner(), now, proposalId);
+			String sql = "update t_proposal set proposal_name = ?, bless = ?, other = ?, remark = ?, applicant = ?, insure_time = ?, cover = ?, plans = ?, tag = ?, premium = ?, updater = ?, update_time = ? where proposal_id = ?";
+			jdbc.update(sql, c.getName(), c.getBless(), other, c.getRemark(), applicant, c.getInsureTime(), c.getCover(), plans.toString(), tag, total, c.getOwner(), now, proposalId);
 		}
 
 		return true;
@@ -175,6 +176,7 @@ public class ProposalDao
 				p.setApplicant(JSON.parseObject(rs.getString("applicant")));
 				p.setName(rs.getString("proposal_name"));
 				p.setRemark(rs.getString("remark"));
+				p.setBless(rs.getString("bless"));
 				p.setCover(rs.getString("cover"));
 				p.setPremium(rs.getBigDecimal("premium"));
 				p.setPlatformId(Common.toLong(rs.getString("platform_id")));
@@ -186,6 +188,10 @@ public class ProposalDao
 				String tag = rs.getString("tag");
 				if (tag != null)
 					p.setTag(tag.split(","));
+
+				String otherStr = rs.getString("other");
+				if (!Common.isEmpty(otherStr))
+					p.setOther(JSON.parseObject(otherStr));
 
 				JSONArray list = JSON.parseArray(rs.getString("plans"));
 				for (int i = 0; i < list.size(); i++)

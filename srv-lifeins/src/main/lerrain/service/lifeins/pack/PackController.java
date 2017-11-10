@@ -2,11 +2,9 @@ package lerrain.service.lifeins.pack;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.lifeins.LifeinsService;
-import lerrain.service.lifeins.QuestService;
 import lerrain.service.lifeins.plan.PlanService;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
-import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,9 +30,9 @@ public class PackController
     @ResponseBody
     public String reset()
     {
-        lifeins.initiate();
-        planSrv.initiate();
-        packSrv.initiate();
+        lifeins.reset();
+        planSrv.reset();
+        packSrv.reset();
 
         return "success";
     }

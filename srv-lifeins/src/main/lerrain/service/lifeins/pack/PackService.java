@@ -7,10 +7,7 @@ import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.rule.Rule;
 import lerrain.project.insurance.product.rule.RuleUtil;
-import lerrain.service.lifeins.Customer;
-import lerrain.service.lifeins.LifeinsService;
-import lerrain.service.lifeins.LifeinsUtil;
-import lerrain.service.lifeins.QuestService;
+import lerrain.service.lifeins.*;
 import lerrain.service.lifeins.plan.PlanService;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
@@ -45,7 +42,7 @@ public class PackService
 	Map<String, Function> functions;
 
 	@PostConstruct
-	public void initiate()
+	public void reset()
 	{
 		packs = packDao.loadPacks();
 
@@ -128,7 +125,7 @@ public class PackService
 			@Override
 			public Object run(Object[] objects, Factors factors)
 			{
-				return LifeinsUtil.formatChart((Commodity) objects[0]);
+				return LifeinsShow.formatChart((Commodity) objects[0]);
 			}
 		});
 
@@ -137,7 +134,7 @@ public class PackService
 			@Override
 			public Object run(Object[] objects, Factors factors)
 			{
-				return LifeinsUtil.formatTable((Commodity) objects[0], Common.boolOf(objects[1], false));
+				return LifeinsShow.formatTable((Commodity) objects[0], Common.boolOf(objects[1], false));
 			}
 		});
 

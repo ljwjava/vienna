@@ -30,7 +30,7 @@ public class LifeinsStarter
 		Plan plan = new Plan(app, ins);
 		plan.newCommodity(ls.getProduct("HXH00004"));
 
-		System.out.println(LifeinsUtil.formatTable(plan.primaryCommodity(), true));
+		System.out.println(LifeinsShow.formatTable(plan.primaryCommodity(), true));
 	}
 
 }

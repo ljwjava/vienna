@@ -64,6 +64,15 @@
 			</item>
 		</init>
 
+		<attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="ACCIDENT_DISABILITY">AMOUNT</item>
+				<item name="TOTAL_DISABILITY">AMOUNT</item>
+				<item name="ACCIDENT_DEATH">AMOUNT</item>
+				<item name="OTHER_DEATH">AMOUNT</item>
+			</fgraph>
+		</attachment>
+
 		<rule>
 			<if condition="AGE lt 18 or AGE > 60" type="customer">
 				投保年龄：18~60周岁

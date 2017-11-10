@@ -1,17 +1,12 @@
 package lerrain.service.proposal;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Controller
 public class ProposalController
@@ -151,6 +146,8 @@ public class ProposalController
 		proposal.setName(name);
 		String cover = p.getString("cover");
 		proposal.setCover(cover);
+		String bless = p.getString("bless");
+		proposal.setBless(bless);
 
 		JSONObject other = p.getJSONObject("other");
 		if (other != null)
@@ -450,6 +447,37 @@ public class ProposalController
 			throw new RuntimeException("缺少proposalId");
 		
 		return ps.getProposal(proposalId);
+	}
+
+	@RequestMapping("/overview.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject overview(@RequestBody JSONObject p)
+	{
+		JSONObject r = new JSONObject();
+
+		Proposal proposal = getProposal(p);
+		r.put("bless", proposal.getOther().get("bless"));
+
+		JSONObject req = new JSONObject();
+		for (String planId : proposal.getPlanList())
+		{
+			req.put("planId", planId);
+			req.put("style", "fgraph,csv");
+
+			JSONObject pl = new JSONObject();
+
+			JSONObject r1 = serviceMgr.req("lifeins", "plan/format.json", req);
+			pl.putAll(r1.getJSONObject("content"));
+
+			r.put(planId, pl);
+		}
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", r);
+
+		return res;
 	}
 
 	@RequestMapping("/print.json")

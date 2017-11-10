@@ -90,6 +90,8 @@ public class ServiceDispatcher
     {
         HttpSession session = req.getSession();
         verify(session);
+
+        param.put("owner", session.getAttribute("userId"));
         param.put("platformId", session.getAttribute("platformId"));
 
         String uri = req.getRequestURI();

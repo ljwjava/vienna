@@ -9,6 +9,7 @@ public class Proposal
 	String name;
 	String remark;
 	String cover;
+	String bless;
 	String owner;
 
 	Long platformId;
@@ -36,6 +37,21 @@ public class Proposal
 	public void setFavourite(boolean favourite)
 	{
 		this.favourite = favourite;
+	}
+
+	public String getBless()
+	{
+		return bless;
+	}
+
+	public void setBless(String bless)
+	{
+		this.bless = bless;
+	}
+
+	public void setOther(Map<String, Object> other)
+	{
+		this.other = other;
 	}
 
 	public void setPlanList(List<String> planList)

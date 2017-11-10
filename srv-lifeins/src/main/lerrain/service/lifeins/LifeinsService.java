@@ -9,9 +9,12 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 
 import lerrain.project.insurance.product.Company;
+import lerrain.project.insurance.product.Config;
 import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.InsuranceMgr;
 
+import lerrain.service.lifeins.format.FGraphFilter;
+import lerrain.service.lifeins.format.FGraphParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +31,11 @@ public class LifeinsService
     String dataPath;
 
     @PostConstruct
-    public void initiate()
+    public void reset()
     {
+//        Config.addFilter("fgraph", new FGraphFilter());
+        Config.addParser("fgraph", new FGraphParser());
+
         try
         {
             String PATH = null;

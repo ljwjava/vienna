@@ -24,6 +24,9 @@ public class ArcIterator
     int k3;
     int k4;
 
+    Long key;
+    File file;
+
     public ArcIterator(Arcturus lsm)
     {
         this.lsm = lsm;
@@ -58,6 +61,57 @@ public class ArcIterator
             k4 = -1;
             if (dir3 != null && dir3.length > k3)
                 valf = dir3[k3].listFiles();
+        }
+    }
+
+    private void scan()
+    {
+        k4++;
+
+        if (valf.length <= k4)
+        {
+            k4 = 0;
+            k3++;
+        }
+
+        if (dir3.length <= k3)
+        {
+            k3 = 0;
+            k2++;
+        }
+
+        if (dir2.length <= k2)
+        {
+            k2 = 0;
+            k1++;
+        }
+
+        if (dir1.length <= k1)
+            throw new RuntimeException("eof exception");
+
+        if (k2 == 0) //第一层目录一直存在，但内容可能是全空的
+        {
+            dir2 = dir1[k1].listFiles();
+
+            while (dir2 == null || dir2.length == 0)
+            {
+                k1++;
+
+                if (dir1.length <= k1)
+                    throw new RuntimeException("eof exception");
+
+                dir2 = dir1[k1].listFiles();
+            }
+        }
+
+        if (k3 == 0)
+        {
+            dir3 = dir2[k2].listFiles();
+        }
+
+        if (k4 == 0)
+        {
+            valf = dir3[k3].listFiles();
         }
     }
 
