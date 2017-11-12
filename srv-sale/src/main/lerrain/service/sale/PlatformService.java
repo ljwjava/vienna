@@ -130,8 +130,7 @@ public class PlatformService
         };
     }
 
-    @PostConstruct
-    public void initiate()
+    public void reset()
     {
         Map stack = new HashMap();
         stack.put("log", log);

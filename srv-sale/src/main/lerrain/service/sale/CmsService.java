@@ -16,8 +16,7 @@ public class CmsService
 
     Map<String, List<WareCms>> commissionBase;
 
-    @PostConstruct
-    public void initiate()
+    public void reset()
     {
         commissionBase = cmsmDao.loadCommissionDefine();
     }

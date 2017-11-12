@@ -72,68 +72,76 @@ public class PlanDao2
             @Override
             public Plan mapRow(ResultSet m, int arg1) throws SQLException
             {
-                Customer applicant = LifeinsUtil.customerOf(JSONObject.parseObject(m.getString("APPLICANT")));
-                Customer insurant = LifeinsUtil.customerOf(JSONObject.parseObject(m.getString("INSURANT")));
-
-                final Plan plan = new Plan(applicant, insurant);
-                plan.setId(m.getString("PLAN_ID"));
-
-                final Map<String, Commodity> temp = new HashMap<String, Commodity>();
-
-                jdbc.query("select * from t_ins_product where PLAN_ID = ? order by SEQ", new Object[]{plan.getId()}, new RowMapper<Plan>()
+                try
                 {
-                    @Override
-                    public Plan mapRow(ResultSet m, int arg1) throws SQLException
+                    Customer applicant = LifeinsUtil.customerOf(JSONObject.parseObject(m.getString("APPLICANT")));
+                    Customer insurant = LifeinsUtil.customerOf(JSONObject.parseObject(m.getString("INSURANT")));
+
+                    final Plan plan = new Plan(applicant, insurant);
+                    plan.setId(m.getString("PLAN_ID"));
+
+                    final Map<String, Commodity> temp = new HashMap<String, Commodity>();
+
+                    jdbc.query("select * from t_ins_product where PLAN_ID = ? order by SEQ", new Object[]{plan.getId()}, new RowMapper<Plan>()
                     {
-                        String productId = m.getString("PRODUCT_ID");
-                        String seq = m.getString("SEQ");
-                        String parentSeq = m.getString("PARENT_SEQ");
-                        int auto = m.getInt("AUTO");
-                        double quantity = Common.doubleOf(m.getDouble("QUANTITY"), 0);
-                        double amount = Common.doubleOf(m.getDouble("AMOUNT"), 0);
-                        double premium = Common.doubleOf(m.getDouble("PREMIUM"), 0);
+                        @Override
+                        public Plan mapRow(ResultSet m, int arg1) throws SQLException
+                        {
+                            String productId = m.getString("PRODUCT_ID");
+                            String seq = m.getString("SEQ");
+                            String parentSeq = m.getString("PARENT_SEQ");
+                            int auto = m.getInt("AUTO");
+                            double quantity = Common.doubleOf(m.getDouble("QUANTITY"), 0);
+                            double amount = Common.doubleOf(m.getDouble("AMOUNT"), 0);
+                            double premium = Common.doubleOf(m.getDouble("PREMIUM"), 0);
 
-                        Commodity parent = parentSeq == null ? null : temp.get(parentSeq);
-                        final Commodity c = new Commodity(plan, parent, (Insurance) lifeins.getProduct(productId), null, null);
-                        c.setId(seq);
-                        c.setAuto(auto != 0);
+                            Commodity parent = parentSeq == null ? null : temp.get(parentSeq);
+                            final Commodity c = new Commodity(plan, parent, (Insurance) lifeins.getProduct(productId), null, null);
+                            c.setId(seq);
+                            c.setAuto(auto != 0);
 
-                        int input = c.getProduct().getInputMode();
-                        if (input == Purchase.AMOUNT || input == Purchase.PREMIUM_AND_AMOUNT || input == Purchase.PREMIUM_OR_AMOUNT)
-                        {
-                            c.setAmount(amount);
-                        }
-                        if (input == Purchase.PREMIUM || input == Purchase.PREMIUM_AND_AMOUNT)
-                        {
-                            c.setPremium(premium);
-                        }
-                        if (input == Purchase.QUANTITY || input == Purchase.RANK_AND_QUANTITY)
-                        {
-                            c.setQuantity(quantity);
-                        }
-
-                        String value = m.getString("VALUE");
-                        if (value != null)
-                        {
-                            Map<String, Object> map = JSONObject.parseObject(value);
-                            for (Map.Entry<String, Object> entry : map.entrySet())
+                            int input = c.getProduct().getInputMode();
+                            if (input == Purchase.AMOUNT || input == Purchase.PREMIUM_AND_AMOUNT || input == Purchase.PREMIUM_OR_AMOUNT)
                             {
-                                if (entry.getKey().startsWith("OPTION:"))
-                                    c.setInput(entry.getKey().substring(7), (String) entry.getValue());
-                                else
-                                    c.setValue(entry.getKey(), entry.getValue());
+                                c.setAmount(amount);
                             }
+                            if (input == Purchase.PREMIUM || input == Purchase.PREMIUM_AND_AMOUNT)
+                            {
+                                c.setPremium(premium);
+                            }
+                            if (input == Purchase.QUANTITY || input == Purchase.RANK_AND_QUANTITY)
+                            {
+                                c.setQuantity(quantity);
+                            }
+
+                            String value = m.getString("VALUE");
+                            if (value != null)
+                            {
+                                Map<String, Object> map = JSONObject.parseObject(value);
+                                for (Map.Entry<String, Object> entry : map.entrySet())
+                                {
+                                    if (entry.getKey().startsWith("OPTION:"))
+                                        c.setInput(entry.getKey().substring(7), (String) entry.getValue());
+                                    else
+                                        c.setValue(entry.getKey(), entry.getValue());
+                                }
+                            }
+
+                            plan.getCommodityList().addCommodity(parent, c);
+
+                            temp.put(seq, c);
+
+                            return null;
                         }
+                    });
 
-                        plan.getCommodityList().addCommodity(parent, c);
-
-                        temp.put(seq, c);
-
-                        return null;
-                    }
-                });
-
-                return plan;
+                    return plan;
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    return null;
+                }
             }
         });
     }

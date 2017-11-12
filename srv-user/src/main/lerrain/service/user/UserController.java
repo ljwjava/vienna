@@ -27,14 +27,6 @@ public class UserController
     @Autowired
     ModuleService moduleSrv;
 
-    @RequestMapping("/health")
-    @ResponseBody
-    @CrossOrigin
-    public String health()
-    {
-        return "success";
-    }
-
     @RequestMapping({ "/login.json" })
     @ResponseBody
     public JSONObject login(@RequestBody JSONObject json)

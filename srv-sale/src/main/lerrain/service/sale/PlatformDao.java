@@ -81,36 +81,44 @@ public class PlatformDao
                 String valstr = rs.getString("value");
                 int type = rs.getInt("type");
 
-                Stack s = p.getEnv();
-
-                Object val = null;
-                if (type == 1)
-                    val = valstr;
-                else if (type == 2)
-                    val = new BigDecimal(valstr);
-                else if (type == 3)
-                    val = Integer.valueOf(valstr);
-                else if (type == 4)
-                    val = JSON.parseObject(valstr);
-                else if (type == 5)
-                    val = JSON.parseArray(valstr);
-                else if (type == 6)
-                    val = Script.scriptOf(valstr).run(s);
-
-                String[] name = consName.split("[.]");
-                if (name.length == 1)
+                try
                 {
-                    s.set(name[0], val);
+                    Object val = null;
+                    if (type == 1)
+                        val = valstr;
+                    else if (type == 2)
+                        val = new BigDecimal(valstr);
+                    else if (type == 3)
+                        val = Integer.valueOf(valstr);
+                    else if (type == 4)
+                        val = JSON.parseObject(valstr);
+                    else if (type == 5)
+                        val = JSON.parseArray(valstr);
+                    else if (type == 6)
+                        val = Script.scriptOf(valstr).run(p.getEnv());
+
+                    Log.debug("loading env... " + consName);
+                    p.putVar(consName, val);
+
+//                String[] name = consName.split("[.]");
+//                if (name.length == 1)
+//                {
+//                    s.set(name[0], val);
+//                }
+//                else if (name.length == 2)
+//                {
+//                    Map map = (Map)s.get(name[0]);
+//                    if (map == null)
+//                    {
+//                        map = new HashMap();
+//                        s.set(name[0], map);
+//                    }
+//                    map.put(name[1], val);
+//                }
                 }
-                else if (name.length == 2)
+                catch (Exception e)
                 {
-                    Map map = (Map)s.get(name[0]);
-                    if (map == null)
-                    {
-                        map = new HashMap();
-                        s.set(name[0], map);
-                    }
-                    map.put(name[1], val);
+                    Log.error(e);
                 }
             }
 
@@ -126,40 +134,47 @@ public class PlatformDao
                 String params = rs.getString("params");
                 String script = rs.getString("script");
 
-                Function f = new SelfFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","));
-                Stack s = p.getEnv();
-
-                String[] allName;
-                if (Common.isEmpty(otherNames))
+                try
                 {
-                    allName = new String[] {consName};
-                }
-                else
-                {
-                    String[] append = otherNames.split(",");
-                    allName = Arrays.copyOf(append, append.length + 1);
-                    allName[allName.length - 1] = consName;
-                }
+                    Function f = new SelfFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","));
 
-                for (String fe : allName)
-                {
-                    Log.debug("loading... " + fe);
-
-                    String[] name = fe.split("[.]");
-                    if (name.length == 1)
+                    String[] allName;
+                    if (Common.isEmpty(otherNames))
                     {
-                        s.set(name[0], f);
+                        allName = new String[]{consName};
                     }
-                    else if (name.length == 2)
+                    else
                     {
-                        Map map = (Map) s.get(name[0]);
-                        if (map == null)
-                        {
-                            map = new HashMap();
-                            s.set(name[0], map);
-                        }
-                        map.put(name[1], f);
+                        String[] append = otherNames.split(",");
+                        allName = Arrays.copyOf(append, append.length + 1);
+                        allName[allName.length - 1] = consName;
                     }
+
+                    for (String fe : allName)
+                    {
+                        Log.debug("loading function... " + fe);
+                        p.putVar(fe, f);
+
+//                    String[] name = fe.split("[.]");
+//                    if (name.length == 1)
+//                    {
+//                        s.set(name[0], f);
+//                    }
+//                    else if (name.length == 2)
+//                    {
+//                        Map map = (Map) s.get(name[0]);
+//                        if (map == null)
+//                        {
+//                            map = new HashMap();
+//                            s.set(name[0], map);
+//                        }
+//                        map.put(name[1], f);
+//                    }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.error(e);
                 }
             }
 
@@ -175,8 +190,15 @@ public class PlatformDao
                 String name = rs.getString("name");
                 String script = rs.getString("script");
 
-                Log.debug("loading... " + name);
-                map.put(name, Script.scriptOf(script));
+                try
+                {
+                    Log.debug("loading... " + name);
+                    map.put(name, Script.scriptOf(script));
+                }
+                catch (Exception e)
+                {
+                    Log.error(e);
+                }
             }
 
         }, p.getId());

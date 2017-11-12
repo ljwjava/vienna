@@ -123,7 +123,9 @@ var OptionBar = React.createClass({
 		});
 	},
 	apply() {
-		alert("暂不支持");
+		common.req("proposal/apply.json", {proposalId:env.proposalId}, r => {
+			console.log(r);
+		});
 	},
 	render() {
 		return (

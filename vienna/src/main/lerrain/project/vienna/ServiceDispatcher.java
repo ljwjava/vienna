@@ -89,10 +89,13 @@ public class ServiceDispatcher
     public JSONObject redirectWithLogin(HttpServletRequest req, @PathVariable String module, @RequestBody JSONObject param)
     {
         HttpSession session = req.getSession();
-        verify(session);
 
-        param.put("owner", session.getAttribute("userId"));
-        param.put("platformId", session.getAttribute("platformId"));
+//        verify(session);
+//        param.put("owner", session.getAttribute("userId"));
+//        param.put("platformId", session.getAttribute("platformId"));
+
+        param.put("owner", 1);
+        param.put("platformId", 2);
 
         String uri = req.getRequestURI();
         return sv.req(modules.get(module), uri.substring(uri.indexOf("/", 1) + 1), param);
@@ -153,7 +156,7 @@ public class ServiceDispatcher
         return JSON.parseObject(call(req, "ware"));
     }
 
-    @RequestMapping({ "/ware/callback/*.html"})
+    @RequestMapping("/ware/callback/*.html")
     @ResponseBody
     @CrossOrigin
     public String callbackHtml(HttpServletRequest req)

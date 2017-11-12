@@ -8,3 +8,4 @@ datasource:
 
 service:
   lifeins: http://localhost:7777
+  sale: http://localhost:7772

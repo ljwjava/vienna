@@ -11,19 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class ProposalController
 {
-	@Autowired
-	ServiceMgr serviceMgr;
+	@Autowired ServiceMgr serviceMgr;
 
-	@Autowired
-	ProposalService ps;
-
-	@RequestMapping("/health")
-	@ResponseBody
-	@CrossOrigin
-	public String health()
-	{
-		return "success";
-	}
+	@Autowired ProposalService ps;
+	@Autowired ProposalTool proposalTool;
 
 	@RequestMapping("/cover.json")
 	@ResponseBody
@@ -79,7 +70,7 @@ public class ProposalController
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 
 		return res;
 	}
@@ -111,7 +102,7 @@ public class ProposalController
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 		
 		return res;
 	}
@@ -155,7 +146,7 @@ public class ProposalController
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 
 		return res;
 	}
@@ -172,7 +163,7 @@ public class ProposalController
 		if (r)
 		{
 			res.put("result", "success");
-			res.put("content", ProposalUtil.jsonOf(proposal));
+			res.put("content", proposalTool.jsonOf(proposal));
 		}
 		else
 		{
@@ -223,7 +214,7 @@ public class ProposalController
 		
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 		
 		return res;
 	}
@@ -254,7 +245,7 @@ public class ProposalController
 		
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 		
 		return res;
 	}
@@ -276,7 +267,7 @@ public class ProposalController
 		
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 		
 		return res;
 	}
@@ -301,7 +292,7 @@ public class ProposalController
 	{
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(getProposal(p)));
+		res.put("content", proposalTool.jsonOf(getProposal(p)));
 		
 		return res;
 	}
@@ -320,7 +311,7 @@ public class ProposalController
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 
 		return res;
 	}
@@ -405,7 +396,7 @@ public class ProposalController
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", ProposalUtil.jsonOf(proposal));
+		res.put("content", proposalTool.jsonOf(proposal));
 
 		return res;
 	}
@@ -478,6 +469,17 @@ public class ProposalController
 		res.put("content", r);
 
 		return res;
+	}
+
+	@RequestMapping("/apply.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject apply(@RequestBody JSONObject p)
+	{
+		JSONObject detail = proposalTool.apply(getProposal(p));
+		detail.put("platformId", p.getLong("platformId"));
+
+		return serviceMgr.req("sale", "do/proposal_apply.json", detail);
 	}
 
 	@RequestMapping("/print.json")

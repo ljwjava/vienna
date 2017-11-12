@@ -4,6 +4,7 @@ import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Stack;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -136,5 +137,31 @@ public class Platform
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public void putVar(String fe, Object f)
+    {
+        Map last = null;
+
+        String[] name = fe.split("[.]");
+        for (int i=0;i<name.length-1;i++)
+        {
+            Map map = (Map)(i == 0 ? env.get(name[i]) : last.get(name[i]));
+            if (map == null)
+            {
+                map = new HashMap();
+                if (i == 0)
+                    env.set(name[i], map);
+                else
+                    last.put(name[i], map);
+            }
+
+            last = map;
+        }
+
+        if (last == null)
+            env.set(name[name.length - 1], f);
+        else
+            last.put(name[name.length - 1], f);
     }
 }

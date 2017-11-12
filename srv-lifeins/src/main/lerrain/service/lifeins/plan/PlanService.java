@@ -23,8 +23,10 @@ public class PlanService
 	public void reset()
 	{
 		List<Plan> list = pd2.loadAll();
-		if (list != null) for (Plan plan : list)
-			cache.put(plan.getId(), plan);
+		if (list != null)
+			for (Plan plan : list)
+				if (plan != null)
+					cache.put(plan.getId(), plan);
 	}
 
 	public Plan getPlan(String planId)

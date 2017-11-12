@@ -22,8 +22,7 @@ public class WareService
 
     Map<String, List<Ware>> temp = new HashMap<>();
 
-    @PostConstruct
-    public void initiate()
+    public void reset()
     {
         temp.clear();
         map.clear();

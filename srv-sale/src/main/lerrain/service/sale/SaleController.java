@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
+
 @Controller
 public class SaleController
 {
@@ -18,6 +20,7 @@ public class SaleController
     @Autowired VendorService vendorSrv;
     @Autowired PlatformBizService platformBizSrv;
     @Autowired ServiceMgr serviceMgr;
+    @Autowired CmsService cmsSrv;
 
     /*@RequestMapping("/health")
     @ResponseBody
@@ -27,12 +30,14 @@ public class SaleController
         return "success";
     }*/
 
+    @PostConstruct
     @RequestMapping({ "/reset" })
     @ResponseBody
     public JSONObject reset()
     {
-        wareSrv.initiate();
-        platformSrv.initiate();
+        wareSrv.reset();
+        platformSrv.reset();
+        cmsSrv.reset();
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -232,6 +237,22 @@ public class SaleController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", content);
+
+        return res;
+    }
+
+    @RequestMapping("/replace.json")
+    @ResponseBody
+    public JSONObject replace(@RequestBody JSONObject req)
+    {
+        String scriptStr = req.getString("script");
+        String funcName = req.getString("name");
+
+        Platform p = getPlatform(req);
+        p.putVar(funcName, Script.scriptOf(scriptStr));
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
 
         return res;
     }
