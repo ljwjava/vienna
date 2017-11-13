@@ -20,10 +20,17 @@ public class Gateway
 
     boolean login;
 
-    String url;
+    String uri;
+    String redirect;
+
     String[] with;
 
     Script script;
+
+    public boolean match(String uri)
+    {
+        return uri.equals(uri);
+    }
 
     public boolean isSupport(int support)
     {
@@ -70,14 +77,14 @@ public class Gateway
         this.type = type;
     }
 
-    public String getUrl()
+    public String getUri()
     {
-        return url;
+        return uri;
     }
 
-    public void setUrl(String url)
+    public void setUri(String uri)
     {
-        this.url = url;
+        this.uri = uri;
     }
 
     public String[] getWith()
@@ -88,6 +95,16 @@ public class Gateway
     public void setWith(String[] with)
     {
         this.with = with;
+    }
+
+    public String getRedirect()
+    {
+        return redirect;
+    }
+
+    public void setRedirect(String redirect)
+    {
+        this.redirect = redirect;
     }
 
     public int getSupport()
