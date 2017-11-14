@@ -14,14 +14,17 @@ public class Gateway
     public static final int SUPPORT_GET  = 1;
     public static final int SUPPORT_POST = 2;
 
+    Long platformId;
+
     int type;
     int support;
     int seq = 1000000;
 
     boolean login;
+    boolean forward;
 
     String uri;
-    String redirect;
+    String forwardTo;
 
     String[] with;
 
@@ -35,6 +38,16 @@ public class Gateway
     public boolean isSupport(int support)
     {
         return (type & support) > 0;
+    }
+
+    public Long getPlatformId()
+    {
+        return platformId;
+    }
+
+    public void setPlatformId(Long platformId)
+    {
+        this.platformId = platformId;
     }
 
     public boolean isLogin()
@@ -97,14 +110,24 @@ public class Gateway
         this.with = with;
     }
 
-    public String getRedirect()
+    public boolean isForward()
     {
-        return redirect;
+        return forward;
     }
 
-    public void setRedirect(String redirect)
+    public void setForward(boolean forward)
     {
-        this.redirect = redirect;
+        this.forward = forward;
+    }
+
+    public String getForwardTo()
+    {
+        return forwardTo;
+    }
+
+    public void setForwardTo(String forwardTo)
+    {
+        this.forwardTo = forwardTo;
     }
 
     public int getSupport()

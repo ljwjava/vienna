@@ -477,6 +477,7 @@ public class ProposalController
 	public JSONObject apply(@RequestBody JSONObject p)
 	{
 		JSONObject detail = proposalTool.apply(getProposal(p));
+		detail.put("userId", p.getLong("userId"));
 		detail.put("platformId", p.getLong("platformId"));
 
 		return serviceMgr.req("sale", "do/proposal_apply.json", detail);

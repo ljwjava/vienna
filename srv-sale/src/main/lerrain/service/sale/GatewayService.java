@@ -24,17 +24,19 @@ public class GatewayService
 
     public void reset()
     {
-
+        map = gatewayDao.loadAllGateway();
     }
 
     public Long getPlatformId(String domain)
     {
-        return platformMap.get(domain);
+//        return platformMap.get(domain);
+        return 2L;
     }
 
     public Gateway getGateway(String domain, String uri)
     {
-        Long platformId = platformMap.get(domain);
+        Long platformId = getPlatformId(domain);
+
         List<Gateway> list = map.get(platformId);
         for (Gateway gateway : list)
             if (gateway.match(uri))

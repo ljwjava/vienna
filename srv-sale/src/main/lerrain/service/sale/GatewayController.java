@@ -28,7 +28,7 @@ public class GatewayController
     @Autowired
     ServiceMgr sv;
 
-    private String call(HttpServletRequest req)
+    private Object call(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
 
@@ -38,7 +38,7 @@ public class GatewayController
         if (contentType != null)
             contentType = contentType.toLowerCase();
 
-        JSONObject param = null;
+        JSONObject param;
         if (contentType != null && (contentType.indexOf("text") >= 0 || contentType.indexOf("json") >= 0))
         {
             try (InputStream is = req.getInputStream())
@@ -65,8 +65,7 @@ public class GatewayController
             }
         }
 
-        Long platformId = gatewaySrv.getPlatformId(req.getServerName() + ":" + req.getServerPort());
-        param.put("platformId", platformId);
+        param.put("platformId", gateway.getPlatformId());
 
         if (gateway.isLogin())
         {
@@ -77,7 +76,7 @@ public class GatewayController
                 throw new RuntimeException("not login");
 
             Long platformIdSession = (Long)session.getAttribute("platformId");
-            if (platformIdSession != platformId)
+            if (platformIdSession != gateway.getPlatformId())
                 throw new RuntimeException("platform not match");
 
             if (gateway.getWith() != null)
@@ -94,45 +93,49 @@ public class GatewayController
             val = script.run(stack);
         }
 
-        String redirect = gateway.getRedirect();
-        if (redirect != null)
+        if (gateway.isForward())
         {
             if (val != null)
                 param.putAll((Map)val);
 
-            int p2 = redirect.indexOf("/", 1);
-            return sv.reqStr(uri.substring(0, p2), uri.substring(p2 + 1), param);
+            String forwardTo = gateway.getForwardTo() == null ? uri : gateway.getForwardTo();
+            int p2 = forwardTo.indexOf("/");
+            JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
 
-//            if (!"success".equals(json.getString("result")))
-//                throw new RuntimeException(json.getString("reason"));
-//
-//            val = json.get("content");
+            if (!"success".equals(json.getString("result")))
+                throw new RuntimeException(json.getString("reason"));
+
+            val = json.get("content");
         }
 
-        return val.toString();
+        return val;
     }
 
 
-    @RequestMapping({ "/**.json" })
+    @RequestMapping("/**/*.json")
     @ResponseBody
-    public String callJson(HttpServletRequest req)
+    public JSONObject callJson(HttpServletRequest req)
     {
-        return call(req);
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", call(req));
+
+        return res;
     }
 
-    @RequestMapping("/**.html")
+    @RequestMapping("/**/*.html")
     @ResponseBody
     @CrossOrigin
     public String callHtml(HttpServletRequest req)
     {
-        return (String)call(req);
+        return call(req).toString();
     }
 
-    @RequestMapping("/**.do")
+    @RequestMapping("/**/*.do")
     @CrossOrigin
     public String callAction(HttpServletRequest req)
     {
-        return (String)call(req);
+        return call(req).toString();
     }
 
 }

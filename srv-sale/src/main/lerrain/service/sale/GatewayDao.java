@@ -21,11 +21,11 @@ public class GatewayDao
     @Autowired
     JdbcTemplate jdbc;
 
-    public Map<Integer, List<Gateway>> loadAllGateway()
+    public Map<Long, List<Gateway>> loadAllGateway()
     {
-        final Map<Integer, List<Gateway>> m = new HashMap<>();
+        final Map<Long, List<Gateway>> m = new HashMap<>();
 
-        String sql = "select * from s_gateway where valid is null order by seq";
+        String sql = "select * from t_gateway where valid is null order by seq";
 
         jdbc.query(sql, new RowCallbackHandler()
         {
@@ -33,21 +33,24 @@ public class GatewayDao
             public void processRow(ResultSet rs) throws SQLException
             {
                 int type = rs.getInt("type");
+                Long platformId = rs.getLong("platform_id");
                 String uri = rs.getString("uri");
                 String with = rs.getString("with");
                 String script = rs.getString("script");
+                String forwardTo = rs.getString("forwardTo");
 
                 boolean needLogin = "Y".equalsIgnoreCase(rs.getString("login"));
                 boolean supportGet = !"N".equalsIgnoreCase(rs.getString("support_get"));
                 boolean supportPost = !"N".equalsIgnoreCase(rs.getString("support_post"));
+                boolean forward = !"N".equalsIgnoreCase(rs.getString("forward"));
 
                 int support = (supportGet ? Gateway.SUPPORT_GET : 0) | (supportPost ? Gateway.SUPPORT_POST : 0);
 
-                List<Gateway> list = m.get(type);
+                List<Gateway> list = m.get(platformId);
                 if (list == null)
                 {
-                    list = new ArrayList<Gateway>();
-                    m.put(type, list);
+                    list = new ArrayList<>();
+                    m.put(platformId, list);
                 }
 
                 Gateway gw = new Gateway();
@@ -57,6 +60,8 @@ public class GatewayDao
                 gw.setWith(with == null ? null : with.split(","));
                 gw.setUri(uri);
                 gw.setScript(Script.scriptOf(script));
+                gw.setForward(forward);
+                gw.setForwardTo(forwardTo);
 
                 list.add(gw);
             }

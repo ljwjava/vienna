@@ -44,6 +44,7 @@ public class PlatformBizService
         return script.run(stack);
     }
 
+
     public Object perform(Platform platform, String operate, Map<String, Object> vals)
     {
         Stack stack = new Stack(platform.getEnv());

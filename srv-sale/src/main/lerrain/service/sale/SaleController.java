@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 @Controller
 public class SaleController
 {
+    @Autowired GatewayService gateSrv;
     @Autowired WareService wareSrv;
     @Autowired PlatformService platformSrv;
     @Autowired VendorService vendorSrv;
@@ -31,18 +32,16 @@ public class SaleController
     }*/
 
     @PostConstruct
-    @RequestMapping({ "/reset" })
+    @RequestMapping("/reset")
     @ResponseBody
-    public JSONObject reset()
+    public String reset()
     {
+        gateSrv.reset();
         wareSrv.reset();
         platformSrv.reset();
         cmsSrv.reset();
 
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-
-        return res;
+        return "success";
     }
 
     @RequestMapping({ "/perform.json" })

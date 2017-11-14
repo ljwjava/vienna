@@ -125,6 +125,9 @@ var OptionBar = React.createClass({
 	apply() {
 		common.req("proposal/apply.json", {proposalId:env.proposalId}, r => {
 			console.log(r);
+			common.req("order/save.json", {orderId:r.id}, r => {
+				alert(r);
+			});
 		});
 	},
 	render() {
