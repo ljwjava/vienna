@@ -1,14 +1,8 @@
 package lerrain.service.sale;
 
-import lerrain.tool.Common;
-import lerrain.tool.formula.Factors;
-import lerrain.tool.formula.Formula;
-import lerrain.tool.formula.Function;
-import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

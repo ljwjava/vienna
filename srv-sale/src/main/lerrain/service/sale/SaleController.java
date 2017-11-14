@@ -2,7 +2,6 @@ package lerrain.service.sale;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
 import lerrain.tool.script.Script;

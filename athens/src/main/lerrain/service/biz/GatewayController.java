@@ -107,6 +107,7 @@ public class GatewayController
         if (script != null)
         {
             Stack stack = new Stack(param);
+            stack.set("self", param);
             val = script.run(stack);
         }
 

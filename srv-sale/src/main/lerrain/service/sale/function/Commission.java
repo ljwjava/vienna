@@ -1,8 +1,6 @@
 package lerrain.service.sale.function;
 
 import lerrain.service.sale.CmsService;
-import lerrain.service.sale.KeyValService;
-import lerrain.service.sale.PlatformService;
 import lerrain.service.sale.WareCms;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;

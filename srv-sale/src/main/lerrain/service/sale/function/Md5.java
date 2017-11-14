@@ -1,12 +1,10 @@
 package lerrain.service.sale.function;
 
-import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 
 /**
