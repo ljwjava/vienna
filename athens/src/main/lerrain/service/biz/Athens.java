@@ -8,10 +8,10 @@ import org.springframework.context.annotation.ImportResource;
 @EnableAutoConfiguration
 @EnableFeignClients
 @ImportResource(locations={"classpath:spring.xml"})
-public class SaleStarter
+public class Athens
 {
 	public static void main(String[] args) throws Exception
 	{
-		SpringApplication.run(SaleStarter.class, args);
+		SpringApplication.run(Athens.class, args);
 	}
 }

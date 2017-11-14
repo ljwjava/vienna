@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
@@ -26,7 +27,21 @@ public class GatewayController
     GatewayService gatewaySrv;
 
     @Autowired
+    PlatformService platformSrv;
+
+    @Autowired
     ServiceMgr sv;
+
+    @PostConstruct
+    @RequestMapping("/reset")
+    @ResponseBody
+    public String reset()
+    {
+        gatewaySrv.reset();
+        platformSrv.reset();
+
+        return "success";
+    }
 
     private Object call(HttpServletRequest req)
     {
@@ -84,6 +99,8 @@ public class GatewayController
                     param.put(w, session.getAttribute(w));
         }
 
+        Log.info(uri + " ==> " + param);
+
         Object val = null;
 
         Script script = gateway.getScript();
@@ -99,8 +116,10 @@ public class GatewayController
                 param.putAll((Map)val);
 
             String forwardTo = gateway.getForwardTo() == null ? uri : gateway.getForwardTo();
-            int p2 = forwardTo.indexOf("/");
-            JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
+
+            int p1 = forwardTo.startsWith("/") ? 1 : 0;
+            int p2 = forwardTo.indexOf("/", p1);
+            JSONObject json = sv.req(forwardTo.substring(p1, p2), forwardTo.substring(p2 + 1), param);
 
             if (!"success".equals(json.getString("result")))
                 throw new RuntimeException(json.getString("reason"));

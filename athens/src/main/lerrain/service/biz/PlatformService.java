@@ -2,7 +2,7 @@ package lerrain.service.biz;
 
 import lerrain.service.biz.function.*;
 import lerrain.service.common.Log;
-import lerrain.service.sale.function.*;
+import lerrain.service.biz.function.*;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
@@ -22,19 +22,13 @@ public class PlatformService
     Map<Object, Platform> platform1, platform2;
 
     @Autowired CallLife callLife;
-    @Autowired
-    NextId2 nextId;
-    @Autowired
-    Request request;
-    @Autowired
-    RequestPost post;
-    @Autowired
-    CallService service;
-    @Autowired
-    GetVendor getVendor;
+    @Autowired NextId2 nextId;
+    @Autowired Request request;
+    @Autowired RequestPost post;
+    @Autowired CallService service;
+    @Autowired Sql sql;
     @Autowired Fold fold;
     @Autowired Unfold unfold;
-    @Autowired Commission commission;
 
     Function today;
     Function timediff;
@@ -145,14 +139,13 @@ public class PlatformService
         stack.put("nextId", nextId);
         stack.put("req", request);
         stack.put("post", post);
-        stack.put("getVendor", getVendor);
+        stack.put("Sql", sql);
         stack.put("service", service);
         stack.put("jsonMap", new JsonMap());
         stack.put("jsonList", new JsonList());
         stack.put("jsonOf", new JsonOf());
         stack.put("fold", fold);
         stack.put("unfold", unfold);
-        stack.put("commission", commission);
         stack.put("today", today);
         stack.put("timediff", timediff);
         stack.put("reversalStr", reversalStr);
@@ -200,26 +193,6 @@ public class PlatformService
             r.add(platforms.get(i + from));
 
         return r;
-    }
-
-    public String getPerformScript(Long platformId)
-    {
-        return platformDao.loadPerformScript(platformId);
-    }
-
-    public String getEnvScript(Long platformId)
-    {
-        return platformDao.loadEnvScript(platformId);
-    }
-
-    public void savePerformScript(Long platformId, String perform)
-    {
-        platformDao.savePerformScript(platformId, perform);
-    }
-
-    public void saveEnvScript(Long platformId, String env)
-    {
-        platformDao.saveEnvScript(platformId, env);
     }
 }
 

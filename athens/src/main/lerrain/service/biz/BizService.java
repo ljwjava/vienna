@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class PlatformBizService
+public class BizService
 {
     @Autowired PlatformDao platformDao;
     @Autowired KeyValService kvs;
@@ -76,15 +76,6 @@ public class PlatformBizService
         Function func = (Function)val.get("callback");
         Factors factors = (Factors)val.get("factors");
 
-        Object params = val.get("with");
         return func.run(new Object[] {map, val.get("with")}, factors);
-
-//        Platform platform = platformService.getPlatform(platformId);
-//
-//        Stack stack = new Stack(platform.getEnv());
-//        stack.set("key", key);
-//        stack.set("self", map);
-//
-//        return platform.getCallback().run(stack);
     }
 }

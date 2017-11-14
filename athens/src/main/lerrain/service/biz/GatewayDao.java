@@ -35,7 +35,7 @@ public class GatewayDao
                 String uri = rs.getString("uri");
                 String with = rs.getString("with");
                 String script = rs.getString("script");
-                String forwardTo = rs.getString("forwardTo");
+                String forwardTo = rs.getString("forward_to");
 
                 boolean needLogin = "Y".equalsIgnoreCase(rs.getString("login"));
                 boolean supportGet = !"N".equalsIgnoreCase(rs.getString("support_get"));

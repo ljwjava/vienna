@@ -98,22 +98,6 @@ public class PlatformDao
 
                     Log.debug("loading env... " + consName);
                     p.putVar(consName, val);
-
-//                String[] name = consName.split("[.]");
-//                if (name.length == 1)
-//                {
-//                    s.set(name[0], val);
-//                }
-//                else if (name.length == 2)
-//                {
-//                    Map map = (Map)s.get(name[0]);
-//                    if (map == null)
-//                    {
-//                        map = new HashMap();
-//                        s.set(name[0], map);
-//                    }
-//                    map.put(name[1], val);
-//                }
                 }
                 catch (Exception e)
                 {
@@ -153,22 +137,6 @@ public class PlatformDao
                     {
                         Log.debug("loading function... " + fe);
                         p.putVar(fe, f);
-
-//                    String[] name = fe.split("[.]");
-//                    if (name.length == 1)
-//                    {
-//                        s.set(name[0], f);
-//                    }
-//                    else if (name.length == 2)
-//                    {
-//                        Map map = (Map) s.get(name[0]);
-//                        if (map == null)
-//                        {
-//                            map = new HashMap();
-//                            s.set(name[0], map);
-//                        }
-//                        map.put(name[1], f);
-//                    }
                     }
                 }
                 catch (Exception e)
