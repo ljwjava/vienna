@@ -1,0 +1,17 @@
+server:
+  port: 7666
+
+datasource:
+  url: jdbc:mysql://10.253.102.74:3306/vie_biz_test
+  username: iyb
+  password: Abcd2017
+
+service:
+  lifeins: http://localhost:7777
+  customer: http://localhost:7602
+  dict: http://localhost:7773
+  order: http://localhost:7770
+  proposal: http://localhost:7776
+  user: http://localhost:7601
+  printer: http://localhost:7511
+  rome: http://localhost:7766
