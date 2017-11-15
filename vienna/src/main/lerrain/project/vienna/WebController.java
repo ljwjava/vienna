@@ -49,9 +49,9 @@ public class WebController
             }
             else if (jsxSrv.exists(full + ".jsx"))
             {
-                os.write("<script src=\"../js/react.js\"></script>\n".getBytes());
-                os.write("<script src=\"../js/react-dom.js\"></script>\n".getBytes());
-                os.write("<script src=\"../js/browser.min.js\"></script>\n".getBytes());
+                os.write("<script src=\"https://static.zhongan.com/website/health/iyb/resource/activity/gpo/common/js/react/react.js\"></script>\n".getBytes());
+                os.write("<script src=\"https://static.zhongan.com/website/health/iyb/resource/activity/gpo/common/js/react/react-dom.js\"></script>\n".getBytes());
+                os.write("<script src=\"https://static.zhongan.com/website/health/iyb/resource/activity/gpo/common/js/browser/browser.min.js\"></script>\n".getBytes());
 
                 os.write("<script type=\"text/babel\">".getBytes());
                 os.write(jsxSrv.loadJsx(full + ".jsx").getBytes("utf-8"));
@@ -89,9 +89,9 @@ public class WebController
             }
             else if (jsxSrv.exists(file + ".jsx"))
             {
-                os.write("<script src=\"./js/react.js\"></script>\n".getBytes());
-                os.write("<script src=\"./js/react-dom.js\"></script>\n".getBytes());
-                os.write("<script src=\"./js/browser.min.js\"></script>\n".getBytes());
+                os.write("<script src=\"https://static.zhongan.com/website/health/iyb/resource/activity/gpo/common/js/react/react.js\"></script>\n".getBytes());
+                os.write("<script src=\"https://static.zhongan.com/website/health/iyb/resource/activity/gpo/common/js/react/react-dom.js\"></script>\n".getBytes());
+                os.write("<script src=\"https://static.zhongan.com/website/health/iyb/resource/activity/gpo/common/js/browser/browser.min.js\"></script>\n".getBytes());
 
                 os.write("<script type=\"text/babel\">".getBytes());
                 os.write(jsxSrv.loadJsx(file + ".jsx").getBytes("utf-8"));
