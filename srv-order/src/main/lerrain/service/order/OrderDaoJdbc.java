@@ -84,9 +84,16 @@ public class OrderDaoJdbc
 		});
 	}
 
-	public List<Order> find(Long platformId)
+	public List<Order> query(int type, Long owner, int from, int number)
 	{
-		return null;
+		return jdbc.query("select * from t_order where valid is null and type = ? and owner = ? order by create_time desc limit ?, ?", new Object[]{type, owner, from, number}, new RowMapper<Order>()
+		{
+			@Override
+			public Order mapRow(ResultSet rs, int rowNum) throws SQLException
+			{
+				return orderOf(rs);
+			}
+		});
 	}
 	
 	private Order orderOf(ResultSet m) throws SQLException

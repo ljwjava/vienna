@@ -46,6 +46,8 @@ public class GatewayController
     private Object call(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
+        if (uri.startsWith("/"))
+            uri = uri.substring(1);
 
         Gateway gateway = gatewaySrv.getGateway(req.getServerName() + ":" + req.getServerPort(), uri);
 
@@ -94,6 +96,9 @@ public class GatewayController
             if (platformIdSession != gateway.getPlatformId())
                 throw new RuntimeException("platform not match");
 
+            param.put("owner", userId);
+            param.put("userId", userId);
+
             if (gateway.getWith() != null)
                 for (String w : gateway.getWith())
                     param.put(w, session.getAttribute(w));
@@ -106,7 +111,7 @@ public class GatewayController
         Script script = gateway.getScript();
         if (script != null)
         {
-            Stack stack = new Stack(param);
+            Stack stack = new Stack(platformSrv.getPlatform(gateway.getPlatformId()).getEnv());
             stack.set("self", param);
             val = script.run(stack);
         }
@@ -118,9 +123,8 @@ public class GatewayController
 
             String forwardTo = gateway.getForwardTo() == null ? uri : gateway.getForwardTo();
 
-            int p1 = forwardTo.startsWith("/") ? 1 : 0;
-            int p2 = forwardTo.indexOf("/", p1);
-            JSONObject json = sv.req(forwardTo.substring(p1, p2), forwardTo.substring(p2 + 1), param);
+            int p2 = forwardTo.indexOf("/");
+            JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
 
             if (!"success".equals(json.getString("result")))
                 throw new RuntimeException(json.getString("reason"));

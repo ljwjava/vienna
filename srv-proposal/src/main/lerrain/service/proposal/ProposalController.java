@@ -16,6 +16,53 @@ public class ProposalController
 	@Autowired ProposalService ps;
 	@Autowired ProposalTool proposalTool;
 
+	@RequestMapping("/modify.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject modify(@RequestBody JSONObject p)
+	{
+		Proposal proposal;
+
+		JSONObject applicant = p.getJSONObject("applicant");
+
+		if (p.containsKey("proposalId"))
+		{
+			proposal = getProposal(p);
+
+			if (applicant != null)
+				proposal.setApplicant(applicant);
+		}
+		else
+		{
+			proposal =  ps.newProposal(applicant, p.getLong("owner"), p.getLong("platformId"));
+		}
+
+		if (p.containsKey("name"))
+			proposal.setName(p.getString("name"));
+		if (p.containsKey("cover"))
+			proposal.setCover(p.getString("cover"));
+		if (p.containsKey("bless"))
+			proposal.setBless(p.getString("bless"));
+
+		JSONObject other = p.getJSONObject("other");
+		if (other != null)
+			proposal.getOther().putAll(other);
+
+		if (p.containsKey("detail"))
+		{
+			proposal.getPlanList().clear();
+			JSONArray list = p.getJSONArray("detail");
+			for (int i=0;i<list.size();i++)
+				proposal.addPlan(list.getString(i));
+		}
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", proposalTool.jsonOf(proposal));
+
+		return res;
+	}
+
 	@RequestMapping("/cover.json")
 	@ResponseBody
 	@CrossOrigin
@@ -33,7 +80,7 @@ public class ProposalController
 	@CrossOrigin
 	public JSONObject list(@RequestBody JSONObject p)
 	{
-		String owner = p.getString("owner");
+		Long owner = p.getLong("owner");
 		Long platformId = p.getLong("platformId");
 
 		int from = Common.intOf(p.get("from"), 0);
@@ -82,9 +129,7 @@ public class ProposalController
 	{
 		JSONObject applicant = p.getJSONObject("applicant");
 
-		Proposal proposal = ps.newProposal(applicant);
-		proposal.setOwner(p.getString("owner"));
-		proposal.setPlatformId(p.getLong("platformId"));
+		Proposal proposal = ps.newProposal(applicant, p.getLong("owner"), p.getLong("platformId"));
 
 		JSONArray insurants = p.getJSONArray("insurants");
 		if (insurants != null) for (int i = 0; i < insurants.size(); i++)
@@ -438,49 +483,6 @@ public class ProposalController
 			throw new RuntimeException("缺少proposalId");
 		
 		return ps.getProposal(proposalId);
-	}
-
-	@RequestMapping("/overview.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject overview(@RequestBody JSONObject p)
-	{
-		JSONObject r = new JSONObject();
-
-		Proposal proposal = getProposal(p);
-		r.put("bless", proposal.getOther().get("bless"));
-
-		JSONObject req = new JSONObject();
-		for (String planId : proposal.getPlanList())
-		{
-			req.put("planId", planId);
-			req.put("style", "fgraph,csv");
-
-			JSONObject pl = new JSONObject();
-
-			JSONObject r1 = serviceMgr.req("lifeins", "plan/format.json", req);
-			pl.putAll(r1.getJSONObject("content"));
-
-			r.put(planId, pl);
-		}
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", r);
-
-		return res;
-	}
-
-	@RequestMapping("/apply.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject apply(@RequestBody JSONObject p)
-	{
-		JSONObject detail = proposalTool.apply(getProposal(p));
-		detail.put("userId", p.getLong("userId"));
-		detail.put("platformId", p.getLong("platformId"));
-
-		return serviceMgr.req("sale", "do/proposal_apply.json", detail);
 	}
 
 	@RequestMapping("/print.json")

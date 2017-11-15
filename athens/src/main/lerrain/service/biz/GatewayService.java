@@ -30,8 +30,8 @@ public class GatewayService
     public Gateway getGateway(String domain, String uri)
     {
         Long platformId = getPlatformId(domain);
-
         List<Gateway> list = map.get(platformId);
+
         for (Gateway gateway : list)
             if (gateway.match(uri))
                 return gateway;
