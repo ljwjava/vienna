@@ -52,4 +52,9 @@ public class OrderService
 		p.setModifyTime(new Date());
 		pd.update(p);
 	}
+
+	public List<Order> query(int type, Long owner, int from, int number)
+	{
+		return pd.query(type, owner, from, number);
+	}
 }

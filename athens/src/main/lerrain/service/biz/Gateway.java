@@ -32,7 +32,7 @@ public class Gateway
 
     public boolean match(String uri)
     {
-        return uri.equals(uri);
+        return this.uri.equals(uri);
     }
 
     public boolean isSupport(int support)

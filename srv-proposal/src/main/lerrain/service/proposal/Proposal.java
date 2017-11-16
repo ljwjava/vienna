@@ -10,8 +10,8 @@ public class Proposal
 	String remark;
 	String cover;
 	String bless;
-	String owner;
 
+	Long owner;
 	Long platformId;
 
 	boolean favourite;
@@ -149,12 +149,12 @@ public class Proposal
 		this.updateTime = updateTime;
 	}
 
-	public String getOwner()
+	public Long getOwner()
 	{
 		return owner;
 	}
 
-	public void setOwner(String owner)
+	public void setOwner(Long owner)
 	{
 		this.owner = owner;
 	}

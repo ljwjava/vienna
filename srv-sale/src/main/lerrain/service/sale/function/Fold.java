@@ -1,14 +1,11 @@
 package lerrain.service.sale.function;
 
-import lerrain.service.common.ServiceMgr;
 import lerrain.service.sale.KeyValService;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**

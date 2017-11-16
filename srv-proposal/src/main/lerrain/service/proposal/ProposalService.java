@@ -57,12 +57,10 @@ public class ProposalService
 			newApplicant.putAll(oldApplicant);
 		}
 
-		Proposal np = newProposal(newApplicant);
+		Proposal np = newProposal(newApplicant, old.getOwner(), old.getPlatformId());
 		np.setId(Common.nextId());
 		np.setName(old.getName());
 		np.setRemark(old.getRemark());
-		np.setOwner(old.getOwner());
-		np.setPlatformId(old.getPlatformId());
 		np.setCover(old.getCover());
 		np.setFavourite(np.isFavourite());
 		np.setTag(np.getTag());
@@ -75,7 +73,7 @@ public class ProposalService
 		return np;
 	}
 
-	public Proposal newProposal(Map<String, Object> applicant)
+	public Proposal newProposal(Map<String, Object> applicant, Long userId, Long platformId)
 	{
 		if (applicant == null)
 			applicant = standardCustomer();
@@ -83,6 +81,8 @@ public class ProposalService
 		Proposal proposal = new Proposal();
 		proposal.setApplicant(applicant);
 		proposal.setId(Common.nextId());
+		proposal.setOwner(userId);
+		proposal.setPlatformId(platformId);
 
 		cache.put(proposal.getId(), proposal);
 
@@ -130,12 +130,12 @@ public class ProposalService
 		return applicant;
 	}
 
-	public List<Proposal> list(String search, int from, int number, Long platformId, String owner)
+	public List<Proposal> list(String search, int from, int number, Long platformId, Long owner)
 	{
 		return proposalDao.list(search, from, number, platformId, owner);
 	}
 
-	public int count(String search, Long platformId, String owner)
+	public int count(String search, Long platformId, Long owner)
 	{
 		return proposalDao.count(search, platformId, owner);
 	}

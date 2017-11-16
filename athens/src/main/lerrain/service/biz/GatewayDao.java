@@ -60,6 +60,7 @@ public class GatewayDao
                 gw.setScript(Script.scriptOf(script));
                 gw.setForward(forward);
                 gw.setForwardTo(forwardTo);
+                gw.setPlatformId(platformId);
 
                 list.add(gw);
             }

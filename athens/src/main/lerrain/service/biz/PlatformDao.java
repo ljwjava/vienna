@@ -26,7 +26,9 @@ public class PlatformDao
 
     public List<Platform> loadChannels(final Map funcs)
     {
-        return jdbc.query("select * from t_platform where valid is null order by name", new RowMapper<Platform>()
+        final Map<Long, Platform> map = new HashMap<>();
+
+        return jdbc.query("select * from t_platform where valid is null order by parent_id, name", new RowMapper<Platform>()
         {
             @Override
             public Platform mapRow(ResultSet m, int rowNum) throws SQLException
@@ -36,19 +38,25 @@ public class PlatformDao
                 c.setCode(m.getString("code"));
                 c.setName(m.getString("name"));
 
-                c.setPerform(Script.scriptOf(m.getString("perform")));
-//                c.setVerify(Script.scriptOf(m.getString("verify")));
-//                c.setApply(Script.scriptOf(m.getString("apply")));
-//                c.setCallback(Script.scriptOf(m.getString("callback")));
-
                 c.setCreateTime(m.getTimestamp("create_time"));
                 c.setUpdateTime(m.getTimestamp("update_time"));
 
-                Stack stack = new Stack();
+                Stack stack;
+                Long parentId = Common.toLong(m.getObject("parent_id"));
+
+                if (parentId == null)
+                {
+                    stack = new Stack();
+                    stack.setAll(funcs);
+                }
+                else
+                {
+                    stack = new Stack(map.get(parentId).getEnv());
+                }
+
                 stack.set("platformId", c.getId());
                 stack.set("platformCode", c.getCode());
                 stack.set("platformName", c.getName());
-                stack.setAll(funcs);
                 c.setEnv(stack);
 
                 try
@@ -64,6 +72,7 @@ public class PlatformDao
                     Log.error(e);
                 }
 
+                map.put(c.getId(), c);
                 return c;
             }
         });

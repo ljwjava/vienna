@@ -41,7 +41,7 @@ public class ProposalDao
 		});
 	}
 
-	public int count(String search, final Long platformId, final String owner)
+	public int count(String search, final Long platformId, final Long owner)
 	{
 		StringBuffer sql = new StringBuffer("select count(*) from t_proposal where platform_id = ? and creator = ? and valid is null");
 		if (search != null && !"".equals(search))
@@ -50,7 +50,7 @@ public class ProposalDao
 		return jdbc.queryForObject(sql.toString(), Integer.class, platformId, owner);
 	}
 	
-	public List<Proposal> list(String search, int from, int number, final Long platformId, final String owner)
+	public List<Proposal> list(String search, int from, int number, final Long platformId, final Long owner)
 	{
 		StringBuffer sql = new StringBuffer("select * from t_proposal where platform_id = ? and creator = ? and valid is null");
 		if (search != null && !"".equals(search))
@@ -181,7 +181,7 @@ public class ProposalDao
 				p.setPremium(rs.getBigDecimal("premium"));
 				p.setPlatformId(Common.toLong(rs.getString("platform_id")));
 				p.setFavourite("Y".equalsIgnoreCase(rs.getString("favourite")));
-				p.setOwner(rs.getString("creator"));
+				p.setOwner(rs.getLong("creator"));
 				p.setInsureTime(rs.getDate("insure_time"));
 				p.setUpdateTime(rs.getDate("update_time"));
 

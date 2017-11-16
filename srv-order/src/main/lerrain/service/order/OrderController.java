@@ -25,7 +25,6 @@ public class OrderController
 
     @RequestMapping("/create.json")
     @ResponseBody
-    @CrossOrigin
     public JSONObject create(@RequestBody JSONObject p)
     {
         Order order = orderSrv.newOrder();
@@ -40,7 +39,6 @@ public class OrderController
 
     @RequestMapping({"/restore.json"})
     @ResponseBody
-    @CrossOrigin
     public JSONObject restore(@RequestBody JSONObject p)
     {
         return restore(p.getLong("orderId"));
@@ -48,7 +46,6 @@ public class OrderController
 
     @RequestMapping({"/restore"})
     @ResponseBody
-    @CrossOrigin
     public JSONObject restore(@RequestParam("orderId") Long orderId)
     {
         if (orderId == null)
@@ -74,19 +71,23 @@ public class OrderController
 
     @RequestMapping({"/list.json"})
     @ResponseBody
-    @CrossOrigin
     public JSONObject list(@RequestBody JSONObject p)
     {
+        int type = p.getIntValue("type");
+        Long owner = p.getLong("owner");
+
+        int from = Common.intOf(p.get("from"), 0);
+        int num = Common.intOf(p.get("num"), 10);
+
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", null);
+        res.put("content", orderSrv.query(type, owner, from, num));
 
         return res;
     }
 
     @RequestMapping({"/view.json"})
     @ResponseBody
-    @CrossOrigin
     public JSONObject view(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
@@ -105,7 +106,6 @@ public class OrderController
 
     @RequestMapping({"/save.json"})
     @ResponseBody
-    @CrossOrigin
     public JSONObject save(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
@@ -134,7 +134,6 @@ public class OrderController
 
     @RequestMapping({"/update.json"})
     @ResponseBody
-    @CrossOrigin
     public JSONObject update(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
