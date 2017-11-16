@@ -18,12 +18,13 @@ public class Gateway
 
     int type;
     int support;
+    int forward;
     int seq = 1000000;
 
     boolean login;
-    boolean forward;
 
     String uri;
+    String uriX;
     String forwardTo;
 
     String[] with;
@@ -32,6 +33,9 @@ public class Gateway
 
     public boolean match(String uri)
     {
+        if (this.uriX != null)
+            return uri.startsWith(this.uri) && uri.endsWith(this.uriX);
+
         return this.uri.equals(uri);
     }
 
@@ -97,7 +101,16 @@ public class Gateway
 
     public void setUri(String uri)
     {
-        this.uri = uri;
+        int p = uri.indexOf("*");
+        if (p >= 0)
+        {
+            this.uri = uri.substring(0, p);
+            this.uriX = uri.substring(p + 1);
+        }
+        else
+        {
+            this.uri = uri;
+        }
     }
 
     public String[] getWith()
@@ -110,19 +123,22 @@ public class Gateway
         this.with = with;
     }
 
-    public boolean isForward()
+    public int getForward()
     {
         return forward;
     }
 
-    public void setForward(boolean forward)
+    public void setForward(int forward)
     {
         this.forward = forward;
     }
 
-    public String getForwardTo()
+    public String getForwardTo(String from)
     {
-        return forwardTo;
+        if (this.uriX == null)
+            return forwardTo == null ? from : forwardTo;
+
+        return this.uri + from.substring(this.uri.length(), from.length() - this.uriX.length()) + this.uriX;
     }
 
     public void setForwardTo(String forwardTo)

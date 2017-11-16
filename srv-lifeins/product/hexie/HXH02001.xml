@@ -7,6 +7,17 @@
 			<item name="EXEMPT" value="true" type="boolean"/>
 		</init>
 
+		<attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="OTHER_DISABILITY">AMOUNT</item>
+				<item name="TOTAL_DISABILITY1">AMOUNT</item>
+				<item name="TOTAL_DISABILITY2">AMOUNT*2</item>
+				<item name="THUNDER">AMOUNT</item>
+				<item name="MILD">AMOUNT</item>
+				<item name="PAYBACK_DEATH">1</item>
+			</fgraph>
+		</attachment>
+
 		<param>
 			<pay>
 				<item code="term_3" />
