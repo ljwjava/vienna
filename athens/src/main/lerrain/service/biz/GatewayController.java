@@ -136,6 +136,25 @@ public class GatewayController
     }
 
 
+    @RequestMapping("/iyb/**/*.json")
+    @ResponseBody
+    public JSONObject iyb(HttpServletRequest req)
+    {
+        JSONObject res = new JSONObject();
+        try
+        {
+            res.put("isSuccess", true);
+            res.put("content", call(req));
+        }
+        catch (Exception e)
+        {
+            res.put("errorCode", 101);
+            res.put("errorMsg", e.getMessage());
+        }
+
+        return res;
+    }
+
     @RequestMapping("/**/*.json")
     @ResponseBody
     public JSONObject callJson(HttpServletRequest req)
