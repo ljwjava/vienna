@@ -34,8 +34,9 @@ public class Sql implements Factors
             public Object run(final Object[] objects, Factors factors)
             {
                 String sql = objects[0].toString();
+                Object[] vals = objects.length >= 2 ? (Object[])objects[1] : null;
 
-                return jdbc.query(sql, (Object[])objects[1], new RowMapper<Map>()
+                return jdbc.query(sql, vals, new RowMapper<Map>()
                 {
                     @Override
                     public Map mapRow(ResultSet rs, int j) throws SQLException
