@@ -43,51 +43,16 @@ public class GatewayController
         return "success";
     }
 
-    private Object call(String host, String uri, HttpServletRequest req)
+    private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
-        Log.debug(host + "/" + uri + " - " + req.getSession().getId());
+        Log.debug(host + "/" + uri + " - " + session.getId());
 
         Gateway gateway = gatewaySrv.getGateway(host, uri);
         if (gateway == null)
             return null;
 
-        String contentType = req.getContentType();
-        if (contentType != null)
-            contentType = contentType.toLowerCase();
-
-        JSONObject param = null;
-
-        if (contentType != null && (contentType.indexOf("text") >= 0 || contentType.indexOf("json") >= 0))
-        {
-            try (InputStream is = req.getInputStream())
-            {
-                param = JSON.parseObject(Common.stringOf(is, "UTF-8"));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-            if (param == null)
-                param = new JSONObject();
-        }
-        else
-        {
-            param = new JSONObject();
-            Enumeration<String> names = req.getParameterNames();
-            if (names != null)
-            {
-                while (names.hasMoreElements())
-                {
-                    String name = names.nextElement();
-                    param.put(name, req.getParameter(name));
-                }
-            }
-        }
 
         param.put("platformId", gateway.getPlatformId());
-
-        HttpSession session = req.getSession();
 
         if (gateway.isLogin())
         {
@@ -98,11 +63,9 @@ public class GatewayController
 //            Long platformIdSession = (Long)session.getAttribute("platformId");
 //            if (platformIdSession != gateway.getPlatformId())
 //                throw new RuntimeException("platform not match");
-
-            Long userId = 1L;
-
-            param.put("owner", userId);
-            param.put("userId", userId);
+//
+//            param.put("owner", userId);
+//            param.put("userId", userId);
 
             if (gateway.getWith() != null)
                 for (String w : gateway.getWith())
@@ -142,6 +105,44 @@ public class GatewayController
         return val;
     }
 
+    private JSONObject getParam(HttpServletRequest req)
+    {
+        String contentType = req.getContentType();
+        if (contentType != null)
+            contentType = contentType.toLowerCase();
+
+        JSONObject param = null;
+
+        if (contentType != null && (contentType.indexOf("text") >= 0 || contentType.indexOf("json") >= 0))
+        {
+            try (InputStream is = req.getInputStream())
+            {
+                param = JSON.parseObject(Common.stringOf(is, "UTF-8"));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            if (param == null)
+                param = new JSONObject();
+        }
+        else
+        {
+            param = new JSONObject();
+            Enumeration<String> names = req.getParameterNames();
+            if (names != null)
+            {
+                while (names.hasMoreElements())
+                {
+                    String name = names.nextElement();
+                    param.put(name, req.getParameter(name));
+                }
+            }
+        }
+
+        return param;
+    }
 
     @RequestMapping("iyb/**/*.json")
     @ResponseBody
@@ -154,8 +155,14 @@ public class GatewayController
         JSONObject res = new JSONObject();
         try
         {
+            JSONObject param = getParam(req);
+            HttpSession session = req.getSession();
+
+            param.put("owner", param.get("accountId"));
+            param.put("userId", param.get("accountId"));
+
             res.put("isSuccess", true);
-            res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, req));
+            res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
         }
         catch (Exception e)
         {
@@ -175,9 +182,12 @@ public class GatewayController
         if (uri.startsWith("/"))
             uri = uri.substring(1);
 
+        JSONObject param = getParam(req);
+        HttpSession session = req.getSession();
+
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, req));
+        res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
 
         return res;
     }
@@ -191,7 +201,10 @@ public class GatewayController
         if (uri.startsWith("/"))
             uri = uri.substring(1);
 
-        return call(req.getServerName() + ":" + req.getServerPort(), uri, req).toString();
+        JSONObject param = getParam(req);
+        HttpSession session = req.getSession();
+
+        return call(req.getServerName() + ":" + req.getServerPort(), uri, session, param).toString();
     }
 
     @RequestMapping("**/*.do")
@@ -202,7 +215,10 @@ public class GatewayController
         if (uri.startsWith("/"))
             uri = uri.substring(1);
 
-        return call(req.getServerName() + ":" + req.getServerPort(), uri, req).toString();
+        JSONObject param = getParam(req);
+        HttpSession session = req.getSession();
+
+        return call(req.getServerName() + ":" + req.getServerPort(), uri, session, param).toString();
     }
 
 }
