@@ -16,27 +16,59 @@ public class ProposalController
 	@Autowired ProposalService ps;
 	@Autowired ProposalTool proposalTool;
 
+	@RequestMapping("/create.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject create(@RequestBody JSONObject p)
+	{
+		JSONObject applicant = p.getJSONObject("applicant");
+		Proposal proposal = ps.newProposal(applicant, p.getLong("owner"), p.getLong("platformId"));
+
+		fill(proposal, p);
+
+//		JSONArray insurants = p.getJSONArray("insurants");
+//		if (insurants != null) for (int i = 0; i < insurants.size(); i++)
+//		{
+//			String planId = createPlan(proposal.getApplicant(), insurants.getJSONObject(i));
+//			if (planId != null)
+//				proposal.addPlan(planId);
+//		}
+//		else if (p.containsKey("insurant"))
+//		{
+//			String planId = createPlan(proposal.getApplicant(), p.getJSONObject("insurant"));
+//			if (planId != null)
+//				proposal.addPlan(planId);
+//		}
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", proposalTool.jsonOf(proposal));
+
+		return res;
+	}
+
 	@RequestMapping("/modify.json")
 	@ResponseBody
 	@CrossOrigin
 	public JSONObject modify(@RequestBody JSONObject p)
 	{
-		Proposal proposal;
+		Proposal proposal = getProposal(p);
 
 		JSONObject applicant = p.getJSONObject("applicant");
+		if (applicant != null)
+			proposal.setApplicant(applicant);
 
-		if (p.containsKey("proposalId"))
-		{
-			proposal = getProposal(p);
+		fill(proposal, p);
 
-			if (applicant != null)
-				proposal.setApplicant(applicant);
-		}
-		else
-		{
-			proposal =  ps.newProposal(applicant, p.getLong("owner"), p.getLong("platformId"));
-		}
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", proposalTool.jsonOf(proposal));
 
+		return res;
+	}
+
+	private void fill(Proposal proposal, JSONObject p)
+	{
 		if (p.containsKey("name"))
 			proposal.setName(p.getString("name"));
 		if (p.containsKey("cover"))
@@ -56,23 +88,19 @@ public class ProposalController
 				proposal.addPlan(list.getString(i));
 		}
 
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", proposalTool.jsonOf(proposal));
+		if (p.containsKey("removePlan"))
+		{
+			JSONArray list = p.getJSONArray("removePlan");
+			for (int i=0;i<list.size();i++)
+				proposal.getPlanList().remove(list.getString(i));
+		}
 
-		return res;
-	}
-
-	@RequestMapping("/cover.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject cover(@RequestBody JSONObject p)
-	{
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", ps.getCovers());
-
-		return res;
+		if (p.containsKey("addPlan"))
+		{
+			JSONArray list = p.getJSONArray("addPlan");
+			for (int i=0;i<list.size();i++)
+				proposal.addPlan(list.getString(i));
+		}
 	}
 
 	@RequestMapping("/list.json")
@@ -113,82 +141,32 @@ public class ProposalController
 		return res;
 	}
 
-	@RequestMapping("/copy.json")
-	@ResponseBody
-	public JSONObject copy(@RequestBody JSONObject p)
-	{
-		Proposal proposal = getProposal(p);
-		Proposal newPro = ps.copy(proposal);
-
-		JSONObject req = new JSONObject();
-		for (String planId : proposal.getPlanList())
-		{
-			req.put("planId", planId);
-			JSONObject r = serviceMgr.req("lifeins", "export_keys.json", req);
-			r = serviceMgr.req("lifeins", "create.json", r.getJSONObject("content"));
-
-			newPro.addPlan(r.getJSONObject("content").getString("planId"));
-		}
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", proposalTool.jsonOf(proposal));
-
-		return res;
-	}
-
-	@RequestMapping("/create.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject create(@RequestBody JSONObject p)
-	{
-		JSONObject applicant = p.getJSONObject("applicant");
-
-		Proposal proposal = ps.newProposal(applicant, p.getLong("owner"), p.getLong("platformId"));
-
-		JSONArray insurants = p.getJSONArray("insurants");
-		if (insurants != null) for (int i = 0; i < insurants.size(); i++)
-		{
-			String planId = createPlan(proposal.getApplicant(), insurants.getJSONObject(i));
-			if (planId != null)
-				proposal.addPlan(planId);
-		}
-		else if (p.containsKey("insurant"))
-		{
-			String planId = createPlan(proposal.getApplicant(), p.getJSONObject("insurant"));
-			if (planId != null)
-				proposal.addPlan(planId);
-		}
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", proposalTool.jsonOf(proposal));
-		
-		return res;
-	}
-
-	@RequestMapping("/favourite.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject favourite(@RequestBody JSONObject p)
-	{
-		String proposalId = p.getString("proposalId");
-
-		if (Common.isEmpty(proposalId))
-			throw new RuntimeException("缺少proposalId");
-
-		boolean b = Common.boolOf(p.get("favourite"), false);
-		ps.setFavourite(proposalId, b);
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-
-		return res;
-	}
+//	@RequestMapping("/copy.json")
+//	@ResponseBody
+//	public JSONObject copy(@RequestBody JSONObject p)
+//	{
+//		Proposal proposal = getProposal(p);
+//		Proposal newPro = ps.copy(proposal);
+//
+//		JSONObject req = new JSONObject();
+//		for (String planId : proposal.getPlanList())
+//		{
+//			req.put("planId", planId);
+//			JSONObject r = serviceMgr.req("lifeins", "export_keys.json", req);
+//			r = serviceMgr.req("lifeins", "create.json", r.getJSONObject("content"));
+//
+//			newPro.addPlan(r.getJSONObject("content").getString("planId"));
+//		}
+//
+//		JSONObject res = new JSONObject();
+//		res.put("result", "success");
+//		res.put("content", proposalTool.jsonOf(proposal));
+//
+//		return res;
+//	}
 
 	@RequestMapping("/supply.json")
 	@ResponseBody
-	@CrossOrigin
 	public JSONObject supply(@RequestBody JSONObject p)
 	{
 		Proposal proposal = getProposal(p);
@@ -310,40 +288,40 @@ public class ProposalController
 		return res;
 	}
 	
-	@RequestMapping("/create_plan.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject createPlan(@RequestBody JSONObject p)
-	{
-		Proposal proposal = getProposal(p);
-		
-		JSONArray insurants = p.getJSONArray("insurants");
-		for (int i = 0; i < insurants.size(); i++)
-		{
-			String planId = createPlan(proposal.getApplicant(), insurants.getJSONObject(i));
-			if (planId != null)
-				proposal.addPlan(planId);
-		}
-		
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", proposalTool.jsonOf(proposal));
-		
-		return res;
-	}
-
-	private String createPlan(Object applicant, Object insurant)
-	{
-		JSONObject req = new JSONObject();
-		req.put("applicant", applicant);
-		req.put("insurant", insurant);
-
-		JSONObject rsp = serviceMgr.req("lifeins", "plan/create.json", req);
-		if ("success".equals(rsp.get("result")))
-			return rsp.getJSONObject("content").getString("planId");
-
-		return null;
-	}
+//	@RequestMapping("/create_plan.json")
+//	@ResponseBody
+//	@CrossOrigin
+//	public JSONObject createPlan(@RequestBody JSONObject p)
+//	{
+//		Proposal proposal = getProposal(p);
+//
+//		JSONArray insurants = p.getJSONArray("insurants");
+//		for (int i = 0; i < insurants.size(); i++)
+//		{
+//			String planId = createPlan(proposal.getApplicant(), insurants.getJSONObject(i));
+//			if (planId != null)
+//				proposal.addPlan(planId);
+//		}
+//
+//		JSONObject res = new JSONObject();
+//		res.put("result", "success");
+//		res.put("content", proposalTool.jsonOf(proposal));
+//
+//		return res;
+//	}
+//
+//	private String createPlan(Object applicant, Object insurant)
+//	{
+//		JSONObject req = new JSONObject();
+//		req.put("applicant", applicant);
+//		req.put("insurant", insurant);
+//
+//		JSONObject rsp = serviceMgr.req("lifeins", "plan/create.json", req);
+//		if ("success".equals(rsp.get("result")))
+//			return rsp.getJSONObject("content").getString("planId");
+//
+//		return null;
+//	}
 	
 	@RequestMapping("/view.json")
 	@ResponseBody
@@ -446,50 +424,21 @@ public class ProposalController
 		return res;
 	}
 
-	@RequestMapping("/delete_plan.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject deletePlan(@RequestBody JSONObject p)
-	{
-		Proposal proposal = getProposal(p);
-		proposal.getPlanList().remove(p.get("planId"));
+//	@RequestMapping("/delete_plan.json")
+//	@ResponseBody
+//	@CrossOrigin
+//	public JSONObject deletePlan(@RequestBody JSONObject p)
+//	{
+//		Proposal proposal = getProposal(p);
+//		proposal.getPlanList().remove(p.get("planId"));
+//
+//		JSONObject res = new JSONObject();
+//		res.put("result", "success");
+//		res.put("content", proposalTool.jsonOf(proposal));
+//
+//		return res;
+//	}
 
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", proposalTool.jsonOf(proposal));
-
-		return res;
-	}
-
-	@RequestMapping("/list_clauses.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject listClauses(@RequestBody JSONObject p)
-	{
-		JSONArray prds = new JSONArray();
-
-		for (Product prd : ps.getClauses(p.getLong("platformId")))
-		{
-			if (prd.getType() != 2)
-			{
-				JSONObject item = new JSONObject();
-				item.put("id", prd.getId());
-				item.put("name", prd.getName());
-				item.put("tag", prd.getTag());
-				item.put("logo", prd.getLogo());
-				item.put("remark", prd.getRemark());
-
-				prds.add(item);
-			}
-		}
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", prds);
-
-		return res;
-	}
-	
 	private Proposal getProposal(JSONObject p)
 	{
 		String proposalId = p.getString("proposalId");
@@ -568,13 +517,5 @@ public class ProposalController
 		res.put("content", pro);
 
 		return res;
-	}
-
-	@RequestMapping("/plan/{path}.json")
-	@ResponseBody
-	@CrossOrigin
-	public JSONObject redirect(@PathVariable String path, @RequestBody JSONObject req)
-	{
-		return serviceMgr.req("lifeins", "plan/" + path + ".json", req);
 	}
 }

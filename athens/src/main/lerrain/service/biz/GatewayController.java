@@ -51,7 +51,6 @@ public class GatewayController
         if (gateway == null)
             return null;
 
-
         param.put("platformId", gateway.getPlatformId());
 
         if (gateway.isLogin())
@@ -162,7 +161,7 @@ public class GatewayController
             param.put("userId", param.get("accountId"));
 
             res.put("isSuccess", true);
-            res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
+            res.put("result", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
         }
         catch (Exception e)
         {
@@ -197,14 +196,7 @@ public class GatewayController
     @CrossOrigin
     public String callHtml(HttpServletRequest req)
     {
-        String uri = req.getRequestURI();
-        if (uri.startsWith("/"))
-            uri = uri.substring(1);
-
-        JSONObject param = getParam(req);
-        HttpSession session = req.getSession();
-
-        return call(req.getServerName() + ":" + req.getServerPort(), uri, session, param).toString();
+        return callAction(req);
     }
 
     @RequestMapping("**/*.do")
@@ -222,3 +214,4 @@ public class GatewayController
     }
 
 }
+
