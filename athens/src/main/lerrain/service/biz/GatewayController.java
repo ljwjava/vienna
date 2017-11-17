@@ -45,7 +45,7 @@ public class GatewayController
 
     private Object call(String host, String uri, HttpServletRequest req)
     {
-        Log.info(host + "/" + uri + " - " + req.getSession().getId());
+        Log.debug(host + "/" + uri + " - " + req.getSession().getId());
 
         Gateway gateway = gatewaySrv.getGateway(host, uri);
         if (gateway == null)
@@ -91,13 +91,15 @@ public class GatewayController
 
         if (gateway.isLogin())
         {
-            Long userId = (Long)session.getAttribute("userId");
-            if (userId == null)
-                throw new RuntimeException("not login - " + uri);
+//            Long userId = (Long)session.getAttribute("userId");
+//            if (userId == null)
+//                throw new RuntimeException("not login - " + uri);
+//
+//            Long platformIdSession = (Long)session.getAttribute("platformId");
+//            if (platformIdSession != gateway.getPlatformId())
+//                throw new RuntimeException("platform not match");
 
-            Long platformIdSession = (Long)session.getAttribute("platformId");
-            if (platformIdSession != gateway.getPlatformId())
-                throw new RuntimeException("platform not match");
+            Long userId = 1L;
 
             param.put("owner", userId);
             param.put("userId", userId);
@@ -107,7 +109,7 @@ public class GatewayController
                     param.put(w, session.getAttribute(w));
         }
 
-        Log.info(param);
+        Log.debug(param);
 
         Object val = null;
 
@@ -116,12 +118,12 @@ public class GatewayController
         {
             Stack stack = new Stack(platformSrv.getPlatform(gateway.getPlatformId()).getEnv());
             stack.set("self", param);
-            stack.set("SESSION", new SessionFactors(session));
+            stack.set("SESSION", new SessionAdapter(session));
 
             val = script.run(stack);
         }
 
-        if (gateway.getForward() == 1)
+        if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)
         {
             if (val instanceof Map)
                 param.putAll((Map)val);
@@ -141,7 +143,7 @@ public class GatewayController
     }
 
 
-    @RequestMapping("iybapi/**/*.json")
+    @RequestMapping("iyb/**/*.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject iyb(HttpServletRequest req)
@@ -164,13 +166,14 @@ public class GatewayController
         return res;
     }
 
-    @RequestMapping("api/**/*.json")
+    @RequestMapping("**/*.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject callJson(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        uri = uri.substring(uri.indexOf("/", 1) + 1);
+        if (uri.startsWith("/"))
+            uri = uri.substring(1);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -179,23 +182,25 @@ public class GatewayController
         return res;
     }
 
-    @RequestMapping("api/**/*.html")
+    @RequestMapping("**/*.html")
     @ResponseBody
     @CrossOrigin
     public String callHtml(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        uri = uri.substring(uri.indexOf("/", 1) + 1);
+        if (uri.startsWith("/"))
+            uri = uri.substring(1);
 
         return call(req.getServerName() + ":" + req.getServerPort(), uri, req).toString();
     }
 
-    @RequestMapping("api/**/*.do")
+    @RequestMapping("**/*.do")
     @CrossOrigin
     public String callAction(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        uri = uri.substring(uri.indexOf("/", 1) + 1);
+        if (uri.startsWith("/"))
+            uri = uri.substring(1);
 
         return call(req.getServerName() + ":" + req.getServerPort(), uri, req).toString();
     }

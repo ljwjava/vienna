@@ -7,12 +7,17 @@ import lerrain.tool.script.Script;
  */
 public class Gateway
 {
-    public static final int TYPE_JSON    = 1;
-    public static final int TYPE_HTML    = 2;
-    public static final int TYPE_ACTION  = 3;
+    public static final int TYPE_JSON               = 1;
+    public static final int TYPE_HTML               = 2;
+    public static final int TYPE_ACTION             = 3;
 
-    public static final int SUPPORT_GET  = 1;
-    public static final int SUPPORT_POST = 2;
+    public static final int SUPPORT_GET             = 1;
+    public static final int SUPPORT_POST            = 2;
+
+    public static final int FORWARD_NULL            = 0;
+    public static final int FORWARD_MICRO_SERVICE   = 1;
+    public static final int FORWARD_REDIRECT_LOCAL  = 2;
+    public static final int FORWARD_REDIRECT_REMOTE = 3;
 
     Long platformId;
 
