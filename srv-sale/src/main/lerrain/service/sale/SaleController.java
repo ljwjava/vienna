@@ -14,7 +14,6 @@ import javax.annotation.PostConstruct;
 @Controller
 public class SaleController
 {
-    @Autowired GatewayService gateSrv;
     @Autowired WareService wareSrv;
     @Autowired PlatformService platformSrv;
     @Autowired VendorService vendorSrv;
@@ -35,7 +34,6 @@ public class SaleController
     @ResponseBody
     public String reset()
     {
-        gateSrv.reset();
         wareSrv.reset();
         platformSrv.reset();
         cmsSrv.reset();
