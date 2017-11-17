@@ -39,6 +39,13 @@
 			<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>
 		</input>
 
+		<attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="THUNDER">AMOUNT</item>
+				<item name="MILD">AMOUNT</item>
+			</fgraph>
+		</attachment>
+
 		<rule>
 		</rule>
 	</product>

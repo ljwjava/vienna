@@ -1,5 +1,6 @@
 package lerrain.service.biz;
 
+import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +24,7 @@ public class GatewayDao
     {
         final Map<Long, List<Gateway>> m = new HashMap<>();
 
-        String sql = "select * from t_gateway where valid is null order by seq";
+        String sql = "select * from t_gateway where valid is null order by seq desc";
 
         jdbc.query(sql, new RowCallbackHandler()
         {
@@ -35,12 +36,12 @@ public class GatewayDao
                 String uri = rs.getString("uri");
                 String with = rs.getString("with");
                 String script = rs.getString("script");
+                int forward = rs.getInt("forward");
                 String forwardTo = rs.getString("forward_to");
 
                 boolean needLogin = "Y".equalsIgnoreCase(rs.getString("login"));
                 boolean supportGet = !"N".equalsIgnoreCase(rs.getString("support_get"));
                 boolean supportPost = !"N".equalsIgnoreCase(rs.getString("support_post"));
-                boolean forward = !"N".equalsIgnoreCase(rs.getString("forward"));
 
                 int support = (supportGet ? Gateway.SUPPORT_GET : 0) | (supportPost ? Gateway.SUPPORT_POST : 0);
 

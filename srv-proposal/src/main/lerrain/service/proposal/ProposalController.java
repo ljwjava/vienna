@@ -77,7 +77,6 @@ public class ProposalController
 
 	@RequestMapping("/list.json")
 	@ResponseBody
-	@CrossOrigin
 	public JSONObject list(@RequestBody JSONObject p)
 	{
 		Long owner = p.getLong("owner");
@@ -97,9 +96,25 @@ public class ProposalController
 		return res;
 	}
 
+	@RequestMapping("/query.json")
+	@ResponseBody
+	public JSONObject query(@RequestBody JSONObject p)
+	{
+		Long owner = p.getLong("owner");
+		Long platformId = p.getLong("platformId");
+
+		int from = Common.intOf(p.get("from"), 0);
+		int num = Common.intOf(p.get("num"), 10);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", ps.list(null, from, num, platformId, owner));
+
+		return res;
+	}
+
 	@RequestMapping("/copy.json")
 	@ResponseBody
-	@CrossOrigin
 	public JSONObject copy(@RequestBody JSONObject p)
 	{
 		Proposal proposal = getProposal(p);

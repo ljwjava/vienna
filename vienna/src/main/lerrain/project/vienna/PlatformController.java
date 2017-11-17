@@ -13,7 +13,7 @@ public class PlatformController
 	@Autowired
 	ServiceMgr serviceMgr;
 
-	@RequestMapping("/channel/iyb/{path}")
+	@RequestMapping("/channel/iyb/**")
 	@ResponseBody
 	@CrossOrigin
 	public JSONObject iyb(@PathVariable String path, @RequestBody JSONObject p)
