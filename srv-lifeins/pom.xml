@@ -20,12 +20,12 @@
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>formula</artifactId>
-			<version>5.0.3</version>
+			<version>6.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>finance</artifactId>
-			<version>6.0.3</version>
+			<version>6.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -2,7 +2,7 @@ server:
   port: 7666
 
 datasource:
-  url: jdbc:mysql://10.253.102.74:3306/athens
+  url: jdbc:mysql://10.253.102.74:3306/athens_t?useUnicode=true&characterEncoding=UTF-8
   username: iyb
   password: Abcd2017
 
@@ -15,3 +15,7 @@ service:
   user: http://localhost:7601
   printer: http://localhost:7511
   rome: http://localhost:7766
+  sale: http://localhost:7772
+
+path:
+  root: ./static/

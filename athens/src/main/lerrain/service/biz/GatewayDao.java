@@ -1,6 +1,5 @@
 package lerrain.service.biz;
 
-import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,9 +19,9 @@ public class GatewayDao
     @Autowired
     JdbcTemplate jdbc;
 
-    public Map<Long, List<Gateway>> loadAllGateway()
+    public Map<String, List<Gateway>> loadAllGateway()
     {
-        final Map<Long, List<Gateway>> m = new HashMap<>();
+        final Map<String, List<Gateway>> m = new HashMap<>();
 
         String sql = "select * from t_gateway where valid is null order by seq desc";
 
@@ -32,7 +31,7 @@ public class GatewayDao
             public void processRow(ResultSet rs) throws SQLException
             {
                 int type = rs.getInt("type");
-                Long platformId = rs.getLong("platform_id");
+                Long envId = rs.getLong("env_id");
                 String uri = rs.getString("uri");
                 String with = rs.getString("with");
                 String script = rs.getString("script");
@@ -45,11 +44,12 @@ public class GatewayDao
 
                 int support = (supportGet ? Gateway.SUPPORT_GET : 0) | (supportPost ? Gateway.SUPPORT_POST : 0);
 
-                List<Gateway> list = m.get(platformId);
+                String sort = uri.substring(0, uri.indexOf("/"));
+                List<Gateway> list = m.get(sort);
                 if (list == null)
                 {
                     list = new ArrayList<>();
-                    m.put(platformId, list);
+                    m.put(sort, list);
                 }
 
                 Gateway gw = new Gateway();
@@ -61,7 +61,7 @@ public class GatewayDao
                 gw.setScript(Script.scriptOf(script));
                 gw.setForward(forward);
                 gw.setForwardTo(forwardTo);
-                gw.setPlatformId(platformId);
+                gw.setEnvId(envId);
 
                 list.add(gw);
             }

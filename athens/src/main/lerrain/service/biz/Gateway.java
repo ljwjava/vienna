@@ -1,5 +1,6 @@
 package lerrain.service.biz;
 
+import lerrain.service.common.Log;
 import lerrain.tool.script.Script;
 
 /**
@@ -19,7 +20,7 @@ public class Gateway
     public static final int FORWARD_REDIRECT_LOCAL  = 2;
     public static final int FORWARD_REDIRECT_REMOTE = 3;
 
-    Long platformId;
+    Long envId;
 
     int type;
     int support;
@@ -49,14 +50,14 @@ public class Gateway
         return (type & support) > 0;
     }
 
-    public Long getPlatformId()
+    public Long getEnvId()
     {
-        return platformId;
+        return envId;
     }
 
-    public void setPlatformId(Long platformId)
+    public void setEnvId(Long envId)
     {
-        this.platformId = platformId;
+        this.envId = envId;
     }
 
     public boolean isLogin()
@@ -143,7 +144,10 @@ public class Gateway
         if (this.uriX == null)
             return forwardTo == null ? from : forwardTo;
 
-        return this.uri + from.substring(this.uri.length(), from.length() - this.uriX.length()) + this.uriX;
+        if (forwardTo == null)
+            return this.uri + from.substring(this.uri.length(), from.length() - this.uriX.length()) + this.uriX;
+
+        return forwardTo.replace("*", from.substring(this.uri.length(), from.length() - this.uriX.length()));
     }
 
     public void setForwardTo(String forwardTo)

@@ -32,7 +32,7 @@ public class PlanController
     @Autowired
     LifeinsService lifeins;
 
-    @RequestMapping({"/plan/create.json"})
+    @RequestMapping("/plan/create.json")
     @ResponseBody
     public JSONObject create(@RequestBody JSONObject p)
     {
@@ -46,7 +46,7 @@ public class PlanController
         return res;
     }
 
-    @RequestMapping({"/plan/customer.json"})
+    @RequestMapping("/plan/customer.json")
     @ResponseBody
     public JSONObject customer(@RequestBody JSONObject p)
     {
@@ -69,7 +69,7 @@ public class PlanController
         return res;
     }
 
-    @RequestMapping({"/plan/view.json"})
+    @RequestMapping("/plan/view.json")
     @ResponseBody
     public JSONObject view(@RequestBody JSONObject p)
     {
@@ -87,7 +87,7 @@ public class PlanController
         return res;
     }
 
-    @RequestMapping({"/plan/edit.json"})
+    @RequestMapping("/plan/edit.json")
     @ResponseBody
     public JSONObject edit(@RequestBody JSONObject p)
     {
@@ -242,8 +242,6 @@ public class PlanController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", products);
-
-        //		System.out.println(res.toJSONString());
 
         return res;
     }

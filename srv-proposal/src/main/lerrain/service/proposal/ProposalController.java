@@ -424,21 +424,6 @@ public class ProposalController
 		return res;
 	}
 
-//	@RequestMapping("/delete_plan.json")
-//	@ResponseBody
-//	@CrossOrigin
-//	public JSONObject deletePlan(@RequestBody JSONObject p)
-//	{
-//		Proposal proposal = getProposal(p);
-//		proposal.getPlanList().remove(p.get("planId"));
-//
-//		JSONObject res = new JSONObject();
-//		res.put("result", "success");
-//		res.put("content", proposalTool.jsonOf(proposal));
-//
-//		return res;
-//	}
-
 	private Proposal getProposal(JSONObject p)
 	{
 		String proposalId = p.getString("proposalId");
@@ -451,7 +436,6 @@ public class ProposalController
 
 	@RequestMapping("/print.json")
 	@ResponseBody
-	@CrossOrigin
 	public JSONObject print(@RequestBody JSONObject p)
 	{
 		Proposal proposal = getProposal(p);
