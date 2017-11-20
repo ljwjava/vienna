@@ -112,24 +112,25 @@ var Main = React.createClass({
 					</div>
 				</div>
 				<div className="form-group">
-					<div className="col-sm-6">
-						<textarea ref="script" className="form-control" style={{height:"500px"}}></textarea>
+					<div className="col-sm-8">
+						<textarea ref="script" className="form-control" style={{height:"800px"}}></textarea>
 					</div>
-					<div className="col-sm-6">
-						<textarea ref="reqParams" className="form-control" style={{height:"500px"}}></textarea>
+					<div className="col-sm-4">
+						<textarea ref="reqParams" className="form-control" style={{height:"800px"}}></textarea>
 					</div>
 				</div>
 				<div className="form-group">
-					<div className="col-sm-12">
-						<input type="button" className="btn btn-primary btn-lg" value="正常执行 >>>>" onClick={this.test}/>
+					<div className="col-sm-8">
+						<input type="button" className="btn btn-primary btn-lg" value="请求 >>>>" onClick={this.test}/>
 						&nbsp;&nbsp;
-						<input type="button" className="btn btn-primary btn-lg" value="函数重置 >>>>" onClick={this.reloadFunction}/>
+						<input type="button" className="btn btn-primary btn-lg" value="测试 >>>>" onClick={this.replace}/>
 						&nbsp;&nbsp;
-						<input type="button" className="btn btn-primary btn-lg" value="替代执行 >>>>" onClick={this.replace}/>
+						<input type="button" className="btn btn-primary btn-lg" value="重置 >>>>" onClick={this.reloadFunction}/>
+					</div>
+					<div className="col-sm-4" style={{textAlign:"right"}}>
+						<input type="button" className="btn btn-primary btn-lg" value="暂存 >>>>" onClick={this.save}/>
 						&nbsp;&nbsp;
-						<input type="button" className="btn btn-primary btn-lg" value="临时保存 >>>>" onClick={this.save}/>
-						&nbsp;&nbsp;
-						<input type="button" className="btn btn-primary btn-lg" value="升级发布 >>>>" onClick={this.apply}/>
+						<input type="button" className="btn btn-primary btn-lg" value="保存 >>>>" onClick={this.apply}/>
 					</div>
 				</div>
 				<div className="form-group">
