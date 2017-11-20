@@ -1,0 +1,354 @@
+﻿@charset "utf-8";
+
+body
+{
+	background-color: #FFF;
+	height: auto;
+	min-height: 100%;
+	width: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	font: 12pt 微软雅黑;
+}
+
+*
+{
+	box-sizing: border-box;
+}
+
+select
+{
+	font: 12pt 微软雅黑;
+	width: 100%;
+	height: 32px;
+	border: 0;
+	background: url("../images/down.png") no-repeat scroll right center transparent;
+	direction: rtl;
+	padding-right: 36px;
+	-webkit-appearance: none;
+}
+
+input[type="date"]
+{
+	font: 12pt 微软雅黑;
+	width: 60%;
+	height: 30px;
+	border: 0;
+	text-align: right;
+	padding-right: 5px;
+	margin: 5px 0 5px 0;
+}
+
+input[type="text"]
+{
+	font: 12pt 微软雅黑;
+	width: 100%;
+	height: 30px;
+	border: 0;
+	text-align: right;
+	padding-right: 5px;
+	margin: 5px 0 5px 0;
+}
+
+input[type="checkbox"]
+{
+	width: 16px;
+	height: 16px;
+	padding-right: 10px;
+}
+
+table
+{
+	background-color: #FFF;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	border-spacing: 0;
+}
+
+th
+{
+	padding: 0;
+	weight: 800;
+	color: #F00;
+	text-align: left;
+}
+
+td
+{
+	padding: 0;
+	weight: 0;
+	color: #000;
+	border-top: 1px solid #CCC;
+}
+
+tr
+{
+	height: 44px;
+}
+
+.left
+{
+	padding-left: 15px;
+	width: 30%;
+}
+
+.right
+{
+	width: 70%;
+	text-align: right;
+	padding-right: 10px;
+}
+
+.title
+{
+	padding-left: 15px;
+	color: #D33;
+	background-color:#DDD;
+	height: 44px;
+	line-height: 44px;
+	border-top: 1px solid #F00;
+}
+
+.content
+{
+	padding: 5px 10px 5px 10px;
+	border-top: 1px solid #CCC;
+	background-color:#FFF;
+}
+
+.block
+{
+	border-radius:15px;
+	display:inline-block;
+	text-align:center;
+	line-height:30px;
+	min-width:50px;
+	height:32px;
+	color:#FFF;
+	background-color:#666;
+	padding: 0 12px 0 12px;
+	margin: 6px 0 2px 5px;
+}
+
+.blockSel
+{
+	border-radius:15px;
+	display:inline-block;
+	text-align:center;
+	line-height:30px;
+	min-width:50px;
+	height:32px;
+	color:#FFF;
+	background-color:#D33;
+	padding: 0 12px 0 12px;
+	margin: 6px 0 2px 5px;
+}
+
+.navi
+{
+	padding: 0;
+	margin: 0;
+	border-spacing: 0;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	background-color: #FFF;
+	border-bottom: 1px solid #D33;
+}
+
+
+.navi thead tr
+{
+	height: 40px;
+}
+
+.navi thead tr td
+{
+	height: 40px;
+	text-align: center;
+	color: #000;
+	border: 0;
+}
+
+.console
+{
+	position: fixed;
+	left: 0px;
+	bottom: 0px;
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	color: #FFF;
+	text-align: center;
+	background-color: #D33;
+}
+
+.console tbody td
+{
+	color: #FFF;
+	text-align: center;
+	background-color: #666;
+	width: 60%;
+}
+
+.console tbody th
+{
+	color: #FFF;
+	text-align: center;
+	width: 40%;
+}
+
+.list img
+{
+	width: 72px;
+	height: 72px;
+	margin: 12px 12px 12px 12px;
+}
+
+.list th
+{
+	width: 96px;
+	height: 96px;
+	border-top: 10px solid #DDD;
+}
+
+.list td
+{
+	border-top: 10px solid #DDD;
+}
+
+.listTR
+{
+	margin: 10px 0 0 0;
+	font: 11pt 微软雅黑;
+	height: 24px;
+}
+
+.listTC
+{
+	margin: 0;
+	color: #777;
+	font: 8pt 微软雅黑;
+	height: 16px;
+}
+
+.listTB
+{
+	height: 20px;
+	line-height: 20px;
+	color: #D33;
+	text-align: right;
+	margin: 16px 10px 10px 0;
+}
+
+.field
+{
+	color: #D33;
+	line-height: 32px;
+	min-height: 40px;
+	padding: 5px 15px 5px 15px;
+	border-top: 1px solid #CCC;
+}
+
+.popwin
+{
+	position: fixed;
+	width: 100%;
+	left:0;
+	bottom: 0;
+	background-color: #FFF;
+	border-top: 2px solid #F00;
+	z-index: 1;
+}
+
+.popwin div
+{
+	margin: 10px;
+	text-align: center;
+}
+
+.line
+{
+	border-top: 1px solid #F00;
+}
+
+.quest div
+{
+	padding: 8px 8px 8px 8px;
+	line-height: 32px;
+	background-color: #FFF;
+	border-top: 1px solid #CCC;
+}
+
+.quest div div
+{
+	padding: 0;
+	border: none;
+}
+
+.quest input
+{
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	text-align: left;
+	padding: 0 5px 0 5px;
+	line-height: 24px;
+}
+
+.quest .short
+{
+	margin: 0 5px 0 5px;
+	width: 70px;
+}
+
+.quest .long
+{
+	width: 200px;
+}
+
+.quest .large
+{
+	width: 100%;
+}
+
+.quest .alert
+{
+	margin: 0 0 0 0;
+	font: 7pt 微软雅黑;
+	color: #F00;
+}
+
+.photo
+{
+	padding:8px;
+	width:100px;
+	height:75px;
+}
+
+.alert
+{
+	font: 8pt 微软雅黑;
+	color: #F00;
+	margin-bottom: 5px;
+}
+
+.notice
+{
+	font: 8pt 微软雅黑;
+	color: #d58512;
+	margin-bottom: 5px;
+}
+
+.graph
+{
+	text-align: center;
+	background-color: #FFF;
+	height: 100%;
+	margin: 0;
+}

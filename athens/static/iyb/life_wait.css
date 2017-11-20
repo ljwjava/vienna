@@ -1,0 +1,517 @@
+.paysuccess-content.show {
+    display: block;
+}
+.paysuccess-content {
+    display: none;
+    padding: 9.86% 4% 5.06%;
+    background-color: #7661e8;
+}
+
+.box{
+    border: solid 1.4px #ffdd92;
+    border-radius: 5.49px;
+    background-color: #fff8c2;
+}
+.chouv {
+    color: #493cc9;
+    font-size: 15px;
+    text-align: center;
+    background-image: url(http://static.zhongan.com/website/health/iybApp/assets/images/activity/successful/title.png);
+    background-repeat: no-repeat;
+    width: 246px;
+    height: 40px;
+    line-height: 32px;
+    margin: -16px auto 0;
+    text-shadow: 2px 2px 2px rgba(170,56,16,0.35);
+    background-size: 100%;
+}
+.dianxia{
+    color: #493cc9;
+    font-size: 10px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    vertical-align: top;
+    overflow: hidden;
+}
+.dianxia span {
+    position: relative;
+}
+.dianxia span:before, .dianxia span:after {
+    position: absolute;
+    color: #feba6d;
+    font-size: 36px;
+    line-height: 45px;
+    height: 45px;
+}
+.dianxia span:first-child:before {
+    content: "\201C";
+    color: #7c65f6;
+    left: -36px;
+}
+.dianxia em {
+    padding: 0 3.6px;
+    font-style: normal;
+    color: #fd3b27;
+    font-weight: bold;
+    display: inline-block;
+}
+.dianxia span:last-child:after {
+    content: "\201D";
+    color: #7c65f6;
+    right: -36px;
+}
+.lottery-bg {
+    position: relative;
+    margin-bottom: 27.45px;
+}
+.lottery-area {
+    z-index: 9;
+}
+.lottery-area {
+    position: relative;
+}
+.rotate-area {
+    background-image: url(http://static.zhongan.com/website/health/iybApp/assets/images/activity/roulette/lottery-bg2.png);
+}
+.lottery-area .rotate-area {
+    position: relative;
+    width: 85%;
+    margin: 18.3px auto;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.lottery-area .rotate-area:before {
+    content: '';
+    padding: 50% 0;
+    display: inline-block;
+}
+.lottery-area .award-item {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    left: 50%;
+    -webkit-transform-origin: bottom center;
+    transform-origin: bottom center;
+    width: 45%;
+    height: 45%;
+    margin-left: -22.5%;
+    top: 5%;
+}
+.award-item1{
+    background-image: url(images/lottery/item1.png);
+    -webkit-transform: rotate(30deg);
+    transform: rotate(30deg);
+}
+.award-item2{
+    background-image: url(images/lottery/item2.png);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+.award-item3{
+    background-image: url(images/lottery/item3.png);
+    -webkit-transform: rotate(150deg);
+    transform: rotate(150deg);
+}
+.award-item4{
+    background-image: url(images/lottery/item4.png);
+    -webkit-transform: rotate(210deg);
+    transform: rotate(210deg);
+}
+.award-item5{
+    background-image: url(images/lottery/item5.png);
+    -webkit-transform: rotate(270deg);
+    transform: rotate(270deg);
+}
+.award-item6{
+    background-image: url(images/lottery/item6.png);
+    -webkit-transform: rotate(330deg);
+    transform: rotate(330deg);
+}
+.lottery-btn{
+    background-image: url(http://static.zhongan.com/website/health/iybApp/assets/images/activity/roulette/pointer2.png);
+}
+.lottery-area .lottery-btn {
+    position: absolute;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    left: 41%;
+    top: 37%;
+    width: 18.4%;
+    height: 24%;
+}
+.baoxiang {
+    background-image: url(http://static.zhongan.com/website/health/iybApp/assets/images/activity/successful/jinbi.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 7%;
+    height: 8%;
+    position: absolute;
+    left: 7%;
+    top: 5%;
+    z-index: 4;
+}
+.baoxiang1 {
+    background-image: url(http://static.zhongan.com/website/health/iybApp/assets/images/activity/successful/jinbi2.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 12%;
+    height: 9%;
+    position: absolute;
+    right: 4%;
+    bottom: 2%;
+    z-index: 3;
+}
+.baoxiang2 {
+    background-image: url(http://static.zhongan.com/website/health/iybApp/assets/images/activity/successful/footbg.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 45%;
+    height: 5%;
+    position: absolute;
+    margin: auto;
+    right: 0;
+    left: 0;
+    bottom: -2%;
+    z-index: 1;
+}
+
+.box.box2 {
+    margin-top: 37.5px;
+    padding-bottom: 15px;
+}
+.title2 {
+    color: #493cc9;
+    font-size: 15px;
+    text-align: center;
+    background-image: url(http://static.zhongan.com/website/health/iybApp/assets/images/activity/successful/title2_2.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 201px;
+    height: 43.35px;
+    line-height: 32.85px;
+    font-weight: bold;
+    margin: -15px auto 9px;
+    text-shadow: 2px 2px 2px rgba(170,56,16,0.35);
+}
+.box2 ul {
+    margin: 0;
+}
+.list {
+    padding-left: 0;
+    overflow: hidden;
+}
+.list li {
+    border-radius: 3.66px;
+    background-color: #fffbea;
+    overflow: hidden;
+    width: 45%;
+    position: relative;
+    margin-bottom: 9.15px;
+}
+.list li:nth-of-type(2n-1) {
+    float: left;
+    margin-left: 9.15px;
+}
+.list li:nth-of-type(2n) {
+    float: right;
+    margin-right: 9.15px;
+}
+.list li:last-child, .list li:nth-last-child(2) {
+    margin-bottom: 0;
+}
+.list .list-hed {
+    line-height: 68.55px;
+    text-align: center;
+    height: 96px;
+    border: solid 1.38px #ffdd92;
+    border-bottom: none;
+    padding: 3.66px 0 3.66px 0;
+}
+.list .list-hed img {
+    height: 100%;
+    width: auto;
+    margin: 0;
+    display: inline-block;
+    text-align: center;
+    border: 0;
+    vertical-align: middle;
+}
+.list .list-foot {
+    border: solid 1.38px #ffdd92;
+    border-top: none;
+    background-color: #fff3c3;
+    line-height: 30px;
+    text-align: center;
+    color: #f17d00;
+    font-size: 12.75px;
+    border-top: dashed 1px #fbcf88;
+}
+
+
+
+
+/*******************中奖弹框******************/
+.ui-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-overflow-scrolling: touch;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow: auto;
+    z-index: 1100;
+    animation-duration: 300ms;
+}
+.ui-modal>.ui-modal-wrapper {
+    width: 100%;
+    margin: auto 0;
+}
+.ui-modal>.ui-modal-wrapper>.ui-modal-dialog {
+    position: relative;
+    margin: 10% auto;
+    background: #fff;
+    box-shadow: 0 6.3px 18px rgba(0,0,0,0.2);
+    overflow: hidden;
+    z-index: 1101;
+}
+.ui-modal>.ui-modal-wrapper .ui-modal-dialog {
+    box-shadow: none;
+    background-color: transparent;
+    width: 80%;
+}
+.zoom-enter {
+    width: 80%;
+    min-width: 270px;
+    -webkit-animation-duration: 300ms;
+    -moz-animation-duration: 300ms;
+    -ms-animation-duration: 300ms;
+    -o-animation-duration: 300ms;
+    animation-duration: 300ms;
+    /*                   */
+    -webkit-animation: zoom-enter both cubic-bezier(0.4, 0, 0, 1.5);
+    animation: zoom-enter both cubic-bezier(0.4, 0, 0, 1.5);
+}
+@keyframes zoom-enter {
+    0% {
+        -webkit-transform: scale3d(0.3, 0.3, 0.3);
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+    }
+}
+.ui-modal-body {
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 18px;
+    overflow: auto;
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+}
+.ui-modal-body {
+    padding: 53px 0 53px 0;
+}
+.paysuccess-modal-image {
+    position: absolute;
+    left: 50%;
+    width: 50%;
+    margin-left: -25%;
+    top: .24452rem;
+}
+.paysuccess-modal-image img {
+    width: 100%;
+    border: 0;
+    vertical-align: middle;
+}
+.paysuccess-modal-content {
+    box-shadow: 0 7px 18px rgba(0,0,0,0.2);
+    border-radius: 18px;
+    background-color: #fff;
+    padding: 83px 18px 18px 18px;
+    text-align: center;
+}
+.paysuccess-modal-title {
+    color: #ff9000;
+    font-size: 18px;
+    margin-bottom: 3px;
+}
+.paysuccess-modal-title p {
+    margin: 0;
+    font-size: 18px;
+}
+.paysuccess-modal-title .freight {
+    font-size: 10px;
+}
+.paysuccess-modal-notes {
+    margin: 0 0 22px 0;
+    color: #999;
+    font-size: 10px;
+}
+.paysuccess-modal-btn-getprize {
+    color: #fff;
+    text-align: center;
+    background-image: url(data:image/png;base64,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);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    margin: 0 auto;
+    font-size: 18px;
+    width: 201px;
+    height: 54px;
+    line-height: 50px;
+}
+.ui-modal-footer {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 15px;
+}
+.paysuccess-modal-btn-close {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.ui-icon {
+    position: absolute;
+    font-family: "dragonicon" !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: url("./images/close_ico.png") no-repeat center center;
+    background-size: 100% 100%;
+    width: 13%;
+}
+.ui-icon-wrong-round:before {
+    content: '';
+    padding: 50% 0;
+    display: inline-block;
+}
+
+
+/*************************遮层************************/
+.paysuccess-share-mask {
+    visibility: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow: auto;
+    z-index: 1100;
+}
+.paysuccess-share-mask.show {
+    visibility: visible;
+}
+.paysuccess-share-img-h5 {
+    position: absolute;
+    top: 1.82929rem;
+    right: 1.21976rem;
+    width: 78%;
+}
+
+
+/**********************分享引导************************/
+.paysuccess-share-mask {
+    visibility: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow: auto;
+    z-index: 1100;
+}
+.paysuccess-share-mask.show {
+    visibility: visible;
+}
+.paysuccess-share-img-h5 {
+    position: absolute;
+    top: 28px;
+    right: 20px;
+    width: 78%;
+    border: 0;
+    vertical-align: middle;
+}
+
+.paysuccess-share-app {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.paysuccess-share-app .paysuccess-share-img{
+    width: 78%;
+    margin: 0 auto 20px auto;
+    display: block;
+}
+
+

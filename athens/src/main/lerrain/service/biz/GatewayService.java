@@ -1,5 +1,6 @@
 package lerrain.service.biz;
 
+import lerrain.service.common.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,25 +13,24 @@ public class GatewayService
     @Autowired
     GatewayDao gatewayDao;
 
-    Map<Long, List<Gateway>> map;
-
-    Map<String, Long> platformMap;
+    Map<String, List<Gateway>> map;
 
     public void reset()
     {
         map = gatewayDao.loadAllGateway();
     }
 
-    public Long getPlatformId(String domain)
+    public List<Gateway> getGatewayList(String sort)
     {
-//        return platformMap.get(domain);
-        return 2L;
+        return map.get(sort);
     }
 
-    public Gateway getGateway(String domain, String uri)
+    public Gateway getGateway(String uri)
     {
-        Long platformId = getPlatformId(domain);
-        List<Gateway> list = map.get(platformId);
+        Log.debug(uri);
+
+        String sort = uri.substring(0, uri.indexOf("/"));
+        List<Gateway> list = map.get(sort);
 
         for (Gateway gateway : list)
             if (gateway.match(uri))

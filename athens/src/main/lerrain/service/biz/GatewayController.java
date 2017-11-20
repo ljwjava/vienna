@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -27,7 +31,7 @@ public class GatewayController
     GatewayService gatewaySrv;
 
     @Autowired
-    PlatformService platformSrv;
+    EnvService envSrv;
 
     @Autowired
     ServiceMgr sv;
@@ -38,19 +42,69 @@ public class GatewayController
     public String reset()
     {
         gatewaySrv.reset();
-        platformSrv.reset();
+        envSrv.reset();
 
         return "success";
     }
 
-    private Object call(String host, String uri, HttpServletRequest req)
+    private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
-        Log.info(host + "/" + uri + " - " + req.getSession().getId());
+        Log.debug(host + "/" + uri + " <== " + param.toString());
 
-        Gateway gateway = gatewaySrv.getGateway(host, uri);
+        Gateway gateway = gatewaySrv.getGateway(uri);
         if (gateway == null)
             return null;
 
+        if (gateway.isLogin())
+        {
+            Long userId = (Long)session.getAttribute("userId");
+            if (userId == null)
+                throw new RuntimeException("not login - " + uri);
+
+            param.put("owner", userId);
+            param.put("userId", userId);
+
+            if (gateway.getWith() != null)
+                for (String w : gateway.getWith())
+                    param.put(w, session.getAttribute(w));
+        }
+
+        Object val = null;
+
+        Script script = gateway.getScript();
+        if (script != null)
+        {
+            Stack stack = new Stack(envSrv.getEnv(gateway.getEnvId()).getStack());
+            stack.set("self", param);
+            stack.set("SESSION", new SessionAdapter(session));
+
+            val = script.run(stack);
+        }
+
+        Log.debug(uri + " ==> " + val);
+
+        if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)
+        {
+            if (val instanceof Map)
+                param.putAll((Map)val);
+
+            String forwardTo = gateway.getForwardTo(uri);
+            Log.debug("FORWARD: " + forwardTo);
+
+            int p2 = forwardTo.indexOf("/");
+            JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
+
+            if (!"success".equals(json.getString("result")))
+                throw new RuntimeException(json.getString("reason"));
+
+            val = json.get("content");
+        }
+
+        return val;
+    }
+
+    private JSONObject getParam(HttpServletRequest req)
+    {
         String contentType = req.getContentType();
         if (contentType != null)
             contentType = contentType.toLowerCase();
@@ -85,63 +139,12 @@ public class GatewayController
             }
         }
 
-        param.put("platformId", gateway.getPlatformId());
+        param.put("URL", req.getRequestURL().toString());
 
-        HttpSession session = req.getSession();
-
-        if (gateway.isLogin())
-        {
-            Long userId = (Long)session.getAttribute("userId");
-            if (userId == null)
-                throw new RuntimeException("not login - " + uri);
-
-            Long platformIdSession = (Long)session.getAttribute("platformId");
-            if (platformIdSession != gateway.getPlatformId())
-                throw new RuntimeException("platform not match");
-
-            param.put("owner", userId);
-            param.put("userId", userId);
-
-            if (gateway.getWith() != null)
-                for (String w : gateway.getWith())
-                    param.put(w, session.getAttribute(w));
-        }
-
-        Log.info(param);
-
-        Object val = null;
-
-        Script script = gateway.getScript();
-        if (script != null)
-        {
-            Stack stack = new Stack(platformSrv.getPlatform(gateway.getPlatformId()).getEnv());
-            stack.set("self", param);
-            stack.set("SESSION", new SessionFactors(session));
-
-            val = script.run(stack);
-        }
-
-        if (gateway.getForward() == 1)
-        {
-            if (val instanceof Map)
-                param.putAll((Map)val);
-
-            String forwardTo = gateway.getForwardTo(uri);
-
-            int p2 = forwardTo.indexOf("/");
-            JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
-
-            if (!"success".equals(json.getString("result")))
-                throw new RuntimeException(json.getString("reason"));
-
-            val = json.get("content");
-        }
-
-        return val;
+        return param;
     }
 
-
-    @RequestMapping("iybapi/**/*.json")
+    @RequestMapping("/iyb/**/*.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject iyb(HttpServletRequest req)
@@ -152,8 +155,13 @@ public class GatewayController
         JSONObject res = new JSONObject();
         try
         {
+            JSONObject param = getParam(req);
+            HttpSession session = req.getSession();
+
+            session.setAttribute("userId", param.get("accountId"));
+
             res.put("isSuccess", true);
-            res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, req));
+            res.put("result", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
         }
         catch (Exception e)
         {
@@ -164,40 +172,125 @@ public class GatewayController
         return res;
     }
 
-    @RequestMapping("api/**/*.json")
+    @RequestMapping("/test/**/*.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject testJson(HttpServletRequest req)
+    {
+        String uri = req.getRequestURI();
+        uri = uri.substring(6);
+
+        JSONObject param = getParam(req);
+        HttpSession session = req.getSession();
+
+        PrintStream oldPs = System.out;
+        try (ByteArrayOutputStream sysOs = new ByteArrayOutputStream(); PrintStream sysPs = new PrintStream(sysOs))
+        {
+            System.setOut(sysPs);
+
+            JSONObject res = new JSONObject();
+            res.put("result", "success");
+
+            JSONObject val = new JSONObject();
+
+            try
+            {
+                val.put("result", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
+            }
+            catch(Exception e)
+            {
+                try (ByteArrayOutputStream exOs = new ByteArrayOutputStream(); PrintStream exPs = new PrintStream(exOs))
+                {
+                    e.printStackTrace(exPs);
+                    val.put("exception", exOs.toString());
+                }
+                catch (Exception e1)
+                {
+                    Log.error(e1);
+                }
+            }
+
+            val.put("console", sysOs.toString());
+            res.put("content", val);
+
+            return res;
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            System.setOut(oldPs);
+        }
+    }
+
+    @RequestMapping("/api/**/*.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject callJson(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        uri = uri.substring(uri.indexOf("/", 1) + 1);
+        uri = uri.substring(5);
+
+        JSONObject param = getParam(req);
+        HttpSession session = req.getSession();
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, req));
+        res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
 
         return res;
     }
 
-    @RequestMapping("api/**/*.html")
-    @ResponseBody
+    @RequestMapping("/api/**/*.html")
     @CrossOrigin
-    public String callHtml(HttpServletRequest req)
+    public void callHtml(HttpServletRequest req, HttpServletResponse res)
     {
-        String uri = req.getRequestURI();
-        uri = uri.substring(uri.indexOf("/", 1) + 1);
+        res.setContentType("text/html;charset=utf-8");
 
-        return call(req.getServerName() + ":" + req.getServerPort(), uri, req).toString();
+        try
+        {
+            String str = callAction(req);
+
+            try (OutputStream os = res.getOutputStream())
+            {
+                os.write(str.getBytes("utf-8"));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+
+            try (OutputStream os = res.getOutputStream(); PrintStream ps = new PrintStream(os))
+            {
+                os.write("<pre>".getBytes());
+                e.printStackTrace(ps);
+                os.write("</pre>".getBytes());
+            }
+            catch (Exception e1)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
-    @RequestMapping("api/**/*.do")
+    @RequestMapping("/api/**/*.do")
     @CrossOrigin
     public String callAction(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        uri = uri.substring(uri.indexOf("/", 1) + 1);
+        uri = uri.substring(5);
 
-        return call(req.getServerName() + ":" + req.getServerPort(), uri, req).toString();
+        JSONObject param = getParam(req);
+        HttpSession session = req.getSession();
+
+        return call(req.getServerName() + ":" + req.getServerPort(), uri, session, param).toString();
     }
 
 }
+

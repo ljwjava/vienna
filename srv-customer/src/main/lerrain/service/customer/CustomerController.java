@@ -15,15 +15,7 @@ public class CustomerController
 	@Autowired
 	CustomerService cs;
 
-	@RequestMapping("/health")
-	@ResponseBody
-	@CrossOrigin
-	public String health()
-	{
-		return "success";
-	}
-
-	@RequestMapping({ "/list.json" })
+	@RequestMapping("/list.json")
 	@ResponseBody
 	public JSONObject list(@RequestBody JSONObject json)
 	{
@@ -45,7 +37,25 @@ public class CustomerController
 		return res;
 	}
 
-	@RequestMapping({"/view.json"})
+	@RequestMapping("/query.json")
+	@ResponseBody
+	public JSONObject query(@RequestBody JSONObject json)
+	{
+		Long platformId = json.getLong("platformId");
+		String owner = json.getString("owner");
+
+		String search = json.getString("search");
+		int from = Common.intOf(json.get("from"), 0);
+		int number = Common.intOf(json.get("number"), -1);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", cs.count(search, platformId, owner));
+
+		return res;
+	}
+
+	@RequestMapping("/view.json")
 	@ResponseBody
 	public JSONObject view(@RequestBody JSONObject json)
 	{
@@ -80,8 +90,11 @@ public class CustomerController
 	{
 		String customerId = json.getString("customerId");
 
+		if (!cs.delete(customerId))
+			throw new RuntimeException("customerId<" + customerId + "> not found.");
+
 		JSONObject res = new JSONObject();
-		res.put("result", cs.delete(customerId) ? "success" : "fail");
+		res.put("result", "success");
 
 		return res;
 	}

@@ -1,0 +1,131 @@
+
+/*.ui-toast {
+    display: none;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 1300;
+}
+.ui-toast-open {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+
+
+.ui-toast-container {
+    position: relative;
+    max-width: 70%;
+    min-width: 7.315rem;
+    padding: 1.21976rem;
+    border-radius: .36643rem;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    text-align: center;
+    font-size: .915rem;
+}
+
+
+.ui-icon {
+    font-family: "dragonicon" !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.ui-toast-container .ui-icon {
+    font-size: 2.43881rem;
+}
+
+
+
+.ui-toast-container p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+
+.ui-mask {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    -webkit-animation: fade-enter .3s ease-out;
+    animation: fade-enter .3s ease-out;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1000;
+}
+.ui-mask.transparent {
+    background-color: transparent;
+}*/
+
+
+
+.toast-it {
+    background-color: #555555;
+    color: #F4F4F4;
+    padding: 3px 20px;
+    border-radius: 20px;
+    text-align: center;
+    position: fixed;
+    /* center horizontally */
+    top: 80%;
+    left: 50%;
+    -ms-transform: translate(-50%, -80%);
+    -o-transform: translate(-50%, -80%);
+    -moz-transform: translate(-50%, -80%);
+    -webkit-transform: translate(-50%, -80%);
+    transform: translate(-50%, -80%);
+
+    -ms-animation-name: TOAST-APPEAR;
+    -ms-animation-timing-function: ease-in;
+    -ms-animation-duration: 3s;
+    -o-animation-name: TOAST-APPEAR;
+    -o-animation-timing-function: ease-in;
+    -o-animation-duration: 3s;
+    -moz-animation-name: TOAST-APPEAR;
+    -moz-animation-timing-function: ease-in;
+    -moz-animation-duration: 3s;
+    -webkit-animation-name: TOAST-APPEAR;
+    -webkit-animation-timing-function: ease-in;
+    -webkit-animation-duration: 3s;
+    animation-name: TOAST-APPEAR;
+    animation-timing-function: ease-in;
+    animation-duration: 3s;
+}
+
+@keyframes TOAST-APPEAR {
+    0% {
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+        top: 80%;
+    }
+    100% {
+        opacity: 0;
+        top: 75%;
+    }
+}
