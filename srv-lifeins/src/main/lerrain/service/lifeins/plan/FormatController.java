@@ -3,29 +3,16 @@ package lerrain.service.lifeins.plan;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
-import lerrain.project.insurance.plan.CommodityFactors;
 import lerrain.project.insurance.plan.Plan;
-import lerrain.project.insurance.product.*;
-import lerrain.service.lifeins.Customer;
-import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.LifeinsShow;
-import lerrain.service.lifeins.LifeinsUtil;
-import lerrain.service.lifeins.format.FGraphFilter;
 import lerrain.tool.Common;
-import lerrain.tool.formula.Formula;
-import lerrain.tool.formula.Value;
-import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class FormatController
@@ -46,10 +33,10 @@ public class FormatController
 
         for (String style : p.getString("style").split(","))
         {
-            if ("fgraph".equals(style))
-                content.put(style, LifeinsShow.formatFGraph(plan));
-            else if ("csv".equals(style))
-                content.put(style, LifeinsShow.formatCsv(plan));
+            if ("radarGraph".equals(style))
+                content.put(style, LifeinsShow.formatRadarGraph(plan));
+            else if ("valChart".equals(style))
+                content.put(style, LifeinsShow.formatValChart(plan));
         }
 
         JSONObject res = new JSONObject();

@@ -6,11 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 
-
-/**
- * Created by lerrain on 2017/5/19.
- */
-@Service
 public class Md5 implements Function
 {
     @Override

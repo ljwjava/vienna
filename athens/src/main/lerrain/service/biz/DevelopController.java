@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-public class BizController
+public class DevelopController
 {
     @Autowired
     EnvService envSrv;
@@ -25,6 +26,16 @@ public class BizController
 
     @Autowired
     DevelopDao developDao;
+
+    @RequestMapping("/reset")
+    @ResponseBody
+    public String reset()
+    {
+        gatewaySrv.reset();
+        envSrv.reset();
+
+        return "success";
+    }
 
     private Environment getEnv(JSONObject json)
     {
