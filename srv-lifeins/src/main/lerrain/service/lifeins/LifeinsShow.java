@@ -24,13 +24,13 @@ import java.util.Map;
 
 public class LifeinsShow
 {
-    public static Object formatFGraph(Plan plan)
+    public static Object formatRadarGraph(Plan plan)
     {
         FGraphFilter fgf = new FGraphFilter();
         return fgf.filtrate(plan, "fgraph");
     }
 
-    public static Map formatCsv(Plan plan)
+    public static Map formatValChart(Plan plan)
     {
         Map r = new HashMap();
 

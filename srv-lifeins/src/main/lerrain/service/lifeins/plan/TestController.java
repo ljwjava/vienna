@@ -5,11 +5,8 @@ import lerrain.project.insurance.plan.Plan;
 import lerrain.service.lifeins.Customer;
 import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.LifeinsShow;
-import lerrain.service.lifeins.format.FGraphFilter;
-import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -36,7 +33,7 @@ public class TestController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", LifeinsShow.formatFGraph(plan));
+        res.put("content", LifeinsShow.formatRadarGraph(plan));
 
         return res;
     }
@@ -56,7 +53,7 @@ public class TestController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", LifeinsShow.formatCsv(plan));
+        res.put("content", LifeinsShow.formatValChart(plan));
 
         return res;
     }

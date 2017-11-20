@@ -36,17 +36,6 @@ public class GatewayController
     @Autowired
     ServiceMgr sv;
 
-    @PostConstruct
-    @RequestMapping("/reset")
-    @ResponseBody
-    public String reset()
-    {
-        gatewaySrv.reset();
-        envSrv.reset();
-
-        return "success";
-    }
-
     private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
         Log.debug(host + "/" + uri + " <== " + param.toString());
@@ -158,13 +147,18 @@ public class GatewayController
             JSONObject param = getParam(req);
             HttpSession session = req.getSession();
 
-            session.setAttribute("userId", param.get("accountId"));
+            Long userId = param.getLong("owner");
+            if (userId == null)
+                userId = param.getLong("accountId");
+            if (userId != null)
+                session.setAttribute("userId", userId);
 
             res.put("isSuccess", true);
             res.put("result", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
         }
         catch (Exception e)
         {
+            res.put("isSuccess", false);
             res.put("errorCode", 101);
             res.put("errorMsg", e.getMessage());
         }
@@ -233,12 +227,17 @@ public class GatewayController
         String uri = req.getRequestURI();
         uri = uri.substring(5);
 
+        long t1 = System.currentTimeMillis();
+        Log.debug(uri + " => " + t1);
+
         JSONObject param = getParam(req);
         HttpSession session = req.getSession();
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
+
+        Log.debug(uri + " <= " + t1);
 
         return res;
     }

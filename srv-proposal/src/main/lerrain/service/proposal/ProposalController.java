@@ -375,7 +375,7 @@ public class ProposalController
 		for (String planId : proposal.getPlanList())
 		{
 			req.put("planId", planId);
-			JSONObject r = serviceMgr.req("lifeins", "fee.json", req);
+			JSONObject r = serviceMgr.req("lifeins", "plan/fee.json", req);
 
 			if ("success".equals(r.get("result")))
 			{

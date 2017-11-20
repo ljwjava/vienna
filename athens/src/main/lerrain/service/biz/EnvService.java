@@ -20,7 +20,8 @@ public class EnvService
 
     Map<Object, Environment> env1, env2;
 
-    @Autowired NextId2 nextId;
+    @Autowired
+    NextId nextId;
     @Autowired Request request;
     @Autowired RequestPost post;
     @Autowired CallService service;

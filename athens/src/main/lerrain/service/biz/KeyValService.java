@@ -19,4 +19,14 @@ public class KeyValService
     {
         return map.get(key);
     }
+
+    public void store()
+    {
+
+    }
+
+    public void restore()
+    {
+
+    }
 }
