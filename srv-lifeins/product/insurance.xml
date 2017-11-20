@@ -3,7 +3,7 @@
 	<corporation id="insurance">
 		<!-- 变量公式映射 -->
 		<item src="default/variable.xml"/>
-		
+
 		<!-- 基础定义，关于缴费、保障、领取 -->
 		<item src="default/parameter.xml"/>
 
