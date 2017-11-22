@@ -130,6 +130,8 @@ public class EnvService
 
     public void reset()
     {
+        envDao.loadDbSource();
+
         Map stack = new HashMap();
         stack.put("log", log);
         stack.put("err", err);

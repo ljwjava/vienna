@@ -180,6 +180,35 @@ public class PlanController
         return res;
     }
 
+    @RequestMapping("/plan/find_clause.json")
+    @ResponseBody
+    public JSONObject listProduct(@RequestBody JSONArray p)
+    {
+        JSONArray r = new JSONArray();
+        for (int i=0;i<p.size();i++)
+        {
+            Insurance ins = lifeins.getProduct(p.getString(i));
+
+            JSONObject m = new JSONObject();
+            m.put("id", ins.getId());
+            m.put("code", ins.getId());
+            m.put("vendor", ins.getVendor());
+            m.put("name", ins.getName());
+            m.put("tag", ins.getAdditional("tag"));
+            m.put("logo", ins.getAdditional("logo"));
+            m.put("remark", ins.getAdditional("remark"));
+            m.put("type", !ins.isMain() ? "rider" : ins.getType() == Insurance.PACKAGE ? "package" : "clause");
+
+            r.add(m);
+        }
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
     @RequestMapping("/plan/list_clause.json")
     @ResponseBody
     public JSONObject listProduct(@RequestBody JSONObject p)
@@ -202,10 +231,15 @@ public class PlanController
                 if (ins.isMain())
                 {
                     JSONObject m = new JSONObject();
-                    m.put("vendor", ins.getVendor());
+                    m.put("id", ins.getId());
                     m.put("code", ins.getId());
-                    m.put("text", ins.getName());
+                    m.put("vendor", ins.getVendor());
+                    m.put("name", ins.getName());
+                    m.put("tag", ins.getAdditional("tag"));
+                    m.put("logo", ins.getAdditional("logo"));
+                    m.put("remark", ins.getAdditional("remark"));
                     m.put("type", ins.getType() == Insurance.PACKAGE ? "package" : "clause");
+
                     products.add(m);
                 }
             }
@@ -230,9 +264,14 @@ public class PlanController
                     if (ins != null)
                     {
                         JSONObject m = new JSONObject();
+                        m.put("id", ins.getId());
                         m.put("code", ins.getId());
-                        m.put("text", ins.getName());
-                        m.put("type", ins.getType() == Insurance.PACKAGE ? "package" : "clause");
+                        m.put("vendor", ins.getVendor());
+                        m.put("name", ins.getName());
+                        m.put("tag", ins.getAdditional("tag"));
+                        m.put("logo", ins.getAdditional("logo"));
+                        m.put("remark", ins.getAdditional("remark"));
+                        m.put("type", "rider");
                         products.add(m);
                     }
                 }
@@ -293,7 +332,7 @@ public class PlanController
                     Object val = comm.getFactor(field.getName());
                     if (val instanceof Boolean)
                         val = ((Boolean)val) ? "Y" : "N";
-                    else if (val instanceof Number)
+                        else if (val instanceof Number)
                         val = ((Number)val).intValue();
                     item.put("value", val);
                 }

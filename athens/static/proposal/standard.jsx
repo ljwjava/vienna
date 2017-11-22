@@ -67,7 +67,7 @@ var Console = React.createClass({
 					<table style={{margin:"10px 24px 10px 10px"}}>
 						<tbody onClick={this.addProduct.bind(this, v.id)} style={{whiteSpace:"nowrap"}}>
 							<tr>
-								<td rowSpan="2" style={{width:"60px"}}><img src={common.link(v.logo == null ? "images/logo/iyb.png" : v.logo)} style={{width:"50px", height:"50px"}}/></td>
+								<td rowSpan="2" style={{width:"60px"}}><img src={v.logo == null ? common.link("images/logo/iyb.png") : v.logo} style={{width:"50px", height:"50px"}}/></td>
 								<td>
 									<span>{v.name}</span>&nbsp;
 									<span style={{color:"#F00"}}>{v.tag}</span>

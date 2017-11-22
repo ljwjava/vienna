@@ -20,6 +20,7 @@ public class Gateway
     public static final int FORWARD_REDIRECT_LOCAL  = 2;
     public static final int FORWARD_REDIRECT_REMOTE = 3;
 
+    Long id;
     Long envId;
 
     int type;
@@ -43,6 +44,16 @@ public class Gateway
             return uri.startsWith(this.uri) && uri.endsWith(this.uriX);
 
         return this.uri.equals(uri);
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     public boolean isSupport(int support)

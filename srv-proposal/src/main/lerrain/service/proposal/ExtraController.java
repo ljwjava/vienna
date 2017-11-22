@@ -28,34 +28,6 @@ public class ExtraController
 		return res;
 	}
 
-	@RequestMapping("/list_clause.json")
-	@ResponseBody
-	public JSONObject listClause(@RequestBody JSONObject p)
-	{
-		JSONArray prds = new JSONArray();
-
-		for (Product prd : ps.getClauses(p.getLong("platformId")))
-		{
-			if (prd.getType() != 2)
-			{
-				JSONObject item = new JSONObject();
-				item.put("id", prd.getId());
-				item.put("name", prd.getName());
-				item.put("tag", prd.getTag());
-				item.put("logo", prd.getLogo());
-				item.put("remark", prd.getRemark());
-
-				prds.add(item);
-			}
-		}
-
-		JSONObject res = new JSONObject();
-		res.put("result", "success");
-		res.put("content", prds);
-
-		return res;
-	}
-
 	@RequestMapping("/favourite.json")
 	@ResponseBody
 	public JSONObject favourite(@RequestBody JSONObject p)

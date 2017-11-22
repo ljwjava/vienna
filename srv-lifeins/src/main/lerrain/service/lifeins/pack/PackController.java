@@ -30,8 +30,6 @@ public class PackController
     @ResponseBody
     public String reset()
     {
-        lifeins.reset();
-        planSrv.reset();
         packSrv.reset();
 
         return "success";
@@ -101,7 +99,6 @@ public class PackController
 
     @RequestMapping({ "/pack/view.json" })
     @ResponseBody
-    @CrossOrigin
     public JSONObject view(@RequestBody JSONObject json)
     {
         JSONObject res = new JSONObject();

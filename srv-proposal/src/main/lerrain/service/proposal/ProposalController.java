@@ -21,8 +21,13 @@ public class ProposalController
 	@CrossOrigin
 	public JSONObject create(@RequestBody JSONObject p)
 	{
+		Long owner = p.getLong("owner");
+		Long platformId = p.getLong("platformId");
+		if (owner == null || platformId == null)
+			throw new RuntimeException("owner or platform is null - " + p);
+
 		JSONObject applicant = p.getJSONObject("applicant");
-		Proposal proposal = ps.newProposal(applicant, p.getLong("owner"), p.getLong("platformId"));
+		Proposal proposal = ps.newProposal(applicant, owner, platformId);
 
 		fill(proposal, p);
 

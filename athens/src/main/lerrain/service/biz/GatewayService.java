@@ -20,6 +20,16 @@ public class GatewayService
         map = gatewayDao.loadAllGateway();
     }
 
+    public Gateway getGateway(Long gatewayId)
+    {
+        for (String sort : map.keySet())
+            for (Gateway gateway : map.get(sort))
+                if (gateway.getId() == gatewayId)
+                    return gateway;
+
+        return null;
+    }
+
     public List<Gateway> getGatewayList(String sort)
     {
         return map.get(sort);
@@ -27,8 +37,6 @@ public class GatewayService
 
     public Gateway getGateway(String uri)
     {
-        Log.debug(uri);
-
         String sort = uri.substring(0, uri.indexOf("/"));
         List<Gateway> list = map.get(sort);
 

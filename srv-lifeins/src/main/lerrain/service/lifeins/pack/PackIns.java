@@ -2,7 +2,6 @@ package lerrain.service.lifeins.pack;
 
 import lerrain.tool.formula.Formula;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +27,9 @@ public class PackIns
     Map<String, Formula> opts;
 
     Map<String, Object> vendor;
-
     Map<String, Object> docs;
 
-//    Map<String, List<SummaryBlock>> summary;
+    String[] rateFactors;
 
     public int getType()
     {
@@ -81,6 +79,16 @@ public class PackIns
     public void setPlanId(String planId)
     {
         this.planId = planId;
+    }
+
+    public String[] getRateFactors()
+    {
+        return rateFactors;
+    }
+
+    public void setRateFactors(String[] rateFactors)
+    {
+        this.rateFactors = rateFactors;
     }
 
     public Map<String, Object> getDocs()

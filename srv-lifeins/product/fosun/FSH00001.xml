@@ -4,8 +4,8 @@
 		id="FSH00001"
 		corporation_id="fosun"
 		code="110023"
-		name="康乐一生重大疾病保险（C款）"
-		name_abbr="康乐一生重疾"
+		name="康乐e生重大疾病保险（C款）"
+		name_abbr="康乐e生重疾"
 		unit="1000"
 		type_code="thunder"
 		sequence="1000"
@@ -34,10 +34,14 @@
 		</param>
 
 		<input>
-			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[150000,'15万'],[200000,'20万']]</item>
+			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万']]</item>
 			<item name="PAY" label="缴费年期" widget="select">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>
 			<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>
 		</input>
+
+		<interest>
+			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
+		</interest>
 
 		<attachment>
 			<fgraph filter="fgraph" parser="fgraph">
@@ -47,6 +51,27 @@
 		</attachment>
 
 		<rule>
+			<if condition="DAY lt 30 or AGE > 55" type="customer">
+				投保年龄须为出生满30天~55周岁
+			</if>
+			<if condition="AGE > 40 and INSURE_VALUE == 70">
+				41周岁≤被保险人年龄≤55周岁可选择：保至80周岁、终身
+			</if>
+			<if condition="AGE + PAY_PERIOD >= 70">
+				缴费期间+投保年龄要求小于70周岁
+			</if>
+			<if condition="DAY >= 30 and 17 >= AGE and AMOUNT > 300000">
+				30天-17岁保额不得超过30万
+			</if>
+			<if condition="AGE >= 18 and 40 >= AGE and AMOUNT > 500000">
+				18-40岁保额不得超过50万
+			</if>
+			<if condition="AGE >= 41 and 45 >= AGE and AMOUNT > 400000">
+				41-45岁保额不得超过40万
+			</if>
+			<if condition="AGE >= 46 and 50 >= AGE and AMOUNT > 300000">
+				46-50岁保额不得超过30万
+			</if>
 		</rule>
 	</product>
 </declare>

@@ -13,19 +13,11 @@ import java.util.*;
 public class ProposalService
 {
 	@Autowired
-	ProductDao productDao;
-
-	@Autowired
 	ProposalDao proposalDao;
 
 	List<Object> covers = new ArrayList<>();
 
 	Cache cache = new Cache();
-
-	public List<Product> getClauses(Long platformId)
-	{
-		return productDao.loadClauses(platformId);
-	}
 
 	public List<Object> getCovers()
 	{
@@ -62,8 +54,9 @@ public class ProposalService
 		np.setName(old.getName());
 		np.setRemark(old.getRemark());
 		np.setCover(old.getCover());
-		np.setFavourite(np.isFavourite());
-		np.setTag(np.getTag());
+		np.setFavourite(false);
+		np.setTag(old.getTag());
+		np.setOwner(old.getOwner());
 		np.setInsureTime(new Date());
 		np.setUpdateTime(new Date());
 		np.getOther().putAll(old.getOther());

@@ -31,6 +31,7 @@ public class GatewayDao
             public void processRow(ResultSet rs) throws SQLException
             {
                 int type = rs.getInt("type");
+                Long id = rs.getLong("id");
                 Long envId = rs.getLong("env_id");
                 String uri = rs.getString("uri");
                 String with = rs.getString("with");
@@ -53,6 +54,7 @@ public class GatewayDao
                 }
 
                 Gateway gw = new Gateway();
+                gw.setId(id);
                 gw.setType(type);
                 gw.setLogin(needLogin);
                 gw.setSupport(support);

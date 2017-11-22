@@ -30,7 +30,6 @@ public class LifeinsService
     @Value("${path.lifeins}")
     String dataPath;
 
-    @PostConstruct
     public void reset()
     {
 //        Config.addFilter("fgraph", new FGraphFilter());

@@ -44,6 +44,9 @@ public class PackService
 	@PostConstruct
 	public void reset()
 	{
+		lifeins.reset();
+		planSrv.reset();
+
 		packs = packDao.loadPacks();
 
 		functions = new HashMap<>();
@@ -277,6 +280,44 @@ public class PackService
 
 	public Map<String, Object> premium(PackIns packIns, Map<String, Object> vals)
 	{
+		if (packIns.getRateFactors() != null)
+		{
+			Map<String, Object> r = new HashMap<>();
+
+			StringBuffer key = new StringBuffer();
+			for (String f : packIns.getRateFactors())
+			{
+				Object val = vals.get(f);
+				if (val == null)
+				{
+					key = null;
+					break;
+				}
+
+				key.append(val.toString());
+				key.append(",");
+			}
+
+			Double total = null;
+
+			if (key != null)
+			{
+				Double rate = packDao.getPackRate(packIns, key.toString());
+				if (rate != null)
+				{
+					if (vals.containsKey("QUANTITY"))
+					{
+						total = rate * Common.doubleOf(vals.get("QUANTITY"), 1);
+					}
+				}
+			}
+
+			r.put("premium", total); //兼容
+			r.put("total", total);
+
+			return r;
+		}
+
 		Map<String, Object> r = new HashMap<>();
 
 		List<String> rules = new ArrayList<>();

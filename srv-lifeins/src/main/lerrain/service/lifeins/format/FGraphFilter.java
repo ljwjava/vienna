@@ -22,23 +22,23 @@ public class FGraphFilter implements FilterPlan
 	static
 	{
 		list = new ArrayList<>();
-		list.add(new Category("医疗保障", "COMMON_MEDICAL + CANCER_MEDICAL",
+		list.add(new Category("医疗保障", "COMMON_MEDICAL + CANCER_MEDICAL", new double[] {10000,50000,100000,1000000},
 			new Item("一般医疗保险金", "'因意外伤害或非等待期因患疾病，在二级及以上医院普通部发生需个人支付，必须且合理的住院或特殊门诊费用最高可报销'+round(COMMON_MEDICAL/10000)+'万。'", "COMMON_MEDICAL > 0"),
 			new Item("癌症医疗保险金", "'罹患癌症，在二级及以上医院普通部发生需个人支付，必须且合理的住院或特殊门诊费用最高可报销'+round(CANCER_MEDICAL/10000)+'万。无免赔。'", "CANCER_MEDICAL > 0")
 		));
-		list.add(new Category("伤残保障", "max(ACCIDENT_DISABILITY, OTHER_DISABILITY, TOTAL_DISABILITY2)",
+		list.add(new Category("伤残保障", "max(ACCIDENT_DISABILITY, OTHER_DISABILITY, TOTAL_DISABILITY2)", new double[] {100000,500000,1000000,2000000},
 			new Item("意外伤残", "'若被保人因意外伤害造成伤残，按照伤残评定标准对应等级的给付比例乘以伤残保额，将给付伤残保险金，最高为'+round(ACCIDENT_DISABILITY/10000)+'万。'", "ACCIDENT_DISABILITY > 0"),
 			new Item("非意外伤残", "'若被保人因非意外伤害造成伤残，按照伤残评定标准对应等级的给付比例乘以伤残保额，将给付伤残保险金，最高为'+round(OTHER_DISABILITY/10000)+'万。'", "OTHER_DISABILITY > 0"),
 			new Item("全残保障", "'若被保人不幸全残，给付全残保险金，最高首年'+round(TOTAL_DISABILITY1/10000)+'万，次年及以后'+round(TOTAL_DISABILITY2/10000)+'万。'", "TOTAL_DISABILITY2 > 0")
 		));
-		list.add(new Category("重疾保障", "THUNDER",
+		list.add(new Category("重疾保障", "THUNDER", new double[] {100000,200000,500000,1000000},
 			new Item(null, "'罹患所保障的重大疾病，保险公司给付重疾保险金，最高首年'+round(THUNDER/10000)+'万，次年及以后'+round(THUNDER/10000)+'万。'", "THUNDER > 0")
 		));
-		list.add(new Category("轻症保障", "MILD",
+		list.add(new Category("轻症保障", "MILD", new double[] {20000,50000,100000,200000},
 			new Item(null, "'罹患所保障的轻症疾病，保险公司给付轻症保险金最高'+round(MILD/10000)+'万。'", "MILD > 0"),
 			new Item("轻症豁免", "'罹患所保障的轻症疾病，免缴剩余保费'", "MILD_EXEMPT > 0")
 		));
-		list.add(new Category("身故保障", "max(ACCIDENT_DEATH, OTHER_DEATH)",
+		list.add(new Category("身故保障", "max(ACCIDENT_DEATH, OTHER_DEATH)", new double[] {100000,500000,1000000,2000000},
 			new Item("意外身故", "'被保人因意外伤害原因导致身故，保险公司给付将身故保险金，最高为'+round(ACCIDENT_DEATH/10000)+'万。'", "ACCIDENT_DEATH > 0"),
 			new Item("非意外身故", "'若被保人因非意外伤害原因导致身故，保险公司给付身故保险金，最高为'+round(OTHER_DEATH/10000)+'万。'", "OTHER_DEATH > 0"),
 			new Item("身故返还", "'被保人身故，保险公司给付身故保险金，为和谐健康之享主险已交保费'", "PAYBACK_DEATH > 0")
@@ -83,9 +83,22 @@ public class FGraphFilter implements FilterPlan
 
 			if (!detail.isEmpty())
 			{
+				double amt = Value.doubleOf(ct.f, stack);
+
+				int rank = ct.ranks.length;
+				for (int i=0;i<ct.ranks.length;i++)
+				{
+					if (ct.ranks[i] > amt)
+					{
+						rank = i;
+						break;
+					}
+				}
+
 				Map cm = new HashMap();
 				cm.put("name", ct.name);
-				cm.put("amount", Value.doubleOf(ct.f, stack));
+				cm.put("amount", amt);
+				cm.put("rank", rank);
 				cm.put("detail", detail);
 				res.add(cm);
 			}
@@ -99,12 +112,14 @@ public class FGraphFilter implements FilterPlan
 		String name;
 		Formula f;
 
+		double[] ranks;
 		Item[] vars;
 
-		public Category(String name, String f, Item... vars)
+		public Category(String name, String f, double[] ranks, Item... vars)
 		{
 			this.name = name;
 			this.f = Script.scriptOf(f);
+			this.ranks = ranks;
 			this.vars = vars;
 		}
 	}

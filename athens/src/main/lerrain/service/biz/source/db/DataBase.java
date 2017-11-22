@@ -1,4 +1,4 @@
-package lerrain.service.data.source.db;
+package lerrain.service.biz.source.db;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;

@@ -37,32 +37,13 @@ public class DevelopController
         return "success";
     }
 
-    private Environment getEnv(JSONObject json)
-    {
-        Long envId = json.getLong("envId");
-        if (envId != null)
-            return envSrv.getEnv(envId);
-        else
-            return envSrv.getEnv(json.getString("envCode"));
-    }
-
-    @RequestMapping("/opt/gateway.json")
+    @RequestMapping("/develop/list_gateway.json")
     @ResponseBody
-    public JSONObject gateway(@RequestBody JSONObject req)
+    public JSONObject listGateway(@RequestBody JSONObject req)
     {
-        List<Gateway> list = gatewaySrv.getGatewayList("proposal");
-
-        JSONArray r = new JSONArray();
-        if (list != null) for (Gateway gateway : list)
-        {
-            JSONObject j = new JSONObject();
-            j.put("uri", gateway.getUri());
-            r.add(j);
-        }
-
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", r);
+        res.put("content", developDao.loadGatewayList());
 
         return res;
     }
@@ -108,18 +89,54 @@ public class DevelopController
         return res;
     }
 
+    @RequestMapping("/develop/req_testing.json")
+    @ResponseBody
+    public JSONObject reqParam(@RequestBody JSONObject req)
+    {
+        String url = req.getString("url");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", developDao.loadTesting(url));
+
+        return res;
+    }
+
     @RequestMapping("/develop/save.json")
     @ResponseBody
     public JSONObject save(@RequestBody JSONObject req)
     {
-        Long functionId = req.getLong("functionId");
-        String name = req.getString("name");
-        String params = req.getString("params");
-        String script = req.getString("script");
-        String reqUrl = req.getString("url");
-        String reqJson = req.getString("postJson");
+        String url = req.getString("url");
+        String param = req.getString("param");
 
-        developDao.save(functionId, name, params, script, reqUrl, reqJson);
+        developDao.save(url, param);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/develop/apply.json")
+    @ResponseBody
+    public JSONObject apply(@RequestBody JSONObject req)
+    {
+        int type = req.getIntValue("type");
+        String script = req.getString("script");
+
+        if (type == 1)
+        {
+            Long gatewayId = req.getLong("gatewayId");
+            developDao.apply(gatewayId, script);
+        }
+        else if (type == 2)
+        {
+            Long functionId = req.getLong("functionId");
+            String name = req.getString("name");
+            String params = req.getString("params");
+
+            developDao.apply(functionId, name, params, script);
+        }
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -131,15 +148,30 @@ public class DevelopController
     @ResponseBody
     public JSONObject replace(@RequestBody JSONObject req)
     {
-        String funcName = req.getString("name");
-        String params = req.getString("params");
-        String scriptStr = req.getString("script");
+        int type = req.getIntValue("type");
+        String script = req.getString("script");
 
-        Environment p = getEnv(req);
-        Function f = new EnvDao.InnerFunction(Script.scriptOf(scriptStr), Common.isEmpty(params) ? null : params.split(","), p.getStack());
+        if (type == 1)
+        {
+            Long gatewayId = req.getLong("gatewayId");
+            Gateway p = gatewaySrv.getGateway(gatewayId);
 
-        Log.debug("replace env's function... " + funcName);
-        p.putVar(funcName, f);
+            Log.debug("replace gateway... " + p.getId());
+            p.setScript(Script.scriptOf(script));
+        }
+        else
+        {
+            Long envId = req.getLong("envId");
+            Environment p = envSrv.getEnv(envId);
+
+            String funcName = req.getString("name");
+            String params = req.getString("params");
+
+            Function f = new EnvDao.InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
+
+            Log.debug("replace env's function... " + funcName);
+            p.putVar(funcName, f);
+        }
 
         JSONObject res = new JSONObject();
         res.put("result", "success");

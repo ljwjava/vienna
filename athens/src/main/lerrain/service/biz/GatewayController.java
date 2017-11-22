@@ -8,6 +8,7 @@ import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,11 +37,17 @@ public class GatewayController
     @Autowired
     ServiceMgr sv;
 
+    @Value("${gatedir}")
+    String gateDir;
+
     private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
         Log.debug(host + "/" + uri + " <== " + param.toString());
 
         Gateway gateway = gatewaySrv.getGateway(uri);
+
+        Log.debug(gateway.getUri());
+
         if (gateway == null)
             return null;
 
@@ -70,7 +77,7 @@ public class GatewayController
             val = script.run(stack);
         }
 
-        Log.debug(uri + " ==> " + val);
+        Log.debug(uri + " <== " + val);
 
         if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)
         {
@@ -219,16 +226,19 @@ public class GatewayController
         }
     }
 
-    @RequestMapping("/api/**/*.json")
+    @RequestMapping("/${gatedir}**/*.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject callJson(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        uri = uri.substring(5);
+        Log.debug(uri);
+        Log.debug(gateDir);
 
-        long t1 = System.currentTimeMillis();
-        Log.debug(uri + " => " + t1);
+        uri = uri.substring(1 + gateDir.length());
+
+//        long t1 = System.currentTimeMillis();
+//        Log.debug(uri + " => " + t1);
 
         JSONObject param = getParam(req);
         HttpSession session = req.getSession();
@@ -237,12 +247,12 @@ public class GatewayController
         res.put("result", "success");
         res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
 
-        Log.debug(uri + " <= " + t1);
+//        Log.debug(uri + " <= " + t1);
 
         return res;
     }
 
-    @RequestMapping("/api/**/*.html")
+    @RequestMapping("/${gatedir}**/*.html")
     @CrossOrigin
     public void callHtml(HttpServletRequest req, HttpServletResponse res)
     {
@@ -278,12 +288,12 @@ public class GatewayController
         }
     }
 
-    @RequestMapping("/api/**/*.do")
+    @RequestMapping("/${gatedir}**/*.do")
     @CrossOrigin
     public String callAction(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        uri = uri.substring(5);
+        uri = uri.substring(1 + gateDir.length());
 
         JSONObject param = getParam(req);
         HttpSession session = req.getSession();

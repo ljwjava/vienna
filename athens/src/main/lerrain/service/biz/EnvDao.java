@@ -1,6 +1,7 @@
 package lerrain.service.biz;
 
 import com.alibaba.fastjson.JSON;
+import lerrain.service.biz.source.SourceMgr;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
@@ -22,7 +23,29 @@ import java.util.*;
 @Repository
 public class EnvDao
 {
-    @Autowired JdbcTemplate jdbc;
+    @Autowired
+    JdbcTemplate jdbc;
+
+    @Autowired
+    SourceMgr sourceMgr;
+
+    public void loadDbSource()
+    {
+        sourceMgr.close();
+
+        jdbc.query("select * from t_data_source", new RowCallbackHandler()
+        {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException
+            {
+                Long id = rs.getLong("id");
+                int type = rs.getInt("type");
+                Map opts = JSON.parseObject(rs.getString("config"));
+
+                sourceMgr.add(id, type, opts);
+            }
+        });
+    }
 
     public List<Environment> loadAllEnv(final Map funcs)
     {
@@ -94,6 +117,18 @@ public class EnvDao
 
     private void initEnv(final Environment p)
     {
+        jdbc.query("select * from t_env_ds where env_id = ?", new Object[] {p.getId()}, new RowCallbackHandler()
+        {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException
+            {
+                String anchor = rs.getString("anchor");
+                Long sourceId = rs.getLong("source_id");
+
+                p.getStack().set(anchor, sourceMgr.getSource(sourceId));
+            }
+        });
+
         jdbc.query("select * from t_env_const where env_id = ? or env_code = ?", new Object[] {p.getId(), p.getCode()}, new RowCallbackHandler()
         {
             @Override
@@ -172,18 +207,6 @@ public class EnvDao
             }
 
         });
-    }
-
-    public void backupScript(String table, String column, Object seek)
-    {
-//        String sql = String.format("select %s from %s where id = ?", column, table);
-//        String script = jdbc.queryForObject(sql, String.class, seek);
-//
-//        String s1 = "insert into t_script_history (script, table_name, column_name, seek, del_time) values (?, ?, ?, ?, now())";
-//        jdbc.update(s1, script, table, column, seek);
-
-        String sql = String.format("insert into t_script_history (script, table_name, column_name, seek, del_time) values ((select %s from %s where id = ?), ?, ?, ?, now())", column, table);
-        jdbc.update(sql, seek, table, column, seek);
     }
 
     public static class InnerFunction implements Function

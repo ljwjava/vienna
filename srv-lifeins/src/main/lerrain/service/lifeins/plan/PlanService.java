@@ -19,9 +19,10 @@ public class PlanService
 
 	Cache cache = new Cache();
 
-	@PostConstruct
 	public void reset()
 	{
+		pd.supplyClauses();
+
 		List<Plan> list = pd2.loadAll();
 		if (list != null)
 			for (Plan plan : list)

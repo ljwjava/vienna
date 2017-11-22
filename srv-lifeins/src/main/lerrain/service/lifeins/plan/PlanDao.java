@@ -3,14 +3,23 @@ package lerrain.service.lifeins.plan;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Plan;
+import lerrain.project.insurance.product.Insurance;
+import lerrain.service.common.Log;
 import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.LifeinsUtil;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class PlanDao
@@ -61,5 +70,39 @@ public class PlanDao
         String res = jdbc.queryForObject(sql, new Object[]{planId}, String.class);
 
         return LifeinsUtil.toPlan(lifeins, JSON.parseObject(res));
+    }
+
+    public void supplyClauses()
+    {
+        final Map<String, String> map = new HashMap<>();
+
+        jdbc.query("select * from t_company", new RowCallbackHandler()
+        {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException
+            {
+                map.put(rs.getString("code"), rs.getString("logo"));
+            }
+        });
+
+        jdbc.query("select * from t_ins_clause", new RowCallbackHandler()
+        {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException
+            {
+                String code = rs.getString("code");
+                Insurance ins = lifeins.getProduct(code);
+                if (ins != null)
+                {
+                    ins.setAdditional("logo", map.get(ins.getCompany().getId()));
+                    ins.setAdditional("remark", rs.getString("remark"));
+                    ins.setAdditional("tag", rs.getString("tag"));
+                }
+                else
+                {
+                    Log.error(code + " is not found.");
+                }
+            }
+        });
     }
 }
