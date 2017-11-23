@@ -128,6 +128,9 @@ public class DevelopController
         {
             Long gatewayId = req.getLong("gatewayId");
             developDao.apply(gatewayId, script);
+
+            Gateway p = gatewaySrv.getGateway(gatewayId);
+            p.setScript(Script.scriptOf(script));
         }
         else if (type == 2)
         {
@@ -136,6 +139,12 @@ public class DevelopController
             String params = req.getString("params");
 
             developDao.apply(functionId, name, params, script);
+
+            Long envId = req.getLong("envId");
+            Environment p = envSrv.getEnv(envId);
+            Function f = new EnvDao.InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
+            p.putVar(name, f);
+
         }
 
         JSONObject res = new JSONObject();
