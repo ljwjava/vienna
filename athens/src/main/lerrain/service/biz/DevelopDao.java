@@ -103,7 +103,7 @@ public class DevelopDao
 
     public Map loadFunction(Long funcId)
     {
-        return jdbc.queryForObject("select a.*, b.url, b.post_json, b.script as develop from t_env_function a left join t_env_function_test b on a.id = b.function_id where a.id = ?", new Object[]{funcId}, new RowMapper<Map>()
+        return jdbc.queryForObject("select a.* from t_env_function a where a.id = ?", new Object[]{funcId}, new RowMapper<Map>()
         {
             @Override
             public Map mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -119,10 +119,6 @@ public class DevelopDao
                 map.put("params", rs.getString("params"));
                 map.put("script", rs.getString("script"));
                 map.put("remark", rs.getString("remark"));
-
-                map.put("url", rs.getString("url"));
-                map.put("postJson", rs.getString("post_json"));
-                map.put("develop", rs.getString("develop"));
 
                 return map;
             }
