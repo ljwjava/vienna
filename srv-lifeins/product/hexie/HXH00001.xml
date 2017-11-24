@@ -40,6 +40,10 @@
 			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
 		</interest>
 
+		<duty>
+			<item code="903300"/>
+		</duty>
+
 		<attachment>
 			<benefit_table filter="table" parser="table">
 				<table>

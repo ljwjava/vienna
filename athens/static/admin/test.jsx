@@ -51,7 +51,7 @@ var Main = React.createClass({
 				gatewayId: ENV.gatewayId,
 				script: this.refs.script.value
 			};
-			ENV.gatewayMap[ENV.gatewayId] = req.script;
+			ENV.gatewayMap[ENV.gatewayId].script = req.script;
 		} else if (ENV.target == 2 && ENV.funcId != null) {
 			req = {
 				type: 2,
@@ -61,7 +61,9 @@ var Main = React.createClass({
 				params: this.refs.funcParams.value,
 				script: this.refs.script.value
 			}
-			ENV.funcMap[ENV.funcId] = req.script;
+			ENV.funcMap[ENV.funcId].name = req.name;
+			ENV.funcMap[ENV.funcId].params = req.params;
+			ENV.funcMap[ENV.funcId].script = req.script;
 		}
 		if (req != null) common.post(common.server() + "/develop/apply.json", req, r => {
 			alert("success");

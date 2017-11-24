@@ -2,6 +2,7 @@ package lerrain.service.lifeins;
 
 import java.util.*;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -227,6 +228,17 @@ public class LifeinsUtil
 
 			m.put("premium", c.getPremium());
 			m.put("purchase", c.getAmountDesc());
+
+			if (c.getProduct().getDutyList() != null)
+			{
+				JSONArray duty = new JSONArray();
+				List l = (List)c.getFactor("DUTY");
+				for (int i=0;i<l.size();i++)
+				{
+					duty.add(l.get(i));
+				}
+				m.put("duty", duty);
+			}
 		}
 		catch (Exception e)
 		{
@@ -292,9 +304,6 @@ public class LifeinsUtil
 		c.setGenderCode("M".equals(gender) ? Customer.GENDER_MALE : Customer.GENDER_FEMALE);
 		c.setBirthday(birthday);
 		c.setName((String)map.get("name"));
-		
-		String smoke = (String)map.get("smoke");
-		c.set("SMOKE", "Y".equals(smoke) ? 2 : 1);
 		
 		return c;
 	}
