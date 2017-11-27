@@ -29,6 +29,7 @@ public class EnvService
     @Autowired Fold fold;
     @Autowired Unfold unfold;
 
+    Function time2long;
     Function today;
     Function timediff;
     Function reversalStr;
@@ -36,6 +37,17 @@ public class EnvService
     Function log, err;
 
     public EnvService(){
+        time2long = new Function() {
+            @Override
+            public Object run(Object[] v, Factors p) {
+                if(v != null && v.length > 0){
+                    Date t = Common.dateOf(v[0], new Date());
+                    return t.getTime();
+                }
+
+                return new Date().getTime();
+            }
+        };
         today = new Function()
         {
             @Override
