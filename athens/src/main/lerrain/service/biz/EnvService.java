@@ -160,6 +160,7 @@ public class EnvService
         stack.put("fold", fold);
         stack.put("unfold", unfold);
         stack.put("today", today);
+        stack.put("time2long", time2long);
         stack.put("timediff", timediff);
         stack.put("reversalStr", reversalStr);
         stack.put("md5Of", new Md5());
