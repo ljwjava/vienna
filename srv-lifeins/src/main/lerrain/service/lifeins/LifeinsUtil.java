@@ -22,6 +22,7 @@ import lerrain.project.insurance.product.attachment.coverage.Coverage;
 import lerrain.project.insurance.product.attachment.coverage.CoverageParagraph;
 import lerrain.project.insurance.product.rule.Rule;
 import lerrain.project.insurance.product.rule.RuleUtil;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 
 public class LifeinsUtil
@@ -239,34 +240,33 @@ public class LifeinsUtil
 				}
 				m.put("duty", duty);
 			}
+
+			List<String[]> d = new ArrayList<>();
+			d.add(new String[] {"保费", String.format("%.2f", c.getPremium())});
+			if (c.getPay() != null)
+				d.add(new String[] {"缴费期间", c.getPay().getDesc()});
+			if (c.getInsure() != null)
+				d.add(new String[] {"保障期间", c.getInsure().getDesc()});
+			if (purchase == Purchase.AMOUNT)
+				d.add(new String[] {"保额", c.getAmount() % 10000 < 0.01f ? Math.round(c.getAmount() / 10000) + "万" : c.getAmount() + "元"});
+			else if (purchase == Purchase.QUANTITY)
+				d.add(new String[] {"份数", c.getQuantity() + "份"});
+			else if (purchase == Purchase.RANK)
+				d.add(new String[] {"档次", c.getRank().getDesc()});
+			m.put("descr", d);
+
+			List<String> ruleList = new ArrayList<String>();
+			List<Rule> r1 = RuleUtil.check(c);
+			if (r1 != null)
+			{
+				for (Rule rule : r1)
+					ruleList.add(rule.getDesc());
+				m.put("rule", ruleList);
+			}
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-		}
-
-		List<String[]> d = new ArrayList<>();
-		d.add(new String[] {"保费", String.format("%.2f", c.getPremium())});
-		if (c.getPay() != null)
-			d.add(new String[] {"缴费期间", c.getPay().getDesc()});
-		if (c.getInsure() != null)
-			d.add(new String[] {"保障期间", c.getInsure().getDesc()});
-		int purchase = c.getProduct().getPurchaseMode();
-		if (purchase == Purchase.AMOUNT)
-			d.add(new String[] {"保额", c.getAmount() % 10000 < 0.01f ? Math.round(c.getAmount() / 10000) + "万" : c.getAmount() + "元"});
-		else if (purchase == Purchase.QUANTITY)
-			d.add(new String[] {"份数", c.getQuantity() + "份"});
-		else if (purchase == Purchase.RANK)
-			d.add(new String[] {"档次", c.getRank().getDesc()});
-		m.put("descr", d);
-
-		List<String> ruleList = new ArrayList<String>();
-		List<Rule> r1 = RuleUtil.check(c);
-		if (r1 != null)
-		{
-			for (Rule rule : r1)
-				ruleList.add(rule.getDesc());
-			m.put("rule", ruleList);
+			Log.info(e.getMessage());
 		}
 
 		return m;

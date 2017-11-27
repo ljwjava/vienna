@@ -22,7 +22,7 @@ public class RoleDao
 	
 	public List<Role> loadAll()
 	{
-		List<Role> res = jdbc.query("select b.role_id, b.code from s_role b", new RowMapper<Role>()
+		List<Role> res = jdbc.query("select b.role_id, b.code from t_role b", new RowMapper<Role>()
 		{
 			@Override
 			public Role mapRow(ResultSet tc, int arg1) throws SQLException

@@ -28,6 +28,12 @@ public class WebController
             String full = path + "/" + file;
             os.write(jsxSrv.getCache(type, "header2"));
 
+//            if (m != null)
+//            {
+//                String title = (String)m.get("TITLE");
+//                os.write
+//            }
+
             if (jsxSrv.exists(path + "/" + path + ".css"))
                 os.write(String.format("<link href=\"%s.css\" rel=\"stylesheet\">\n", path).getBytes());
             else

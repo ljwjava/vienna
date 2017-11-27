@@ -60,66 +60,9 @@ var Console = React.createClass({
 	getInitialState() {
 		return {};
 	},
-	componentDidMount() {
-		common.req("proposal/list_clauses.json", {}, r => {
-			this.setState({clauses: r.map(v => (
-				<li key={v.code}>
-					<table style={{margin:"10px 24px 10px 10px"}}>
-						<tbody onClick={this.addProduct.bind(this, v.id)} style={{whiteSpace:"nowrap"}}>
-							<tr>
-								<td rowSpan="2" style={{width:"60px"}}><img src={common.link(v.logo == null ? "images/logo/iyb.png" : v.logo)} style={{width:"50px", height:"50px"}}/></td>
-								<td>
-									<span>{v.name}</span>&nbsp;
-									<span style={{color:"#F00"}}>{v.tag}</span>
-								</td>
-							</tr>
-							<tr><td style={{fontSize:"10px", color:"#AAA"}}>{v.remark}</td></tr>
-						</tbody>
-					</table>
-				</li>
-			))});
-		})
-	},
-	addProduct(productId) {
-		common.req("proposal/plan/clause.json", {productId:productId, planId:this.props.plan.planId}, r => {
-			this.props.refresh(r);
-		});
-	},
-	render() {
-		let list = [];
-		if (this.props.plan.applicant != null)
-			list.push(<Customer key="1" tag="applicant" show="投保人" plan={this.props.plan} val={this.props.plan.applicant} refresh={this.props.refresh}/>);
-		if (this.props.plan.insurant != null)
-			list.push(<Customer key="2" tag="insurant" show="被保险人" plan={this.props.plan} val={this.props.plan.insurant} refresh={this.props.refresh}/>);
-		return (
-			<nav className="navbar navbar-default">
-				<div className="container-fluid">
-					<div className="collapse navbar-collapse">
-						{list}
-						<ul className="nav navbar-nav navbar-right">
-							<li className="dropdown">
-								<a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-									添加产品 <span className="caret"></span>
-								</a>
-								<ul className="dropdown-menu" style={{width:"auto"}}>{this.state.clauses}</ul>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
-		);
-	}
-});
-
-var OptionBar = React.createClass({
 	save() {
 		common.req("proposal/save.json", {proposalId:env.proposalId}, r => {
 			alert("已保存");
-		});
-	},
-	overview() {
-		common.req("proposal/overview.json", {proposalId:env.proposalId}, r => {
-			console.log(r);
 		});
 	},
 	apply() {
@@ -130,20 +73,53 @@ var OptionBar = React.createClass({
 			});
 		});
 	},
+	componentDidMount() {
+		common.req("proposal/list_clause.json", {}, r => {
+			this.setState({clauses: r.map(v => (
+				<li key={v.id}>
+					<table style={{margin:"10px 24px 10px 10px"}}>
+						<tbody onClick={this.addProduct.bind(this, v.id)} style={{whiteSpace:"nowrap"}}>
+							<tr>
+								<td rowSpan="2" style={{width:"60px"}}><img src={v.logo == null ? common.link("images/logo/iyb.png") : v.logo} style={{width:"50px", height:"50px"}}/></td>
+								<td>
+									<span>{v.name}</span>&nbsp;
+									<span style={{color:"#F00"}}>{v.tag}</span>
+								</td>
+							</tr>
+							<tr><td style={{fontSize:"10px", color:"#AAA"}}>{v.remark}</td></tr>
+						</tbody>
+					</table>
+				</li>
+			))});
+		});
+	},
+	addProduct(productId) {
+		common.req("proposal/plan/clause.json", {productId:productId, planId:this.props.plan.planId}, r => {
+			this.props.refresh(r);
+		});
+	},
 	render() {
 		return (
-			<div className="container-fluid">
-				<div className="collapse navbar-collapse">
-					<div className="nav navbar-nav">
-						<button type="button" className="btn btn-primary" onClick={this.save}>保存</button>
-						<button type="button" className="btn btn-primary" onClick={this.overview}>总览</button>
-						<button type="button" className="btn btn-primary" onClick={this.apply}>在线投保</button>
-					</div>
-					<div className="nav navbar-nav navbar-right">
-						{this.props.plan.premium}
+			<nav className="navbar navbar-default">
+				<div className="container-fluid">
+					<div className="collapse navbar-collapse">
+						<ul className="nav navbar-nav">
+							<li className="dropdown">
+								<a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+									添加产品 <span className="caret"></span>
+								</a>
+								<ul className="dropdown-menu" style={{width:"auto"}}>{this.state.clauses}</ul>
+							</li>
+						</ul>
+						{ this.props.plan.applicant == null ? null : <Customer tag="applicant" show="投保人" plan={this.props.plan} val={this.props.plan.applicant} refresh={this.props.refresh}/> }
+						{ this.props.plan.insurant == null ? null : <Customer tag="insurant" show="被保险人" plan={this.props.plan} val={this.props.plan.insurant} refresh={this.props.refresh}/> }
+						<ul className="nav navbar-nav navbar-right">
+							<li><a onClick={this.save}>保存</a></li>
+							<li><a onClick={this.apply}>投保</a></li>
+						</ul>
 					</div>
 				</div>
-			</div>
+			</nav>
 		);
 	}
 });
@@ -295,8 +271,8 @@ var Plan = React.createClass({
 								<ul className="dropdown-menu" style={{width:"320px"}}>{this.state.riders[i]}</ul>
 							</div>}
 						</td>
-						<td>
-							{v.parent == null ? <font color="#F00">[主]</font> : <font color="#0A0">[附]</font>}
+						<td style={{textAlign:"left"}}>
+							{v.children != null ? <font color="#F0F">[组合]</font> : v.parent == null ? <font color="#F00">[主险]</font> : <font color="#0A0">[附加]</font>}
 							&nbsp;
 							<a onClick={this.edit.bind(this, i)} data-toggle="modal" data-target="#clauseEdit">{v.name}</a>
 							&nbsp;
@@ -317,8 +293,8 @@ var Plan = React.createClass({
 		}
 
 		return (
-			<div>
-				<table className="bordered">
+			<div className="listA">
+				<table>
 					<thead>
 						<tr>
 							<th style={{width:"4%"}}></th>
@@ -342,7 +318,7 @@ var Plan = React.createClass({
 
 var Main = React.createClass({
 	getInitialState() {
-		return {plan: {}, show: null};
+		return {plan:{}, mode:null, show:null};
 	},
 	componentWillMount() {
 		this.refresh();
@@ -354,43 +330,58 @@ var Main = React.createClass({
 			this.setState({plan: r});
 		});
 	},
-	doEvent(r) {
-		if (r == "0") {
+	doEvent(x) {
+		if (x == "0") {
 			common.req("proposal/fee.json", {proposalId: env.proposalId}, r => {
-				this.setState({show:JSON.stringify(r)});
+				this.setState({mode:x, show:JSON.stringify(r)});
 			});
-		} else if (r == "1") {
+		} else if (x == "1") {
 			common.req("proposal/plan/show_list.json", {planId: this.props.planId, type: "liability"}, r => {
-				this.setState({show:r, type:"liability"});
+				this.setState({mode:x, show:r, type:"liability"});
 			});
-		} else if (r == "2") {
+		} else if (x == "2") {
 			common.req("proposal/plan/show_list.json", {planId: this.props.planId, type: "table"}, r => {
-				this.setState({show:r, type:"table"});
+				this.setState({mode:x, show:r, type:"table"});
 			});
-		} else if (r == "3") {
+		} else if (x == "3") {
 			common.req("proposal/plan/show_list.json", {planId: this.props.planId, type: "chart"}, r => {
-				this.setState({show:r, type:"chart"});
+				this.setState({mode:x, show:r, type:"chart"});
 			});
-		} else if (r == "4") {
+		} else if (x == "4") {
+			common.req("proposal/plan/overview.json", {planId: this.props.planId}, r => {
+				this.setState({mode:x, show:r, type:"overview"});
+			});
+		} else if (x == "5") {
 			common.req("proposal/print.json", {proposalId: env.proposalId}, r => {
-				this.setState({type:"preview"}, () => {
+				this.setState({mode:x, type:"preview"}, () => {
 					printer.preview("iyb_proposal", "preview", r);
 				});
 			});
 		} else {
-			this.setState({show:null});
+			this.setState({mode:x, show:null});
 		}
 	},
 	render() {
+		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"]];
+		var barList = bar.map(r => {
+			return (<li className={this.state.mode == r[0] ? "active" : null}><a onClick={this.doEvent.bind(this, r[0])}>{r[1]}</a></li>);
+		});
 		return (
 			<div>
 				<br/>
 				<Console plan={this.state.plan} refresh={this.refresh}/>
 				<Plan plan={this.state.plan} refresh={this.refresh}/>
 				<br/>
-				<OptionBar plan={this.state.plan} refresh={this.refresh}/>
-				<br/>
-				<TabCard onChange={this.doEvent} options={[["1","保险责任"],["2","利益表"],["3","利益图"],["4","预览"],["6","设置"]]}/>
+				<nav className="navbar navbar-default">
+					<div className="container-fluid">
+						<div className="collapse navbar-collapse">
+							<ul className="nav navbar-nav">{barList}</ul>
+							<ul className="nav navbar-nav navbar-right">
+								<li><a>合计保费：{ this.state.plan.premium }</a></li>
+							</ul>
+						</div>
+					</div>
+				</nav>
 				<Show plan={this.state.plan} content={this.state.show} type={this.state.type}/>
 			</div>
 		);
@@ -485,12 +476,9 @@ var Show = React.createClass({
 							});
 							return (<tr style={{textAlign:"right"}}>{row}</tr>);
 						});
-						return (<table className="bordered">
-							<thead>{head}</thead>
-							<tbody>{body}</tbody>
-						</table>)
+						return (<table><thead>{head}</thead><tbody>{body}</tbody></table>);
 					});
-					r.push(<div>{tables}</div>);
+					r.push(<div className="listA">{tables}</div>);
 				}
 			}
 		} else if (this.props.type == "chart") {
@@ -499,22 +487,47 @@ var Show = React.createClass({
 				r.push(<div><div id="chart"></div></div>);
 			}
 		} else if (this.props.type == "preview") {
-			r = <div id="preview"></div>;
+			r = <div id="preview" style={{backgroundColor:"#AAA", paddingTop:"10", paddingBottom:"10"}}></div>;
 		} else if (this.props.type == "liability") {
 			r = [this.buildConsole(this.showLiability)];
 			if (this.state.content != null && this.state.type == this.props.type) {
 				for (var e1 in this.state.content) {
-					r.push(<div>{e1}</div>);
-					this.state.content[e1].map(e2 => {
-						r.push(<div>{e2.title}</div>);
-						e2.content.map(e3 => {
-							r.push(<div>{e3.text.replace(new RegExp("[\n]", "gm"), "<br/>")}</div>);
-						});
-					});
+					r.push(<fieldset>
+						<legend>{e1}</legend>
+						{ this.state.content[e1].map(e2 => (<div>
+							<b>{e2.title}</b>
+							{ e2.content.map(e3 => {
+								if (e3.type == "text") {
+									return (<div>{e3.text.replace(new RegExp("[\n]", "gm"), "<br/>")}</div>);
+								} else if (e3.type == "table") {
+									let head = e3.head.map(t3 => {
+										let row = t3.map(t4 => {
+											if (t4 == null) return null;
+											return (<th colSpan={t4.col} rowSpan={t4.row}>{t4.text}</th>);
+										});
+										return (<tr>{row}</tr>);
+									});
+									let body = e3.body.map(t3 => {
+										let row = t3.map(t4 => {
+											return (<td>{t4}</td>);
+										});
+										return (<tr style={{textAlign:"center"}}>{row}</tr>);
+									});
+									return (<div style={{padding:"10px"}}><table className="tableB"><thead>{head}</thead><tbody>{body}</tbody></table></div>);
+								}
+							})}
+							<br/>
+						</div>))}
+						<br/>
+					</fieldset>);
 				}
 			}
 		} else {
-			r = this.props.content;
+			var str;
+			if (this.props.content != null) {
+				str = common.formatJson(JSON.stringify(this.props.content));
+			}
+			r = <pre>{str}</pre>;
 		}
 		return <div id="show">{r}</div>;
 	}
@@ -527,7 +540,7 @@ function render(planId) {
 $(document).ready( function() {
 	env.proposalId = common.param("proposalId");
 	if (env.proposalId == null || env.proposalId == "") {
-		common.req("proposal/create.json", {applicant:env.applicant, insurants:[env.insurant], owner:500260001, platformId:2}, r => {
+		common.req("proposal/create.json", {applicant:env.applicant, insurants:[env.insurant]}, r => {
 			env.proposalId = r.proposalId;
 			render(r.detail[0]);
 		});

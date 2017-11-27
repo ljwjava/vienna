@@ -71,7 +71,7 @@ var printer = {};
 	}
 
 	function drawPage(index, e) {
-		$("#" + env.contentId).append("<div id='d" + index + "' style='margin:5pt auto 5pt auto;padding:0;border:1px solid black;'><canvas id='p" + index + "' style='width:100%;'></canvas></div>");
+		$("#" + env.contentId).append("<div id='d" + index + "' style='margin:5pt auto 5pt auto;padding:0;'><canvas id='p" + index + "' style='width:100%;'></canvas></div>");
 
 		var canvas = document.getElementById("p" + index);
 		if (canvas == null) return false;

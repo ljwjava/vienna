@@ -20,8 +20,7 @@ public class VendorService
 
     Map<Long, Map> vendorMap;
 
-    @PostConstruct
-    public void initiate()
+    public void reset()
     {
         vendorMap = new HashMap<>();
 

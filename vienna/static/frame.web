@@ -23,13 +23,13 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" onclick="common.home()">VIENNA</a>
+          <a class="navbar-brand" onclick="FRAME.home()">VIENNA</a>
         </div>
         <div class="navbar-header" id="menu"></div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
           	<li><a id="username"></a></li>
-            <li><a onclick="common.logout()">Logout</a></li>
+            <li><a onclick="FRAME.logout()">Logout</a></li>
           </ul>
         </div>
       </div>

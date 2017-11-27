@@ -89,9 +89,25 @@ public class OrderDaoJdbc
 		return jdbc.query("select * from t_order where valid is null and type = ? and owner = ? order by create_time desc limit ?, ?", new Object[]{type, owner, from, number}, new RowMapper<Order>()
 		{
 			@Override
-			public Order mapRow(ResultSet rs, int rowNum) throws SQLException
+			public Order mapRow(ResultSet m, int rowNum) throws SQLException
 			{
-				return orderOf(rs);
+				Order order = new Order();
+				order.setId(m.getLong("id"));
+				order.setBizNo(m.getString("biz_no"));
+				order.setType(m.getInt("type"));
+				order.setProductId(m.getString("product_id"));
+				order.setProductType(m.getInt("product_type"));
+				order.setProductName(m.getString("product_name"));
+				order.setVendorId(m.getLong("vendor_id"));
+				order.setCreateTime(m.getTimestamp("create_time"));
+				order.setModifyTime(m.getTimestamp("update_time"));
+				order.setPlatformId(m.getLong("platform_id"));
+				order.setOwner(m.getString("owner"));
+				order.setPrice(m.getBigDecimal("price"));
+				order.setPay(m.getInt("pay"));
+				order.setStatus(m.getInt("status"));
+
+				return order;
 			}
 		});
 	}

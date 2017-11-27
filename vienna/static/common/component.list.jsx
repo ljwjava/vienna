@@ -22,26 +22,26 @@ var List = React.createClass({
 		let page = [];
 		let env = this.props.env;
 		env.total = this.state.content.total;
-		for (var i=0;i<env.total/10;i++) {
-			page.push(<button type="button" className="btn btn-primary" onClick={this.page.bind(this, i)}>{i+1}</button>);
+		for (var i=0;i<env.total/env.number;i++) {
+			page.push(<a key={i} onClick={this.page.bind(this, i)}>&nbsp;{i+1}&nbsp;</a>);
 		}
 		return (
 			<div className="bottom">
-				<button type="button" className="btn btn-primary" onClick={this.page.bind(this, env.from / env.number - 1)}>&lt;&lt;</button>
+				<a onClick={this.page.bind(this, env.from / env.number - 1)}>上一页&nbsp;&nbsp;</a>
 				{page}
-				<button type="button" className="btn btn-primary" onClick={this.page.bind(this, env.from / env.number + 1)}>&gt;&gt;</button>
+				<a onClick={this.page.bind(this, env.from / env.number + 1)}>&nbsp;&nbsp;下一页</a>
 			</div>
 		);
 	},
 	render() {
 		return (
-			<div className="list">
+			<div className="listA">
 				<br/>
 				<div className="container-fluid">
 					{ this.buildConsole() }
 				</div>
 				<br/>
-				<table className="bordered">
+				<table>
 					<thead>{ this.buildTableTitle() }</thead>
 					<tbody>{ this.state.content.list.map(v => this.buildTableLine(v)) }</tbody>
 				</table>

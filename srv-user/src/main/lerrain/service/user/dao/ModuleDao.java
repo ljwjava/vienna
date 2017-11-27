@@ -22,7 +22,7 @@ public class ModuleDao
 
 	public List<Module> loadAll()
 	{
-		return jdbc.query("select * from s_module b order by b.parent_id, b.sequence, b.module_id", new RowMapper<Module>()
+		return jdbc.query("select * from t_module b order by b.parent_id, b.sequence, b.module_id", new RowMapper<Module>()
 		{
 			@Override
 			public Module mapRow(ResultSet tc, int arg1) throws SQLException
@@ -44,7 +44,7 @@ public class ModuleDao
 
 	public List<Module> getRoleModule(Role role, final Map<Object, Module> res)
 	{
-		return jdbc.query("select b.module_id from s_role_module b where b.role_id = ?", new Object[] {role.getId()}, new RowMapper<Module>()
+		return jdbc.query("select b.module_id from t_role_module b where b.role_id = ?", new Object[] {role.getId()}, new RowMapper<Module>()
 		{
 			@Override
 			public Module mapRow(ResultSet tc, int arg1) throws SQLException

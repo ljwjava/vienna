@@ -1,4 +1,4 @@
-package lerrain.project.vienna.service;
+package lerrain.project.vienna;
 
 import lerrain.tool.Disk;
 

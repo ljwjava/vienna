@@ -1,2 +1,0 @@
-TITLE = '产品';
-print(TITLE);

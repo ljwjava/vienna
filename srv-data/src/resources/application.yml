@@ -16,6 +16,10 @@ arcturus:
       mobile: mobile
       insure_date: insure_date
       policy_no: policy_no
+      date:
+        org1:
+          org2:
+            org3:
   user:
     data: primary
     path: x:/arcturus/,x:/arcturus/,x:/arcturus/,x:/arcturus/

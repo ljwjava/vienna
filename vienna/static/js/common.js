@@ -3,16 +3,33 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	return common.server() + "/" + url;
+	//return "http://www.lerrain.com:7666/" + url;
+	var host = location.host;
+	var server;
+	if (host.startsWith("sv")) {
+		host = "api" + host.substr(2);
+		server = location.protocol + "//" + host;
+	} else if (host.startsWith("lifeins")) {
+		server = location.protocol + "//";
+		if (location.pathname.startsWith("/rel/"))
+			server += "api.iyb.tm";
+		else if (location.pathname.startsWith("/uat/"))
+			server += "api-uat.iyb.tm";
+	}
+	return server + "/" + url;
 }
 
 common.link = function(link) {
-	return common.server() + "/" + link;
+	var server = location.protocol + "//" + location.host;
+	if (location.pathname.startsWith("/rel/"))
+		server += "/rel";
+	else if (location.pathname.startsWith("/uat/"))
+		server += "/uat";
+	return server + "/" + link;
 }
 
 common.post = function(url, val, callback, failback) {
-	//val.env = env.service;
-	$.ajax({url:url, type:"POST", data:JSON.stringify(val), contentType:'application/json;charset=UTF-8', success:function(r) {
+	$.ajax({url:url, type:"POST", data:JSON.stringify(val), xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
 		if (r.result == "success")
 			callback(r.content);
 		else if (failback == null)
@@ -32,15 +49,6 @@ common.param = function(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
     var r = window.location.search.substr(1).match(reg);  //匹配目标参数
     if (r != null) return unescape(r[2]); return null; //返回参数值
-}
-
-common.server = function() {
-	var server = location.protocol + "//" + location.host;
-	if (location.pathname.startsWith("/rel/"))
-		server += "/rel";
-	else if (location.pathname.startsWith("/uat/"))
-		server += "/uat";
-	return server;
 }
 
 common.copy = function(a, b) {
@@ -182,9 +190,62 @@ common.age = function(strBirthdayArr) {
 	return returnAge;
 }
 
-common.logout = function() {
-	common.req("user/logout.do", null, function() {
-		document.location.href = common.link("login.html");
-	});
-}
+common.formatJson = function (json, options) {
+	var reg = null,
+		formatted = '',
+		pad = 0,
+		PADDING = '    ';
+	options = options || {};
+	options.newlineAfterColonIfBeforeBraceOrBracket = (options.newlineAfterColonIfBeforeBraceOrBracket === true) ? true : false;
+	options.spaceAfterColon = (options.spaceAfterColon === false) ? false : true;
+	if (typeof json !== 'string') {
+		json = JSON.stringify(json);
+	} else {
+		json = JSON.parse(json);
+		json = JSON.stringify(json);
+	}
+	reg = /([\{\}])/g;
+	json = json.replace(reg, '\r\n$1\r\n');
+	reg = /([\[\]])/g;
+	json = json.replace(reg, '\r\n$1\r\n');
+	reg = /(\,)/g;
+	json = json.replace(reg, '$1\r\n');
+	reg = /(\r\n\r\n)/g;
+	json = json.replace(reg, '\r\n');
+	reg = /\r\n\,/g;
+	json = json.replace(reg, ',');
+	if (!options.newlineAfterColonIfBeforeBraceOrBracket) {
+		reg = /\:\r\n\{/g;
+		json = json.replace(reg, ':{');
+		reg = /\:\r\n\[/g;
+		json = json.replace(reg, ':[');
+	}
+	if (options.spaceAfterColon) {
+		reg = /\:/g;
+		json = json.replace(reg, ':');
+	}
+	(json.split('\r\n')).forEach(function (node, index) {
+			var i = 0,
+				indent = 0,
+				padding = '';
 
+			if (node.match(/\{$/) || node.match(/\[$/)) {
+				indent = 1;
+			} else if (node.match(/\}/) || node.match(/\]/)) {
+				if (pad !== 0) {
+					pad -= 1;
+				}
+			} else {
+				indent = 0;
+			}
+
+			for (i = 0; i < pad; i++) {
+				padding += PADDING;
+			}
+
+			formatted += padding + node + '\r\n';
+			pad += indent;
+		}
+	);
+	return formatted;
+};
