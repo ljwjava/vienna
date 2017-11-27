@@ -37,7 +37,7 @@ class ProposalList extends List {
 			<div className="container-fluid">
 				<div className="collapse navbar-collapse">
 					<div className="nav navbar-nav navbar-right">
-						<button type="button" className="btn btn-primary" onClick={this.create}>＋ 新建建议书</button>
+						<a onClick={this.create}>＋ 新建建议书</a>
 					</div>
 				</div>
 			</div>
@@ -63,9 +63,9 @@ class ProposalList extends List {
 				<td>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
 				<td>{v.premium}</td>
 				<td>
-					<button type="button" className="btn btn-primary" onClick={this.copy.bind(this, v.id)} style={{marginRight:"10px"}}>复制</button>
-					<button type="button" className="btn btn-primary" onClick={this.open.bind(this, v.id)} style={{marginRight:"10px"}}>编辑</button>
-					<button type="button" className="btn btn-danger" onClick={this.delete.bind(this, v.id)}>删除</button>
+					<a onClick={this.copy.bind(this, v.id)} style={{marginRight:"10px"}}>复制</a>
+					<a onClick={this.open.bind(this, v.id)} style={{marginRight:"10px"}}>编辑</a>
+					<a onClick={this.delete.bind(this, v.id)}>删除</a>
 				</td>
 			</tr>
 		);

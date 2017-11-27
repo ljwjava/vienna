@@ -46,8 +46,6 @@ public class GatewayController
 
         Gateway gateway = gatewaySrv.getGateway(uri);
 
-        Log.debug(gateway.getUri());
-
         if (gateway == null)
             return null;
 
@@ -232,9 +230,6 @@ public class GatewayController
     public JSONObject callJson(HttpServletRequest req)
     {
         String uri = req.getRequestURI();
-        Log.debug(uri);
-        Log.debug(gateDir);
-
         uri = uri.substring(1 + gateDir.length());
 
 //        long t1 = System.currentTimeMillis();

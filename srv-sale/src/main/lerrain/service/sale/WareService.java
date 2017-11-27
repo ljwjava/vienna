@@ -14,9 +14,6 @@ public class WareService
     @Autowired
     WareDao cd;
 
-    @Autowired
-    PlatformBizService cs;
-
     Map<Object, Ware> map = new HashMap<>();
 
     Map<String, List<Ware>> temp = new HashMap<>();

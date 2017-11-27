@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>lerrain</groupId>
 	<artifactId>vienna</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

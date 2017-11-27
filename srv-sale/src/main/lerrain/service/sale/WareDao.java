@@ -51,9 +51,4 @@ public class WareDao
     {
         return jdbc.queryForList("select ware_id from t_platform_ware where platform_id = ?", Long.class, platformId);
     }
-
-//    public Map loadVendor(Object vendorId)
-//    {
-//        return jdbc.queryForMap("select id, code, name, logo from t_company where id = ?", vendorId);
-//    }
 }

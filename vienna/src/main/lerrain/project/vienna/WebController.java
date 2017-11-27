@@ -1,6 +1,5 @@
 package lerrain.project.vienna;
 
-import lerrain.project.vienna.service.WebService;
 import lerrain.service.common.Log;
 import lerrain.tool.Disk;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class WebController

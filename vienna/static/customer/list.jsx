@@ -7,7 +7,7 @@ import Navi from '../common/component.list.jsx';
 var env = {
 	search: null,
 	from: 0,
-	number: 10
+	number: 16
 }
 
 class CustomerList extends List {
@@ -37,7 +37,7 @@ class CustomerList extends List {
 					<button type="button" className="btn btn-primary" onClick={this.create}>查询</button>
 				</div>
 				<div className="nav navbar-nav navbar-right">
-					<button type="button" className="btn btn-primary" onClick={this.create}>＋ 新增客户</button>
+					<a onClick={this.create}>＋ 新增客户</a>
 				</div>
 			</div>
 		);
@@ -64,9 +64,9 @@ class CustomerList extends List {
 				<td>{v.gender}</td>
 				<td>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
 				<td>
-					<button type="button" className="btn btn-primary" onClick={this.open.bind(this, v.customerId)}>编辑</button>
+					<a onClick={this.open.bind(this, v.customerId)}>编辑</a>
 					&nbsp;&nbsp;
-					<button type="button" className="btn btn-danger" onClick={this.delete.bind(this, v.customerId)}>删除</button>
+					<a onClick={this.delete.bind(this, v.customerId)}>删除</a>
 				</td>
 			</tr>
 		);

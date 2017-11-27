@@ -50,7 +50,7 @@ public class CustomerController
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", cs.count(search, platformId, owner));
+		res.put("content", cs.list(search, from, number, platformId, owner));
 
 		return res;
 	}
