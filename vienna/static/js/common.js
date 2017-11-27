@@ -4,11 +4,28 @@ var common = {};
 
 common.url = function(url) {
 	//return "http://www.lerrain.com:7666/" + url;
-	return common.server() + "/" + url;
+	var host = location.host;
+	var server;
+	if (host.startsWith("sv")) {
+		host = "api" + host.substr(2);
+		server = location.protocol + "//" + host;
+	} else if (host.startsWith("lifeins")) {
+		server = location.protocol + "//";
+		if (location.pathname.startsWith("/rel/"))
+			server += "api.iyb.tm";
+		else if (location.pathname.startsWith("/uat/"))
+			server += "api-uat.iyb.tm";
+	}
+	return server + "/" + url;
 }
 
 common.link = function(link) {
-	return common.server() + "/" + link;
+	var server = location.protocol + "//" + location.host;
+	if (location.pathname.startsWith("/rel/"))
+		server += "/rel";
+	else if (location.pathname.startsWith("/uat/"))
+		server += "/uat";
+	return server + "/" + link;
 }
 
 common.post = function(url, val, callback, failback) {
@@ -32,18 +49,6 @@ common.param = function(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
     var r = window.location.search.substr(1).match(reg);  //匹配目标参数
     if (r != null) return unescape(r[2]); return null; //返回参数值
-}
-
-common.server = function() {
-	var host = location.host;
-	if (host.startsWith("sv"))
-		host = "api" + host.substr(2);
-	var server = location.protocol + "//" + host;
-	if (location.pathname.startsWith("/rel/"))
-		server += "/rel";
-	else if (location.pathname.startsWith("/uat/"))
-		server += "/uat";
-	return server;
 }
 
 common.copy = function(a, b) {
