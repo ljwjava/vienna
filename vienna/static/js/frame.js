@@ -10,14 +10,14 @@ $(document).ready( function() {
     common.req("user/info.json", null, function(r) {
         var str = "";
         r.forEach(v => {
-            str += '<li className="dropdown">';
+            str += '<li class="dropdown">';
             str += '<a data-toggle="dropdown" href="#">' + v.name + '</a>';
-            str += '<ul className="dropdown-menu">';
+            str += '<ul class="dropdown-menu">';
             v.item.forEach(i => {
-                str += '<li><a onClick="document.location.href = common.link(\'' + i.link + '\');">' + i.name + '</a></li>';
+                str += '<li><a onclick="document.location.href = common.link(\'' + i.link + '\');">' + i.name + '</a></li>';
             });
             str += '</ul></li>';
         });
-        $("#menu").html('<ul className="nav navbar-nav">' + str + '</ul>');
+        $("#menu").html('<ul class="nav navbar-nav">' + str + '</ul>');
     });
 });
