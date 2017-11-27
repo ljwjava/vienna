@@ -3,6 +3,7 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
+	//return "http://www.lerrain.com:7666/" + url;
 	return common.server() + "/" + url;
 }
 
@@ -11,8 +12,7 @@ common.link = function(link) {
 }
 
 common.post = function(url, val, callback, failback) {
-	//val.env = env.service;
-	$.ajax({url:url, type:"POST", data:JSON.stringify(val), contentType:'application/json;charset=UTF-8', success:function(r) {
+	$.ajax({url:url, type:"POST", data:JSON.stringify(val), xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
 		if (r.result == "success")
 			callback(r.content);
 		else if (failback == null)
@@ -35,7 +35,10 @@ common.param = function(name) {
 }
 
 common.server = function() {
-	var server = location.protocol + "//" + location.host;
+	var host = location.host;
+	if (host.startsWith("sv"))
+		host = "api" + host.substr(2);
+	var server = location.protocol + "//" + host;
 	if (location.pathname.startsWith("/rel/"))
 		server += "/rel";
 	else if (location.pathname.startsWith("/uat/"))
@@ -181,10 +184,3 @@ common.age = function(strBirthdayArr) {
 
 	return returnAge;
 }
-
-common.logout = function() {
-	common.req("user/logout.do", null, function() {
-		document.location.href = common.link("login.html");
-	});
-}
-
