@@ -50,7 +50,7 @@ public class ProposalService
 		}
 
 		Proposal np = newProposal(newApplicant, old.getOwner(), old.getPlatformId());
-		np.setId(Common.nextId());
+		np.setId(Common.nextId("proposal"));
 		np.setName(old.getName());
 		np.setRemark(old.getRemark());
 		np.setCover(old.getCover());
@@ -73,7 +73,7 @@ public class ProposalService
 
 		Proposal proposal = new Proposal();
 		proposal.setApplicant(applicant);
-		proposal.setId(Common.nextId());
+		proposal.setId(Common.nextId("proposal"));
 		proposal.setOwner(userId);
 		proposal.setPlatformId(platformId);
 
