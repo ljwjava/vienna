@@ -2,20 +2,25 @@ var env = {};
 
 var common = {};
 
+/*common.server = function() {
+	return "http://dingl.51vip.biz:60004";
+};*/
+
 common.url = function(url) {
-	//return "http://www.lerrain.com:7666/" + url;
+	// return "http://www.lerrain.com:7666/" + url;
+	// return "http://dingl.51vip.biz:60004/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {
 		host = "api" + host.substr(2);
 		server = location.protocol + "//" + host;
 	} else if (host.startsWith("lifeins")) {
-		server = location.protocol + "//";
-		if (location.pathname.startsWith("/rel/"))
-			server += "api.iyb.tm";
-		else if (location.pathname.startsWith("/uat/"))
-			server += "api-uat.iyb.tm";
-	}
+        server = location.protocol + "//";
+        if (location.pathname.startsWith("/rel/"))
+            server += "api.iyb.tm";
+        else if (location.pathname.startsWith("/uat/"))
+            server += "api-uat.iyb.tm";
+    }
 	return server + "/" + url;
 }
 
@@ -248,4 +253,26 @@ common.formatJson = function (json, options) {
 		}
 	);
 	return formatted;
+};
+
+common.initForm = function(url, params, method){
+	method = method == null ? "get" : method;
+
+	var f = document.createElement("form");
+	f.action = url;
+	f.method = method;
+	f.id = "_js_form"+Math.random();
+	document.body.appendChild(f);
+
+	if(params != null){
+		for(var k in params){
+			var h = document.createElement("input");
+			h.type = "hidden";
+			h.name = k;
+			h.value = params[k];
+			f.appendChild(h);
+		}
+	}
+
+	return f;
 };
