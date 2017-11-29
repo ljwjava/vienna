@@ -322,6 +322,12 @@ var Ground = React.createClass({
 		};
 		common.req("sale/check.json", order, r => {
             common.save("iyb/orderId", r.orderId);
+            let checkRes = r.result;	// 校验规则
+			if(checkRes != null && checkRes.success != true && checkRes.rule != null && checkRes.rule != ''){
+                ToastIt(checkRes.rule);
+                return;
+			}
+
 			common.req("sale/apply.json", order, r => {
                 // document.location.href = r.nextUrl;
                 var f = common.initForm(r.nextUrl, r.params, r.method);
