@@ -130,7 +130,7 @@ class ContactForm extends Form {
         }
         this.countDown(-1);
 		let phone = this.refs.mobile.val();
-		common.req("ware/do/sms.json", {platformId: 2, tokenId:env.tokenId, phone:phone}, r => {
+		common.req("util/sms.json", {platformId: 2, tokenId:env.tokenId, phone:phone}, r => {
 			env.smsKey = phone;
 		});
 	}
@@ -322,7 +322,9 @@ var Ground = React.createClass({
 		common.req("ware/do/verify.json", order, r => {
             common.save("iyb/orderId", r.orderId);
 			common.req("ware/do/apply.json", order, r => {
-                document.location.href = r.nextUrl;
+                // document.location.href = r.nextUrl;
+                var f = common.initForm(r.nextUrl, r.params, r.method);
+                f.submit();
             }, r => {
                 if(r != null){
                     ToastIt(r);
