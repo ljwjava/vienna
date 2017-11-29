@@ -2,25 +2,20 @@ var env = {};
 
 var common = {};
 
-/*common.server = function() {
-	return "http://dingl.51vip.biz:60004";
-};*/
-
 common.url = function(url) {
-	// return "http://www.lerrain.com:7666/" + url;
-	// return "http://dingl.51vip.biz:60004/" + url;
+	//return "http://www.lerrain.com:7666/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {
 		host = "api" + host.substr(2);
 		server = location.protocol + "//" + host;
 	} else if (host.startsWith("lifeins")) {
-        server = location.protocol + "//";
-        if (location.pathname.startsWith("/rel/"))
-            server += "api.iyb.tm";
-        else if (location.pathname.startsWith("/uat/"))
-            server += "api-uat.iyb.tm";
-    }
+		server = location.protocol + "//";
+		if (location.pathname.startsWith("/rel/"))
+			server += "api.iyb.tm";
+		else if (location.pathname.startsWith("/uat/"))
+			server += "api-uat.iyb.tm";
+	}
 	return server + "/" + url;
 }
 

@@ -17,14 +17,14 @@ var Main = React.createClass({
 		return {envList:[], gatewayList:[], functionList:[]};
 	},
 	componentWillMount() {
-		common.post(common.server() + "/develop/list_gateway.json", {}, r => {
+		common.req("develop/list_gateway.json", {}, r => {
 			var gatewayList = r.map(x => {
 				ENV.gatewayMap[x.id + ""] = x;
 				return <option value={x.id}>{x.uri}</option>;
 			});
 			this.setState({gatewayList:gatewayList});
 		});
-		common.post(common.server() + "/develop/list_env.json", {}, r => {
+		common.req("develop/list_env.json", {}, r => {
 			var envList = [];
 			for (var envId in r) {
 				var x = r[envId];
@@ -36,7 +36,7 @@ var Main = React.createClass({
 	},
 	save() {
 		var url = this.getUrl();
-		if (url != null) common.post(common.server() + "/develop/save.json", {
+		if (url != null) common.req("develop/save.json", {
 			url: url,
 			param: this.refs.reqParams.value
 		}, r => {
@@ -65,7 +65,7 @@ var Main = React.createClass({
 			ENV.funcMap[ENV.funcId].params = req.params;
 			ENV.funcMap[ENV.funcId].script = req.script;
 		}
-		if (req != null) common.post(common.server() + "/develop/apply.json", req, r => {
+		if (req != null) common.req("develop/apply.json", req, r => {
 			alert("success");
 		});
 	},
@@ -74,7 +74,7 @@ var Main = React.createClass({
 		if (url != null) {
 			var jsonStr = this.refs.reqParams.value;
 			var req = jsonStr == null || jsonStr == "" ? {} : JSON.parse(jsonStr);
-			common.post(common.server() + "/test/" + url, req, r => {
+			common.req("test/" + url, req, r => {
 				this.setState({
 					result: r.result,
 					exception: r.exception,
@@ -100,7 +100,7 @@ var Main = React.createClass({
 				script: this.refs.script.value
 			}
 		}
-		if (req != null) common.post(common.server() + "/develop/replace.json", req, r => {
+		if (req != null) common.req("develop/replace.json", req, r => {
 			this.test();
 		});
 	},
@@ -126,7 +126,7 @@ var Main = React.createClass({
 		this.refs.reqSupply.value = ENV.reqSupply;
 
 		var url = this.getUrl();
-		if (url != null) common.post(common.server() + "/develop/req_testing.json", {url: url}, r => {
+		if (url != null) common.req("develop/req_testing.json", {url: url}, r => {
 			ENV.reqParams = r == null ? null : r.param;
 			this.refresh();
 		});
@@ -135,7 +135,7 @@ var Main = React.createClass({
 		ENV.funcId = null;
 		ENV.envId = this.refs.envList.value;
 		if (ENV.envId == "") ENV.envId = null;
-		if (ENV.envId != null) common.post(common.server() + "/develop/list_function.json", {envId: ENV.envId}, r => {
+		if (ENV.envId != null) common.req("develop/list_function.json", {envId: ENV.envId}, r => {
 			ENV.funcMap = {};
 			var functionList = r.map(x => {
 				ENV.funcMap[x.id + ""] = x;
@@ -147,7 +147,7 @@ var Main = React.createClass({
 	setFunction() {
 		ENV.funcId = this.refs.funcList.value;
 		if (ENV.funcId == "") ENV.funcId = null;
-		if (ENV.funcId != null) common.post(common.server() + "/develop/function.json", {functionId: ENV.funcId}, r => {
+		if (ENV.funcId != null) common.req("develop/function.json", {functionId: ENV.funcId}, r => {
 			this.refresh();
 		});
 	},
@@ -157,7 +157,7 @@ var Main = React.createClass({
 			var reqSupply = this.refs.reqSupply.value;
 			if (reqSupply != null && reqSupply != "")
 				reqUrl = reqUrl.replace("[*]", reqSupply);
-			common.post(common.server() + "/develop/req_testing.json", {url: reqUrl}, r => {
+			common.req("develop/req_testing.json", {url: reqUrl}, r => {
 				ENV.reqParams = r.param;
 				this.refresh();
 			});

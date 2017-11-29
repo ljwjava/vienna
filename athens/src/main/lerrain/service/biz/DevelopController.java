@@ -27,18 +27,20 @@ public class DevelopController
     @Autowired
     DevelopDao developDao;
 
+    @Autowired
+    AthensService athensSrv;
+
     @RequestMapping("/reset")
     @ResponseBody
     public String reset()
     {
-        gatewaySrv.reset();
-        envSrv.reset();
-
+        athensSrv.reset();
         return "success";
     }
 
     @RequestMapping("/develop/list_gateway.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject listGateway(@RequestBody JSONObject req)
     {
         JSONObject res = new JSONObject();
@@ -50,6 +52,7 @@ public class DevelopController
 
     @RequestMapping("/develop/list_env.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject listEnv()
     {
         List<Environment> list = envSrv.list();
@@ -69,6 +72,7 @@ public class DevelopController
 
     @RequestMapping("/develop/list_function.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject listFunction(@RequestBody JSONObject req)
     {
         JSONObject res = new JSONObject();
@@ -80,6 +84,7 @@ public class DevelopController
 
     @RequestMapping("/develop/function.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject viewFunction(@RequestBody JSONObject req)
     {
         JSONObject res = new JSONObject();
@@ -91,6 +96,7 @@ public class DevelopController
 
     @RequestMapping("/develop/req_testing.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject reqParam(@RequestBody JSONObject req)
     {
         String url = req.getString("url");
@@ -104,6 +110,7 @@ public class DevelopController
 
     @RequestMapping("/develop/save.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject save(@RequestBody JSONObject req)
     {
         String url = req.getString("url");
@@ -119,6 +126,7 @@ public class DevelopController
 
     @RequestMapping("/develop/apply.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject apply(@RequestBody JSONObject req)
     {
         int type = req.getIntValue("type");
@@ -155,6 +163,7 @@ public class DevelopController
 
     @RequestMapping("/develop/replace.json")
     @ResponseBody
+    @CrossOrigin
     public JSONObject replace(@RequestBody JSONObject req)
     {
         int type = req.getIntValue("type");

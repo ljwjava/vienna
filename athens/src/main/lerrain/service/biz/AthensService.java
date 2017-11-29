@@ -1,5 +1,7 @@
 package lerrain.service.biz;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -24,6 +26,8 @@ public class AthensService
 	@PostConstruct
 	public void reset()
 	{
+		JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
+
 		gatewaySrv.reset();
 		envSrv.reset();
 

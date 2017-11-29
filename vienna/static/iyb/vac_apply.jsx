@@ -239,7 +239,7 @@ var Ground = React.createClass({
 	},
     refreshPremium() {
     	let factors = this.getPlanFactors();
-		common.req("ware/do/life.json", {platformId:2, opt:"try", content:factors}, r => {
+		common.req("sale/life.json", {platformId:2, opt:"try", content:factors}, r => {
 			let factors = this.state.factors;
 			if (r.form != null) factors.map(function(e) {
 				var res = r.form[e.name];
@@ -319,7 +319,7 @@ var Ground = React.createClass({
 			owner: env.brokerId,
 			detail: apply
 		};
-		common.req("ware/do/verify.json", order, r => {
+		common.req("sale/check.json", order, r => {
             common.save("iyb/orderId", r.orderId);
 			common.req("ware/do/apply.json", order, r => {
                 // document.location.href = r.nextUrl;

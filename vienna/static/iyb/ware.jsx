@@ -93,7 +93,7 @@ var Ware = React.createClass({
 			}
         }
         env.packId = r.detail.target;
-        common.req("ware/detail.json", {packId: env.packId}, s => {
+        common.req("sale/detail.json", {packId: env.packId}, s => {
             env.docs = s.docs;
             env.packType = s.type;
             env.vendor = s.vendor;
@@ -134,7 +134,7 @@ var Ware = React.createClass({
 		}else{
         	factors.OCCUPATION_L = null;
 		}
-		common.req("ware/do/life.json", {platformId:2, opt:"try", content:factors}, r => {
+		common.req("sale/life.json", {platformId:2, opt:"try", content:factors}, r => {
 			var factors = this.state.factors;
 			if (r.form != null) factors.map(function(e) {
 				var res = r.form[e.name];
@@ -252,7 +252,7 @@ env.sharePrd = function() {
 };
 
 $(document).ready( function() {
-	common.req("ware/view.json", {wareId:common.param("wareId")}, function (r) {
+	common.req("sale/view.json", {wareId:common.param("wareId")}, function (r) {
 		env.ware = r;
 		ReactDOM.render(
 			<Ware detail={r}/>, document.getElementById("content")

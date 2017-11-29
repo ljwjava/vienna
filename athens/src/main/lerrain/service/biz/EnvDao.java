@@ -176,11 +176,11 @@ public class EnvDao
                 String otherNames = rs.getString("other_names");
                 String params = rs.getString("params");
                 String script = rs.getString("script");
-                String envCode = rs.getString("env_code"); //有envCode的绑定到自己环境，外部调用执行时，其环境仍然是自己的
+                boolean lockEnv = "Y".equalsIgnoreCase(rs.getString("lock_env"));
 
                 try
                 {
-                    Function f = new InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), envCode == null ? null : p.getStack());
+                    Function f = new InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), lockEnv ? p.getStack() : null);
 
                     String[] allName;
                     if (Common.isEmpty(otherNames))
