@@ -50,7 +50,7 @@
 
     var isReady = false;
     $(document).ready( function() {
-        common.req('ware/do/wxconfig.json', {platformId: 2, url: encodeURIComponent(location.href)}, function(r){
+        common.req('util/wxconfig.json', {platformId: 2, url: encodeURIComponent(location.href)}, function(r){
             var result = r.result;
             wx.config({
                 debug: false,

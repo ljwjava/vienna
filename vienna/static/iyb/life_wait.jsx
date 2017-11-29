@@ -146,7 +146,7 @@ var LotteryBox = React.createClass({
         this.rotation();
         let _this = this;
         // common.req("/iybapi/open/activity/iybForwardActivityAjax/lucky.json", {orderNo: this.state.orderNo}, r => {
-        common.req("ware/do/lucky.json", {platformId: 2, orderNo: this.state.orderNo}, r => {
+        common.req("sale/lucky.json", {orderNo: this.state.orderNo}, r => {
             console.log(r);
             let luckyOption, luckyNumber;
             if(r.isSuccess){
@@ -369,7 +369,7 @@ var Ground = React.createClass({
 	},
     getUseableCountByOrderNo(){
         // common.req('/iybapi/open/activity/iybForwardActivityAjax/getUseableCountByOrderNo.json', {orderNo: env.order.extra.iybOrderNo}, (r)=>{
-        common.req('ware/do/getUseableCount.json', {platformId: 2, orderNo: env.order.extra.iybOrderNo}, (r)=>{
+        common.req('sale/get_useable_count.json', {orderNo: env.order.extra.iybOrderNo}, (r)=>{
         	if(r.result != null){
                 this.refs.lottery.setState({isShow: true, orderNo: env.order.extra.iybOrderNo});
                 this.setState({shareObj: {
@@ -421,7 +421,7 @@ var Ground = React.createClass({
 	},
     shareCallback(){
         // common.req('/iybapi/open/activity/IybForwardActivityAjax/newShare.json', {platformId: 2, orderNo: env.order.extra.iybOrderNo}, function(r){
-        common.req('ware/do/newShare.json', {platformId: 2, orderNo: env.order.extra.iybOrderNo}, function(r){
+        common.req('sale/new_share.json', {orderNo: env.order.extra.iybOrderNo}, function(r){
             console.log(r);
         }, function(r){console.log('IybForwardActivityAjax/share接口出错了');});
 	},
