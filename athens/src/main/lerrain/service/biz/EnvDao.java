@@ -93,18 +93,17 @@ public class EnvDao
             stack.declare("ENV_CODE", c.getCode());
             stack.declare("ENV_NAME", c.getName());
 
-            if (c.getRefer() != null) for (String code : c.getRefer())
-                stack.declare(code, map.get(code).getStack());
-
             c.setStack(stack);
+        }
+
+        for (Environment c : r)
+        {
+            if (c.getRefer() != null) for (String code : c.getRefer())
+                c.getStack().declare(code, map.get(code).getStack());
 
             try
             {
                 initEnv(c);
-
-//                Script script = Script.scriptOf(m.getString("stack"));
-//                if (script != null)
-//                    script.run(c.getStack());
             }
             catch (Exception e)
             {

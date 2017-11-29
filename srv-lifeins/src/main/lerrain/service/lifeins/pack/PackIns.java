@@ -16,6 +16,7 @@ public class PackIns
     String name;
 
     int type;
+    int applyMode;
 
     List<InputField> inputForm;
 
@@ -89,6 +90,16 @@ public class PackIns
     public void setRateFactors(String[] rateFactors)
     {
         this.rateFactors = rateFactors;
+    }
+
+    public int getApplyMode()
+    {
+        return applyMode;
+    }
+
+    public void setApplyMode(int applyMode)
+    {
+        this.applyMode = applyMode;
     }
 
     public Map<String, Object> getDocs()

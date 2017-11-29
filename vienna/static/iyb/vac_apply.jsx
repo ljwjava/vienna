@@ -190,7 +190,7 @@ var Ground = React.createClass({
 		};
     },
     componentWillMount() {
-		common.req("ware/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
+		common.req("sale/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
 			env.vendorId = r.vendor.id;
@@ -291,6 +291,7 @@ var Ground = React.createClass({
 			wareCode: env.wareCode,
 			packId: env.packId,
 			packCode: env.pack.code,
+            applyMode: env.pack.applyMode,
 			packDesc: this.getPlanDesc(),
             shareType: common.param("shareType"),
             couponCode: common.param("couponCode"),
@@ -321,7 +322,7 @@ var Ground = React.createClass({
 		};
 		common.req("sale/check.json", order, r => {
             common.save("iyb/orderId", r.orderId);
-			common.req("ware/do/apply.json", order, r => {
+			common.req("sale/apply.json", order, r => {
                 // document.location.href = r.nextUrl;
                 var f = common.initForm(r.nextUrl, r.params, r.method);
                 f.submit();

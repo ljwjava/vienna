@@ -67,6 +67,7 @@ public class PackDao
                     packIns.setPlanId(planId);
                     packIns.setName(m.getString("name"));
                     packIns.setType(m.getInt("type"));
+                    packIns.setApplyMode(m.getInt("apply_mode"));
 
                     if (input != null)
                         packIns.setInputForm(loadInputForm(input));

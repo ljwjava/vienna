@@ -40,6 +40,9 @@ public class GatewayService
         String sort = uri.substring(0, uri.indexOf("/"));
         List<Gateway> list = map.get(sort);
 
+        if (list == null)
+            return null;
+
         for (Gateway gateway : list)
             if (gateway.match(uri))
                 return gateway;
