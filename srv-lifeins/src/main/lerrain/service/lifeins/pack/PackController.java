@@ -1,6 +1,8 @@
 package lerrain.service.lifeins.pack;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.lifeins.CmsDefine;
 import lerrain.service.lifeins.CmsService;
 import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.plan.PlanService;
@@ -8,11 +10,12 @@ import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -67,7 +70,23 @@ public class PackController
             String payFreq = msg.getString("payFreq");
             String payPeriod = msg.getString("payPeriod");
 
-            r = cmsSrv.getCommissionRate(platformId, group, packId, payFreq, payPeriod);
+            List<CmsDefine> list = cmsSrv.getCommissionRate(platformId, group, packId, payFreq, payPeriod);
+
+            if (list != null)
+            {
+                r = new JSONArray();
+                for (CmsDefine c : list)
+                {
+                    Map m = new HashMap();
+                    m.put("self", c.getSelfRate());
+                    m.put("parent", c.getParentRate());
+                    m.put("unit", c.getUnit());
+                    m.put("freeze", c.getFreeze());
+                    m.put("memo", c.getMemo());
+
+                    ((JSONArray)r).add(m);
+                }
+            }
         }
         else if ("fee".equals(opt))
         {
