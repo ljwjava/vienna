@@ -80,10 +80,14 @@ var Ground = React.createClass({
             return false;
         }
         this.setState({isSubmit: true}, ()=>{
-            common.req("ware/do/apply.json", env.order, r => {
+            common.req("sale/apply.json", env.order, r => {
                 common.save("iyb/orderId", env.order.id);
-                document.location.href = r.nextUrl;
-                this.setState({isSubmit: false});
+                if (r.nextUrl != null) {
+                    document.location.href = r.nextUrl;
+                } else {
+                    ToastIt(r.errCode + " - " + r.errMsg);
+                    this.setState({isSubmit: false});
+                }
             }, r => {
                 if(r != null){
                     ToastIt(r);

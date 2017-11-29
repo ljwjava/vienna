@@ -228,7 +228,7 @@ var Ground = React.createClass({
 		};
     },
     componentWillMount() {
-		common.req("ware/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
+		common.req("sale/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
 			env.vendorId = r.vendor.id;
@@ -308,7 +308,7 @@ var Ground = React.createClass({
     	if (factors["BIRTHDAY"] == null || factors["BIRTHDAY"] == "") {
 			this.setState({premium: -1, rules: null});
     	} else {
-			common.req("ware/do/life.json", {platformId:2, opt:"try", content:factors}, r => {
+			common.req("sale/life.json", {platformId:2, opt:"try", content:factors}, r => {
                 let factors = this.state.factors;
                 if (r.form != null) factors.map(function(e) {
                     var res = r.form[e.name];
@@ -473,8 +473,8 @@ var Ground = React.createClass({
 			wareCode: env.wareCode,
 			packId: env.packId,
 			packCode: env.pack.code,
-            // commodityId: env.
 			packDesc: this.getPlanDesc(),
+            applyMode: env.pack.applyMode,
             shareType: common.param("shareType"),
             couponCode: common.param("couponCode"),
 			factors: this.getPlanFactors(),
@@ -513,7 +513,7 @@ var Ground = React.createClass({
 			return false;
 		}
 		this.setState({isSubmit: true}, ()=>{
-            common.req("ware/do/verify.json", order, r => {
+            common.req("sale/check.json", order, r => {
                 document.location.href = "life_pay.mobile?orderId=" + r.orderId;
                 this.setState({isSubmit: false});
             }, r => {
