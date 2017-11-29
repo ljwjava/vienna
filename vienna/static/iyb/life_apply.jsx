@@ -152,7 +152,7 @@ class ContactForm extends Form {
 		}
         this.countDown(-1);
 		let phone = this.refs.mobile.val();
-		common.req("ware/do/sms.json", {platformId: 2, tokenId:env.tokenId, phone:phone}, r => {
+		common.req("util/sms.json", {platformId: 2, tokenId:env.tokenId, phone:phone}, r => {
 			env.smsKey = phone;
 		});
 	}
@@ -584,7 +584,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					{env.company != "bobcardif" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}`
+					{env.company != "bobcardif" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
 				<div className="title">保险计划</div>
 				<div className="form">
