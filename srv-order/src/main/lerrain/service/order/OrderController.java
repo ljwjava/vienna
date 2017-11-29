@@ -148,6 +148,8 @@ public class OrderController
         Order order = orderSrv.getOrder(orderId);
         synchronized (order)
         {
+            if (p.containsKey("applyNo"))
+                order.setApplyNo(p.getString("applyNo"));
             if (p.containsKey("bizNo"))
                 order.setBizNo(p.getString("bizNo"));
             if (p.containsKey("bizMsg"))
@@ -184,6 +186,8 @@ public class OrderController
             order.setProductName(p.getString("productName"));
         if (p.containsKey("productType"))
             order.setProductType(p.getIntValue("productType"));
+        if (p.containsKey("applyNo"))
+            order.setApplyNo(p.getString("applyNo"));
         if (p.containsKey("bizNo"))
             order.setBizNo(p.getString("bizNo"));
         if (p.containsKey("bizMsg"))

@@ -17,7 +17,6 @@ public class SaleController
     @Autowired WareService wareSrv;
     @Autowired VendorService vendorSrv;
     @Autowired ServiceMgr serviceMgr;
-    @Autowired CmsService cmsSrv;
 
     @PostConstruct
     @RequestMapping("/reset")
@@ -25,7 +24,6 @@ public class SaleController
     public String reset()
     {
         wareSrv.reset();
-        cmsSrv.reset();
         vendorSrv.reset();
 
         return "success";

@@ -74,17 +74,6 @@ public class PlanDao
 
     public void supplyClauses()
     {
-        final Map<String, String> map = new HashMap<>();
-
-        jdbc.query("select * from t_company", new RowCallbackHandler()
-        {
-            @Override
-            public void processRow(ResultSet rs) throws SQLException
-            {
-                map.put(rs.getString("code"), rs.getString("logo"));
-            }
-        });
-
         jdbc.query("select * from t_ins_clause", new RowCallbackHandler()
         {
             @Override
@@ -94,7 +83,6 @@ public class PlanDao
                 Insurance ins = lifeins.getProduct(code);
                 if (ins != null)
                 {
-                    ins.setAdditional("logo", map.get(ins.getCompany().getId()));
                     ins.setAdditional("remark", rs.getString("remark"));
                     ins.setAdditional("tag", rs.getString("tag"));
                 }

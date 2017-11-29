@@ -1,4 +1,4 @@
-package lerrain.service.sale;
+package lerrain.service.lifeins;
 
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,9 @@ public class CmsDao
     @Autowired
     JdbcTemplate   jdbc;
 
-    public Map<String, List<WareCms>> loadCommissionDefine()
+    public Map<String, List<CmsDefine>> loadCommissionDefine()
     {
-        final Map<String, List<WareCms>> m = new HashMap<>();
+        final Map<String, List<CmsDefine>> m = new HashMap<>();
 
         String sql = "select * from t_ins_pack_commission where valid is null order by platform_id, pack_id, pay_freq, pay_period, begin, end";
 
@@ -37,10 +37,10 @@ public class CmsDao
 
                 String key = platformId + "/" + group + "/" + packId + "/" + payFreq + "/" + payPeriod;
 
-                List<WareCms> list = m.get(key);
+                List<CmsDefine> list = m.get(key);
                 if (list == null)
                 {
-                    list = new ArrayList<WareCms>();
+                    list = new ArrayList<CmsDefine>();
                     m.put(key, list);
                 }
 
@@ -64,7 +64,7 @@ public class CmsDao
 
                 if (unit > 0)
                 {
-                    WareCms pc = new WareCms(begin, end, self, parent, freeze, unit);
+                    CmsDefine pc = new CmsDefine(begin, end, self, parent, freeze, unit);
                     pc.setMemo(rs.getString("memo"));
 
                     list.add(pc);

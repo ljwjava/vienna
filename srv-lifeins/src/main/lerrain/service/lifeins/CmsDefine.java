@@ -1,11 +1,11 @@
-package lerrain.service.sale;
+package lerrain.service.lifeins;
 
 import java.util.Date;
 
 /**
  * Created by lerrain on 2017/9/9.
  */
-public class WareCms
+public class CmsDefine
 {
     double[] self, parent;
 
@@ -16,7 +16,7 @@ public class WareCms
 
     String memo;
 
-    public WareCms(Date begin, Date end, double[] self, double[] parent, int freeze, int unit)
+    public CmsDefine(Date begin, Date end, double[] self, double[] parent, int freeze, int unit)
     {
         this.begin = begin;
         this.end = end;

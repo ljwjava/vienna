@@ -36,7 +36,10 @@ public class PackService
 
 	@Autowired
 	PlanService planSrv;
-	
+
+	@Autowired
+	CmsService cmsSrv;
+
 	Map<Object, PackIns> packs;
 
 	Map<String, Function> functions;
@@ -46,6 +49,7 @@ public class PackService
 	{
 		lifeins.reset();
 		planSrv.reset();
+		cmsSrv.reset();
 
 		packs = packDao.loadPacks();
 

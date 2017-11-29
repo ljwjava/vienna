@@ -18,6 +18,7 @@ public class Order
     Long vendorId;
     Long platformId;
 
+    String applyNo;
     String bizNo;
     String bizMsg;
 
@@ -38,6 +39,16 @@ public class Order
     public String getBizNo()
     {
         return bizNo;
+    }
+
+    public String getApplyNo()
+    {
+        return applyNo;
+    }
+
+    public void setApplyNo(String applyNo)
+    {
+        this.applyNo = applyNo;
     }
 
     public int getProductType()

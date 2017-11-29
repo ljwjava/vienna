@@ -1,6 +1,7 @@
 package lerrain.service.lifeins.pack;
 
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.lifeins.CmsService;
 import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.plan.PlanService;
 import lerrain.tool.Common;
@@ -25,6 +26,9 @@ public class PackController
 
     @Autowired
     LifeinsService lifeins;
+
+    @Autowired
+    CmsService cmsSrv;
 
     @RequestMapping({"/reset"})
     @ResponseBody
@@ -54,6 +58,16 @@ public class PackController
         else if ("try".equals(opt) || "premium".equals(opt))
         {
             r = packSrv.premium(packIns, content);
+        }
+        else if ("cms".equals(opt))
+        {
+            Long platformId = msg.getLong("platformId");
+            String group = msg.getString("group");
+            Long packId = msg.getLong("packId");
+            String payFreq = msg.getString("payFreq");
+            String payPeriod = msg.getString("payPeriod");
+
+            r = cmsSrv.getCommissionRate(platformId, group, packId, payFreq, payPeriod);
         }
         else if ("fee".equals(opt))
         {

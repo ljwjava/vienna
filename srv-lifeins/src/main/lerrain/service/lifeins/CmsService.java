@@ -1,4 +1,4 @@
-package lerrain.service.sale;
+package lerrain.service.lifeins;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,23 +12,23 @@ public class CmsService
 {
     @Autowired CmsDao cmsmDao;
 
-    Map<String, List<WareCms>> commissionBase;
+    Map<String, List<CmsDefine>> commissionBase;
 
     public void reset()
     {
         commissionBase = cmsmDao.loadCommissionDefine();
     }
 
-    public List<WareCms> getCommissionRate(Long platformId, String group, Long packId, String payFreq, String payPeriod)
+    public List<CmsDefine> getCommissionRate(Long platformId, String group, Long packId, String payFreq, String payPeriod)
     {
-        List<WareCms> list = commissionBase.get(platformId + "/" + group + "/" + packId + "/" + payFreq + "/" + payPeriod);
+        List<CmsDefine> list = commissionBase.get(platformId + "/" + group + "/" + packId + "/" + payFreq + "/" + payPeriod);
 
         if (list == null)
             return null;
 
-        List<WareCms> r = new ArrayList<>();
+        List<CmsDefine> r = new ArrayList<>();
 
-        for (WareCms pc : list)
+        for (CmsDefine pc : list)
         {
             if (pc.match())
                 r.add(pc);
@@ -36,7 +36,7 @@ public class CmsService
 
 //        double[][] r = new double[2][];
 //
-//        for (WareCms pc : list)
+//        for (CmsDefine pc : list)
 //        {
 //            if (pc.match())
 //            {
