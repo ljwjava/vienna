@@ -64,11 +64,11 @@ public class PackController
         }
         else if ("cms".equals(opt))
         {
-            Long platformId = msg.getLong("platformId");
-            String group = msg.getString("group");
-            Long packId = msg.getLong("packId");
-            String payFreq = msg.getString("payFreq");
-            String payPeriod = msg.getString("payPeriod");
+            Long platformId = content.getLong("platformId");
+            String group = content.getString("group");
+            Long packId = content.getLong("packId");
+            String payFreq = content.getString("payFreq");
+            String payPeriod = content.getString("payPeriod");
 
             List<CmsDefine> list = cmsSrv.getCommissionRate(platformId, group, packId, payFreq, payPeriod);
 
