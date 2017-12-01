@@ -6,11 +6,14 @@ import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Function;
 import lerrain.tool.script.Script;
+import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -195,5 +198,58 @@ public class DevelopController
         res.put("result", "success");
 
         return res;
+    }
+
+    @RequestMapping("/develop/run.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject runScript(@RequestBody JSONObject req)
+    {
+        Long envId = req.getLong("envId");
+        String script = req.getString("script");
+        JSONObject self = req.getJSONObject("params");
+
+        Stack stack = new Stack(envSrv.getEnv(envId).getStack());
+        stack.declare("self", self);
+
+        PrintStream oldPs = System.out;
+        try (ByteArrayOutputStream sysOs = new ByteArrayOutputStream(); PrintStream sysPs = new PrintStream(sysOs))
+        {
+            System.setOut(sysPs);
+
+            JSONObject res = new JSONObject();
+            res.put("result", "success");
+
+            JSONObject val = new JSONObject();
+            try
+            {
+                val.put("result", Script.scriptOf(script).run(stack));
+            }
+            catch(Exception e)
+            {
+                try (ByteArrayOutputStream exOs = new ByteArrayOutputStream(); PrintStream exPs = new PrintStream(exOs))
+                {
+                    e.printStackTrace(exPs);
+                    val.put("exception", exOs.toString());
+                }
+                catch (Exception e1)
+                {
+                    Log.error(e1);
+                }
+            }
+
+            val.put("console", sysOs.toString());
+            res.put("content", val);
+
+            return res;
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            System.setOut(oldPs);
+        }
     }
 }
