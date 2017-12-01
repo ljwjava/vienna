@@ -242,17 +242,22 @@ public class LifeinsUtil
 			}
 
 			List<String[]> d = new ArrayList<>();
-			d.add(new String[] {"保费", String.format("%.2f", c.getPremium())});
-			if (c.getPay() != null)
-				d.add(new String[] {"缴费期间", c.getPay().getDesc()});
-			if (c.getInsure() != null)
-				d.add(new String[] {"保障期间", c.getInsure().getDesc()});
+
 			if (purchase == Purchase.AMOUNT)
 				d.add(new String[] {"保额", c.getAmount() % 10000 < 0.01f ? Math.round(c.getAmount() / 10000) + "万" : c.getAmount() + "元"});
 			else if (purchase == Purchase.QUANTITY)
 				d.add(new String[] {"份数", c.getQuantity() + "份"});
 			else if (purchase == Purchase.RANK)
 				d.add(new String[] {"档次", c.getRank().getDesc()});
+
+			if (c.getInsure() != null)
+				d.add(new String[] {"保障期间", c.getInsure().getDesc()});
+
+			if (c.getPay() != null)
+				d.add(new String[] {"缴费期间", c.getPay().getDesc()});
+
+			d.add(new String[] {"保费", String.format("%.2f", c.getPremium())});
+
 			m.put("descr", d);
 
 			List<String> ruleList = new ArrayList<String>();

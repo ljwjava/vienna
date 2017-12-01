@@ -52,6 +52,14 @@
 				<item name="THUNDER">AMOUNT</item>
 				<item name="MILD">AMOUNT</item>
 			</fgraph>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<bar name="保费" color="#00AA00">PremiumYear(I)</bar>
+					<line name="累计保费" color="#0000FF">PremiumSum(I)</line>
+					<line name="现金价值" color="#0000FF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
 		</attachment>
 
 		<rule>

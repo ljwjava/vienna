@@ -13,6 +13,7 @@ import lerrain.project.insurance.product.Config;
 import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.InsuranceMgr;
 
+import lerrain.service.common.Log;
 import lerrain.service.lifeins.format.FGraphFilter;
 import lerrain.service.lifeins.format.FGraphParser;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,12 +66,13 @@ public class LifeinsService
                 {
                     for (Insurance prd : (List<Insurance>) e.getValue().getProductList())
                     {
-                        System.out.println(String.format("CLAUSE LOAD: <%s>%s", prd.getId(), prd.getName()));
-
+                        System.out.println(String.format("CLAUSE LOAD: %s - %s", prd.getId(), prd.getName()));
                         product.put(prd.getId(), prd);
                     }
                 }
             }
+
+            Log.debug(product);
         }
         catch (Exception e)
         {
