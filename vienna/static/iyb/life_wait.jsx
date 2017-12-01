@@ -285,7 +285,8 @@ var LotteryBox = React.createClass({
 var Ground = React.createClass({
 	intervalId: null,
 	getInitialState() {
-		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面，投保成功后可获得抽奖机会哦", memo:"", modify:0, icon:"images/insure_succ.png"};
+		// ，投保成功后可获得抽奖机会哦
+		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面", memo:"", modify:0, icon:"images/insure_succ.png"};
 	},
 	back(step) {
 		common.req("order/restore.json", {orderId: env.order.id}, r => {
