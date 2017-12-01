@@ -331,8 +331,12 @@ var Ground = React.createClass({
 			common.req("sale/apply.json", order, r => {
                 // document.location.href = r.nextUrl;
                 if (r.success != false && r.nextUrl != null) {
-                    var f = common.initForm(r.nextUrl, r.params, r.method);
-                    f.submit();
+                	if(r.params != null){
+                        var f = common.initForm(r.nextUrl, r.params, r.method);
+                        f.submit();
+					}else{
+                        document.location.href = r.nextUrl;
+					}
                 }else{
                     ToastIt(r.errCode + " - " + r.errMsg);
 				}
