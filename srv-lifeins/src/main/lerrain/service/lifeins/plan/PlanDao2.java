@@ -3,8 +3,12 @@ package lerrain.service.lifeins.plan;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
+import lerrain.project.insurance.plan.UnstableList;
 import lerrain.project.insurance.product.Insurance;
+import lerrain.project.insurance.product.InsuranceRecom;
+import lerrain.project.insurance.product.Portfolio;
 import lerrain.project.insurance.product.Purchase;
+import lerrain.service.common.Log;
 import lerrain.service.lifeins.Customer;
 import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.LifeinsUtil;
@@ -16,10 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class PlanDao2
@@ -94,6 +95,8 @@ public class PlanDao2
                             double quantity = Common.doubleOf(m.getDouble("QUANTITY"), 0);
                             double amount = Common.doubleOf(m.getDouble("AMOUNT"), 0);
                             double premium = Common.doubleOf(m.getDouble("PREMIUM"), 0);
+
+//                            Log.debug(plan.getId() + " - " + parentSeq + " - " + productId + " - " + lifeins.getProduct(productId));
 
                             Commodity parent = parentSeq == null ? null : temp.get(parentSeq);
                             final Commodity c = new Commodity(plan, parent, (Insurance) lifeins.getProduct(productId), null, null);

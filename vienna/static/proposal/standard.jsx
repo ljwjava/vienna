@@ -420,7 +420,7 @@ var Show = React.createClass({
 						yAxis : [{
 							type : 'value',
 							name : '金额',
-							axisLabel : { formatter: '{value}万' }
+							axisLabel : { formatter: '{value}' }
 						}],
 						series : cc.data
 					};
