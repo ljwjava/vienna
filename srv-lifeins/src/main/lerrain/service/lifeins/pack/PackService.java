@@ -1,6 +1,5 @@
 package lerrain.service.lifeins.pack;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
@@ -9,11 +8,12 @@ import lerrain.project.insurance.product.rule.Rule;
 import lerrain.project.insurance.product.rule.RuleUtil;
 import lerrain.service.lifeins.*;
 import lerrain.service.lifeins.plan.PlanService;
+import lerrain.service.lifeins.plan.quest.MergeQuestService;
+import lerrain.service.lifeins.plan.quest.TradQuestService;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.formula.Function;
-import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,10 @@ public class PackService
 	LifeinsService lifeins;
 
 	@Autowired
-	QuestService questSrv;
+	TradQuestService tradQuestSrv;
+
+	@Autowired
+	MergeQuestService mergeQuestSrv;
 
 	@Autowired
 	PlanService planSrv;
@@ -49,6 +52,8 @@ public class PackService
 	{
 		lifeins.reset();
 		planSrv.reset();
+
+		mergeQuestSrv.reset();
 		cmsSrv.reset();
 
 		packs = packDao.loadPacks();
@@ -264,8 +269,8 @@ public class PackService
 		{
 			reset(plan, packIns, stack);
 
-			r.put("applicant", questSrv.getQuests(plan, 1));
-			r.put("insurant", questSrv.getQuests(plan, 2));
+			r.put("applicant", tradQuestSrv.getQuests(plan, 1));
+			r.put("insurant", tradQuestSrv.getQuests(plan, 2));
 		}
 		return r;
 	}

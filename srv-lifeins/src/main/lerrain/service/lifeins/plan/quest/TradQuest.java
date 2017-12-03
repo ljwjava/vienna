@@ -1,4 +1,4 @@
-package lerrain.service.lifeins;
+package lerrain.service.lifeins.plan.quest;
 
 import lerrain.project.insurance.plan.Plan;
 import lerrain.tool.formula.Formula;
@@ -6,11 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by lerrain on 2017/5/21.
- */
-@Service
-public class Quest
+public class TradQuest
 {
     Long id;
     String code;

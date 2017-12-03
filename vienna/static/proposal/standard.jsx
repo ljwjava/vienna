@@ -357,12 +357,16 @@ var Main = React.createClass({
 					printer.preview("iyb_proposal", "preview", r);
 				});
 			});
+        } else if (x == "6") {
+            common.req("proposal/plan/quest/merge.json", {planId: this.props.planId}, r => {
+                this.setState({mode:x, show:r, type:"mergeQuest"});
+            });
 		} else {
 			this.setState({mode:x, show:null});
 		}
 	},
 	render() {
-		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"]];
+		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"]];
 		var barList = bar.map(r => {
 			return (<li className={this.state.mode == r[0] ? "active" : null}><a onClick={this.doEvent.bind(this, r[0])}>{r[1]}</a></li>);
 		});

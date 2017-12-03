@@ -9,6 +9,7 @@ import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.*;
 
+import lerrain.service.lifeins.plan.quest.MergeQuestService;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,9 @@ public class PlanController
 
     @Autowired
     LifeinsService lifeins;
+
+    @Autowired
+    MergeQuestService mergeQuestSrv;
 
     @RequestMapping("/plan/create.json")
     @ResponseBody
@@ -542,6 +546,24 @@ public class PlanController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", LifeinsUtil.feeOf(plan));
+
+        return res;
+    }
+
+    @RequestMapping({"/plan/quest/merge.json"})
+    @ResponseBody
+    public JSONObject mergeQuest(@RequestBody JSONObject p)
+    {
+        String planId = (String) p.get("planId");
+
+        if (Common.isEmpty(planId))
+            throw new RuntimeException("缺少planId");
+
+        Plan plan = ls.getPlan(planId);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", mergeQuestSrv.refreshQuestText(plan));
 
         return res;
     }

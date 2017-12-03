@@ -1,6 +1,5 @@
-package lerrain.service.lifeins;
+package lerrain.service.lifeins.plan.quest;
 
-import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Input;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.tool.formula.Value;
@@ -12,16 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by lerrain on 2017/5/21.
- */
 @Service
-public class QuestService
+public class TradQuestService
 {
     @Autowired
-    QuestDao questDao;
+    TradQuestDao questDao;
 
-    Map<String, List<Quest>> cache = new HashMap<>();
+    Map<String, List<TradQuest>> cache = new HashMap<>();
 
     public Map<String, String> getQuestText(Object quests)
     {
@@ -68,8 +64,8 @@ public class QuestService
         if (forSelf && customerType == 2)
             return null;
 
-        List<Quest> list = getQuests(company, 1, customerType);
-        if (list != null) for (Quest q : list)
+        List<TradQuest> list = getQuests(company, 1, customerType);
+        if (list != null) for (TradQuest q : list)
         {
             if (!forSelf && !exempt && customerType == 1 && q.getType() == 2) //如果没有豁免，并且投保人不是被保人，投保人不需要填健康告知
                 continue;
@@ -83,11 +79,11 @@ public class QuestService
         return r;
     }
 
-    private List<Quest> getQuests(String company, int applyType, int customerType)
+    private List<TradQuest> getQuests(String company, int applyType, int customerType)
     {
         synchronized (cache)
         {
-            List<Quest> list = cache.get(company + "/" + applyType + "/" + customerType);
+            List<TradQuest> list = cache.get(company + "/" + applyType + "/" + customerType);
             if (list == null)
             {
                 list = questDao.getQuests(company, applyType, customerType);
