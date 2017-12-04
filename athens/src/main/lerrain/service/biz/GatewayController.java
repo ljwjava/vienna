@@ -278,7 +278,7 @@ public class GatewayController
             }
             catch (Exception e1)
             {
-                e.printStackTrace();
+                e1.printStackTrace();
             }
         }
     }
