@@ -1,9 +1,12 @@
 package lerrain.service.biz.function;
 
+import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.*;
@@ -21,6 +24,9 @@ import java.security.cert.X509Certificate;
 @Service
 public class RequestPost implements Function
 {
+    @Autowired
+    ServiceMgr serviceMgr;
+
     @Override
     public Object run(Object[] objects, Factors factors)
     {
@@ -30,7 +36,18 @@ public class RequestPost implements Function
         return request((String)objects[0], (String)objects[1], time, method);
     }
 
-    public static String request(String urlstr, String req, int timeout, String method)
+//    public String request(String urlstr, String req, int timeout, String method)
+//    {
+//        JSONObject json = new JSONObject();
+//        json.put("url", urlstr);
+//        json.put("value", req);
+//        json.put("timeout", timeout);
+//        json.put("method", method);
+//
+//        return serviceMgr.reqStr("vienna", "request", json.toJSONString());
+//    }
+
+    public String request(String urlstr, String req, int timeout, String method)
     {
         String res = null;
 

@@ -148,6 +148,7 @@ public class EnvService
         stack.put("log", log);
         stack.put("err", err);
         stack.put("run", new RunFunction());
+        stack.put("copy", new Copy());
         stack.put("stackOf", new StackOf());
         stack.put("nextId", nextId);
         stack.put("req", request);
