@@ -165,8 +165,12 @@ class ContactForm extends Form {
 
 class PlanForm extends Form {
 	form() {
+		var hasEffe = false;
 		let form = this.props.fields == null ? [] : this.props.fields.map(v => {
             if (v.scope == null || (v.scope != "insurant" && v.scope != "applicant")) {
+            	if(v.name == "EFFECTIVE_DATE"){
+            		hasEffe = true;
+				}
                 return {
                     name: v.label,
                     code: v.name,
@@ -177,7 +181,9 @@ class PlanForm extends Form {
                 };
             }
 		});
-		form.push({name: "保单生效日", code: "insureTime", type: "static", value: "次日0时"});
+		if(!hasEffe){
+            form.push({name: "保单生效日", code: "insureTime", type: "static", value: "次日0时"});
+		}
 		return this.buildForm(form);
 	}
 }

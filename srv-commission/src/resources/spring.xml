@@ -44,4 +44,5 @@
 	</bean>
 
 	<bean class="lerrain.service.common.ServiceTools"/>
+	<bean class="lerrain.service.common.ServiceMgr"/>
 </beans>
