@@ -27,12 +27,7 @@ public class IdController
     @ResponseBody
     public synchronized String reqId(@RequestBody String code)
     {
-        if (skip < 0)
-        {
-            int num = jdbc.queryForObject("select count(*) from s_sequence where code = ?", Integer.class, code);
-            if (num == 0)
-                jdbc.update("insert into s_sequence(code, value, step) values(?, 0, 100)", code);
-
+        if(skip <= 0){
             skip = jdbc.queryForObject("select step from s_sequence where code = ?", Integer.class, code);
         }
 
