@@ -1,15 +1,15 @@
-package lerrain.service.biz.function;
+package lerrain.project.vienna;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
-import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
-import lerrain.tool.formula.Factors;
-import lerrain.tool.formula.Function;
+import lerrain.tool.Disk;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.net.ssl.*;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,36 +18,22 @@ import java.net.URL;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-/**
- * Created by lerrain on 2017/5/19.
- */
-@Service
-public class RequestPost implements Function
+@Controller
+public class RequestController
 {
-    @Autowired
-    ServiceMgr serviceMgr;
-
-    @Override
-    public Object run(Object[] objects, Factors factors)
+    @RequestMapping("/request")
+    @ResponseBody
+    public String request(@RequestBody JSONObject json)
     {
-        int time = objects.length > 2 ? Common.intOf(objects[2], 10000) : 10000;
-        String method = objects.length > 3 ? ("GET".equalsIgnoreCase(Common.trimStringOf(objects[3])) ? "GET" : "POST") : "POST";
+        String url = json.getString("url");
+        String req = json.getString("value");
+        String method = json.getString("method");
+        int time = Common.intOf(json.getInteger("timeout"), 10000);
 
-        return request((String)objects[0], (String)objects[1], time, method);
+        return request(url, req, time, method);
     }
 
-//    public String request(String urlstr, String req, int timeout, String method)
-//    {
-//        JSONObject json = new JSONObject();
-//        json.put("url", urlstr);
-//        json.put("value", req);
-//        json.put("timeout", timeout);
-//        json.put("method", method);
-//
-//        return serviceMgr.reqStr("vienna", "request", json.toJSONString());
-//    }
-
-    public String request(String urlstr, String req, int timeout, String method)
+    public static String request(String urlstr, String req, int timeout, String method)
     {
         String res = null;
 
@@ -139,4 +125,5 @@ public class RequestPost implements Function
             return null;
         }
     }
+
 }
