@@ -168,7 +168,7 @@ class PlanForm extends Form {
 		var hasEffe = false;
 		let form = this.props.fields == null ? [] : this.props.fields.map(v => {
             if (v.scope == null || (v.scope != "insurant" && v.scope != "applicant")) {
-            	if(v.name == "EFFECTIVE_DATE"){
+            	if(v.name == "EFFECTIVE_DATE" || v.name == "EFFECTIVE_DAYS"){
             		hasEffe = true;
 				}
                 return {
