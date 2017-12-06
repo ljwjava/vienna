@@ -28,6 +28,7 @@ service:
   printer: http://www.lerrain.com:7511
   rome: http://www.lerrain.com:7766
   sale: http://www.lerrain.com:7772
+  vienna: http://www.lerrain.com:7701
 
 path:
   root: ./static/

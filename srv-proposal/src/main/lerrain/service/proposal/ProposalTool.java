@@ -20,6 +20,7 @@ public class ProposalTool
 		r.put("name", proposal.getName());
 		r.put("applicant", proposal.getApplicant());
 		r.put("cover", proposal.getCover());
+		r.put("bless", proposal.getBless());
 		r.put("insureTime", proposal.getInsureTime());
 		r.put("remark", proposal.getRemark());
 		r.put("other", proposal.getOther());

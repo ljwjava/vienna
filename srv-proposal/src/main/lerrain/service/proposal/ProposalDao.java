@@ -70,6 +70,7 @@ public class ProposalDao
 				p.setName(m.getString("proposal_name"));
 				p.setRemark(m.getString("remark"));
 				p.setCover(m.getString("cover"));
+				p.setBless(m.getString("bless"));
 				p.setPremium(m.getBigDecimal("premium"));
 				p.setInsureTime(m.getDate("insure_time"));
 				p.setPlatformId(Common.toLong(m.getString("platform_id")));

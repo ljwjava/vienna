@@ -80,6 +80,8 @@ public class ProposalController
 			proposal.setCover(p.getString("cover"));
 		if (p.containsKey("bless"))
 			proposal.setBless(p.getString("bless"));
+		if (p.containsKey("remark"))
+			proposal.setRemark(p.getString("remark"));
 
 		JSONObject other = p.getJSONObject("other");
 		if (other != null)
@@ -182,6 +184,8 @@ public class ProposalController
 		proposal.setCover(cover);
 		String bless = p.getString("bless");
 		proposal.setBless(bless);
+		String remark = p.getString("remark");
+		proposal.setRemark(remark);
 
 		JSONObject other = p.getJSONObject("other");
 		if (other != null)
