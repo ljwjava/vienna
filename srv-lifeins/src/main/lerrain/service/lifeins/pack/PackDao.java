@@ -56,6 +56,7 @@ public class PackDao
                     String perform = m.getString("perform");
                     String docs = m.getString("docs");
                     String rateFactors = m.getString("rate_factors");
+                    String web = m.getString("form_opt");
 
                     Long input = Common.toLong(m.getObject("input"));
 
@@ -69,6 +70,8 @@ public class PackDao
                     packIns.setType(m.getInt("type"));
                     packIns.setApplyMode(m.getInt("apply_mode"));
 
+                    if (!Common.isEmpty(web))
+                        packIns.setFormOpt(JSONObject.parseObject(web));
                     if (input != null)
                         packIns.setInputForm(loadInputForm(input));
                     if (!Common.isEmpty(rateFactors))

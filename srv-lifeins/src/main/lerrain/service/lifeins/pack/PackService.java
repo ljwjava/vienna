@@ -297,6 +297,14 @@ public class PackService
 			for (String f : packIns.getRateFactors())
 			{
 				Object val = vals.get(f);
+
+				if (val == null)
+				{
+					for (InputField field : packIns.getInputForm())
+						if (field.getVar().equals(f))
+							val = field.getValue();
+				}
+
 				if (val == null)
 				{
 					key = null;

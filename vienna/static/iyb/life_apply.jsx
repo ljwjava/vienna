@@ -16,11 +16,25 @@ import CityPicker from '../common/widget.cityPicker.jsx';
 import Form from '../common/widget.form2.jsx';
 import ToastIt from '../common/widget.toast.jsx';
 
-env.company = 'hqlife';
-env.dict = {
-	cert: [["1","身份证"]],
-    relation: [["1","本人"]],
-	relation2: [["4","父母"],["2","配偶"],["3","子女"]]
+env.company = 'iyb';
+env.def = {
+    applicant: {
+        cert: [["1","身份证"]],
+        city: true,
+        address: true
+    },
+    insurant: {
+        cert: [["1","身份证"]],
+        city: true,
+        address: true,
+		occupation: false,
+        relation: [["1","本人"]]
+    },
+    beneficiary: {
+        custom: true,
+        cert: [["1","身份证"]],
+		relation: [["4","父母"],["2","配偶"],["3","子女"]]
+    }
 };
 
 env.parseDict = function(dict) {
@@ -51,9 +65,9 @@ env.checkCustomer = function(f) {
 class Beneficiary extends Form {
 	form() {
 		var v = [
-            {name:"是被保险人的", code:"relation", type:"select", options:env.dict.relation2},
+            {name:"是被保险人的", code:"relation", type:"select", options:env.formOpt.beneficiary.relation},
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.dict.cert},
+			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.beneficiary.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
 			{name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
 			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
@@ -83,15 +97,17 @@ class ApplicantForm extends Form {
 	form() {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.dict.cert},
+			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.applicant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
             {name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
 			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
-			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
-            {name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"},
-			{name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入通讯地址"},
+			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"}
             //{name:'邮政编码', code:"zipcode", type:"text", reg:"^(?!\\d00000)(?!\\d11111)(?!\\d22222)(?!\\d33333)(?!\\d44444)(?!\\d55555)(?!\\d66666)(?!\\d77777)(?!\\d88888)(?!\\d99999)\\d{6}$", req:"yes", mistake:"请输入正确的邮政编码", desc:"请输入邮政编码"}
 		];
+		if (env.formOpt.applicant.city)
+			v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
+        if (env.formOpt.applicant.address)
+            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入通讯地址"});
 		return this.buildForm(v);
 	}
 	verify(code, val) {
@@ -109,15 +125,17 @@ class InsurantForm extends Form {
 	form() {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.dict.cert},
+			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.insurant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
             {name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
 			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
-			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
-			{name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"},
-			{name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入通讯地址"} //,
+			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"}
             //{name:'邮政编码', code:"zipcode", type:"text", reg:"^(?!\\d00000)(?!\\d11111)(?!\\d22222)(?!\\d33333)(?!\\d44444)(?!\\d55555)(?!\\d66666)(?!\\d77777)(?!\\d88888)(?!\\d99999)\\d{6}$", req:"yes", mistake:"请输入正确的邮政编码", desc:"请输入邮政编码"}
 		];
+        if (env.formOpt.insurant.city)
+            v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
+        if (env.formOpt.insurant.address)
+            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入通讯地址"});
 		return this.buildForm(v);
 	}
 	verify(code, val) {
@@ -131,12 +149,9 @@ class InsurantForm extends Form {
 
 class InsurantMore extends Form {
 	form() {
-		let v = [
-			// {name:'职业类别', code:"occupationCategory", type:"static", value:"1-4类职业"},
-            {name:'职业', code:"occupation", type:"occupation", refresh:"yes", req:"yes", desc:"请选择职业"}
-			// {name:'身高(cm)', code:"height", type:"number", req:"yes", desc:"请输入身高，单位：厘米）"},
-			// {name:'体重(kg)', code:"weight", type:"number", req:"yes", desc:"请输入体重，单位：公斤）"}
-		];
+		let v = [];
+        if (env.formOpt.insurant.occupation)
+            v.push({name:'职业', code:"occupation", type:"occupation", refresh:"yes", req:"yes", desc:"请选择职业"});
 		return this.buildForm(v);
 	}
 }
@@ -215,7 +230,7 @@ var Ground = React.createClass({
 		for (let i=0;i<d;i++)
 			dd.push(i);
 		return {
-			insurant: this.props.defVal.insurant != null,
+			insurant: false,
 			premium: -1,
 			benefitLiveType: common.ifNull(this.props.defVal.beneficiaryLiveType, "insurant"),
 			benefitLiveNum: l,
@@ -234,7 +249,32 @@ var Ground = React.createClass({
 			env.vendorId = r.vendor.id;
 			env.company = r.vendor.code;
 			env.wareCode = r.ware.code;
+			env.formOpt = r.formOpt == null ? {} : r.formOpt;
 
+			for (var x1 in env.def) {
+				if (env.formOpt[x1] == null) {
+                    env.formOpt[x1] = env.def[x1];
+                } else {
+                    for (var x2 in env.def[x1])
+                    	if (env.formOpt[x1][x2] == null)
+                            env.formOpt[x1][x2] = env.def[x1][x2];
+				}
+			}
+
+			var ins = this.props.defVal.insurant != null;
+			if (env.formOpt.insurant.relation[0][0] != "00") {
+				ins = true;
+            }
+
+            var opts = [["law","法定"]];
+			if (env.formOpt.beneficiary.custom)
+                opts.push(["other","指定"]);
+			this.setState({factors:r.factors, benefit:opts, insurant:ins}, () => {
+                if (this.props.defVal.factors != null)
+                    this.refreshPremium();
+            });
+
+			/*
             common.req("dict/view.json", {company: env.company, name: "cert", version: "new"}, r0 => {
                 env.dict.cert = r0.cert;
                 this.setState({factors:r.factors}, () => {
@@ -245,6 +285,7 @@ var Ground = React.createClass({
             }, f => {
                 ToastIt("证件类型加载失败");
             });
+            */
 
             document.title = r.name;
             if ("undefined" != typeof iHealthBridge) {
@@ -268,21 +309,25 @@ var Ground = React.createClass({
     	if (this.state.insurant) {
 	    	factors["GENDER"] = this.refs.insurant.refs.gender.val();
 	    	factors["BIRTHDAY"] = this.refs.insurant.refs.birthday.val();
-			factors["ZONE"] = this.refs.insurant.refs.city.val().code;
+            if (env.formOpt.insurant.city)
+				factors["ZONE"] = this.refs.insurant.refs.city.val().code;
 			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
 			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
 			factors["RELATION"] = this.refs.relation.val();
 	    } else {
 	    	factors["GENDER"] = this.refs.applicant.refs.gender.val();
 	    	factors["BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
-			factors["ZONE"] = this.refs.applicant.refs.city.val().code;
+            if (env.formOpt.applicant.city)
+				factors["ZONE"] = this.refs.applicant.refs.city.val().code;
 			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
 			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
 			factors["RELATION"] = "self";
 		}
-		if(this.refs.more){
-            factors["OCCUPATION_L"] = this.refs.more.refs.occupation.val().level;
-            factors["OCCUPATION_C"] = this.refs.more.refs.occupation.val().code;
+		if (this.refs.more) {
+            if (env.formOpt.insurant.occupation) {
+                factors["OCCUPATION_L"] = this.refs.more.refs.occupation.val().level;
+                factors["OCCUPATION_C"] = this.refs.more.refs.occupation.val().code;
+            }
 		}
 		// console.log(factors);
     	return factors;
@@ -305,6 +350,7 @@ var Ground = React.createClass({
 	},
     refreshPremium() {
     	let factors = this.getPlanFactors();
+        console.log(factors);
     	if (factors["BIRTHDAY"] == null || factors["BIRTHDAY"] == "") {
 			this.setState({premium: -1, rules: null});
     	} else {
@@ -373,7 +419,8 @@ var Ground = React.createClass({
 		env.applicant = this.refs.applicant.val();
 		env.applicant.certName = this.refs.applicant.refs.certType.text();
 		env.applicant.genderName = this.refs.applicant.refs.gender.text();
-		env.applicant.cityName = this.refs.applicant.refs.city.val().text;
+		if (env.formOpt.applicant.city)
+			env.applicant.cityName = this.refs.applicant.refs.city.val().text;
 		// 被保险人信息校验
 		if (!!this.refs.more && !this.refs.more.verifyAll()) {
             ToastIt("请检查被保险人信息");
@@ -390,19 +437,20 @@ var Ground = React.createClass({
 			env.insurant = this.refs.insurant.val();
 			env.insurant.certName = this.refs.insurant.refs.certType.text();
 			env.insurant.genderName = this.refs.insurant.refs.gender.text();
-			env.insurant.cityName = this.refs.insurant.refs.city.val().text;
+            if (env.formOpt.insurant.city)
+				env.insurant.cityName = this.refs.insurant.refs.city.val().text;
 			env.insurant.relation = this.refs.relation.val();
-			if(!!m){
+			if (m != null) {
                 env.insurant.occupation = m.occupation;
                 env.insurant.height = m.height;
                 env.insurant.weight = m.weight;
 			}
 		} else {
             env.insurant = env.applicant;
-            if(!!m){
+            if (m != null) {
+                env.applicant.occupation = m.occupation;
                 env.applicant.height = m.height;
                 env.applicant.weight = m.weight;
-                env.applicant.occupation = m.occupation;
             }
 		}
 		//受益人
@@ -580,11 +628,11 @@ var Ground = React.createClass({
 					<div className="tab">
 						<div className="row">
 							<div className="col line left">是投保人的</div>
-							<div className="col line right"><Selecter ref="relation" onChange={this.changeRelation} options={env.dict.relation} value={ins.relation}/></div>
+							<div className="col line right"><Selecter ref="relation" onChange={this.changeRelation} options={env.formOpt.insurant.relation} value={ins.relation}/></div>
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					{env.company != "bobcardif" ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
+					{env.formOpt.insurant.occupation ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
 				<div className="title">保险计划</div>
 				<div className="form">
@@ -600,7 +648,7 @@ var Ground = React.createClass({
 					<div className="tab">
 						<div className="row">
 							<div className="col line left">受益人</div>
-							<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={[["law","法定"],["other","指定"]]}/></div>
+							<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={this.state.benefit}/></div>
 						</div>
 					</div>
 					{b2}

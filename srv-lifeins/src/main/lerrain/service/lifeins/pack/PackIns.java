@@ -29,6 +29,7 @@ public class PackIns
 
     Map<String, Object> vendor;
     Map<String, Object> docs;
+    Map<String, Object> formOpt;
 
     String[] rateFactors;
 
@@ -50,6 +51,16 @@ public class PackIns
     public void setPretreat(Formula pretreat)
     {
         this.pretreat = pretreat;
+    }
+
+    public Map<String, Object> getFormOpt()
+    {
+        return formOpt;
+    }
+
+    public void setFormOpt(Map<String, Object> formOpt)
+    {
+        this.formOpt = formOpt;
     }
 
     public String getName()

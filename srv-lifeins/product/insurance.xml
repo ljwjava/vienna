@@ -92,6 +92,10 @@
     <item src="shlife/*.xml"/>
   </corporation>
 
+  <corporation id="picc" name="中国人保" extends="insurance">
+    <item src="picc/*.xml"/>
+  </corporation>
+
   <!--
     <corporation id="iyb" name="i云保" extends="insurance">
       <item src="hexie/HXH*.xml"/>
