@@ -28,9 +28,10 @@ public class OrderDaoJdbc
 
 		if (!exists(order.getId()))
 		{
-			jdbc.update("insert into t_order(id,apply_no,biz_no,product_id,product_type,product_name,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
-					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+			jdbc.update("insert into t_order(id,parent_id,apply_no,biz_no,product_id,product_type,product_name,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
+					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				order.getId(),
+				order.getParentId(),
 				order.getApplyNo(),
 				order.getBizNo(),
 				order.getProductId(),
@@ -67,6 +68,14 @@ public class OrderDaoJdbc
 		return jdbc.queryForObject("select exists(select id from t_order where id = ?) from dual", Integer.class, orderId) > 0;
 	}
 
+	public void saveChildren(Order order, List<Order> children)
+	{
+		jdbc.update("update t_order set valid = 'N' where parent_id = ?", order.getId());
+
+		for (Order child : children)
+			save(child);
+	}
+
 	public boolean delete(Long orderId)
 	{
 		return jdbc.update("update t_order set valid = 9 where id = ?", orderId) > 0;
@@ -74,7 +83,7 @@ public class OrderDaoJdbc
 	
 	public Order load(Long orderId)
 	{
-		return jdbc.queryForObject("select * from t_order where id = ?", new Object[]{orderId}, new RowMapper<Order>()
+		Order order = jdbc.queryForObject("select * from t_order where id = ?", new Object[]{orderId}, new RowMapper<Order>()
 		{
 			@Override
 			public Order mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -83,11 +92,14 @@ public class OrderDaoJdbc
 			}
 
 		});
+
+		order.setChildren(jdbc.queryForList("select id from t_order where parent_id = ?", new Object[]{orderId}, Long.class));
+		return order;
 	}
 
 	public List<Order> query(int type, Long owner, int from, int number)
 	{
-		return jdbc.query("select * from t_order where valid is null and type = ? and owner = ? order by create_time desc limit ?, ?", new Object[]{type, owner, from, number}, new RowMapper<Order>()
+		return jdbc.query("select * from t_order where valid is null and parent_id is null and type = ? and owner = ? order by create_time desc limit ?, ?", new Object[]{type, owner, from, number}, new RowMapper<Order>()
 		{
 			@Override
 			public Order mapRow(ResultSet m, int rowNum) throws SQLException

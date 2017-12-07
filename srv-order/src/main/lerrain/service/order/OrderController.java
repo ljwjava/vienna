@@ -1,12 +1,15 @@
 package lerrain.service.order;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -29,6 +32,36 @@ public class OrderController
     {
         Order order = orderSrv.newOrder();
         fill(order, p);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", order);
+
+        return res;
+    }
+
+    @RequestMapping("/children.json")
+    @ResponseBody
+    public JSONObject children(@RequestBody JSONObject p)
+    {
+        Long orderId = p.getLong("orderId");
+
+        if (Common.isEmpty(orderId))
+            throw new RuntimeException("缺少orderId");
+
+        Order order = orderSrv.getOrder(orderId);
+
+        List<Order> c = new ArrayList<>();
+        JSONArray children = p.getJSONArray("children");
+        for (int i=0;i<children.size();i++)
+        {
+            Order child = orderSrv.newOrder();
+            fill(child, children.getJSONObject(i));
+
+            c.add(child);
+        }
+
+        orderSrv.setChildren(order, c);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");

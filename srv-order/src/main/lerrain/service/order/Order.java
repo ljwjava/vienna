@@ -2,6 +2,7 @@ package lerrain.service.order;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Map;
 public class Order
 {
     Long id;
+    Long parentId;
 
     String productId;
     String productName;
@@ -26,6 +28,8 @@ public class Order
 
     BigDecimal price;
 
+    List<Long> children;
+
     Date createTime, modifyTime;
 
     Map<String, Object> factors;
@@ -33,7 +37,7 @@ public class Order
     Map<String, Object> extra;
 
     int type;
-    int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 9支付异常
+    int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 9支付异常 0无状态
     int status  = 1;    //1填写中 2已提交 3成功 4失败 5终止 9异常
 
     public String getBizNo()
@@ -49,6 +53,26 @@ public class Order
     public void setApplyNo(String applyNo)
     {
         this.applyNo = applyNo;
+    }
+
+    public List<Long> getChildren()
+    {
+        return children;
+    }
+
+    public void setChildren(List<Long> children)
+    {
+        this.children = children;
+    }
+
+    public Long getParentId()
+    {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId)
+    {
+        this.parentId = parentId;
     }
 
     public int getProductType()

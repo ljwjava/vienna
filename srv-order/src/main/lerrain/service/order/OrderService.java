@@ -28,6 +28,20 @@ public class OrderService
 		
 		return order;
 	}
+
+	public void setChildren(Order order, List<Order> children)
+	{
+		List<Long> list = new ArrayList<>();
+
+		for (Order c : children)
+		{
+			c.setParentId(order.getId());
+			list.add(c.getId());
+		}
+
+		order.setChildren(list);
+		pd.saveChildren(order, children);
+	}
 	
 	public Order getOrder(Long orderId)
 	{
