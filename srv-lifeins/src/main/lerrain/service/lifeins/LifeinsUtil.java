@@ -208,6 +208,7 @@ public class LifeinsUtil
 		m.put("name", c.getProduct().getName());
 		m.put("abbrName", c.getProduct().getAbbrName());
 		m.put("age", c.getFactor("AGE"));
+		m.put("other", c.getFactor("OTHER"));
 
 		try
 		{

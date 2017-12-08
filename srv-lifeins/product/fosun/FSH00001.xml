@@ -3,7 +3,7 @@
 	<product
 		id="FSH00001"
 		corporation_id="fosun"
-		code="110024"
+		code="110025"
 		name="康乐e生重大疾病保险（C款）"
 		name_abbr="康乐e生重疾"
 		unit="1000"
@@ -38,6 +38,10 @@
 			<item name="PAY" label="缴费年期" widget="select">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>
 			<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>
 		</input>
+
+		<init>
+			<item name="OTHER">return {PLAN_CODE: "JH11002401", PRODUCT_CODE: "110024"}</item>
+		</init>
 
 		<interest>
 			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
