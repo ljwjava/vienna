@@ -36,6 +36,21 @@ public class Encrypt implements Factors
                 }
             }
         });
+
+        map.put("cpt", new Function() {
+            @Override
+            public Object run(Object[] objects, Factors factors)
+            {
+                try
+                {
+                    return CipherUtil.encryptByPublicKey(objects[0].toString().getBytes("UTF-8"), objects[1].toString());
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     @Override

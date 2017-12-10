@@ -169,6 +169,8 @@ public class EnvService
         stack.put("Encrypt", new Encrypt());
         stack.put("getAge", getAge);
 
+        stack.put("IYunBao", new IYunBao());
+
         environments = envDao.loadAllEnv(stack);
 
         env1 = new HashMap<>();

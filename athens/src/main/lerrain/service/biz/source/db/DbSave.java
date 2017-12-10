@@ -44,27 +44,21 @@ public class DbSave implements Function
 
         if (old != null)
         {
-            Date d1 = Common.dateOf(old.get("gmt_modified"));
-            Date d2 = Common.dateOf(vals.get("gmt_modified"));
-
-            if (d1 == null || d2 == null || d2.after(d1))
+            StringBuffer sb = null;
+            for (Map.Entry e : vals.entrySet())
             {
-                StringBuffer sb = null;
-                for (Map.Entry e : vals.entrySet())
+                if (!idCol.equals(e.getKey()))
                 {
-                    if (!idCol.equals(e.getKey()))
-                    {
-                        if (sb == null)
-                            sb = new StringBuffer();
-                        else
-                            sb.append(",");
+                    if (sb == null)
+                        sb = new StringBuffer();
+                    else
+                        sb.append(",");
 
-                        sb.append(e.getKey() + "=" + strOf(e.getValue()));
-                    }
+                    sb.append(e.getKey() + "=" + strOf(e.getValue()));
                 }
-
-                res = String.format("update %s set %s where %s=%s", table, sb.toString(), idCol, strOf(vals.get(idCol)));
             }
+
+            res = String.format("update %s set %s where %s=%s", table, sb.toString(), idCol, strOf(vals.get(idCol)));
         }
         else
         {
