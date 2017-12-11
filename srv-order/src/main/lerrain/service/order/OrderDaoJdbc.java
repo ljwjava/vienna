@@ -78,7 +78,7 @@ public class OrderDaoJdbc
 
 	public boolean delete(Long orderId)
 	{
-		return jdbc.update("update t_order set valid = 9 where id = ?", orderId) > 0;
+		return jdbc.update("update t_order set valid = 'N' where id = ?", orderId) > 0;
 	}
 	
 	public Order load(Long orderId)

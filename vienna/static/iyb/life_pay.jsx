@@ -16,9 +16,8 @@ import Photo from '../common/widget.photo.jsx';
 import ToastIt from '../common/widget.toast.jsx';
 
 env.dict = {
-    relation: {2: "配偶", 3: "子女", 4: "父母"},
-	// bank: [["0101","中国工商银行"], ["0102","中国农业银行"], ["0103","中国银行"], ["0104","中国建设银行"], ["0108","交通银行"], ["0109","中信银行"], ["0110","中国光大银行"], ["0111","华夏银行"], ["0112","中国民生银行"], ["0113","广东发展银行"], ["0115","招商银行"], ["0116","兴业银行"], ["0117","上海浦东发展银行"], ["0128","中国邮政储蓄银行"], ["0194","北京银行"], ["0197","宁波银行"], ["0198","深圳平安银行"], ["0203","东莞银行"]]
-	bank: [["0101", "中国工商银行"], ["0102", "中国农业银行"], ["0103", "中国银行"], ["0104", "中国建设银行"], ["0108", "交通银行"], ["0109", "中信银行"], ["0110", "中国光大银行"], ["0111", "华夏银行"], ["0112", "中国民生银行"], ["0113", "广东发展银行"], ["0115","招商银行"], ["0116", "兴业银行"], ["0117", "上海浦东发展银行"], ["0128", "中国邮政储蓄银行"], ["0198", "平安银行"]]
+    relation: {},
+	bank: []
 };
 
 class PayForm extends Form {
@@ -26,7 +25,7 @@ class PayForm extends Form {
 	    let bc = null;
 	    let bk = null;
 	    let bcity = null;
-	    if(env.order.extra != null && env.order.extra.pay != null) {
+	    if (env.order.extra != null && env.order.extra.pay != null) {
             bc = env.order.extra.pay.bankCard;
             bk = env.order.extra.pay.bank;
             bcity = env.order.extra.pay.bankCity;
@@ -45,12 +44,22 @@ class PayForm extends Form {
 
 var Ground = React.createClass({
 	getInitialState() {
-		return {isSubmit: false};
+		return {isSubmit: false, dict:false};
 	},
 	componentWillMount() {
-	},
+        common.req("dict/view.json", {company: env.company, name: "bank,relation", version: "new"}, r => {
+            env.dict.bank = r.bank;
+            env.dict.relation = {};
+            for (var l in r.relation) {
+                env.dict.relation[l.code] = l.text;
+            }
+            this.setState({dict:true});
+        }, f => {
+            ToastIt("字典数据加载失败");
+        });
+    },
 	submit() {
-		if (!this.refs.pay.verifyAll()) {
+		if (this.refs.pay != null && !this.refs.pay.verifyAll()) {
 			ToastIt("请检查支付信息");
 			return;
 		}
@@ -59,8 +68,10 @@ var Ground = React.createClass({
 			return;
 		}
         env.order.extra = (env.order.extra == null ? {} : env.order.extra);
-		env.order.extra.pay = this.refs.pay.val();
-        env.order.extra.pay.bankText = this.refs.pay.refs.bank.text();
+		if (this.refs.pay) {
+            env.order.extra.pay = this.refs.pay.val();
+            env.order.extra.pay.bankText = this.refs.pay.refs.bank.text();
+		}
 		if (this.refs.photos)
 		{
             env.order.detail.photos = this.refs.photos.val();
@@ -101,14 +112,17 @@ var Ground = React.createClass({
      //    common.req("order/save.json", env.order);
 	// },
 	openDoc(link) {
-		try{
+		try {
             env.order.extra = (env.order.extra == null ? {} : env.order.extra);
-			env.order.extra.pay = this.refs.pay.val();
-			if(this.refs.photos != null) {
+            if (this.refs.pay) {
+                env.order.extra.pay = this.refs.pay.val();
+            }
+			if (this.refs.photos) {
 				env.order.detail.photos = this.refs.photos.val();
             }
 			common.req("order/save.json", env.order);
-        }catch(e){}
+        } catch(e) {
+		}
 		document.location.href = link;
 	},
 	render() {
@@ -125,27 +139,23 @@ var Ground = React.createClass({
 					<div><span>投保人{env.order.detail.insurant == null ? " / 被保险人" : ""}</span></div>
 					<div><span>　姓名</span>{env.order.detail.applicant.name}</div>
 					<div><span>　证件</span>{env.order.detail.applicant.certName} {env.order.detail.applicant.certNo}</div>
-					<div><span>　证件有效期</span> {env.order.detail.applicant.certValidate.certLong ? '长期' : env.order.detail.applicant.certValidate.certExpire}</div>
+                    { env.order.detail.applicant.certValidate == null ? null : <div><span>　证件有效期</span> {env.order.detail.applicant.certValidate.certLong ? '长期' : env.order.detail.applicant.certValidate.certExpire}</div>}
 					<div><span>　性别</span>{env.order.detail.applicant.genderName}</div>
 					<div><span>　出生日期</span>{env.order.detail.applicant.birthday}</div>
 					<div><span>　所在地区</span>{env.order.detail.applicant.cityName}</div>
 					<div><span>　通讯地址</span>{env.order.detail.applicant.address}</div>
-					{env.order.detail.applicant.occupation == null ? null : (<div><span>　职业</span>{env.order.detail.applicant.occupation.text}({env.order.detail.applicant.occupation.level}类)</div>)}
-					{/* env.order.detail.insurant ? null : <div><span>　身高</span>{env.order.detail.applicant.height}cm</div> */}
-					{/* env.order.detail.insurant ? null : <div><span>　体重</span>{env.order.detail.applicant.weight}kg</div> */}
+					{ env.order.detail.applicant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.applicant.occupation.text}({env.order.detail.applicant.occupation.level}类)</div>}
 				</div>
 				{ env.order.detail.insurant == null ? null :
 					<div className="view">
 						<div><span>被保险人</span></div>
 						<div><span>　姓名</span>{env.order.detail.insurant.name}</div>
 						<div><span>　证件</span>{env.order.detail.insurant.certName} {env.order.detail.insurant.certNo}</div>
-						<div><span>　证件有效期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>
+                        { env.order.detail.insurant.certValidate == null ? null : <div><span>　证件有效期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>}
 						<div><span>　性别</span>{env.order.detail.insurant.genderName}</div>
 						<div><span>　出生日期</span>{env.order.detail.insurant.birthday}</div>
 						<div><span>　所在地区</span>{env.order.detail.insurant.cityName}</div>
 						<div><span>　通讯地址</span>{env.order.detail.insurant.address}</div>
-						{ env.order.detail.insurant != null ? null : <div><span>　身高</span>{env.order.detail.insurant.height}cm</div> }
-						{ env.order.detail.insurant != null ? null : <div><span>　体重</span>{env.order.detail.insurant.weight}kg</div> }
 					</div>
 				}
 				<div className="view">
@@ -181,10 +191,14 @@ var Ground = React.createClass({
 						})
 					}
 				</div>
-				<div className="title">支付信息</div>
-				<div className="form">
-					<PayForm ref="pay"/>
-				</div>
+                { env.order.detail.applyMode == 2 ? null :
+					<div className="title">支付信息</div>
+                }
+                { env.order.detail.applyMode == 2 ? null :
+					<div className="form">
+						<PayForm ref="pay"/>
+					</div>
+                }
 				{ env.order.detail.photo == null || env.order.detail.photo <= 0 ? null :
 					<div className="title">身份证拍照</div>
 				}
@@ -221,15 +235,9 @@ $(document).ready( function() {
             env.company = r.detail.vendor.code;
 		}
 		common.save("iyb/orderId", env.order.id);
-
-        common.req("dict/view.json", {company: env.company, name: "bank", version: "new"}, r => {
-            env.dict.bank = r.bank;
-            ReactDOM.render(
-				<Ground/>, document.getElementById("content")
-            );
-        }, f => {
-        	ToastIt("开户行列表加载失败");
-		});
+		ReactDOM.render(
+			<Ground/>, document.getElementById("content")
+		);
 	});
 
 	document.title = "投保确认";

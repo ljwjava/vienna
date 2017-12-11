@@ -1,6 +1,5 @@
 "use strict";
 
-// import React, { Component, PropTypes } from 'react'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Inputer from '../common/widget.inputer.jsx';
@@ -20,21 +19,26 @@ env.company = 'iyb';
 env.def = {
     applicant: {
         cert: [["1","身份证"]],
+        certValidate: true,
         city: true,
         address: true
     },
     insurant: {
         cert: [["1","身份证"]],
+        certValidate: true,
         city: true,
         address: true,
 		occupation: false,
-        relation: [["1","本人", "self"]]
+        relation: [["1","本人"]]
     },
     beneficiary: {
         custom: true,
         cert: [["1","身份证"]],
-		relation: [["4","父母"],["2","配偶"],["3","子女"]]
-    }
+        certValidate: true,
+		relation: [["4","父母"],["2","配偶"],["3","子女"]],
+    },
+    certTypeId: "1",
+    relationSelf: "1",
 };
 
 env.parseDict = function(dict) {
@@ -43,7 +47,7 @@ env.parseDict = function(dict) {
 
 env.checkCustomer = function(f) {
 	let r = {};
-	if ((f.certType == "1") && (f.certNo != null && f.certNo.length == 18)) {
+	if ((f.certType == env.formOpt.certTypeId) && (f.certNo != null && f.certNo.length == 18)) {
 		if (f.birthday != null && f.birthday.length == 10) {
 			let y1 = f.certNo.substr(6, 4);
 			let m1 = f.certNo.substr(10, 2);
@@ -64,17 +68,17 @@ env.checkCustomer = function(f) {
 
 class Beneficiary extends Form {
 	form() {
-		var v = [
+		let v = [
             {name:"是被保险人的", code:"relation", type:"select", options:env.formOpt.beneficiary.relation},
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.beneficiary.cert},
-			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
-			{name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
-			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
-			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"},
-			// {name:"受益次序", code:"order", type:"switch", options:[["1","第1顺位"],["2","第2顺位"],["3","第3顺位"]]},
-			{name:"受益比例", code:"scale", type:"select", options:[["10","10%"],["20","20%"],["30","30%"],["40","40%"],["50","50%"],["60","60%"],["70","70%"],["80","80%"],["90","90%"],["100","100%"]]}
+			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
+		if (env.formOpt.beneficiary.certValidate)
+            v.push({name:'证件有效期', code:"certValidate", type:"certValidate", req:"yes"});
+        v.push({name:'性别', code:"gender", type:"switch", options:[["M","男"],["F","女"]]});
+		v.push({name:'出生日期', code:"birthday", type:"date", req:"yes", desc:"请选择出生日期"});
+        v.push({name:"受益比例", code:"scale", type:"select", options:[["10","10%"],["20","20%"],["30","30%"],["40","40%"],["50","50%"],["60","60%"],["70","70%"],["80","80%"],["90","90%"],["100","100%"]]});
 		let form = this.buildForm(v);
 		form.push(['', (<span className="blockSel" onClick={this.removeSelf.bind(this)}>－ 删除</span>)]);
 		return form;
@@ -86,7 +90,7 @@ class Beneficiary extends Form {
 		this.props.onRemove(this.props.index);
 	}
     resetCertNo(certNo) {
-        if(this.refs.certType.val() == "1"){
+        if (this.refs.certType.val() == env.formOpt.certTypeId){
             this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
             this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
         }
@@ -98,12 +102,12 @@ class ApplicantForm extends Form {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.applicant.cert},
-			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
-            {name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
-			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
-			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"}
-            //{name:'邮政编码', code:"zipcode", type:"text", reg:"^(?!\\d00000)(?!\\d11111)(?!\\d22222)(?!\\d33333)(?!\\d44444)(?!\\d55555)(?!\\d66666)(?!\\d77777)(?!\\d88888)(?!\\d99999)\\d{6}$", req:"yes", mistake:"请输入正确的邮政编码", desc:"请输入邮政编码"}
+			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
+        if (env.formOpt.applicant.certValidate)
+            v.push({name:'证件有效期', code:"certValidate", type:"certValidate", req:"yes"});
+        v.push({name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]});
+        v.push({name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"});
 		if (env.formOpt.applicant.city)
 			v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.applicant.address)
@@ -114,7 +118,7 @@ class ApplicantForm extends Form {
 		return env.checkCustomer(this.val());
 	}
 	resetCertNo(certNo) {
-		if(this.refs.certType.val() == "1"){
+		if (this.refs.certType.val() == env.formOpt.certTypeId){
             this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
             this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
 		}
@@ -126,12 +130,12 @@ class InsurantForm extends Form {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.insurant.cert},
-			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)},
-            {name:'证件有效期', code:"certValidate", type:"certValidate", refresh:"yes", req:"yes"},
-			{name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]},
-			{name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"}
-            //{name:'邮政编码', code:"zipcode", type:"text", reg:"^(?!\\d00000)(?!\\d11111)(?!\\d22222)(?!\\d33333)(?!\\d44444)(?!\\d55555)(?!\\d66666)(?!\\d77777)(?!\\d88888)(?!\\d99999)\\d{6}$", req:"yes", mistake:"请输入正确的邮政编码", desc:"请输入邮政编码"}
+			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
+        if (env.formOpt.insurant.certValidate)
+            v.push({name:'证件有效期', code:"certValidate", type:"certValidate", req:"yes"});
+		v.push({name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]});
+		v.push({name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"});
         if (env.formOpt.insurant.city)
             v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.insurant.address)
@@ -142,8 +146,10 @@ class InsurantForm extends Form {
 		return env.checkCustomer(this.val());
 	}
 	resetCertNo(certNo) {
-		this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
-		this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
+        if (this.refs.certType.val() == env.formOpt.certTypeId) {
+            this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
+            this.refs.gender.change(Number(certNo.substr(16, 1)) % 2 == 1 ? "M" : "F");
+        }
 	}
 }
 
@@ -176,7 +182,6 @@ class ContactForm extends Form {
 		if((!cc || cc <= 0) && k == -1){
 			cc = 60;
 		}
-		// console.log(cc);
 		if(!cc || cc <= 0){
 			return;
 		}
@@ -254,17 +259,13 @@ var Ground = React.createClass({
 			for (var x1 in env.def) {
 				if (env.formOpt[x1] == null) {
                     env.formOpt[x1] = env.def[x1];
-                } else {
+                } else if (typeof env.def[x1] == "object") {
                     for (var x2 in env.def[x1])
                     	if (env.formOpt[x1][x2] == null)
                             env.formOpt[x1][x2] = env.def[x1][x2];
 				}
 			}
-			var ins = this.props.defVal.insurant != null;
-			if (env.formOpt.insurant.relation.length > 0 && (env.formOpt.insurant.relation[0].length <= 2 || env.formOpt.insurant.relation[0][2] != "self")) {
-				ins = true;
-            }
-
+			var ins = this.props.defVal.insurant != null || (env.formOpt.insurant.relation.length > 0 && (env.formOpt.insurant.relation[0][0] != env.formOpt.relationSelf));
             var opts = [["law","法定"]];
 			if (env.formOpt.beneficiary.custom)
                 opts.push(["other","指定"]);
@@ -291,12 +292,6 @@ var Ground = React.createClass({
                 IYB.setTitle(r.name);
             }
 		});
-		// common.req("dict/view.json", {company: env.company, name:"relation"}, r => {
-		// 	// env.dict.relation = env.parseDict(r.relation);
-		// 	env.dict.relation2 = env.parseDict(r.relation).slice(1);
-		// 	//env.dict.nation = env.parseDict(r.nation);
-		// 	this.setState({dict:true});
-		// });
     },
 	getPlanFactors() {
     	let factors = {packId: env.packId};
@@ -328,7 +323,6 @@ var Ground = React.createClass({
                 factors["OCCUPATION_C"] = this.refs.more.refs.occupation.val().code;
             }
 		}
-		// console.log(factors);
     	return factors;
     },
 	getPlanDesc() {
@@ -349,7 +343,6 @@ var Ground = React.createClass({
 	},
     refreshPremium() {
     	let factors = this.getPlanFactors();
-        console.log(factors);
     	if (factors["BIRTHDAY"] == null || factors["BIRTHDAY"] == "") {
 			this.setState({premium: -1, rules: null});
     	} else {
@@ -367,18 +360,7 @@ var Ground = React.createClass({
 	},
     changeRelation() {
 		let relation = this.refs.relation.val();
-		let selfRelaCode = this.state.selfRelaCode;
-		if(selfRelaCode == null){
-            if(env.formOpt.insurant.relation != null){
-            	for(let i = 0; i < env.formOpt.insurant.relation.length; i++){
-            		if(env.formOpt.insurant.relation[i].length > 2 && env.formOpt.insurant.relation[i][2] == "self"){
-                        selfRelaCode = env.formOpt.insurant.relation[i][1];
-					}
-				}
-			}
-		}
-        // TODO: 本人
-		this.setState({insurant: relation != relaSelfCode, selfRelaCode: selfRelaCode}, () => {
+		this.setState({insurant: relation != env.formOpt.relationSelf}, () => {
 			this.refreshPremium();
 		})
 	},
