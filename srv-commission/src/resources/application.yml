@@ -8,4 +8,5 @@ datasource:
 
 service:
   iyb: https://test.iyunbao.com
+  dict: http://localhost:7773
 

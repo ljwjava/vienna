@@ -28,7 +28,7 @@ env.def = {
         city: true,
         address: true,
 		occupation: false,
-        relation: [["1","本人"]]
+        relation: [["1","本人", "self"]]
     },
     beneficiary: {
         custom: true,
@@ -260,9 +260,8 @@ var Ground = React.createClass({
                             env.formOpt[x1][x2] = env.def[x1][x2];
 				}
 			}
-
 			var ins = this.props.defVal.insurant != null;
-			if (env.formOpt.insurant.relation[0][0] != "00") {
+			if (env.formOpt.insurant.relation.length > 0 && (env.formOpt.insurant.relation[0].length <= 2 || env.formOpt.insurant.relation[0][2] != "self")) {
 				ins = true;
             }
 
@@ -368,7 +367,18 @@ var Ground = React.createClass({
 	},
     changeRelation() {
 		let relation = this.refs.relation.val();
-		this.setState({insurant: relation != "00"}, () => {
+		let selfRelaCode = this.state.selfRelaCode;
+		if(selfRelaCode == null){
+            if(env.formOpt.insurant.relation != null){
+            	for(let i = 0; i < env.formOpt.insurant.relation.length; i++){
+            		if(env.formOpt.insurant.relation[i].length > 2 && env.formOpt.insurant.relation[i][2] == "self"){
+                        selfRelaCode = env.formOpt.insurant.relation[i][1];
+					}
+				}
+			}
+		}
+        // TODO: 本人
+		this.setState({insurant: relation != relaSelfCode, selfRelaCode: selfRelaCode}, () => {
 			this.refreshPremium();
 		})
 	},
