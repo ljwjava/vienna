@@ -294,12 +294,8 @@ var Ground = React.createClass({
 		});
     },
 	getPlanFactors() {
-    	let factors = {packId: env.packId};
-    	let self = this.refs.plan;
-		self.props.fields.map(function(v) {
-			if (self.refs[v.name])
-				factors[v.name] = self.refs[v.name].val();
-		});
+		let factors = this.refs.plan.val();
+		factors.packId = env.packId;
     	if (this.state.insurant) {
 	    	factors["GENDER"] = this.refs.insurant.refs.gender.val();
 	    	factors["BIRTHDAY"] = this.refs.insurant.refs.birthday.val();
