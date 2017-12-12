@@ -20,6 +20,7 @@ service:
   rome: http://localhost:7766
   sale: http://localhost:7772
   vienna: http://localhost:7701
+  commission: http://localhost:7769
 
 path:
   root: ./static/
