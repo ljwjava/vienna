@@ -2,6 +2,7 @@ package lerrain.service.lifeins.plan;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import lerrain.project.insurance.product.*;
 
 import lerrain.service.lifeins.plan.quest.MergeQuestService;
 import lerrain.tool.Common;
+import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,6 +37,8 @@ public class PlanController
 
     @Autowired
     MergeQuestService mergeQuestSrv;
+
+    Map<String, Script> scriptMap = new HashMap<>();
 
     @RequestMapping("/plan/create.json")
     @ResponseBody
@@ -564,6 +568,40 @@ public class PlanController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", mergeQuestSrv.refreshQuestText(plan));
+
+        return res;
+    }
+
+    @RequestMapping("/plan/perform.json")
+    @ResponseBody
+    public JSONObject perform(@RequestBody JSONObject p)
+    {
+        String planId = (String) p.get("planId");
+
+        if (Common.isEmpty(planId))
+            throw new RuntimeException("缺少planId");
+
+        Plan plan = ls.getPlan(planId);
+        String str = p.getString("script");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        if (Common.isEmpty(str))
+        {
+            res.put("content", ls.perform(plan, null, p.getJSONObject("with")));
+        }
+        else
+        {
+            Script script = scriptMap.get(str);
+            if (script == null)
+            {
+                script = Script.scriptOf(str);
+                scriptMap.put(str, script);
+            }
+
+            res.put("content", ls.perform(plan, script, p.getJSONObject("with")));
+        }
 
         return res;
     }

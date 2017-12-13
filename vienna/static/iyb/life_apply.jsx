@@ -342,7 +342,7 @@ var Ground = React.createClass({
     	if (factors["BIRTHDAY"] == null || factors["BIRTHDAY"] == "") {
 			this.setState({premium: -1, rules: null});
     	} else {
-			common.req("sale/life.json", {platformId:2, opt:"try", content:factors}, r => {
+			common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
                 let factors = this.state.factors;
                 if (r.form != null) factors.map(function(e) {
                     var res = r.form[e.name];
@@ -622,7 +622,7 @@ var Ground = React.createClass({
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
 					{env.formOpt.insurant.occupation ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
-				<div className="title">保险计划</div>
+				<div className="title">保险计划（{env.pack.name}）</div>
 				<div className="form">
 					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.factors} onRefresh={this.refreshPremium}/>
 				</div>
@@ -649,7 +649,7 @@ var Ground = React.createClass({
 					<div className="tab">
 						<div className="row">
 							<div className="col left">
-								首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
+                                {env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
 							<div className="col right" onClick={this.submit}>下一步</div>
 						</div>

@@ -20,6 +20,11 @@ var Summary = React.createClass({
                     docs.push(<a style={{color:"#2BF"}} key={r.name} onClick={this.open.bind(this,r.url)}>{r.name}</a>);
                 }
 				content = (<div style={{lineHeight:"30px", padding:"10px 5px"}}>查看 {docs}</div>);
+            } else if (item.type == "list") {
+                let docs = item.content == null ? null : item.content.map(r => {
+                    return <div><a style={{color:"#2BF"}} key={r.name} onClick={this.open.bind(this,r.url)}>{r.name}</a></div>;
+                });
+                content = (<div style={{lineHeight:"30px", padding:"10px 5px"}}>{docs}</div>);
 			} else if (item.type == "table" && this.props.vals != null) {
 				let v = this.props.vals[item.content];
 				let tables = v.map(t2 => {

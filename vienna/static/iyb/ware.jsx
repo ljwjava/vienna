@@ -94,6 +94,7 @@ var Ware = React.createClass({
         }
         env.packId = r.detail.target;
         common.req("sale/detail.json", {packId: env.packId}, s => {
+        	env.pack = s;
             env.docs = s.docs;
             env.packType = s.type;
             env.vendor = s.vendor;
@@ -134,7 +135,7 @@ var Ware = React.createClass({
 		}else{
         	factors.OCCUPATION_L = null;
 		}
-		common.req("sale/life.json", {platformId:2, opt:"try", content:factors}, r => {
+		common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
 			var factors = this.state.factors;
 			if (r.form != null) factors.map(function(e) {
 				var res = r.form[e.name];
@@ -196,7 +197,7 @@ var Ware = React.createClass({
 				<div>
 					<div style={{position: "relative"}}>
 						<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
-						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
+						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", paddingBottom:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
 							<div className="font-wl">{v.name}</div>
 							<div className="font-wm">{v.remark}</div>
 						</div>
@@ -217,8 +218,8 @@ var Ware = React.createClass({
 					}
 				</div>
 				<div className="font-bm" style={{height:"40px", lineHeight:"40px", textAlign:"center", borderTop: "1px solid #CCC", borderBottom: "1px solid #CCC"}}>
-					{ this.state.vendor.logo == null ? null : <img src={this.state.vendor.logo} style={{height:"20px",verticalAlign:"middle",marginRight:"10px"}}/> }
-					由{this.state.vendor.name}承保并负责理赔
+					{ this.state.vendor.logo == null ? null : <img src={this.state.vendor.logo} style={{height:"20px", verticalAlign:"middle", paddingBottom:"5px"}}/> }
+					&nbsp;&nbsp;由{this.state.vendor.name}承保并负责理赔
 				</div>
 				{ this.state.exps == null ? null :
 					<Tabs ref="detailTabs" onChange={this.onSummary} options={this.state.exps}/>
@@ -230,7 +231,7 @@ var Ware = React.createClass({
 					<div className="tab">
 						<div className="row">
 							{env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
-							<div className="col left">首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}</div>
+							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}</div>
 							<div className="col right" onClick={(!!env.docs && !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>投保</div>
 						</div>
 					</div>

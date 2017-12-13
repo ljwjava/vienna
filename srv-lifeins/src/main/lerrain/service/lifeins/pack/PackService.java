@@ -321,12 +321,7 @@ public class PackService
 			{
 				Double rate = packDao.getPackRate(packIns, key.toString());
 				if (rate != null)
-				{
-					if (vals.containsKey("QUANTITY"))
-					{
-						total = rate * Common.doubleOf(vals.get("QUANTITY"), 1);
-					}
-				}
+					total = rate * Common.doubleOf(vals.get("QUANTITY"), 1);
 			}
 
 			r.put("premium", total); //兼容

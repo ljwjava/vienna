@@ -33,7 +33,6 @@ public class EnvService
     Function today;
     Function timediff;
     Function reversalStr;
-    Function getAge;
     Function log, err;
 
     public EnvService(){
@@ -124,20 +123,6 @@ public class EnvService
                 return null;
             }
         };
-        getAge = new Function() {
-            @Override
-            public Object run(Object[] v, Factors factors) {
-                if(v == null || v.length <= 0){
-                    return -1;
-                }
-                Date fDate = new Date();
-                if(v.length >= 2){
-                    fDate = Common.dateOf(v[1], new Date());
-                }
-
-                return Common.getAge(Common.dateOf(v[0]), fDate);
-            }
-        };
     }
 
     public void reset()
@@ -167,8 +152,7 @@ public class EnvService
         stack.put("md5Of", new Md5());
         stack.put("urlParam", new UrlParam());
         stack.put("Encrypt", new Encrypt());
-        stack.put("getAge", getAge);
-
+        stack.put("TimeFX", new TimeFX());
         stack.put("IYunBao", new IYunBao());
 
         environments = envDao.loadAllEnv(stack);
