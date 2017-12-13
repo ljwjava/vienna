@@ -34,7 +34,7 @@ var Form = React.createClass({
 			} else if (v.type == "certValidate") {
 				comp = (<CertValidEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} value={v.value}/>);
 			} else if (v.type == "select") {
-				comp = (<Selecter ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value}/>);
+				comp = (<Selecter ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value} showAddit={v.showAddit}/>);
             } else if (v.type == "city") {
                 comp = (<CityPicker ref={v.code} valCode={v.code} valType="city" company={v.company} onChange={opt} valReq={v.req} value={v.value}/>);
             } else if (v.type == "bankCity") {

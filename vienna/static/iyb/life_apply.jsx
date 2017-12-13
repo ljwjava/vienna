@@ -1,5 +1,6 @@
 "use strict";
 
+// import React, { Component, PropTypes } from 'react'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Inputer from '../common/widget.inputer.jsx';
@@ -69,7 +70,7 @@ env.checkCustomer = function(f) {
 class Beneficiary extends Form {
 	form() {
 		let v = [
-            {name:"是被保险人的", code:"relation", type:"select", options:env.formOpt.beneficiary.relation},
+            {name:"是被保险人的", code:"relation", type:"select", options:env.formOpt.beneficiary.relation, showAddit: false},
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.beneficiary.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
@@ -616,7 +617,7 @@ var Ground = React.createClass({
 					<div className="tab">
 						<div className="row">
 							<div className="col line left">是投保人的</div>
-							<div className="col line right"><Selecter ref="relation" onChange={this.changeRelation} options={env.formOpt.insurant.relation} value={ins.relation}/></div>
+							<div className="col line right"><Selecter ref="relation" onChange={this.changeRelation} options={env.formOpt.insurant.relation} value={ins.relation} showAddit={false}/></div>
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}

@@ -215,14 +215,17 @@ var Ground = React.createClass({
 		});
     },
 	getPlanFactors() {
-    	let factors = {packId: env.packId};
+    	/*let factors = {packId: env.packId};
         this.refs.plan.props.fields.map(v => {
         	var x = this.refs.plan.refs[v.name];
         	if (x == null)
         		x = this.refs.insurant.refs[v.name];
 			if (x != null)
 				factors[v.name] = x.val();
-		});
+		});*/
+        let factors = {...this.refs.insurant.val(), ...this.refs.plan.val()};
+        // console.log(factors);
+        factors.packId = env.packId;
 		// factors["ZONE"] = this.refs.applicant.refs.city.val().code;
     	return factors;
     },
