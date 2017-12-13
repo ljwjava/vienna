@@ -74,12 +74,12 @@ var Ground = React.createClass({
 		}
 		if (this.refs.photos)
 		{
-            env.order.detail.photos = this.refs.photos.val();
-            if(env.order.detail.photos.length < 2) {
+            env.order.extra.photos = this.refs.photos.val();
+            if(env.order.extra.photos.length < 2) {
                 ToastIt("请上传完整证件影像");
                 return;
             }
-            if(env.order.detail.photos.length > 2) {
+            if(env.order.extra.photos.length > 2) {
                 ToastIt("请删除多余证件影像");
                 return;
             }
@@ -118,7 +118,7 @@ var Ground = React.createClass({
                 env.order.extra.pay = this.refs.pay.val();
             }
 			if (this.refs.photos) {
-				env.order.detail.photos = this.refs.photos.val();
+				env.order.extra.photos = this.refs.photos.val();
             }
 			common.req("order/save.json", env.order);
         } catch(e) {
@@ -204,7 +204,7 @@ var Ground = React.createClass({
 				}
 				{ env.order.detail.photo == null || env.order.detail.photo <= 0 ? null :
 					<div className="form">
-						<Photo ref="photos" value={env.order.detail.photos}/>{/* onChange={this.changePhotos}*/}
+						<Photo ref="photos" value={env.order.extra.photos}/>{/* onChange={this.changePhotos}*/}
 					</div>
 				}
 				<div className="title">客户声明信息</div>
