@@ -225,7 +225,7 @@ var Ground = React.createClass({
 		});*/
         let factors = this.refs.plan.val();
         console.log(factors);
-        factors = {...this.refs.insurant.val()};
+        factors = {...this.refs.insurant.val(), ...this.refs.plan.val()};
         console.log(factors);
         factors.packId = env.packId;
 		// factors["ZONE"] = this.refs.applicant.refs.city.val().code;
