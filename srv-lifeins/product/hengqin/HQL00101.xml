@@ -64,6 +64,10 @@
 			</item>
 		</init>
 
+		<interest>
+			<item name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY"/>
+		</interest>
+
 		<attachment>
 			<fgraph filter="fgraph" parser="fgraph">
 				<item name="ACCIDENT_DISABILITY">AMOUNT</item>
@@ -71,6 +75,14 @@
 				<item name="ACCIDENT_DEATH">AMOUNT</item>
 				<item name="OTHER_DEATH">AMOUNT</item>
 			</fgraph>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<bar name="保费" color="#00AA00">PremiumYear(I)</bar>
+					<line name="累计保费" color="#0000FF">PremiumSum(I)</line>
+					<line name="现金价值" color="#0000FF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
 		</attachment>
 
 		<rule>
