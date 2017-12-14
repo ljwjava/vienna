@@ -3,6 +3,8 @@ package lerrain.service.biz;
 import lerrain.service.common.Log;
 import lerrain.tool.script.Script;
 
+import java.util.Map;
+
 /**
  * Created by lerrain on 2017/11/13.
  */
@@ -34,7 +36,7 @@ public class Gateway
     String uriX;
     String forwardTo;
 
-    String[] with;
+    Map with;
 
     Script script;
 
@@ -130,12 +132,12 @@ public class Gateway
         }
     }
 
-    public String[] getWith()
+    public Map getWith()
     {
         return with;
     }
 
-    public void setWith(String[] with)
+    public void setWith(Map with)
     {
         this.with = with;
     }

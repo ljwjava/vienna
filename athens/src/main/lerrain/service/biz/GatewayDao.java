@@ -1,6 +1,7 @@
 package lerrain.service.biz;
 
 import lerrain.service.common.Log;
+import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -60,11 +61,30 @@ public class GatewayDao
                 gw.setType(type);
                 gw.setLogin(needLogin);
                 gw.setSupport(support);
-                gw.setWith(with == null ? null : with.split(","));
                 gw.setUri(uri);
                 gw.setForward(forward);
                 gw.setForwardTo(forwardTo);
                 gw.setEnvId(envId);
+
+                try
+                {
+                    if (!Common.isEmpty(with))
+                    {
+                        Map map = new HashMap();
+                        String[] ss = with.split(",");
+                        for (String str : ss)
+                        {
+                            String[] s = str.split("[:]");
+                            map.put(s[0], s[1]);
+                        }
+                        gw.setWith(map);
+                    }
+                    gw.setScript(Script.scriptOf(script));
+                }
+                catch (Exception e)
+                {
+                    Log.error("<" + gw.getId() + "> " + gw.getUri() + " error");
+                }
 
                 try
                 {

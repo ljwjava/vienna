@@ -49,18 +49,27 @@ public class GatewayController
         if (gateway == null)
             return null;
 
+        Stack root = envSrv.getEnv(gateway.getEnvId()).getStack();
+
         if (gateway.isLogin())
         {
             Long userId = (Long)session.getAttribute("userId");
             if (userId == null)
                 throw new RuntimeException("not login - " + uri);
+        }
 
-            param.put("owner", userId);
-            param.put("userId", userId);
+        if (gateway.getWith() != null)
+        {
+            for (Map.Entry<String, String> w : ((Map<String, String>)gateway.getWith()).entrySet())
+            {
+                String var = w.getValue();
 
-            if (gateway.getWith() != null)
-                for (String w : gateway.getWith())
-                    param.put(w, session.getAttribute(w));
+                Object val = root == null ? null : root.get(var);
+                if (val == null)
+                    val = session.getAttribute(var);
+
+                param.put(w.getKey(), val);
+            }
         }
 
         Object val = null;
@@ -68,7 +77,7 @@ public class GatewayController
         Script script = gateway.getScript();
         if (script != null)
         {
-            Stack stack = new Stack(envSrv.getEnv(gateway.getEnvId()).getStack());
+            Stack stack = new Stack(root);
             stack.set("self", param);
             stack.set("SESSION", new SessionAdapter(session));
 
@@ -83,7 +92,6 @@ public class GatewayController
                 param.putAll((Map)val);
 
             String forwardTo = gateway.getForwardTo(uri);
-            Log.debug("FORWARD: " + forwardTo);
 
             int p2 = forwardTo.indexOf("/");
             JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);

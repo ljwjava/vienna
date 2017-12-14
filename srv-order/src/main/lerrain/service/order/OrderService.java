@@ -67,8 +67,13 @@ public class OrderService
 		pd.update(p);
 	}
 
-	public List<Order> query(int type, Long owner, int from, int number)
+	public List<Order> list(int type, int from, int number, Long platformId, Long owner)
 	{
-		return pd.query(type, owner, from, number);
+		return pd.list(type, from, number, platformId, owner);
+	}
+
+	public int count(int type, Long platformId, Long owner)
+	{
+		return pd.count(type, platformId, owner);
 	}
 }

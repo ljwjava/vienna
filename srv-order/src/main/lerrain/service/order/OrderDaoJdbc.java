@@ -97,9 +97,14 @@ public class OrderDaoJdbc
 		return order;
 	}
 
-	public List<Order> query(int type, Long owner, int from, int number)
+	public int count(int type, Long platformId, Long owner)
 	{
-		return jdbc.query("select * from t_order where valid is null and parent_id is null and type = ? and owner = ? order by create_time desc limit ?, ?", new Object[]{type, owner, from, number}, new RowMapper<Order>()
+		return jdbc.queryForObject("select count(*) from t_order where valid is null and parent_id is null and type = ? and owner = ? and platform_id = ?", new Object[]{type, owner, platformId}, Integer.class);
+	}
+
+	public List<Order> list(int type, int from, int number, Long platformId, Long owner)
+	{
+		return jdbc.query("select * from t_order where valid is null and parent_id is null and type = ? and owner = ? and platform_id = ? order by create_time desc limit ?, ?", new Object[]{type, owner, platformId, from, number}, new RowMapper<Order>()
 		{
 			@Override
 			public Order mapRow(ResultSet m, int rowNum) throws SQLException

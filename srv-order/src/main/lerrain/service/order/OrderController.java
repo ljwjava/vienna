@@ -70,14 +70,14 @@ public class OrderController
         return res;
     }
 
-    @RequestMapping({"/restore.json"})
+    @RequestMapping("/restore.json")
     @ResponseBody
     public JSONObject restore(@RequestBody JSONObject p)
     {
         return restore(p.getLong("orderId"));
     }
 
-    @RequestMapping({"/restore"})
+    @RequestMapping("/restore")
     @ResponseBody
     public JSONObject restore(@RequestParam("orderId") Long orderId)
     {
@@ -102,24 +102,47 @@ public class OrderController
         return res;
     }
 
-    @RequestMapping({"/list.json"})
+    @RequestMapping("/list.json")
     @ResponseBody
     public JSONObject list(@RequestBody JSONObject p)
     {
         int type = p.getIntValue("type");
         Long owner = p.getLong("owner");
+        Long platformId = p.getLong("platformId");
+
+        int from = Common.intOf(p.get("from"), 0);
+        int num = Common.intOf(p.get("num"), 10);
+
+        JSONObject r = new JSONObject();
+        r.put("list", orderSrv.list(type, from, num, platformId, owner));
+        r.put("total", orderSrv.count(type, platformId, owner));
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
+    @RequestMapping("/query.json")
+    @ResponseBody
+    public JSONObject query(@RequestBody JSONObject p)
+    {
+        int type = p.getIntValue("type");
+        Long owner = p.getLong("owner");
+        Long platformId = p.getLong("platformId");
 
         int from = Common.intOf(p.get("from"), 0);
         int num = Common.intOf(p.get("num"), 10);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", orderSrv.query(type, owner, from, num));
+        res.put("content", orderSrv.list(type, from, num, platformId, owner));
 
         return res;
     }
 
-    @RequestMapping({"/view.json"})
+    @RequestMapping("/view.json")
     @ResponseBody
     public JSONObject view(@RequestBody JSONObject p)
     {
@@ -137,7 +160,7 @@ public class OrderController
         return res;
     }
 
-    @RequestMapping({"/save.json"})
+    @RequestMapping("/save.json")
     @ResponseBody
     public JSONObject save(@RequestBody JSONObject p)
     {
@@ -165,7 +188,7 @@ public class OrderController
         return res;
     }
 
-    @RequestMapping({"/update.json"})
+    @RequestMapping("/update.json")
     @ResponseBody
     public JSONObject update(@RequestBody JSONObject p)
     {
