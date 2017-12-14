@@ -179,7 +179,7 @@ var Ware = React.createClass({
 								<div className="console">
 									<div className="tab">
 										<div className="row">
-											<div className="col left" onClick={this.quest}>选错拉</div>
+											<div className="col left" onClick={this.quest}>选错啦</div>
 											<div className="col right" onClick={this.back}>返回试算页</div>
 										</div>
 									</div>

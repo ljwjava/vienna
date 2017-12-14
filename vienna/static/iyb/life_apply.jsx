@@ -33,6 +33,7 @@ env.def = {
         relation: [["1","本人"]]
     },
     beneficiary: {
+    	display: true,
         custom: true,
         cert: [["1","身份证"]],
         certValidate: true,
@@ -639,16 +640,18 @@ var Ground = React.createClass({
 						{ this.state.rules.map(r => (<div className="alert" key={r}>{r}</div>)) }
 					</div>
 				}
-				<div className="title">身故受益人</div>
-				<div className="form">
-					<div className="tab">
-						<div className="row">
-							<div className="col line left">受益人</div>
-							<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={this.state.benefit}/></div>
+                { !env.formOpt.beneficiary.display ? null : <div className="title">身故受益人</div> }
+                { !env.formOpt.beneficiary.display ? null :
+					<div className="form">
+						<div className="tab">
+							<div className="row">
+								<div className="col line left">受益人</div>
+								<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={this.state.benefit}/></div>
+							</div>
 						</div>
+						{b2}
 					</div>
-					{b2}
-				</div>
+                }
 				<div className="title">通讯信息</div>
 				<div className="form">
 					<ContactForm ref="contact" defVal={app}/>
