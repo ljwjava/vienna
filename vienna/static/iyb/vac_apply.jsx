@@ -300,6 +300,7 @@ var Ground = React.createClass({
 			wareCode: env.wareCode,
 			packId: env.packId,
 			packCode: env.pack.code,
+            packRefer: env.pack.referKey,
             applyMode: env.pack.applyMode,
 			packDesc: this.getPlanDesc(),
             shareType: common.param("shareType"),

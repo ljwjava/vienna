@@ -21,6 +21,7 @@ public class PackUtil
         r.put("vendor", packIns.getVendor());
         r.put("applyMode", packIns.getApplyMode());
         r.put("formOpt", packIns.getFormOpt());
+        r.put("referKey", packIns.getReferKey());
 
         JSONArray factors = new JSONArray();
         r.put("factors", factors);
