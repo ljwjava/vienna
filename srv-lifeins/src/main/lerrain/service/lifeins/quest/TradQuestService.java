@@ -1,4 +1,4 @@
-package lerrain.service.lifeins.plan.quest;
+package lerrain.service.lifeins.quest;
 
 import lerrain.project.insurance.plan.Input;
 import lerrain.project.insurance.plan.Plan;

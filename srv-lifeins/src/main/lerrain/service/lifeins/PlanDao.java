@@ -1,4 +1,4 @@
-package lerrain.service.lifeins.plan;
+package lerrain.service.lifeins;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

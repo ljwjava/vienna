@@ -1,4 +1,4 @@
-package lerrain.service.lifeins.plan.quest;
+package lerrain.service.lifeins.quest;
 
 import com.alibaba.fastjson.JSON;
 import lerrain.project.insurance.product.Insurance;

@@ -1,4 +1,4 @@
-package lerrain.service.lifeins.plan;
+package lerrain.service.lifeins;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -72,7 +72,7 @@ public class PlanDao2
 
     public Plan load(String planId)
     {
-        String sql = "select * from t_ins_plan where id = ? and valid is null";
+        String sql = "select * from t_ins_plan where plan_id = ? and valid is null";
         return jdbc.queryForObject(sql, new Object[]{planId}, new RowMapper<Plan>()
         {
             @Override

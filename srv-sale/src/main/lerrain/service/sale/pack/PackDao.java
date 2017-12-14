@@ -78,7 +78,10 @@ public class PackDao
                     if (!Common.isEmpty(formOpt))
                         packIns.setFormOpt(JSONObject.parseObject(formOpt));
                     if (input != null)
-                        packIns.setInputForm(loadInputForm(input));
+                    {
+                        List<InputField> list = loadInputForm(input);
+                        packIns.setInputForm(list);
+                    }
 
                     Long vendorId = m.getLong("vendor_id");
                     if (vendorId != null)

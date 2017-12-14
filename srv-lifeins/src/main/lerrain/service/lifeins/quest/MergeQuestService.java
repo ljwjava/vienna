@@ -1,9 +1,8 @@
-package lerrain.service.lifeins.plan.quest;
+package lerrain.service.lifeins.quest;
 
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.Insurance;
-import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.formula.Value;
 import lerrain.tool.script.Stack;

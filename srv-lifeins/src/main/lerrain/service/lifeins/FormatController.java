@@ -1,10 +1,9 @@
-package lerrain.service.lifeins.plan;
+package lerrain.service.lifeins;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
-import lerrain.service.lifeins.LifeinsShow;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

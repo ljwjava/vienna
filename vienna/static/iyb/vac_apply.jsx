@@ -248,7 +248,7 @@ var Ground = React.createClass({
 	},
     refreshPremium() {
     	let factors = this.getPlanFactors();
-		common.req("sale/life.json", {platformId:2, opt:"try", content:factors}, r => {
+		common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
 			let factors = this.state.factors;
 			if (r.form != null) factors.map(function(e) {
 				var res = r.form[e.name];

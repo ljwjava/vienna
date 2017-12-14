@@ -12,7 +12,7 @@ import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.InsuranceMgr;
 
 import lerrain.service.common.Log;
-import lerrain.service.lifeins.plan.format.FGraphParser;
+import lerrain.service.lifeins.format.FGraphParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

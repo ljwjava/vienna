@@ -12,7 +12,7 @@ import lerrain.project.insurance.plan.filter.table.Blank;
 import lerrain.project.insurance.plan.filter.table.Table;
 import lerrain.project.insurance.product.attachment.coverage.Coverage;
 import lerrain.project.insurance.product.attachment.coverage.CoverageParagraph;
-import lerrain.service.lifeins.plan.format.FGraphFilter;
+import lerrain.service.lifeins.format.FGraphFilter;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Script;

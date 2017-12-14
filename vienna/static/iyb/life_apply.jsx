@@ -551,8 +551,15 @@ var Ground = React.createClass({
 		}
 		this.setState({isSubmit: true}, ()=>{
             common.req("sale/check.json", order, r => {
-                document.location.href = "life_pay.mobile?orderId=" + r.orderId;
                 this.setState({isSubmit: false});
+
+                let checkRes = r.result;	// 校验规则
+                if(checkRes != null && checkRes.success != true && checkRes.rule != null && checkRes.rule != ''){
+                    ToastIt(checkRes.rule);
+                    return;
+                }
+
+                document.location.href = "life_pay.mobile?orderId=" + r.orderId;
             }, r => {
                 if(r != null){
                     ToastIt(r);

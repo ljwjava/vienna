@@ -1,5 +1,6 @@
 package lerrain.service.biz;
 
+import lerrain.service.common.Log;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +31,7 @@ public class GatewayDao
             @Override
             public void processRow(ResultSet rs) throws SQLException
             {
+
                 int type = rs.getInt("type");
                 Long id = rs.getLong("id");
                 Long envId = rs.getLong("env_id");
@@ -60,10 +62,18 @@ public class GatewayDao
                 gw.setSupport(support);
                 gw.setWith(with == null ? null : with.split(","));
                 gw.setUri(uri);
-                gw.setScript(Script.scriptOf(script));
                 gw.setForward(forward);
                 gw.setForwardTo(forwardTo);
                 gw.setEnvId(envId);
+
+                try
+                {
+                    gw.setScript(Script.scriptOf(script));
+                }
+                catch (Exception e)
+                {
+                    Log.error("<" + gw.getId() + "> " + gw.getUri() + " error");
+                }
 
                 list.add(gw);
             }

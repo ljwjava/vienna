@@ -1,4 +1,4 @@
-package lerrain.service.lifeins;
+package lerrain.service.lifeins.pack;
 
 import java.util.Date;
 

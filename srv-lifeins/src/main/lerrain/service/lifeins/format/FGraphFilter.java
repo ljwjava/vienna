@@ -1,4 +1,4 @@
-package lerrain.service.lifeins.plan.format;
+package lerrain.service.lifeins.format;
 
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;

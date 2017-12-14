@@ -2,6 +2,7 @@ package lerrain.service.sale.pack;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceMgr;
+import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,13 @@ public class Lifeins implements Function
     {
         Map r = new HashMap();
 
+        Map app = new HashMap();
+        app.put("GENDER", vals.get("A_GENDER"));
+        app.put("BIRTHDAY", Common.dateOf(vals.get("A_BIRTHDAY")));
+
+        r.put("applicant", app);
+        r.put("RELATION", vals.get("RELATION"));
+
         if (packIns.getInputForm() != null) for (InputField field : packIns.getInputForm())
         {
             if (field.getScope() != null) for (String scope : field.getScope())
@@ -46,11 +54,9 @@ public class Lifeins implements Function
                     r.put(scope, v);
                 }
 
-                String name = field.getName();
-                Object value = vals.get(name);
-
+                Object value = vals.get(field.getName());
                 if (value != null)
-                    v.put(name, PackUtil.translate(field.getType(), value));
+                    v.put(field.getVar(), PackUtil.translate(field.getType(), value));
             }
         }
 

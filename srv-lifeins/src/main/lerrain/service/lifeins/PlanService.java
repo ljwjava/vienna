@@ -1,4 +1,4 @@
-package lerrain.service.lifeins.plan;
+package lerrain.service.lifeins;
 
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
@@ -6,12 +6,6 @@ import lerrain.project.insurance.product.Company;
 import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.rule.Rule;
 import lerrain.project.insurance.product.rule.RuleUtil;
-import lerrain.service.lifeins.Customer;
-import lerrain.service.lifeins.LifeinsService;
-import lerrain.service.lifeins.LifeinsShow;
-import lerrain.service.lifeins.LifeinsUtil;
-import lerrain.service.lifeins.pack.InputField;
-import lerrain.service.lifeins.pack.PackIns;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Formula;
@@ -286,9 +280,12 @@ public class PlanService
 		Customer applicant = (Customer)plan.getApplicant();
 		applicant.setAge(30);
 
-		boolean forSelf = !stack.containsKey("insurant");
+		String relation = (String)stack.get("RELATION");
+		boolean forSelf = "self".equals(relation);
 
 		Customer insurant = forSelf ? applicant : new Customer();
+		insurant.set("RELATIVE", relation);
+
 		plan.setInsurant(insurant);
 
 		for (Map.Entry<String, Object> scp : stack.entrySet())

@@ -1,4 +1,4 @@
-package lerrain.service.lifeins;
+package lerrain.service.lifeins.pack;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Service
+//@Service
 public class CmsService
 {
     @Autowired CmsDao cmsmDao;

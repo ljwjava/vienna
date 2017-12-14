@@ -1,7 +1,7 @@
 package lerrain.service.lifeins.pack;
 
 import com.alibaba.fastjson.JSONObject;
-import lerrain.service.lifeins.plan.PlanDao;
+import lerrain.service.lifeins.PlanDao;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Script;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+//@Repository
 public class PackDao
 {
     @Autowired

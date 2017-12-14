@@ -7,22 +7,20 @@ import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.rule.Rule;
 import lerrain.project.insurance.product.rule.RuleUtil;
 import lerrain.service.lifeins.*;
-import lerrain.service.lifeins.plan.PlanService;
-import lerrain.service.lifeins.plan.quest.MergeQuestService;
-import lerrain.service.lifeins.plan.quest.TradQuestService;
+import lerrain.service.lifeins.PlanService;
+import lerrain.service.lifeins.quest.MergeQuestService;
+import lerrain.service.lifeins.quest.TradQuestService;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.formula.Function;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-
-@Service
+//@Service
 public class PackService
 {
 	@Autowired

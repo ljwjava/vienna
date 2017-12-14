@@ -1,4 +1,4 @@
-package lerrain.service.lifeins.plan;
+package lerrain.service.lifeins;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,27 +10,25 @@ import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.*;
 
-import lerrain.service.lifeins.plan.quest.MergeQuestService;
+import lerrain.service.lifeins.quest.MergeQuestService;
 import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import lerrain.service.lifeins.Customer;
-import lerrain.service.lifeins.LifeinsService;
-import lerrain.service.lifeins.LifeinsUtil;
+
+import javax.annotation.PostConstruct;
 
 @Controller
 public class PlanController
 {
     @Autowired
-    PlanService ls;
+    PlanService planSrv;
 
     @Autowired
     LifeinsService lifeins;
@@ -40,12 +38,25 @@ public class PlanController
 
     Map<String, Script> scriptMap = new HashMap<>();
 
+    @PostConstruct
+    @RequestMapping({"/reset"})
+    @ResponseBody
+    public String reset()
+    {
+        lifeins.reset();
+        planSrv.reset();
+
+        mergeQuestSrv.reset();
+
+        return "success";
+    }
+
     @RequestMapping("/plan/create.json")
     @ResponseBody
     public JSONObject create(@RequestBody JSONObject p)
     {
         Plan plan = LifeinsUtil.toPlan(lifeins, p);
-        ls.newPlan(plan);
+        planSrv.newPlan(plan);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -63,7 +74,7 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
 
         LifeinsUtil.customerOf((Customer) plan.getApplicant(), p.getJSONObject("applicant"));
         LifeinsUtil.customerOf((Customer) plan.getInsurant(), p.getJSONObject("insurant"));
@@ -86,7 +97,7 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -104,10 +115,10 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
         JSONObject r = LifeinsUtil.jsonOf(plan);
 
-        List<Insurance> rec = ls.getRecommend(plan);
+        List<Insurance> rec = planSrv.getRecommend(plan);
         if (rec != null && !rec.isEmpty())
         {
             JSONArray list = new JSONArray();
@@ -137,7 +148,7 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -155,8 +166,8 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
-        ls.savePlan(plan);
+        Plan plan = planSrv.getPlan(planId);
+        planSrv.savePlan(plan);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -176,7 +187,7 @@ public class PlanController
 
         int productIndex = Common.intOf(p.get("index"), -1);
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
         plan.remove(productIndex);
 
         JSONObject res = new JSONObject();
@@ -258,7 +269,7 @@ public class PlanController
             if (Common.isEmpty(planId))
                 throw new RuntimeException("缺少planId");
 
-            Plan plan = ls.getPlan(planId);
+            Plan plan = planSrv.getPlan(planId);
             if (plan.isEmpty())
                 throw new RuntimeException("plan为空");
 
@@ -314,7 +325,7 @@ public class PlanController
         }
         else //修改
         {
-            Plan plan = ls.getPlan(planId);
+            Plan plan = planSrv.getPlan(planId);
             comm = plan.getCommodity(productIndex);
             ins = comm.getProduct();
         }
@@ -463,7 +474,7 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
         synchronized (plan)
         {
             Commodity c;
@@ -545,7 +556,7 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -563,7 +574,7 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -581,7 +592,7 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = ls.getPlan(planId);
+        Plan plan = planSrv.getPlan(planId);
         String str = p.getString("script");
 
         JSONObject res = new JSONObject();
@@ -589,7 +600,7 @@ public class PlanController
 
         if (Common.isEmpty(str))
         {
-            res.put("content", ls.perform(plan, null, p.getJSONObject("with")));
+            res.put("content", planSrv.perform(plan, null, p.getJSONObject("with")));
         }
         else
         {
@@ -600,7 +611,7 @@ public class PlanController
                 scriptMap.put(str, script);
             }
 
-            res.put("content", ls.perform(plan, script, p.getJSONObject("with")));
+            res.put("content", planSrv.perform(plan, script, p.getJSONObject("with")));
         }
 
         return res;
