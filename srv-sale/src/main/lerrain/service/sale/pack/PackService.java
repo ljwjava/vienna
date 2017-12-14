@@ -73,11 +73,10 @@ public class PackService
 		}
 		else if (packIns.getPriceType() == PackIns.PRICE_FACTORS)
 		{
-			StringBuffer key = null;
+			StringBuffer key = new StringBuffer();
 
 			if (packIns.getPrice() != null) for (String f : (String[])packIns.getPrice())
 			{
-				key = new StringBuffer();
 				Object val = vals.get(f);
 
 				if (val == null)
@@ -97,7 +96,7 @@ public class PackService
 				key.append(",");
 			}
 
-			Double rate = packDao.getPackRate(packIns, key == null ? null : key.toString());
+			Double rate = packDao.getPackRate(packIns, Common.isEmpty(key) ? null : key.toString());
 			if (rate != null)
 			{
 				Double total = rate * Common.doubleOf(vals.get("QUANTITY"), 1);
