@@ -130,7 +130,7 @@ var Ground = React.createClass({
 		if (env.order.detail.read) for (let d in env.order.detail.read) {
 			if (docs.length > 0)
 				docs.push("、");
-			docs.push(<a key={d} onClick={this.openDoc.bind(this, env.order.detail.read[d])}>{"《"+d+"》"}</a>);
+			docs.push(<a key={d} onClick={this.openDoc.bind(this, env.order.detail.read[d].url)}>{env.order.detail.read[d].name}</a>);
 		}
 		return (
 			<div className="common">
