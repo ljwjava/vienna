@@ -207,6 +207,8 @@ public class PlanController
         for (int i=0;i<p.size();i++)
         {
             Insurance ins = lifeins.getProduct(p.getString(i));
+            if (ins == null)
+                continue;
 
             JSONObject m = new JSONObject();
             m.put("id", ins.getId());

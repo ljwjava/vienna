@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<declare>
+	<product id="YGL00008"
+		corporation_id="yglife"
+		name="附加意外伤害保险B款"
+		name_abbr="附加意外伤害B"
+		type="accident"
+		is_main="no"
+		is_rider="yes"
+		unit_amount="1000"
+		input="amount"
+		code="AADD03"
+		sequence="4010"
+		sale_begin_date="2002-01-01"
+		sale_end_date=""
+		last_modify_date="2007-01-15">
+		
+		<init>
+			<item name="RENEWAL_AGE">65</item> <!-- 自动续保年龄 -->
+		</init>
+
+		<risk>
+			<item type="accident" formula="AMOUNT" />
+		</risk>
+		
+		<data>
+			<item parser="file.sig" value="YGL00008"/>
+		</data>
+		
+		<param>
+			<pay>
+					<item code="term_1"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+		</param>
+		
+		<attachment>
+		<benefit_combo parser="combo">
+			<year from="0" to="RENEWAL_PERIOD-1" name="I">
+				<item code="year" formula="I+1"/>
+				<item code="age" formula="I+1+AGE"/>
+				<item code="YWSGBXJ" formula="AMOUNT"/>
+				<item code="YWSGZLY" formula="AMOUNT"/>
+				<item code="YESGZLY_HZDLJHL" formula="AMOUNT"/>
+				<item code="YESGZLY_HZDLJJQZE" formula="AMOUNT"/>
+				<item code="premium" formula="PREMIUM"/>
+				<item code="premium_acc" formula="PREMIUM*(I+1)"/>
+			</year>
+		</benefit_combo>
+		</attachment>
+		
+		<rule skip="rule_6002,rule_6001,rule_6005,rule_4002,rule_4003,rule_5001,rule_5002,rule_5003,rule_9000,rule_9111,rule_9001,rule_9002,rule_9003,rule_9004,rule_9005,rule_9006,rule_9007,rule_9008,rule_9009,rule_9010,rule_9011,rule_9012,rule_9013,rule_9014,rule_9015,rule_9016,rule_9017,rule_9018,rule_9019,rule_9020,rule_9021,rule_9022,rule_9023,rule_9024,rule_9025,rule_9026,rule_9027,rule_9028,rule_9029,rule_9030,rule_9031,rule_9032,rule_9033,rule_9034,rule_9035,rule_9036,rule_9037,rule_9038,rule_9039,rule_9040,rule_9041,rule_9042,rule_9043,rule_9044,rule_9045,rule_9046,rule_9047,rule_9100,rule_9101,rule_9102,rule_9103,rule_9104,rule_9105,rule_9106,rule_9107,rule_9108,rule_9109,rule_9110,rule_9115,rule_9048,rule_9049,rule_9050,rule_9051,rule_9052,rule_9053,rule_9054,rule_9055,rule_9056,rule_9057,rule_9058,rule_9059,rule_9060,rule_9061,rule_9062,rule_9063,rule_9064,rule_9065,rule_9066,rule_9067,rule_9068,rule_9069,rule_9070,rule_9071,rule_9072,rule_9073,rule_9074,rule_9075,rule_9076,rule_9077,rule_9078,rule_9079,rule_9080,rule_9081,rule_9082,rule_9083,rule_9084,rule_9085,rule_9085,rule_9086,rule_9087,rule_9088,rule_9089,rule_9090,rule_9091,rule_9092,rule_9093,rule_9094,rule_9095,rule_9096,rule_9097,rule_9200,rule_9201,rule_9202,rule_9203,rule_9204,rule_9205,rule_9206,rule_9207,rule_9208,rule_9209,rule_9210">
+			<when condition = "AGE > 60">
+				被保人年龄不能大于60周岁。
+			</when>
+			<when condition = "AMOUNT > 20000 and AGE le 3" alert = "AMOUNT">
+				0-3岁的被保险人投保附加意外伤害保险B款累计最高保额不得超过2万。
+			</when>
+			<when condition = "PLAN.HasProduct('0024') and AMOUNT > PARENT.AMOUNT * 50" alert = "AMOUNT">
+				每单附加意外伤害保险B款的基本保额最高不得超过对应主险的50倍。
+			</when>
+			<when condition = "(not PLAN.HasProduct('0024')) and  (not PLAN.HasProduct('0035')) and AMOUNT > PARENT.AMOUNT * 5" alert = "AMOUNT">
+				每单附加意外伤害保险B款的基本保额最高不得超过对应主险的5倍。
+			</when>
+			<when condition = "PLAN.CountProduct('0008') > 1">
+				每单仅能投保附加意外伤害保险B款1次。
+			</when>
+			<when condition = "(PLAN.HasProduct('0024')) and (RiskAmount('accident') > 100000) and (AGE lt 18)" alert="AMOUNT">
+				不满18周岁的被保险人累计死亡给付金额不得超过10万元。
+			</when>
+			
+			<when condition = "OCCUPATION_CATEGORY == 5 and ((RiskAmount('life')+RiskAmount('accident')) > 300000)">
+				5类职业累计人身险风险保额限30万元。
+			</when>
+			<when condition = "OCCUPATION_CATEGORY == 6 and ((RiskAmount('life')+RiskAmount('accident')) > 200000)">
+				6类职业累计人身险风险保额限20万元。
+			</when>
+			<when condition = "(PARENT.RIDER('0036') != null ? AMOUNT > PARENT.RIDER('0036').AMOUNT * 5 : 0)" alert = "AMOUNT">
+				每单附加意外伤害保险的基本保额最高不得超过附加安享人生重疾基本保额的5倍。
+			</when>
+			<when condition="AGE > 55 and AMOUNT > 200000" >
+			  56周岁及以上被保险人累计投保“意外伤害保险”不能大于20万元。
+			</when>
+			<!--  when condition = "(PLAN.HasProduct('0046')) and ((RiskAmount('life')+AMOUNT) > 100000) and (AGE lt 18)" alert="AMOUNT">
+				不满18周岁的被保险人累计死亡给付金额不得超过10万元。
+			</when>
+			<when condition = "(PLAN.HasProduct('0069')) and ((RiskAmount('life')+AMOUNT) > 100000) and (AGE lt 18)" alert="AMOUNT">
+				不满18周岁的被保险人累计死亡给付金额不得超过10万元。
+			</when-->
+			<!--  when condition = "PLAN.HasProduct('0046') and AMOUNT > 2000000" level="alert">
+				累计意外险保额超过200万元，需要体检，体检项目为普检+心电图+血清A+B超。
+			</when>
+			<when condition = "(str_begin(OCCUPATION_CODE,'19') or (str_begin(OCCUPATION_CODE,'1001')) or OCCUPATION_CODE == '1201003' or OCCUPATION_CODE == '1201004' or OCCUPATION_CODE == '1603024' or OCCUPATION_CODE == '1701003' or OCCUPATION_CODE == '1701004') and AMOUNT > 300000 and PLAN.HasProduct('0046')" alert="AMOUNT">
+				学生、家庭主妇、军人累计意外风险保额不能超过30万元。
+			</when>
+			<when condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE, '4099907') or str_end(OCCUPATION_CODE, '9000011') or str_end(OCCUPATION_CODE,'6071203')) and AMOUNT > 300000 and PLAN.HasProduct('0046')" alert="AMOUNT">
+				学生、家庭主妇、军人累计意外风险保额不能超过30万元。
+			</when>  
+			<when condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE, '4099907') or str_end(OCCUPATION_CODE, '9000011') or str_end(OCCUPATION_CODE,'6071203')) and (PLAN.AMOUNT_life+AMOUNT) > 500000 and PLAN.HasProduct('0046')" alert="AMOUNT">
+				学生、家庭主妇、军人累计人身险保额不得超过50万元。
+			</when-->
+	 		<!-- 爱随行特殊人群 -->
+			<!-- when condition = "(str_begin(OCCUPATION_CODE,'19') or (str_begin(OCCUPATION_CODE,'1001')) or OCCUPATION_CODE == '1201003' or OCCUPATION_CODE == '1201004' or OCCUPATION_CODE == '1603024' or OCCUPATION_CODE == '1701003' or OCCUPATION_CODE == '1701004') and (PARENT.PREMIUM*PARENT.PAY_PERIOD_VALUE*0.10+(PLAN.CountProduct('0068') >0 ? THIS.RIDER('0068').AMOUNT : 0)+AMOUNT)  > 300000 and PLAN.HasProduct('0067')" alert="AMOUNT">
+				学生、家庭主妇、军人累计意外风险保额不能超过30万元。
+			</when>
+			<when condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE, '4099907') or str_end(OCCUPATION_CODE, '9000011') or str_end(OCCUPATION_CODE, '6071203') ) and (PARENT.PREMIUM*PARENT.PAY_PERIOD_VALUE*0.10+(PLAN.CountProduct('0068') > 0 ? THIS.RIDER('0068').AMOUNT : 0) + AMOUNT)  > 300000 and PLAN.HasProduct('0067')" alert="AMOUNT">
+				学生、家庭主妇、军人累计意外风险保额不能超过30万元。
+			</when>  
+			<when condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE,'4099907') or str_end(OCCUPATION_CODE, '9000011') or str_end(OCCUPATION_CODE,'6071203')) and (PARENT.PREMIUM*PARENT.PAY_PERIOD_VALUE*0.10+(PLAN.CountProduct('0068') > 0 ? THIS.RIDER('0068').AMOUNT : 0)+AMOUNT) > 500000  and PLAN.HasProduct('0067')" alert="AMOUNT">
+				学生、家庭主妇、军人累计人身险保额不得超过50万元。
+			</when>
+			<when condition = "str_begin(OCCUPATION_CODE,'A') and (str_end(OCCUPATION_CODE,'5000002') or str_end(OCCUPATION_CODE,'5000001')) and (PARENT.PREMIUM*PARENT.PAY_PERIOD_VALUE*0.10+(PLAN.CountProduct('0068') > 0 ? THIS.RIDER('0068').AMOUNT : 0)+AMOUNT) > 300000 and PLAN.HasProduct('0067')" alert="AMOUNT">
+				无业人员、离退休人员累计人身险保额不得超过30万元。
+			</when>
+			<when name= "rule_9112" level="alert" condition="(PARENT.PREMIUM*PARENT.PAY_PERIOD_VALUE*0.10+(PLAN.CountProduct('0068') > 0 ? THIS.RIDER('0068').AMOUNT : 0)+AMOUNT) > 2000000 and PLAN.HasProduct('0067') ">
+			          普检+心电图+血清A+B超(200万＜意外险风险保额)，请提前联系客户并做好准备。
+			</when>
+			<when condition = "str_begin(OCCUPATION_CODE,'A') and (str_end(OCCUPATION_CODE,'5000002') or str_end(OCCUPATION_CODE,'5000001')) and (RiskAmount('life')+AMOUNT) > 300000 and PLAN.HasProduct('0046')" alert="AMOUNT">
+				无业人员、离退休人员累计人身险保额不得超过30万元。
+			</when-->
+			<!--修改通用规则 主险不是0067  0069  -->
+			<!--  when name= "rule_6007" condition = "((str_begin(OCCUPATION_CODE,'19')) or (str_begin(OCCUPATION_CODE,'1001')) or OCCUPATION_CODE == '1201003' or OCCUPATION_CODE == '1201004' or OCCUPATION_CODE == '1603024' or OCCUPATION_CODE == '1701003' or OCCUPATION_CODE == '1701004') and RiskAmount('accident') > 300000 and (not PLAN.HasProduct('0069') and (not PLAN.HasProduct('0067')))" alert="AMOUNT">
+				学生、家庭主妇、军人累计意外风险保额不能超过30万元。
+			</when>
+			<when name = "rule_6005" condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE,'4099907') or str_end(OCCUPATION_CODE,'9000011') or str_end(OCCUPATION_CODE,'6071203')) and RiskAmount('accident') > 300000 and (not PLAN.HasProduct('0069') and (not PLAN.HasProduct('0067')))" alert="AMOUNT">
+				学生、家庭主妇、军人累计意外风险保额不能超过30万元。
+			</when> 
+			<when name = "rule_6020" condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE,'4099907') or str_end(OCCUPATION_CODE,'9000011') or str_end(OCCUPATION_CODE,'6071203')) and PLAN.AMOUNT_life+PLAN.AMOUNT_accident > 500000 and ((not PLAN.HasProduct('0024')) and (not PLAN.HasProduct('0069')) and PARENT.PRODUCT_ID != '0067')" alert="AMOUNT">
+				学生、家庭主妇、军人累计人身险保额不得超过50万元。
+			</when>
+			<when name = "rule_6021" condition = "str_begin(OCCUPATION_CODE,'A') and (str_end(OCCUPATION_CODE,'5000002') or str_end(OCCUPATION_CODE,'5000001')) and ( RiskAmount('life')+ RiskAmount('accident')) > 300000 and (PARENT.PRODUCT_ID != '0024' and PARENT.PRODUCT_ID != '0069' and (not PLAN.HasProduct('0067')))" alert="AMOUNT">
+				无业人员、离退休人员累计人身险保额不得超过30万元。
+			</when>
+			<when name= "rule_9112" level="alert" condition="RiskAmount('accident') > 2000000 and ((not PLAN.HasProduct('0069')) and (not PLAN.HasProduct('0067')))">
+			          普检+心电图+血清A+B超(200万＜意外险风险保额)，请提前联系客户并做好准备。
+			</when-->
+			<!-- 富贵金升特殊人群 以及体检提示-->
+			<!--  when name= "rule_6007" condition = "((str_begin(OCCUPATION_CODE,'19')) or (str_begin(OCCUPATION_CODE,'1001')) or OCCUPATION_CODE == '1201003' or OCCUPATION_CODE == '1201004' or OCCUPATION_CODE == '1603024' or OCCUPATION_CODE == '1701003' or OCCUPATION_CODE == '1701004') and AMOUNT > 300000 and PLAN.HasProduct('0069')" alert="AMOUNT">
+				学生、家庭主妇、军人累计被保人意外风险保额不能超过30万元。
+			</when>
+			<when name = "rule_6005" condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE,'4099907') or str_begin(OCCUPATION_CODE,'9000011') or str_end(OCCUPATION_CODE,'6071203')) and AMOUNT > 300000 and PLAN.HasProduct('0069')" alert="AMOUNT">
+				学生、家庭主妇、军人累计被保人意外风险保额不能超过30万元。
+			</when>                              
+			<when name = "rule_6020" condition = "str_begin(OCCUPATION_CODE,'A') and (str_begin(OCCUPATION_CODE,'A9') or str_end(OCCUPATION_CODE,'4099907') or str_begin(OCCUPATION_CODE,'9000011') or str_end(OCCUPATION_CODE,'6071203')) and (RiskAmount('life')+AMOUNT) > 500000  and PLAN.HasProduct('0069')" alert="AMOUNT">
+				学生、家庭主妇、军人累计被保人人身险保额不得超过50万元。
+			</when>
+			<when name = "rule_6021" condition = "str_begin(OCCUPATION_CODE,'A') and (str_end(OCCUPATION_CODE,'5000002') or str_end(OCCUPATION_CODE,'5000001')) and (RiskAmount('life')+AMOUNT) > 300000  and PLAN.HasProduct('0069')" alert="AMOUNT">
+				无业人员、离退休人员累计被保人人身险保额不得超过30万元。
+			</when>
+			<when name= "rule_9112" level="alert" condition="AMOUNT > 2000000 and PLAN.HasProduct('0069')">
+			    	普检+心电图+血清A+B超(200万＜被保人意外险风险保额)，请提前联系客户并做好准备。
+			</when-->
+			<!--  when condition = "(PLAN.HasProduct('0046')) and ((RiskAmount('life')+AMOUNT) > 100000) and (AGE lt 18)" alert="AMOUNT">
+				不满18周岁的被保险人累计死亡给付金额不得超过10万元。
+			</when>
+			<when condition = "(PLAN.HasProduct('0069')) and ((RiskAmount('life')+AMOUNT) > 100000) and (AGE lt 18)" alert="AMOUNT">
+				不满18周岁的被保险人累计死亡给付金额不得超过10万元。
+			</when-->	
+		</rule>
+	</product>
+</declare>

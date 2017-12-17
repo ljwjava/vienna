@@ -15,13 +15,14 @@ public class DictController
     @Autowired
     DictService dictSrv;
 
-    /*@RequestMapping("/health")
+    @RequestMapping("/reset")
     @ResponseBody
     @CrossOrigin
-    public String health()
+    public String reset()
     {
+        dictSrv.reset();
         return "success";
-    }*/
+    }
 
     @RequestMapping("/view.json")
     @ResponseBody

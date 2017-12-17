@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<declare>
+	<product id="YGL00080"
+		corporation_id="yglife"
+		code="ALSP"
+		name="金喜连连年金保险"
+		name_abbr="金喜连连"
+		unit="1000"
+		input="premium"
+		quantity="PREMIUM/UNIT"
+		amount="DS.RATE[0][0]*QUANTITY"
+		type="annial"
+		sequence="12000"
+		bind="YGL00081"
+		depend="rider"
+		sale_begin_date="2014-01-15"
+		sale_end_date=""
+		last_modify_date="2008-03-05">
+		
+		<data>
+			<item parser="dds" file="YGL00080.dat"/>
+		</data>
+		
+		<init>
+			<item name="R81">RIDER('YGL00081')</item>
+			<item name="R82">RIDER('YGL00082')</item>
+			<item name="H81" param="I,J">try(R81.R.ACCOUNT[I][J],0)</item>
+		</init>
+	    
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_3"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+			</pay>
+			<insure>
+				<item code="to_100"/>
+			</insure>
+		</param>
+		
+		<rider>
+			<product id="YGL00081"/>
+			<product id="YGL00082"/>
+		</rider>
+		
+		<interest>
+			<item name="CSV" param="I" formula="DS.DATA[I][0]*QUANTITY" desc="现金价值"/>
+			<item name="AMT" param="I" formula="DS.DATA[I][1]*QUANTITY" desc="保险金额"/>
+			<item name="SUV" param="I" formula="AGE+I+1 >= 60 ? AMOUNT * 3 : AMOUNT" desc="生存年金"/>
+			<!-- 以下是80+81+82的总计数据 -->
+			<item name="PREMIUM_TRM" param="I" formula="I lt PAY_PERIOD ? PREMIUM + try(R82.PREMIUM, 0): 0" desc="总年缴保费"/>
+			<item name="PREMIUM_APP" param="I" formula="try(R81.X_PREMIUM[I],0)" desc="总追加保费"/>
+			<item name="PREMIUM_ACC" param="I" formula="(I > 0 ? IT.PREMIUM_ACC(I - 1) : 0) + IT.PREMIUM_TRM(I) + IT.PREMIUM_APP(I)" desc="总累计保费"/>
+		</interest>
+    
+    <attachment>
+      <benefit_table name="document" parser="document">
+      	<table>
+					<row type="title">
+						<blank row="2">'保单年度'</blank>
+						<blank row="2">'已达年龄'</blank>
+						<blank row="2">'生存总利益\n（中档）'</blank>
+						<blank row="2">'身故总利益\n（中档）'</blank>
+						<blank row="2">'生存金'</blank>
+						<blank row="2">'身故保险金'</blank>
+						<blank row="2">'轻症重疾保险金'</blank>
+						<blank row="2">'重大疾病保险金'</blank>
+						<blank row="2">'现金价值'</blank>
+						<blank row="2">'部分领取扣费后金额'</blank>
+						<blank row="2">'部分领取申请金额'</blank>
+						<blank col="3">'万能账户价值'</blank>
+						<blank col="3">'保险费'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'低\n（2.5%）'</blank>
+						<blank row="1">'中\n（4.5%）'</blank>
+						<blank row="1">'高\n（6.0%）'</blank>
+						<blank row="1">'期交'</blank>
+						<blank row="1">'追加'</blank>
+						<blank row="1">'累计'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">I+AGE+1</blank>
+							<blank style="########0">IT.CSV(I)+try(R82.IT.CSV(I),0)+try(R81.IT.DRW(I),0)</blank>
+							<blank style="########0">IT.AMT(I)+try(R82.IT.AMT(I),0)+H81(I,1)</blank>
+							<blank style="########0">IT.SUV(I)</blank>
+							<blank style="########0">IT.AMT(I)+try(R82.IT.AMT(I),0)</blank>
+							<blank style="########0">try(R82.AMOUNT,0)*0.2</blank>
+							<blank style="########0">try(R82.AMOUNT,0)</blank>
+							<blank style="########0">IT.CSV(I)+try(R82.IT.CSV(I),0)</blank>
+							<blank style="########0">try(R81.X_DRAW[I],0)*0.95</blank>
+							<blank style="########0">try(R81.X_DRAW[I],0)</blank>
+							<blank style="########0">H81(I,0)</blank>
+							<blank style="########0">H81(I,1)</blank>
+							<blank style="########0">H81(I,2)</blank>
+							<blank style="########0">IT.PREMIUM_TRM(I)</blank>
+							<blank style="########0">IT.PREMIUM_APP(I)</blank>
+							<blank style="########0">IT.PREMIUM_ACC(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			<coverage>
+				<paragraph title="生存年金">
+					<item>（1）若被保险人于本合同生效之日起每满1个保单年度时仍生存，且被保险人不满60周岁，我们给付等值于基本保险金额的生存年金；</item>
+					<item>（2）若被保险人于本合同生效之日起每满1个保单年度时仍生存，且被保险人已满60周岁，我们给付等值于3倍基本保险金额的生存年金。</item>
+					<item>如果您同时投保了《阳光人寿附加财富账户年金保险D款（万能型）》，则生存年金将自动作为保险费进入该个人账户，具体事项以《阳光人寿附加财富账户年金保险D款（万能型）》保险合同的约定为准。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>在本合同有效期内，若被保险人身故，我们给付被保险人身故时等值于本合同累计已交保险费的身故保险金，本合同效力终止。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+		<rule skip="rule_0001,rule_9048,rule_9049,rule_9050,rule_9051,rule_9052,rule_9053,rule_9054,rule_9055,rule_9056,rule_9057,rule_9058,rule_9059,rule_9059,rule_9060,rule_9061,rule_9062,rule_9063,rule_9064,rule_9065,rule_9066,rule_9067,rule_9068,rule_9069,rule_9070,rule_9071,rule_9072,rule_9073,rule_9074,rule_9075,rule_9076,rule_9077,rule_9078,rule_9079,rule_9080,rule_9081,rule_9082,rule_9083,rule_9084,rule_9085,rule_9085,rule_9086,rule_9087,rule_9088,rule_9089,rule_9090,rule_9091,rule_9092,rule_9093,rule_9094,rule_9095,rule_9096,rule_9097,rule_9112,rule_9113,rule_9114,rule_9124,rule_9116,rule_9117,rule_9118,rule_9119,rule_9120,rule_9121,rule_9122,rule_9123">
+			<if condition="DAY lt 30 or AGE > 60" type="customer">
+				被保险人投保年龄为出生满30天（含）至60周岁。
+			</if>
+			<if condition="AGE + PAY_PERIOD - 1 > 60">
+				交费期满被保人不超过60周岁。
+			</if>
+			<if condition="PREMIUM % 1000 > 0">
+				保费必须为1000元的整数倍。
+			</if>
+			<if condition="PAY_VALUE == 1 and PREMIUM lt 20000">
+				1年交时，最低保费为20000元。
+			</if>
+			<if condition="PAY_VALUE == 3 and PREMIUM lt 10000">
+				3年交时，最低保费为10000元。
+			</if>
+			<if condition="PAY_VALUE == 5 and PREMIUM lt 10000">
+				5年交时，最低保费为10000元。
+			</if>
+			<if condition="PAY_VALUE == 10 and PREMIUM lt 3000">
+				10年交时，最低保费为3000元。
+			</if>
+			<if condition="PAY_VALUE == 20 and PREMIUM lt 3000">
+				20年交时，最低保费为3000元。
+			</if>
+		</rule>
+	</product>
+</declare>

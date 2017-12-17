@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare> <!-- product_declare改为declare -->
+	<product id="GLL00005"
+	    corporation_id="guolian" 
+	    code="111301"
+		name="福满门年金保险" 
+		name_abbr="福满门年金保险" 
+		type_code="life" 
+		sale_begin_date="2011-12-01"
+		sale_end_date="2099-01-01" 
+		last_modify_date="2011-12-01"
+		is_rider="no"
+		is_main="yes"
+		input="premium"
+		quantity="PREMIUM/1000"
+		amount="DS.RATE[0,0]*PREMIUM/1000" 
+		bind="GLL00006"
+		>
+		
+		<data>
+			<item parser="file.auto" value="GLL00005" /><!-- grabber改为parser，用file.auto -->
+		</data>
+		
+		<param>
+			<pay_mode> <!-- 按照parameters.xml的配置，交费方式是pay_mode不是paymode -->
+				<item code="single"/>
+				<item code="year"/>
+			</pay_mode>
+			<pay>
+			    <item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10"/>
+			</pay>
+			<insure>
+				<item code="to_80"/>
+			</insure>
+		</param>
+		<interest>
+		    <!-- 年度保险费 -->
+		    <var name="PRM" param="A1,A2" type="double" formula="case(A1 lt PAY_PERIOD,PREMIUM +IT.PRM4(A1,A2),0) "></var>
+			<var name="PRM4" param="A1,A2" type="double"	formula="plan.getCommodityByProductId('GLL00013').isValid() == false ? 0 : RIDER('GLL00013').PREMIUM"></var>
+		    <!-- 累计保险费 -->
+		    <var name="AD_PRM" param="A1,A2" type="double" formula="case(A1 lt INSURE_PERIOD, (A1>0 ? IT.AD_PRM(A1-1,0) : 0)+IT.PRM(A1,0),0)"></var>
+		    <!-- 生存现金 -->
+		    <var name="SCVALUE" param="A1,A2" type="double" formula="DS.CV[A1,2]*QUANTITY"></var>
+		    <!-- 身故保险金 -->
+		    <var name="SGVALUE" param="A1,A2" type="double" formula="max(IT.AD_PRM(A1,0),(IT.SCVALUE(A1,0)+IT.XJVALUE(A1,0)))"></var>
+		    <!-- 现金价值 -->
+		    <var name="XJVALUE" param="A1,A2" type="double" formula ="DS.CV[A1,1]*QUANTITY"></var>
+		     <!-- 年度末现金价值 -->
+		    <var name="XJMVALUE" param="A1,A2" type="double" formula ="DS.CV[A1,1]*QUANTITY"></var>
+		    <!-- 附加险年度保险费 -->
+		    <var name="FPRM" param="A1,A2" type="double" formula="A1 == 0? 0:IT.SCVALUE(A1-1,0)"></var>
+		    <!-- 附加险累计保险费 -->
+		    <var name="AD_FPRM" param="A1,A2" type="double" formula="case(A1 lt INSURE_PERIOD, (A1>0 ? IT.AD_FPRM(A1-1,0) : 0)+IT.FPRM(A1,0),0)"></var>
+		    <!--附加险账户价值(低) -->
+		    <var name="DZH" param="A1,A2" type="double" formula="(A1 == 0? IT.FPRM(A1,A2):IT.DZHVALUE(A1-1,0)+IT.FPRM(A1,A2))*1.03"></var>
+		    <var name="DZHVALUE" param="A1,A2" type="double" formula="IT.DZH(A1,A2) - (IT.FDRAW_VALUE(A1,A2)+IT.SDRAW_VALUE(A1,A2))"></var>
+		    <!-- 附加险账户价值(中) -->
+		     <var name="ZZH" param="A1,A2" type="double" formula="(A1 == 0? IT.FPRM(A1,A2):IT.ZZHVALUE(A1-1,1)+IT.FPRM(A1,A2))*1.045"></var>
+		    <var name="ZZHVALUE" param="A1,A2" type="double" formula="IT.ZZH(A1,A2) - (IT.FDRAW_VALUE(A1,A2)+IT.SDRAW_VALUE(A1,A2))"></var>
+		    <!-- 附加险账户价值(高) -->
+		    <var name="GZH" param="A1,A2" type="double" formula="(A1 == 0? IT.FPRM(A1,A2):IT.GZHVALUE(A1-1,2)+IT.FPRM(A1,A2))*1.06"></var>
+		    <var name="GZHVALUE" param="A1,A2" type="double" formula="IT.GZH(A1,A2) - (IT.FDRAW_VALUE(A1,A2)+IT.SDRAW_VALUE(A1,A2))"></var>
+		     <!--期满保险金(低) -->
+			<var name="DQMVALUE" param="A1,A2" type="double" formula="AGE+A1+1 == 80? IT.DZHVALUE(A1,0):0"></var>
+			<!-- 期满保险金(中) -->
+			<var name="ZQMVALUE" param="A1,A2" type="double" formula="AGE+A1+1 == 80? IT.ZZHVALUE(A1,0):0"></var>
+			<!-- 期满保险金(高) -->
+			<var name="GQMVALUE" param="A1,A2" type="double" formula="AGE+A1+1 == 80? IT.GZHVALUE(A1,0):0"></var>
+			<!--领取额 -->
+			<var name="FDRAW_VALUE" param="A1,A2" type="double" formula="IT.SAW_F[A1]"></var>
+			<var name="SDRAW_VALUE" param="A1,A2" type="double" formula="IT.SAW_S[A1]"></var>
+			<var name="TEST" param="A1,A2" type="double" formula="(A1 == 0 ?  IT.FPRM(A1,A2):IT.TEST(A1-1,0)+IT.FPRM(A1,A2))*1.03 "></var>
+		   <![CDATA[
+		    var AGE=INSURANT.AGE;
+           	var total=106-AGE;
+           	save("RULER1",0);
+           	save("RULER2",0);
+           	save("RULER3",0);
+           	save("RULER4",0);
+           	save("sawYear",0);
+            var saw_f = new double[total];
+            var saw_s = new double[total];
+            var money = new double[total];
+          var getValue = function(index) {
+                 if(saw_f!=null){
+                 	return saw_f[index];
+                 }
+          	  }
+          var RULER1 =function(index){
+               if (saw_year1 != null) {
+                  for(var i=0;i< size(saw_year1); i++){
+                    if(index  ==  saw_year1[i]-1){
+                             if(draw_f[i] < 1000 || draw_f[i] % 100 != 0){
+                                 save("RULER1",1);
+                             }
+                        }
+                    }
+                } 
+          }  
+           
+         var RULER2 = function(){
+              if(saw_year2 != null&&saw_year1 != null){
+             	 for(var i=0;i< size(saw_year1); i++){
+              		  if(saw_year2[i] < saw_year1[i]){
+                  			save("RULER2",1);
+                  			save("saw_year1",saw_year1[i]);
+                  			save("saw_year2",saw_year2[i]);
+                 	  }
+             	 }
+              }
+         } 
+          
+        var RULER3 =function(){
+        	if (saw_year1 != null) {
+        	for(var i = 0; i < size(saw_year1); i++){
+          		for(var j = saw_year1[i];j <saw_year2[i];j++){
+          	    		 money[0] = IT.TEST(j,0) - get_Draw_Money(j);
+         				 money[1] = IT.TEST(j,1) - get_Draw_Money(j);
+         				 money[2] = IT.TEST(j,2) - get_Draw_Money(j);
+							if (money[0] < 500) {
+								save("RULER3",1);
+								save("sawYear",j);
+								save("money",money[0]);
+							}else if(money[1] < 500){
+								save("RULER3",1);
+								save("money",money[1]);
+								save("sawYear",j);
+							}else if(money[2] < 500){
+								save("RULER3",1);
+								save("money",money[2]);
+								save("sawYear",j);
+							}
+         	 	}
+    	 	}
+		}
+        }
+        var get_Draw_Money = function(year){ 
+      	   var money=0;
+           for(var i=0 ; i <= year ; i++){
+              money = money*1.03 + getValue(i);
+           }
+           return money;
+       }
+       
+     var getDrawPremiun =function(){
+    	 if (saw_year1 != null) {
+     		for(var i = 0; i < size(saw_year1); i++){
+          	for(var j = saw_year1[i]-1;j <saw_year2[i];j++){
+          	    if(j >= 0){
+          	   		 saw_f[j]=draw_f[i]+saw_f[j];
+          	    }else{
+          	    	save("RULER4",1);
+          	    }
+         	 }
+    	 	}
+    	 }
+    } 	 
+        var calculate = function() {
+          		getDrawPremiun();
+          		RULER2();
+                for(var i=0;i<total;i++){
+          		     RULER1(i);
+          		}
+          		RULER3();
+       	   }
+          calculate();
+          save("SAW_F",saw_f);
+          save("SAW_S",saw_s);
+		    ]]>
+		</interest>
+
+    <attachment> <!-- append改为attachment -->
+		    <benefit_table name="table" parser="table">
+				<table condition="total">
+				
+				<row type="title">
+					<blank row="1" col="6">'主险'</blank>
+					<blank row="1" col="12">'附加险'</blank>
+					<blank row="1" col="1">'部分领取'</blank>
+				</row>
+					<row type="title">
+						<blank row="3">'保单年度/年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'生存金'</blank>
+						<blank row="3">'身故保险金'</blank>
+						<blank row="3">'现金价值'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'各项账户费用'</blank>
+						<blank row="1" col="3">'结算利率（低）'</blank>
+						<blank row="1" col="3">'结算利率（中）'</blank>
+						<blank row="1" col="3">'结算利率（高）'</blank>	
+						<blank row="3">'年度领取'</blank>
+					</row>		
+					<row type="title">
+					    <blank row="2">'账户价值/现金价值'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'满期保险金'</blank>
+					    <blank row="2">'账户价值/现金价值'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'满期保险金'</blank>
+					    <blank row="2">'账户价值/现金价值'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'满期保险金'</blank>
+					</row>			
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">(I+1) + '/' + (AGE+I) </blank>
+						    <blank style="###0">IT.PRM(I,0)</blank>
+						    <blank style="###0">IT.AD_PRM(I,0)</blank>
+						    <blank style="###0">IT.SCVALUE(I,0)</blank>
+						    <blank style="###0">IT.SGVALUE(I,0)</blank>
+						    <blank style="###0">IT.XJVALUE(I,0)</blank>
+						    <blank style="###0">IT.FPRM(I,0)</blank>
+						    <blank style="###0">IT.AD_FPRM(I,0)</blank>
+						    <blank style="###0">0</blank>
+						    <blank style="###0">IT.DZHVALUE(I,0)</blank>
+						    <blank style="###0">(AGE+I lt 18?IT.DZHVALUE(I,0):IT.DZHVALUE(I,0)*1.2)</blank>
+						    <blank style="###0">IT.DQMVALUE(I,0)</blank>
+						    <blank style="###0">IT.ZZHVALUE(I,0)</blank>
+						    <blank style="###0">(AGE+I lt 18?IT.ZZHVALUE(I,0):IT.ZZHVALUE(I,0)*1.2)</blank>
+						    <blank style="###0">IT.ZQMVALUE(I,0)</blank>
+						    <blank style="###0">IT.GZHVALUE(I,0)</blank>
+						    <blank style="###0">(AGE+I lt 18?IT.GZHVALUE(I,0):IT.GZHVALUE(I,0)*1.2)</blank>
+						    <blank style="###0">IT.GQMVALUE(I,0)</blank>
+						    <blank style="###0">IT.FDRAW_VALUE(I,0)</blank>
+						</row>
+					</loop>
+				</table>
+				
+				<table condition="low" desc="假设结算利率为低档时">
+				<row type="title">
+				    <blank row="1" col="6">'主险'</blank>
+					<blank row="1" col="6">'附加险'</blank>
+					<blank row="1" col="1">'部分领取'</blank>
+				</row>
+					<row type="title">
+						<blank row="3">'保单年度/年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'生存金'</blank>
+						<blank row="3">'身故保险金'</blank>
+						<blank row="3">'现金价值'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'各项账户费用'</blank>
+						<blank row="1" col="3">'结算利率（低）'</blank>
+						<blank row="3">'年度领取'</blank>
+					</row>	
+					<row type="title">
+					    <blank row="2">'账户价值/现金价值'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'满期保险金'</blank>
+				    </row>	
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">(I+1) + '/' + (AGE+I)</blank>
+						    <blank style="###0">IT.PRM(I,0)</blank>
+						    <blank style="###0">IT.AD_PRM(I,0)</blank>
+						    <blank style="###0">IT.SCVALUE(I,0)</blank>
+						    <blank style="###0">IT.SGVALUE(I,0)</blank>
+						    <blank style="###0">IT.XJVALUE(I,0)</blank>
+						    
+						    <blank style="###0">IT.FPRM(I,0)</blank>
+						    <blank style="###0">IT.AD_FPRM(I,0)</blank>
+						    <blank style="###0">'0'</blank>
+						    <blank style="###0">IT.DZHVALUE(I,0)</blank>
+						    <blank style="###0">(AGE+I lt 18?IT.DZHVALUE(I,0):IT.DZHVALUE(I,0)*1.2)</blank>
+						    <blank style="###0">IT.DQMVALUE(I,0)</blank>
+						    <blank style="###0">IT.FDRAW_VALUE(I,0)</blank>
+						</row>
+					</loop>
+				</table>
+				
+				
+				<table condition="middle" desc="假设结算利率为中档时">
+				<row type="title">
+					<blank row="1" col="6">'主险'</blank>
+					<blank row="1" col="6">'附加险'</blank>
+					<blank row="1" col="1">'部分领取'</blank>
+				</row>
+					<row type="title">
+						<blank row="3">'保单年度/年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'生存金'</blank>
+						<blank row="3">'身故保险金'</blank>
+						<blank row="3">'现金价值'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'各项账户费用'</blank>
+						<blank row="1" col="3">'结算利率（中）'</blank>
+						<blank row="3">'年度领取'</blank>
+					</row>	
+					<row type="title">
+					    <blank row="2">'账户价值/现金价值'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'满期保险金'</blank>
+				    </row>	
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">(I+1) + '/' + (AGE+I) </blank>
+						    <blank style="###0">IT.PRM(I,0)</blank>
+						    <blank style="###0">IT.AD_PRM(I,0)</blank>
+						    <blank style="###0">IT.SCVALUE(I,0)</blank>
+						    <blank style="###0">IT.SGVALUE(I,0)</blank>
+						    <blank style="###0">IT.XJVALUE(I,0)</blank>
+						    <blank style="###0">IT.FPRM(I,0)</blank>
+						    <blank style="###0">IT.AD_FPRM(I,0)</blank>
+						    <blank style="###0">0</blank>
+						    <blank style="###0">IT.ZZHVALUE(I,0)</blank>
+						    <blank style="###0">(AGE+I lt 18?IT.ZZHVALUE(I,0):IT.ZZHVALUE(I,0)*1.2)</blank>
+						    <blank style="###0">IT.ZQMVALUE(I,0)</blank>
+						    <blank style="###0">IT.FDRAW_VALUE(I,0)</blank>
+						</row>
+					</loop>
+				</table>
+				<table condition="high" desc="假设结算利率为高档时">
+				<row type="title">
+					<blank row="1" col="6">'主险'</blank>
+					<blank row="1" col="6">'附加险'</blank>
+					<blank row="1" col="1">'部分领取'</blank>
+				</row>
+					<row type="title">
+						<blank row="3">'保单年度/年龄'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'生存金'</blank>
+						<blank row="3">'身故保险金'</blank>
+						<blank row="3">'现金价值'</blank>
+						<blank row="3">'年度保险费'</blank>
+						<blank row="3">'累计保险费'</blank>
+						<blank row="3">'各项账户费用'</blank>
+						<blank row="1" col="3">'结算利率（高）'</blank>	
+						<blank row="3">'年度领取'</blank>
+					</row>	
+					<row type="title">
+					    <blank row="2">'账户价值/现金价值'</blank>
+					    <blank row="2">'身故保险金'</blank>
+					    <blank row="2">'满期保险金'</blank>
+				    </row>	
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						    <blank style="###0">(I+1) + '/' + (AGE+I)</blank>
+						    <blank style="###0">IT.PRM(I,0)</blank>
+						    <blank style="###0">IT.AD_PRM(I,0)</blank>
+						    <blank style="###0">IT.SCVALUE(I,0)</blank>
+						    <blank style="###0">IT.SGVALUE(I,0)</blank>
+						    <blank style="###0">IT.XJVALUE(I,0)</blank>
+						    <blank style="###0">IT.FPRM(I,0)</blank>
+						    <blank style="###0">IT.AD_FPRM(I,0)</blank>
+						    <blank style="###0">0</blank>
+						    <blank style="###0">IT.GZHVALUE(I,0)</blank>
+						    <blank style="###0">(AGE+I lt 18?IT.GZHVALUE(I,0):IT.GZHVALUE(I,0)*1.2)</blank>
+						    <blank style="###0">IT.GQMVALUE(I,0)</blank>
+						    <blank style="###0">IT.FDRAW_VALUE(I,0)</blank>
+						</row>
+					</loop>
+				</table>
+				<text>注释说明：</text>
+				<text>1、结算利率分别按低、中、高 3 种情况进行预测，仅作为参考之用，不作为未来结算利率的保证。其中低档演示年结算利率为 3%，中档演示年结算利率为 4.5%，高档演示年结算利率为 6%；</text>
+				<text>2、年保证利率为3%；</text>
+				<text>3、年龄、年度保险费、累计保险费、初始费用为保单年度初的值；身故保险金、满期保险金、保单账户价值、现金价值等为保单年度末的值；</text>
+				<text>4、满期保险金在被保险人生存至附加险合同保险期间届满时给付，保单账户同时被注销，附加险合同终止；</text>
+				<text>5、利益演示数据显示到整数位，单位为人民币元。</text>
+				<text bold="yes">特别提示：利益演示基于公司的精算及其他假设，不代表公司的历史经营业绩，也不代表对公司未来经营业绩的预期，年保证利率之上的投资收益是不确定的，实际保单账户利益可能低于中、高档利益演示水平。</text>
+			</benefit_table>
+			
+			<!-- 保险责任 -->			    
+			<coverage name="coverage" parser="coverage">
+				<paragraph>
+		    		<item>在本合同保险有效期内，我们按以下约定承担保险责任：</item>
+				</paragraph>
+				<paragraph title="年金">
+				    <item>在本合同生效后每年的合同生效日对应日，若被保险人生存，我们按基本保险金额的15%给付一次年金。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+				    <item>若被保险人身故，我们按您已支付的保险费和被保险人身故时本合同基本保险金额对应的现金价值的较大者给付身故保险金，本合同终止。</item>
+				</paragraph>
+				<paragraph title="满期保险金">
+					<item>若被保险人生存至保险期间届满，我们按您已支付的保险费给付满期保险金，本合同终止。</item>
+                    <item>“已支付的保险费”的含义:本条所述“已支付的保险费”指您根据本合同的约定已支付的保险费。</item>
+				</paragraph>
+				<paragraph title="保险金额">
+		    		<item>本合同的基本保险金额由您在投保时与我们约定并在保险单上载明。 若该金额发生变更，则以变更后的金额为基本保险金额。</item>
+				</paragraph>
+				<paragraph title="未成年人身故保险金限制">
+		    		<item>为未成年子女投保的人身保险， 在被保险人成年之前， 因被保险人身故给付的保险金总和不得超过保险监督管理机构规定的限额，身故给付的保险金额总和约定也不得超过前述限额。</item>
+				</paragraph>
+				<paragraph title="保险期间">
+		    		<item>本合同的保险期间自本合同生效日的零时起， 至 80 周岁（指至被保险人年满80 周岁后的首个合同生效日对应日的前一日 24 时止）。</item>
+				</paragraph>
+			</coverage>
+			
+			<benefit_detail name="coverage" parser="coverage">
+				<paragraph title="保险金额">
+		    		<item>本合同的基本保险金额由您在投保时与我们约定并在保险单上载明。 若该金额发生变更，则以变更后的金额为基本保险金额。</item>
+				</paragraph>
+				<paragraph title="未成年人身故保险金限制">
+		    		<item>为未成年子女投保的人身保险， 在被保险人成年之前， 因被保险人身故给付的保险金总和不得超过保险监督管理机构规定的限额，身故给付的保险金额总和约定也不得超过前述限额。</item>
+				</paragraph>
+				<paragraph title="保险期间">
+		    		<item>本合同的保险期间自本合同生效日的零时起， 至 80 周岁（指至被保险人年满80 周岁后的首个合同生效日对应日的前一日 24 时止）。</item>
+				</paragraph>
+			</benefit_detail>
+			
+			<!-- 利益演示图 -->
+			<benefit_chart name="chart@axa" parser="chart@axa" >
+			    <year_data from="0" to="INSURE_PERIOD-1" name="I" step="1">
+			    	<item mode="add" type="formula" code="sc" title="主险累计保险费">IT.AD_PRM(I,0)</item>
+			       	<item mode="year" type="formula" code="sc" title="主险基本保险金额">AMOUNT</item>
+			        <item mode="year" type="formula" code="sg" title="身故保险金">IT.SGVALUE(I,0)+(AGE+I lt 18?IT.DZHVALUE(I,0):IT.DZHVALUE(I,0)*1.2)</item>
+			        <item mode="year" type="formula" code="sg" title="主险身故保险金">IT.SGVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="主险现金价值">IT.XJVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="主险生存金">IT.SCVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="附加险身故保险金">IT.DZHVALUE(I,0)*1.2</item>
+			        <item mode="year" type="formula" code="sg" title="附加险现金价值">IT.DZHVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="yw" title="附加险账户价值">IT.DZHVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="xj" title="主险年度末现金价值">IT.XJMVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="xj" title="附加险年度末现金价值">IT.DZHVALUE(I,0)</item>
+			    </year_data>
+			    
+			    <year_data from="0" to="INSURE_PERIOD-1" name="I" step="1">
+			    	<item mode="add" type="formula" code="sc" title="主险累计保险费">IT.AD_PRM(I,0)</item>
+			       	<item mode="year" type="formula" code="sc" title="主险基本保险金额">AMOUNT</item>
+			        <item mode="year" type="formula" code="sg" title="身故保险金">IT.SGVALUE(I,0)+(AGE+I lt 18?IT.ZZHVALUE(I,0):IT.ZZHVALUE(I,0)*1.2)</item>
+			        <item mode="year" type="formula" code="sg" title="主险身故保险金">IT.SGVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="主险现金价值">IT.XJVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="主险生存金">IT.SCVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="附加险身故保险金">IT.ZZHVALUE(I,0)*1.2</item>
+			        <item mode="year" type="formula" code="sg" title="附加险现金价值">IT.ZZHVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="yw" title="附加险账户价值">IT.ZZHVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="xj" title="主险年度末现金价值">IT.XJMVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="xj" title="附加险年度末现金价值">IT.ZZHVALUE(I,0)</item>
+			    </year_data>
+			    
+			     <year_data from="0" to="INSURE_PERIOD-1" name="I" step="1">
+			    	<item mode="add" type="formula" code="sc" title="主险累计保险费">IT.AD_PRM(I,0)</item>
+			       	<item mode="year" type="formula" code="sc" title="主险基本保险金额">AMOUNT</item>
+			        <item mode="year" type="formula" code="sg" title="身故保险金">IT.SGVALUE(I,0)+(AGE+I lt 18?IT.GZHVALUE(I,0):IT.GZHVALUE(I,0)*1.2)</item>
+			        <item mode="year" type="formula" code="sg" title="主险身故保险金">IT.SGVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="主险现金价值">IT.XJVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="主险生存金">IT.SCVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="sg" title="附加险身故保险金">IT.GZHVALUE(I,0)*1.2</item>
+			        <item mode="year" type="formula" code="sg" title="附加险现金价值">IT.GZHVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="yw" title="附加险账户价值">IT.GZHVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="xj" title="主险年度末现金价值">IT.XJMVALUE(I,0)</item>
+			        <item mode="year" type="formula" code="xj" title="附加险年度末现金价值">IT.GZHVALUE(I,0)</item>
+			    </year_data>
+			    
+			   <chart desc="生存利益" code="sc">
+			    	<axis from="0" to="INSURE_PERIOD-1" name="I"> 
+			        	<item name="生存利益" type="bar">IT.SCVALUE(I,0)</item>
+			    	</axis>
+			    </chart>
+			    <chart desc="身故保险金" code="sg">
+			        <axis from="0" to="INSURE_PERIOD-1" name="I" desc="身故保险金">
+			    	    <item name="身故保险金" type="bar">IT.SGVALUE(I,0)+(AGE+I lt 18?IT.DZHVALUE(I,0):IT.DZHVALUE(I,0)*1.2)</item>
+						<item name="身故保险金" type="bar">IT.SGVALUE(I,0)+(AGE+I lt 18?IT.ZZHVALUE(I,0):IT.ZZHVALUE(I,0)*1.2)</item>
+						<item name="身故保险金" type="bar">IT.SGVALUE(I,0)+(AGE+I lt 18?IT.GZHVALUE(I,0):IT.GZHVALUE(I,0)*1.2)</item>
+			    	</axis>
+			    </chart>
+			    <chart desc="现金价值" code="xj">
+			        <axis from="0" to="INSURE_PERIOD-1" name="I" desc="现金价值">
+			    	    <item name="现金价值" type="bar">IT.XJVALUE(I,0)+IT.DZHVALUE(I,0)</item>
+						<item name="现金价值" type="bar">IT.XJVALUE(I,0)+IT.ZZHVALUE(I,0)</item>
+						<item name="现金价值" type="bar">IT.XJVALUE(I,0)+IT.GZHVALUE(I,0)</item>
+			    	</axis>
+			    </chart>
+			    <chart desc="意外身故额外保险金" code="yw">
+			        <axis from="0" to="INSURE_PERIOD-1" name="I" desc="意外身故额外保险金">
+			    	    <item name="意外身故额外保险金" type="bar">IT.DZHVALUE(I,0)*0.5</item>
+						<item name="意外身故额外保险金" type="bar">IT.ZZHVALUE(I,0)*0.5</item>
+						<item name="意外身故额外保险金" type="bar">IT.GZHVALUE(I,0)*0.5</item>
+			    	</axis>
+			    </chart>
+			</benefit_chart>
+		</attachment>
+		<rider>
+			<product id="GLL00013"/>
+		</rider>
+		<rule skip="rule_1001,rule_1003,rule_1004,rule_1006,rule_1007,rule_1006">
+			<!-- 
+		   <if condition="APPLICANT.AGE lt 18">
+		    	投保人年龄必须大于18周岁（含）。
+		    </if>
+		     -->
+		    <if condition="AGE gt 60" > 
+				 被保人投保年龄超过最高承保年龄(60岁)。
+		    </if>
+		    <if condition="INSURANT.DAY lt 28" type="customer"> 
+				被保人投保年龄未达最低承保年龄(出生满28天)
+		    </if>
+		    <if condition="PAY_VALUE==1 and PREMIUM lt 50000 " >
+				趸交缴费方式最低起交保费是5万元。
+		    </if>
+		    <if condition="PAY_MODE.CODE == 'single' and PAY_VALUE != 1" >
+				当交费方式为一次性交清时，交费期间仅可选择1年交。
+		    </if>
+		    <if condition="PAY_MODE.CODE == 'year' and PAY_VALUE == 1" >
+				当交费方式为年交时，交费期间仅可选择3年交、5年交、10年交.
+		    </if>
+		    <if condition="PAY_PERIOD==3 and PREMIUM lt 20000 " >
+				三年交缴费方式最低起交保费是2万元。
+		    </if>
+		    <if condition="PAY_PERIOD==5 and PREMIUM lt 10000 " >
+				五年交缴费方式最低起交保费是1万元。
+		    </if>
+		    <if condition="PAY_PERIOD==10 and PREMIUM lt 5000 " >
+				十年交缴费方式最低起交保费是5千元。
+		    </if>
+		    <if condition="PREMIUM%1000!=0">
+				每一份额对应保费为1000元。
+		    </if>
+		    <if condition="QUANTITY lt 5">
+				最低投保份额为5份。
+		    </if>
+		     <if condition="PAY_PERIOD==10 and (AGE gt 55 or INSURANT.DAY lt 28)" >
+				缴费年期为十年期时，被保人年龄应该在28天-55周岁。
+		    </if>
+			 <if condition="IT.YEAR1 == 1">
+		                      领取的保单年度不能小于1。
+		    </if>
+		     <if condition="IT.RULER1 == 1">
+		     	  一次部分领取最低金额为1千元且为1百的整数倍。
+		    </if>
+		    <if condition="IT.RULER3 == 1" desc_type="formula">
+		     	'第'+IT.sawYear+'年部分领取后账户剩余价值为'+round(IT.money,2)+'低于500元。'
+		    </if>
+		    <if condition="IT.RULER2==1" desc_type="formula">
+		    	'部分领取起始年度'+IT.saw_year1+'大于结束年度'+IT.saw_year2+'。'
+		    </if>
+		    <if condition="IT.RULER4 == 1">
+		    	领取保单年度不能小于1。
+		    </if>
+		</rule>
+	</product>
+</declare>

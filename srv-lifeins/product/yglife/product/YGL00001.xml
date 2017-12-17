@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="YGL00001"
+		corporation_id="yglife"
+		code="ALPL"
+		name="阳光人生终身寿险（分红型）"
+		name_abbr="阳光人生"
+		unit_amount="1000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2002-01-01"
+		sale_end_date=""
+		last_modify_date="2014-09-27">
+		
+		<data>
+			<item parser="dds" value="YGL00001"/>
+		</data>
+		
+		<param>
+			<pay>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_25"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="full_105"/>
+			</insure>
+		</param>
+		
+		<rider>
+			<product id="YGL00002"/>
+			<product id="YGL00003"/>
+			<product id="YGL00008"/>
+			<product id="YGL00009"/>
+			<product id="YGL00010"/>
+			<product id="YGL00011"/>
+			<product id="YGL00012"/>
+			<product id="YGL00013"/>
+			<product id="YGL00022"/>
+		</rider>
+		
+		<interest>
+			<var name="AMT_L"  param="A1" formula="DS.RATE[A1,7]*QUANTITY"/>
+			<var name="AMT_A"  param="A1" formula="DS.RATE[A1,7]*QUANTITY"/>
+			<var name="BNT_LN"  param="A1" formula="DS.RATE[A1,23]*QUANTITY"/>
+			<var name="BNT_AN"  param="A1" formula="DS.RATE[A1,23]*QUANTITY"/>
+			<var name="BNT_LD"  param="A1" formula="DS.RATE[A1,22]*QUANTITY"/>
+			<var name="BNT_AD"  param="A1" formula="DS.RATE[A1,22]*QUANTITY"/>
+			<var name="BNT_LP"  param="A1" formula="DS.RATE[A1,21]*QUANTITY"/>
+			<var name="BNT_AP"  param="A1" formula="DS.RATE[A1,21]*QUANTITY"/>
+			<var name="SUV_N"  param="A1" formula="DS.RATE[A1,26]*QUANTITY"/>
+			<var name="SUV_D"  param="A1" formula="DS.RATE[A1,25]*QUANTITY"/>
+			<var name="SUV_P"  param="A1" formula="DS.RATE[A1,24]*QUANTITY"/>
+			<var name="CSV"  param="A1" formula="DS.RATE[A1,3]*QUANTITY"/>
+			<var name="RPU"  param="A1" formula="DS.RATE[A1,5]*QUANTITY"/>
+			<var name="DV_Y"  param="A1,A2" formula="DS.RATE[A1,10+A2]*QUANTITY"/>
+			<var name="DV_T"  param="A1,A2" formula="DS.RATE[A1,13+A2]*QUANTITY"/>
+			<var name="PUA"  param="A1,A2" formula="DS.RATE[A1,16+A2]*QUANTITY"/>
+			<var name="PRM"  param="A1" formula="DS.RATE[A1,0]*QUANTITY"/>
+			<var name="PRM_T"  param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)"/>
+		</interest>
+		
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="2">'保单\n年度'</blank>
+						<blank row="2">'已达\n年龄'</blank>
+						<blank row="2">'*生存\n总利益'</blank>
+						<blank row="2">'*疾病身故\n总利益'</blank>
+						<blank row="2">'*意外身故\n总利益'</blank>
+						<blank row="2">'疾病身故\n保险金'</blank>
+						<blank row="2">'意外身故\n保险金'</blank>
+						<blank row="2">'现金价值'</blank>
+						<blank col="3">'当年度红利'</blank>
+						<blank col="3">'累积红利'</blank>
+						<blank col="3">'累积交清增额'</blank>
+						<blank row="2">'减额交清'</blank>
+						<blank row="2">'当年保费'</blank>
+						<blank row="2">'累计保费'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'低'</blank>
+						<blank row="1">'中'</blank>
+						<blank row="1">'高'</blank>
+						<blank row="1">'低'</blank>
+						<blank row="1">'中'</blank>
+						<blank row="1">'高'</blank>
+						<blank row="1">'低'</blank>
+						<blank row="1">'中'</blank>
+						<blank row="1">'高'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.SUV_D(I)</blank>
+							<blank align="right" style="########0">IT.BNT_LD(I)</blank>
+							<blank align="right" style="########0">IT.BNT_AD(I)</blank>
+							<blank align="right" style="########0">IT.AMT_L(I)</blank>
+							<blank align="right" style="########0">IT.AMT_A(I)</blank>
+							<blank align="right" style="########0">IT.CSV(I)</blank>
+							<blank align="right" style="########0">IT.DV_Y(I,0)</blank>
+							<blank align="right" style="########0">IT.DV_Y(I,1)</blank>
+							<blank align="right" style="########0">IT.DV_Y(I,2)</blank>
+							<blank align="right" style="########0">IT.DV_T(I,0)</blank>
+							<blank align="right" style="########0">IT.DV_T(I,1)</blank>
+							<blank align="right" style="########0">IT.DV_T(I,2)</blank>
+							<blank align="right" style="########0">IT.PUA(I,0)</blank>
+							<blank align="right" style="########0">IT.PUA(I,1)</blank>
+							<blank align="right" style="########0">IT.PUA(I,2)</blank>
+							<blank align="right" style="########0">IT.RPU(I)</blank>
+							<blank align="right" style="########0.##">IT.PRM(I)</blank>
+							<blank align="right" style="########0.##">IT.PRM_T(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+      <benefit_combo parser="combo">
+	       <year from="0" to="INSURE_PERIOD-1" name="I" >
+		        <item code="year" formula="I+1"/>
+		        <item code="age" formula="I+1+AGE"/>
+	        	<item code="SCZLY" formula="IT.SUV_D(I)"/>
+		        <item code="SCZLY" formula="IT.SUV_P(I)"/>
+	         	<item code="JBSGZLY" formula="IT.BNT_LD(I)"/>
+		        <item code="JBSGZLY" formula="IT.BNT_LP(I)"/>
+		        <item code="YWSGZLY" formula="IT.BNT_AD(I)"/>
+		        <item code="YWSGZLY" formula="IT.BNT_AP(I)"/>
+		        <item code="JBSGBXJ" formula="IT.AMT_L(I)"/>
+		        <item code="YWSGBXJ" formula="IT.AMT_A(I)"/>
+		        <item code="XJJZ" formula="IT.CSV(I)"/>
+		        <item code="bonus_low" formula="IT.DV_Y(I,0)"/>
+		        <item code="bonus_middle" formula="IT.DV_Y(I,1)"/>
+		        <item code="bonus_high" formula="IT.DV_Y(I,2)"/>
+		        <item code="dividend_low" formula="IT.DV_T(I,0)"/>
+		        <item code="dividend_middle" formula="IT.DV_T(I,1)"/>
+		        <item code="dividend_high" formula="IT.DV_T(I,2)"/>
+		        <item code="LJJQZE_low" formula="IT.PUA(I,0)"/>
+		        <item code="LJJQZE_middle" formula="IT.PUA(I,1)"/>
+		        <item code="LJJQZE_high" formula="IT.PUA(I,2)"/>
+		        <item code="JEJQ" formula=" IT.RPU(I)"/>
+		        <item code="premium" formula="IT.PRM(I)"/>
+		        <item code="premium_sum" formula="IT.PRM_T(I)"/>
+		     </year>
+		</benefit_combo>
+
+		<benefit_chart filter="chart" parser="chart">
+		    <chart from="0" to="INSURE_PERIOD-1" name="I">
+				<line name="身故总利益" color="#00AA00">max(IT.BNT_LD(I),IT.BNT_AD(I))</line>
+				<bar name="现金价值" color="#0000FF">IT.CSV(I,0)</bar>
+				<line name="累积红利" color="#FF0000">IT.DV_T(I,1)</line>
+			</chart>
+		</benefit_chart>
+      
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险利益">
+					<table border="no" align="left" windage="10%" width="70%">
+						<row>
+							<blank width="20%" align="left">'身故保险金'</blank>
+							<blank width="25%" align="right">AMOUNT+'元'</blank>
+							<blank align="left">'因意外或疾病身故'</blank>
+						</row>
+					</table>
+					<table align="left" windage="10%" width="50%">
+						<row>
+							<blank width="50%">'身故时被保险人的年龄'</blank>
+							<blank width="50%">'给付金额占基本保险金额的比例'</blank>
+						</row>
+						<row>
+							<blank>'0至1周岁'</blank>
+							<blank>'25％'</blank>
+						</row>
+						<row>
+							<blank>'1至2周岁（含1周岁）'</blank>
+							<blank>'50％'</blank>
+						</row>
+						<row>
+							<blank>'2至3周岁（含2周岁）'</blank>
+							<blank>'75％'</blank>
+						</row>
+						<row>
+							<blank>'3周岁以上（含3周岁）'</blank>
+							<blank>'100％'</blank>
+						</row>
+					</table>
+					<table border="no" align="left" windage="10%" width="70%">
+						<row>
+							<blank width="20%" align="left">'加保选择权'</blank>
+							<blank width="25%" align="right">'每次最多'+round(AMOUNT/2)+'元'</blank>
+							<blank align="left">'交费期内，结婚、生子当年可申请增加基本保险金额，限2次\n加保申请时，您无需提供健康声明并免体检\n当年度保费和累计所交保费不包括投保人选择增加基本保险金额时须补交的相应责任准备金'</blank>
+						</row>
+					</table>
+					<item>*上述身故保险利益不含因红利分配而产生的相关利益</item>
+				</paragraph>
+				<paragraph title="分红利益">
+					<table border="no" align="left" windage="10%" width="70%">
+						<row>
+							<blank width="20%" align="left">'分红利益'</blank>
+							<blank width="80%" align="left">'享受分红利益，分享公司经营成果'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</coverage>
+		</attachment>
+		
+		<rule skip="rule_5002,rule_5003,rule_8001,rule_8002,rule_8003,rule_8004,rule_8005,rule_8006,rule_8007,rule_8008,rule_8009,rule_8010,rule_8011,rule_8012,rule_8013,rule_9112,rule_5001,rule_9048,rule_9049,rule_9050,rule_9051,rule_9052,rule_9053,rule_9054,rule_9055,rule_9056,rule_9057,rule_9058,rule_9059,rule_9059,rule_9060,rule_9061,rule_9062,rule_9063,rule_9064,rule_9065,rule_9066,rule_9067,rule_9068,rule_9069,rule_9070,rule_9071,rule_9072,rule_9073,rule_9074,rule_9075,rule_9076,rule_9077,rule_9078,rule_9079,rule_9080,rule_9081,rule_9082,rule_9083,rule_9084,rule_9085,rule_9085,rule_9086,rule_9087,rule_9088,rule_9089,rule_9090,rule_9091,rule_9092,rule_9093,rule_9094,rule_9095,rule_9096,rule_9097">
+			<if condition="AGE > 60" type="customer">
+				被保人年龄不能大于60周岁。
+			</if>
+			<if condition="AGE > 60 and PAY_VALUE == 5" >
+				选择5年交时，被保人年龄不能大于60周岁。
+			</if>
+			<if condition="AGE > 60 and PAY_VALUE == 10" >
+				选择10年交时，被保人年龄不能大于60周岁。
+			</if>
+			<if condition="AGE > 55 and PAY_VALUE == 15"  >
+				选择15年交时，被保人年龄不能大于55周岁。
+			</if>
+			<if condition="AGE > 50 and PAY_VALUE == 20"  >
+				选择20年交时，被保人年龄不能大于50周岁。
+			</if>
+			<if condition="AGE > 45 and PAY_VALUE == 25"  >
+				选择25年交时，被保人年龄不能大于45周岁。
+			</if>
+			<if condition="AGE > 40 and PAY_VALUE == 30"  >
+				选择30年交时，被保人年龄不能大于40周岁。
+			</if>
+		</rule>
+	</product>
+</declare>

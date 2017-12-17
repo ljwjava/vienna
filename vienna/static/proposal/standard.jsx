@@ -125,11 +125,15 @@ var Console = React.createClass({
 });
 
 var Customer = React.createClass({
-	ages: [0,1,2,3,4,5,6,7,8,9,10,15,18,20,25,30,40,50,60,70],
+	ages: [0,1,2,3,4,5,6,7,8,9,10,15,18,20,25,30,35,40,45,50,55,60,65,70],
 	setAge(age) {
 		this.props.val.age = age;
 		this.refresh();
 	},
+    addAge(v) {
+        this.props.val.age += v;
+        this.refresh();
+    },
 	setGender(code) {
 		this.props.val.gender = code;
 		this.refresh();
@@ -149,12 +153,20 @@ var Customer = React.createClass({
 				<li><a href="#" style={{color:"#AAA"}}>{this.props.show}</a></li>
 				<li className={this.props.val.gender=="M"?"active":null}><a onClick={this.setGender.bind(this, "M")}>男</a></li>
 				<li className={this.props.val.gender=="F"?"active":null}><a onClick={this.setGender.bind(this, "F")}>女</a></li>
+				<li></li>
 				<li className="dropdown">
 					<a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						{this.props.val.age}周岁 <span className="caret"></span>
+						<a onClick={this.addAge.bind(this, 1)}>▲</a>
+						&nbsp;&nbsp;
+						<a>
+							{this.props.val.age}周岁 <span className="caret"></span>
+						</a>
+						&nbsp;&nbsp;
+						<a onClick={this.addAge.bind(this, -1)}>▼</a>
 					</a>
 					<ul className="dropdown-menu">{ages}</ul>
 				</li>
+				<li></li>
 			</ul>
 		);
 	}

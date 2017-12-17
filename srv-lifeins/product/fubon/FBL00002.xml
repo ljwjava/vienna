@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="FBL00002"
+            corporation_id="fubon"
+            code="ESA"
+            name="e桶金網路投保利率變動型年金保險(甲型)"
+            name_abbr="e桶金"
+            unit="10000"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            input="premium"
+            quantity="1"
+            last_modify_date="2017-01-01">
+
+        <data>
+            <!--<item parser="dds" value="FBL00001" />-->
+        </data>
+
+        <param>
+            <pay>
+                <item code="single"/>
+            </pay>
+            <insure>
+                <item code="full_110"/>
+            </insure>
+        </param>
+
+        <init>
+            <item name="DRAW_AGE" value="65"/>
+            <item name="DIS_C" value="0.013"/>
+            <item name="DIS_D" value="[0.05,0.04,0.03,0.0205,0.0145,0.0112]"/>
+            <item name="RATE_Y" value="[1.023, 1.0255, 1.028]"/>
+            <item name="RATE_M" param="J" value="pow(RATE_Y[J], 1/12)"/>
+            <item name="ANN">[
+                [467531,486304],
+                [464463,483490],
+                [461350,480633],
+                [458193,477733],
+                [454992,474791],
+                [451747,471805],
+                [448458,468778],
+                [445126,465708],
+                [441754,462596],
+                [438345,459441],
+                [434903,456243],
+                [431433,453003],
+                [427938,449721],
+                [424415,446397],
+                [420858,443030],
+                [417260,439618],
+                [413613,436160],
+                [409915,432654],
+                [406164,429099],
+                [402364,425494],
+                [398516,421838],
+                [394623,418132],
+                [390685,414374],
+                [386705,410564],
+                [382682,406703],
+                [378618,402791],
+                [374517,398830],
+                [370379,394821],
+                [366207,390764],
+                [362001,386659],
+                [357766,382505],
+                [353501,378304],
+                [349211,374055],
+                [344897,369760],
+                [340562,365418],
+                [336210,361032],
+                [331841,356603],
+                [327459,352130],
+                [323063,347616],
+                [318655,343062],
+                [314233,338470],
+                [309799,333841],
+                [305356,329179],
+                [300908,324486],
+                [296458,319766],
+                [292010,315023],
+                [287569,310260],
+                [283137,305481],
+                [278720,300686],
+                [274323,295880],
+                [269951,291066],
+                [265608,286247],
+                [261300,281429],
+                [257031,276619],
+                [252809,271823],
+                [248638,267048],
+                [244525,262302],
+                [240475,257590],
+                [236495,252920],
+                [232590,248300],
+                [228767,243740],
+                [225036,239251],
+                [221404,234840],
+                [217879,230519],
+                [214467,226295],
+                [211174,222178],
+                [208005,218179],
+                [204965,214307],
+                [202058,210573],
+                [199289,206986],
+                [196662,203558],
+                [194179,200297],
+                [191844,197212],
+                [189658,194310],
+                [187622,191598],
+                [185736,189081],
+                [183999,186763],
+                [182408,184644],
+                [180961,182725],
+                [179651,181001],
+                [178473,179467]];
+            </item>
+        </init>
+
+        <interest>
+            <item name="ACT_B" param="I,J">
+                if (AGE + I >= DRAW_AGE) {
+                    return 0;
+                } else if (I == 0) {
+                    return PREMIUM*(1-DIS_C);
+                } else {
+                    return IT.ACT(I-1,J);
+                }
+            </item>
+            <item name="ACT" param="I,J">IT.ACT_B(I,J)*RATE_Y[J]</item>
+            <item name="DIS" param="I,J">IT.ACT(I,J)*(1-try(DIS_D[I],0))</item>
+            <item name="DIS_ND" param="I,J">IT.ACT(I,J)*(1-try(DIS_D[I+1],0))</item>
+            <item name="DRAW" param="J">IT.ACT(DRAW_AGE-AGE-1,J)*10000/ANN[DRAW_AGE-6][GENDER-1]</item>
+            <item name="DRAW_Y" param="I,J">AGE+I>=DRAW_AGE?IT.DRAW(J):0</item>
+            <item name="DRAW_T" param="I,J">AGE+I>=DRAW_AGE and 20>AGE+I+1-DRAW_AGE?(20-(AGE+I+1-DRAW_AGE))*IT.DRAW(J):0</item>
+        </interest>
+
+        <attachment>
+            <coverage filter="coverage" parser="coverage">
+                <paragraph title="年金保单价值准备金返還">
+                </paragraph>
+                <paragraph title="未支領之年金餘額">
+                    <item>被保險人之身故若發生於年金給付開始日後者，如仍有「未支領之年金餘額」，本公司應將其「未支領之年金餘額」依約定給付予本契約之身故受益人或其他應得之人至「保證期間」屆滿為止；被保險人於「保證期間」屆滿後身故者，本契約效力即行終止。</item>
+                </paragraph>
+            </coverage>
+
+            <benefit_table filter="table" parser="table">
+                <table>
+                    <row type="title">
+                        <blank row="2">'年度'</blank>
+                        <blank row="2">'保險年齡'</blank>
+                        <blank row="2">'年度保費'</blank>
+                        <blank row="2">'附加費用'</blank>
+                        <blank row="2">'累積保費'</blank>
+                        <blank col="3">'假設宣告利率之累積年度末保單價值'</blank>
+                        <blank row="1">'年度末解約金'</blank>
+                        <blank row="1">'滿年度翌日解約金'</blank>
+                        <blank row="1">'年金金額'</blank>
+                        <blank row="1">'未支領年金餘額'</blank>
+                    </row>
+                    <row type="title">
+                        <blank row="1">'2.30%'</blank>
+                        <blank row="1">'2.55%'</blank>
+                        <blank row="1">'2.80%'</blank>
+                        <blank row="1">'宣告利率2.55%'</blank>
+                        <blank row="1">'宣告利率2.55%'</blank>
+                        <blank row="1">'宣告利率2.55%'</blank>
+                        <blank row="1">'宣告利率2.55%'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">I+1</blank>
+                            <blank style="##0">AGE+I</blank>
+                            <blank align="right" style="########0">PremiumYear(I)</blank>
+                            <blank align="right" style="########0">0</blank>
+                            <blank align="right" style="########0">PremiumSum(I)</blank>
+                            <blank align="right" style="########0">IT.ACT(I,0)</blank>
+                            <blank align="right" style="########0">IT.ACT(I,1)</blank>
+                            <blank align="right" style="########0">IT.ACT(I,2)</blank>
+                            <blank align="right" style="########0">IT.DIS(I,1)</blank>
+                            <blank align="right" style="########0">IT.DIS_ND(I,1)</blank>
+                            <blank align="right" style="########0">IT.DRAW_Y(I,1)</blank>
+                            <blank align="right" style="########0">IT.DRAW_T(I,1)</blank>
+                        </row>
+                    </loop>
+                </table>
+            </benefit_table>
+
+            <benefit_chart filter="chart" parser="chart">
+                <chart from="0" to="INSURE_PERIOD-1" name="I">
+                    <line name="账户价值(低)" color="#0066FF">IT.ACT(I,0)</line>
+                    <line name="账户价值(中)" color="#5566FF">IT.ACT(I,1)</line>
+                    <line name="账户价值(高)" color="#AA66FF">IT.ACT(I,2)</line>
+                </chart>
+            </benefit_chart>
+        </attachment>
+
+        <rule>
+            <if condition="AGE lt 20 or AGE > 80" type="customer">
+                投保年齡：20足歲(若未滿20足歲須為已婚)~80歲
+            </if>
+            <if condition="AMOUNT > 10000000 or AMOUNT % 10000 > 0">
+                投保保費：新臺幣0～1000萬元(以萬元為單位)
+            </if>
+        </rule>
+    </product>
+</declare>

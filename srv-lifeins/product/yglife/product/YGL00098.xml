@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<declare>
+	<product id="YGL00098"
+		corporation_id="yglife"
+		code="0098"
+		name="附加成人万能重大疾病保险"
+		name_abbr="附加成人万能重疾"
+		is_main="no"
+		is_rider="yes"
+		unit="1000"
+		input="amount"
+		premium="0"
+		type="thunder"
+		sequence="13000"
+		sale_begin_date="2014-01-15"
+		sale_end_date=""
+		last_modify_date="2008-03-05">
+				
+		<data>
+			<item parser="dds" file="YGL00098.dat"/>
+		</data>
+		
+		<param>
+			<pay>
+				<item code="parent"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+		
+		<attachment>
+			<coverage>
+				<paragraph title="轻症重疾保险利益">
+					<table>
+						<row>
+							<blank>'轻症重疾保险金'</blank>
+							<blank>round(0.2*AMOUNT)+'元'</blank>
+							<blank>'罹患合同约定的10种轻症重疾'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="重大疾病保险利益">
+					<table>
+						<row>
+							<blank row="2">'重大疾病保险金'</blank>
+							<blank>round(AMOUNT)+'元'</blank>
+							<blank>'罹患合同约定的42种重大疾病'</blank>
+						</row>
+						<row>
+							<blank row="2">'重大疾病保险金'</blank>
+							<blank>round(1.2*AMOUNT)+'元'</blank>
+							<blank>'罹患重大疾病中恶性肿瘤中的白血病'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="等待期">
+					<item>在等待期（180天），被保险人发生下列情形之一的：</item>
+					<item>（一）“轻症重疾”、“重大疾病”或“身故”</item>
+					<item>（二）因导致 “轻症重疾”、“重大疾病”的相关疾病就诊</item>
+					<item> 我们不承担保险责任，本合同效力终止，我们将无息退还附加成人万能重疾已交的保障成本。</item>
+					<item> 因意外伤害发生上述两项情形之一的，无等待期。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+		
+		<rule skip="rule_0001,rule_4002,rule_4003,rule_4004,rule_4005,rule_9000,rule_9001,rule_9002,rule_9003,rule_9004,rule_9005,rule_9006,rule_9007,rule_9008,rule_9009,rule_9010,rule_9011,rule_9012,rule_9013,rule_9014,rule_9015,rule_9016,rule_9017,rule_9018,rule_9019,rule_9020,rule_9021,rule_9022,rule_9023,rule_9024,rule_9025,rule_9026,rule_9027,rule_9028,rule_9029,rule_9030,rule_9031,rule_9032,rule_9033,rule_9034,rule_9035,rule_9036,rule_9037,rule_9038,rule_9039,rule_9040,rule_9041,rule_9042,rule_9043,rule_9044,rule_9045,rule_9046,rule_9047,rule_9100,rule_9101,rule_9102,rule_9103,rule_9104,rule_9105,rule_9106,rule_9107,rule_9108,rule_9109,rule_9110,rule_9115,rule_9112">
+			<when condition="AGE lt 18 or AGE gt 55" type="customer">
+				被保险人投保年龄为18（含）-55周岁
+			</when>
+			<when condition="AMOUNT lt 10000 " alert="AMOUNT">
+				本险种投保的最低保险金额不得低于1万元，且必须为1000元的整数倍。
+			</when>
+			<when condition="AMOUNT % 1000 != 0" alert="AMOUNT">
+				基本保额需要为1000的整数倍。
+			</when>
+			<when condition="AMOUNT > PARENT.AMOUNT" alert="AMOUNT">
+				本险种投保的最高保额不能超过对应主险的基本保额。
+			</when>
+		</rule>
+	</product>
+</declare>

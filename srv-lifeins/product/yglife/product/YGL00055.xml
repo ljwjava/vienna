@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<product id="YGL00055"
+		corporation_id="yglife"
+		code="AAMR02"
+		name="附加账户式意外伤害医疗保险A款"
+		name_abbr="账户式意外医疗A"
+	  is_main="no"
+		is_rider="yes" 
+		premium="0"
+		unit_amount="1000"
+		sequence="4020" 
+    depend="parent"
+		sale_begin_date="2013-01-01"
+		sale_end_date=""
+		last_modify_date="2013-01-01">
+		
+		<init>
+			<item name="RATE">[[17.8, 4.5], [22.3, 5.7], [26.7, 6.8], [40.1, 10.2]]</item>
+			<item name="COST" param="PY">RATE[OCCUPATION_CATEGORY-1][0]+RATE[OCCUPATION_CATEGORY-1][1]*(AMOUNT-2000)/1000</item>
+			<item name="RENEWAL_AGE">PARENT.HasProduct('YGL00050') ? 65 : 17</item> <!-- 自动续保年龄 -->
+		</init>
+		
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+		<attachment>
+			<coverage name="coverage" parser="coverage">
+				<paragraph title="意外医疗A保险利益">
+					<table style="cols:20%,20%,60%;">
+			     <row>
+							<blank>''</blank>
+							<blank>'发生保险事故时，被保险人享有社会医疗保险或公费医疗保障'</blank>
+							<blank>'发生保险事故时，被保险人不享有社会医疗保险或公费医疗保障'</blank>
+							<blank>'保险金给付限额'</blank>
+				</row>
+				 <row>
+							<blank>'意外伤害医疗费用'</blank>
+							<blank>'超过100元部分，100%给付'</blank>
+							<blank>'超过100元部分，80%给付'</blank>
+							<blank>AMOUNT+'元'</blank>
+				</row>
+			    </table>
+			    <item>＊上述“医疗费用”特指被保险人已支出的符合当地社会医疗保险规定的基本医疗保险范围内的必要且合理的医疗费用。</item>
+				<item>＊若被保险人已从任何其他途径取得补偿，则我们给付的保险金以在约定范围内未取得补偿的费用为限。</item>
+				<item>＊上述该附加险保险利益为参数调整前的保险利益。</item>
+			    </paragraph>
+			</coverage>
+		</attachment>
+		
+		<rule skip = "rule_4004,rule_0001,rule_4002,rule_4003,rule_7000,rule_9000,rule_9001,rule_9002,rule_9003,rule_9004,rule_9005,rule_9006,rule_9007,rule_9008,rule_9009,rule_9010,rule_9011,rule_9012,rule_9013,rule_9014,rule_9015,rule_9016,rule_9017,rule_9018,rule_9019,rule_9020,rule_9021,rule_9022,rule_9023,rule_9024,rule_9025,rule_9026,rule_9027,rule_9028,rule_9029,rule_9030,rule_9031,rule_9032,rule_9033,rule_9034,rule_9035,rule_9036,rule_9037,rule_9038,rule_9039,rule_9040,rule_9041,rule_9042,rule_9043,rule_9044,rule_9045,rule_9046,rule_9047,rule_9100,rule_9101,rule_9102,rule_9103,rule_9104,rule_9105,rule_9106,rule_9107,rule_9108,rule_9109,rule_9110,rule_9115,rule_9048,rule_9049,rule_9050,rule_9051,rule_9052,rule_9053,rule_9054,rule_9055,rule_9056,rule_9057,rule_9058,rule_9059,rule_9059,rule_9060,rule_9061,rule_9062,rule_9063,rule_9064,rule_9065,rule_9066,rule_9067,rule_9068,rule_9069,rule_9070,rule_9071,rule_9072,rule_9073,rule_9074,rule_9075,rule_9076,rule_9077,rule_9078,rule_9079,rule_9080,rule_9081,rule_9082,rule_9083,rule_9084,rule_9085,rule_9085,rule_9086,rule_9087,rule_9088,rule_9089,rule_9090,rule_9091,rule_9092,rule_9093,rule_9094,rule_9095,rule_9096,rule_9097,rule_9112,rule_8001,rule_8002,rule_8003,rule_8004,rule_8005,rule_8006,rule_8007,rule_8008,rule_8009,rule_8010,rule_8011,rule_8012,rule_8013">
+			<if condition = "AGE > 60" type="customer">
+				被保人年龄不能大于60周岁。
+			</if>
+		  <if condition = "PLAN.CountProduct('YGL00055','YGL00056') > 1">
+				附加账户式意外伤害医疗型险种不得重复投保。
+			</if>
+			<if condition="OCCUPATION_CATEGORY == 5 or OCCUPATION_CATEGORY == 6">
+				五类（含）以上职业不能投保。
+			</if>
+			<if condition = "INSURANT.SOCIAL_INS != null and INSURANT.SOCIAL_INS == 0">
+				本险种有社保人士才可以购买，无社保人士请选择B款。
+			</if>
+			<if condition = "INSURANT.SOCIAL_INS == null">
+				本险种需要填写被保人社保信息，请在客户资料里面选择被保人是否有社保。
+			</if>
+			<if condition="AMOUNT lt 3000 or AMOUNT % 1000 != 0" alert="amount">
+				最低保险金额为3000元，且为1000的整数倍。
+			</if>
+			<if condition="PARENT.RIDER('YGL00050') != null and AMOUNT > PARENT.RIDER('YGL00050').AMOUNT / 5" alert="amount">
+				每单附加账户式意外伤害医疗保险的基本保额最高不得超过对应附加账户式意外伤害保险的五分之一。
+			</if>
+			<if condition = "AMOUNT > 200000">
+				每一被保人的附加账户式意外伤害医疗保险累计最高保额不超过20万元。
+			</if>
+			<!-- 不在3~17范围内且没有0050的话，会触发下一条规则，不用继续校验这个规则 -->
+			<if condition = "if (AGE lt 3 or AGE > 17 or PARENT.HasProduct('YGL00050')) return false; if (RENEWAL_AGE > 17 or PARENT.AMOUNT lt 30000) return true; for(var i=0;i lt 18-AGE;i++) { var xamt=val(PARENT.X_AMOUNT,i); if (xamt > 0 and xamt lt 30000) return true; } return false;" alert="amount">
+				只有被保人年龄在3-17岁时，每单主险基本保额3万以上（含3万）才可不附加账户式意外伤害保险。
+			</if>
+			<if condition = "(AGE lt 3 or AGE > 17) and !PLAN.HasProduct('YGL00050')">
+				只有投保附加账户式意外伤害保险B款才可以投保附加账户式意外伤害医疗。
+			</if>
+			<if condition = "if (AMOUNT > PARENT.AMOUNT / 10) return true; for(var i=0;i lt 65-AGE;i++) { var xamt=val(PARENT.X_AMOUNT,i); if (xamt > 0 and AMOUNT > xamt / 10) return true; } return false;" alert="amount">
+				每单附加账户式意外伤害医疗保险的基本保额最高不得超过对应主险的保额的十分之一。
+			</if>
+			<if condition = "PLAN.HasProduct('YGL00064')">
+				附加账户式意外医疗A时不得同时附加账户式住院费用B款。
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -29,16 +29,16 @@
     <item src="guolian/product/*.xml"/>
   </corporation>
 
-  <corporation id="icbc-axa" name="工银安盛" extends="insurance">
-    <item src="icbc-axa/*.xml"/>
-    <item src="icbc-axa/product/*.xml"/>
+  <corporation id="icbcaxa" name="工银安盛" extends="insurance">
+    <item src="icbcaxa/*.xml"/>
+    <item src="icbcaxa/product/*.xml"/>
   </corporation>
 
-  <corporation id="yg-life" name="阳光人寿" extends="insurance">
-    <item src="yg-life/*.xml"/>
-    <item src="yg-life/product/0???.xml"/>
-    <item src="yg-life/product/0???A.xml"/>
-    <item src="yg-life/product/YGL*.xml"/>
+  <corporation id="yglife" name="阳光人寿" extends="insurance">
+    <item src="yglife/*.xml"/>
+    <item src="yglife/product/0???.xml"/>
+    <item src="yglife/product/0???A.xml"/>
+    <item src="yglife/product/YGL*.xml"/>
   </corporation>
 
   <corporation id="fwd" name="富衛人壽" extends="insurance">
@@ -83,9 +83,9 @@
     <item src="fosun/*.xml"/>
   </corporation>
 
-  <corporation id="bclife" name="中荷人寿" extends="insurance">
-    <item src="bclife/parameter.xml"/>
-    <item src="bclife/BCL*.xml"/>
+  <corporation id="bobcardif" name="中荷人寿" extends="insurance">
+    <item src="bobcardif/parameter.xml"/>
+    <item src="bobcardif/BCL*.xml"/>
   </corporation>
 
   <corporation id="shlife" name="上海人寿" extends="insurance">
@@ -95,16 +95,4 @@
   <corporation id="picc" name="中国人保" extends="insurance">
     <item src="picc/*.xml"/>
   </corporation>
-
-  <!--
-    <corporation id="iyb" name="i云保" extends="insurance">
-      <item src="hexie/HXH*.xml"/>
-      <item src="gwlife/GWL00001.xml"/>
-      <item src="gwlife/GWL00002.xml"/>
-      <item src="hengqin/HQL00101.xml"/>
-      <item src="fosun/FSH00001.xml"/>
-      <item src="yg-life/product/YGL00001.xml"/>
-      <item src="iyb/IYB*.xml"/>
-    </corporation>
-  -->
 </declare>

@@ -18,6 +18,14 @@ public class DictService
 
 	Map<String, Object> dicts = new HashMap<>();
 
+	public void reset()
+	{
+		synchronized (dicts)
+		{
+			dicts.clear();
+		}
+	}
+
 	public Object getDict(String company, String name, String version)
 	{
 		String key = (company != null ? company + "/" + name : name) + "/" + version;

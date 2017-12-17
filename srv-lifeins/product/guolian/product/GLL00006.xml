@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare> 
+	<product id="GLL00006"
+	    corporation_id="guolian" 
+	    code="123201"
+		name="附加福满堂B款两全保险（万能型）" 
+		name_abbr="附加福满堂B款" 
+		type_code="life" 
+		sale_begin_date="2011-12-01"
+		sale_end_date="2099-01-01" 
+		last_modify_date="2011-12-01"
+		is_rider="yes"
+		is_main="no"
+		input="none"
+		premium="0"
+		quantity="PARENT.PREMIUM/1000"
+		amount="PARENT.AMOUNT" 
+		>
+		<data>
+			<item parser="file.auto" value="GLL00005" />
+		</data>
+		<param>
+			<pay_mode> 
+				<item code="parent"/>
+			</pay_mode>
+			<pay>
+			    <item code="parent"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+    	<attachment> 
+			<coverage name="coverage" parser="coverage">
+				<paragraph>
+		    		<item>在本附加险合同有效期内，我们按以下约定承担保险责任：</item>
+				</paragraph>
+					<paragraph title="身故保险金">
+				    <item>若被保险人于年满 18 周岁后的首个合同生效日对应日前身故，我们按身故当时的保单账户价值给付“身故保险金”，保单账户同时被注销，本附加险合同终止。</item>
+				    <item>若被保险人于年满 18 周岁后的首个合同生效日对应日后身故，我们按身故当时的保单账户价值的 120%给付“身故保险金”，保单账户同时被注销，本附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="满期保险金">
+					<item>若被保险人生存至本附加险合同保险期间届满，我们按期满时保单账户价值给付“满期保险金”，同时注销保单账户，本附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="责任免除">
+					<item>因下列情形之一，导致被保险人身故或发生伤残，我们不承担保险责任：</item>
+					<item>（1）您对被保险人的故意杀害、故意伤害；</item>
+					<item>（2）被保险人故意犯罪或者抗拒依法采取的刑事强制措施；</item>
+					<item>（3）被保险人自本附加险合同成立或者合同效力恢复之日起2 年内自杀，但被保险人自杀时为无民事行为能力人的除外；</item>
+					<item>（4）被保险人主动吸食或注射毒品（见释义）；</item>
+					<item>（5）被保险人未遵医嘱，私自使用药物，但按使用说明的规定使用非处方药（见释义）除外；</item>
+					<item>（6）被保险人酒后驾驶（见释义），无合法有效驾驶证驾驶（见释义），或驾驶无有效行驶证（见释义）的机动车（见释义）；</item>
+					<item>（7）被保险人因妊娠（含宫外孕）、流产、分娩（含剖宫产）导致的伤害；</item>
+					<item>（8）被保险人从事潜水（见释义）、跳伞、攀岩（见释义）、蹦极、驾驶滑翔机或滑翔伞、探险（见释义）、摔跤、武术比赛（见释义）、特技表演（见释义）、赛马、赛车等高风险运动；</item>
+				    <item>（9）战争、军事冲突、暴乱或武装叛乱；</item>
+				    <item>（10）核爆炸、核辐射或核污染。</item>
+				    <item>发生上述第(1)项情形导致被保险人身故的，本附加险合同终止，我们向受益人退还本附加险合同的现金价值；</item>
+				    <item>发生上述其他情形导致被保险人身故的，本附加险合同终止，我们向您退还本附加险合同的现金价值。</item>
+				</paragraph>
+			</coverage>
+			
+			<benefit_detail name="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+				    <item>若被保险人于年满 18 周岁后的首个合同生效日对应日前身故，我们按身故当时的保单账户价值给付“身故保险金”，保单账户同时被注销，本附加险合同终止。</item>
+				    <item>若被保险人于年满 18 周岁后的首个合同生效日对应日后身故，我们按身故当时的保单账户价值的 120%给付“身故保险金”，保单账户同时被注销，本附加险合同终止。</item>
+				</paragraph>
+				<paragraph title="满期保险金">
+					<item>若被保险人生存至本附加险合同保险期间届满，我们按期满时保单账户价值给付“满期保险金”，同时注销保单账户，本附加险合同终止。</item>
+				</paragraph>
+			</benefit_detail>
+		</attachment>
+		<rule skip="rule_1003,rule_1001,rule_1004,rule_1006,rule_1007">
+			<if condition="INSURANT.DAY lt 28" type="customer">
+				投保年龄未达最低承保年龄(出生满28天)。 
+			</if>
+			<if condition="AGE gt 60 " type="customer">
+				被保人投保年龄超过最高承保年龄(60岁)。
+			</if>
+		</rule>
+	</product>
+</declare>

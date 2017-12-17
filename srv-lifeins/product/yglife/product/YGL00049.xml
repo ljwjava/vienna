@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<product id="YGL00049"
+		corporation_id="yglife"
+		code="ADDN"
+		name="附加万能重大疾病保险C款"
+		name_abbr="万能重疾C"
+	  is_main="no"
+		is_rider="yes" 
+		unit_amount="10000"
+		premium="0"
+    depend="parent"
+		sale_begin_date="2014-01-01"
+		sale_end_date=""
+		last_modify_date="2014-09-24">
+
+    <risk>
+			<item type="thunder" formula="PARENT.R.BADRISK" />
+		</risk>
+    
+		<data>
+			<item parser="file.sig" value="YGL00049"/>
+		</data>
+    
+		<param>
+			<insure>
+				<item code="parent" />
+			</insure>
+		</param>
+
+    <attachment>
+			<coverage name="coverage" parser="coverage">
+			     <paragraph title="健康保险利益">
+			         <item>在本附加合同有效期内，我们承担如下保险责任：</item>
+			         <item>自本附加合同生效（或最后复效）之日起90天内，被保险人发生下列情形之一的：（一）“轻症重疾”或“重大疾病”（二）因导致“轻症重疾”或“重大疾病”的相关疾病就诊，我们不承担保险责任，本附加合同效力终止，我们将本附加合同所收取的保障成本无息退还至主合同的个人账户，主合同的个人账户价值按退还的金额等额增加。这90天的时间称为等待期；被保险人因意外伤害发生上述两项情形之一的，无等待期。</item>
+			         <item>若您申请增加本附加合同的基本保险金额，则对于每次增加的部分也适用上述等待期的约定。</item>
+			         <item>被保险人因意外伤害或于等待期后发生保险事故，我们按照下列方式给付保险金:</item>
+			         <item>1.轻症重疾保险金</item>
+			         <item>若被保险人在确诊首次患本附加合同约定的重大疾病（无论一种或多种）前，经我们认可的医院专科医生确诊首次患本附加合同约定的轻症重疾（无论一种或多种），则我们按照轻症重疾保险金额给付轻症重疾保险金，本责任终止。</item>
+			         <item>2.重大疾病保险金</item>
+			         <item>若被保险人经我们认可的医院专科医生确诊首次患本附加合同约定的重大疾病（无论一种或多种），则我们按照确诊当时的重大疾病保险金额给付重大疾病保险金，本附加合同终止。</item>
+			         <item>3.本附加合同与主合同关联</item>
+			         <item>我们给付重大疾病保险金后，主合同基本保险金额、主合同个人账户价值均按给付的重大疾病保险金与主合同保险金额的比例相应减少，如果主合同基本保险金额减少至零，主合同终止。</item>
+			         
+			         </paragraph>
+			</coverage>
+		</attachment>
+			<rule skip="rule_6003,rule_6005,rule_6000,rule_4002,rule_4003,rule_4004,rule_4005,rule_9000,rule_9001,rule_9002,rule_9003,rule_9004,rule_9005,rule_9006,rule_9007,rule_9008,rule_9009,rule_9010,rule_9011,rule_9012,rule_9013,rule_9014,rule_9015,rule_9016,rule_9017,rule_9018,rule_9019,rule_9020,rule_9021,rule_9022,rule_9023,rule_9024,rule_9025,rule_9026,rule_9027,rule_9028,rule_9029,rule_9030,rule_9031,rule_9032,rule_9033,rule_9034,rule_9035,rule_9036,rule_9037,rule_9038,rule_9039,rule_9040,rule_9041,rule_9042,rule_9043,rule_9044,rule_9045,rule_9046,rule_9047,rule_9100,rule_9101,rule_9102,rule_9103,rule_9104,rule_9105,rule_9106,rule_9107,rule_9108,rule_9109,rule_9110,rule_9115,rule_9112">
+        <if condition="AGE lt 18 or AGE > 55" type="customer">
+				被保人年龄需要在18周岁和55周岁之间。
+			</if>
+        <if condition="AMOUNT lt 10000 or AMOUNT % 1000 != 0">
+				本险种投保的最低保险金额不得低于1万元，且必须为1000元的整数倍。
+			</if>
+        <if condition="AMOUNT > PARENT.AMOUNT">
+				本险种投保的最高保额不能超过对应主险的基本保额。
+			</if>
+        <if condition="PARENT.R.RULE19 == 1">
+				调整保额后，附加重疾的保额不能大于主险。
+			</if>
+        <if name="rule_5002" condition = "AGE lt 18 and RiskAmount('thunder') > 210000 and (CITY!='8601' and CITY!='8605' and CITY!='8608' and CITY!='8612' and CITY!='8619' and CITY!='8623')">
+				未满18周岁的未成年人累计重疾险风险保额不能超过20万。
+			</if>
+        <if name="rule_5003" condition = "AGE lt 18 and RiskAmount('thunder') > 310000 and (CITY=='8601' or CITY=='8605' or CITY=='8608' or CITY=='8612' or CITY=='8619' or CITY=='8623')">
+				未满18周岁的未成年人累计重疾险风险保额不能超过30万。
+			</if>
+    </rule>
+	</product>
+</declare>

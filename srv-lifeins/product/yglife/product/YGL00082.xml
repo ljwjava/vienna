@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<declare>
+	<product id="YGL00082"
+		corporation_id="yglife"
+		code="ADDQ"
+		name="附加金喜连连重大疾病保险"
+		name_abbr="附加金喜连连"
+		is_main="no"
+		is_rider="yes"
+		unit="1000"
+		input="amount"
+		type="thunder"
+		sequence="12000"
+		sale_begin_date="2014-01-15"
+		sale_end_date=""
+		last_modify_date="2008-03-05">
+		
+		<data>
+			<item parser="dds" file="YGL00082.dat"/>
+		</data>
+	    
+		<param>
+			<pay>
+				<item code="parent"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+		
+		<interest>
+			<item name="CSV" param="I" formula="DS.DATA[I][0]*QUANTITY"/>
+			<item name="AMT" param="I" formula="DS.DATA[I][1]*QUANTITY"/>
+		</interest>
+    
+    <attachment>
+      <benefit_table name="document" parser="document">
+      	<table>
+					<row type="title">
+						<blank row="3">'保单年度'</blank>
+						<blank row="3">'保单年\n度末已\n达年龄'</blank>
+						<blank col="3" row="2">'保险费'</blank>
+						<blank row="3">'初始费用'</blank>
+						<blank row="3">'保单\n管理费'</blank>
+						<blank row="3">'进入个\n人账户\n保险费'</blank>
+						<blank row="3">'持续交费\n特别奖金'</blank>
+						<blank row="3">'部分领取\n个人账户\n价值'</blank>
+						<blank row="3">'身故/轻症\n/重疾基本\n保险金额'</blank>
+						<blank col="9" row="1">'不同假定结算利率下'</blank>
+					</row>
+					<row type="title">
+						<blank col="3" row="1">'身故/轻症/重疾保障成本'</blank>
+						<blank col="3" row="1">'保单年度末个人账户价值'</blank>
+						<blank col="3" row="1">'保单年度末身故/轻症/重疾保险金'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'期交'</blank>
+						<blank row="1">'追加'</blank>
+						<blank row="1">'累计'</blank>
+						<blank row="1">'低\n（2.5%）'</blank>
+						<blank row="1">'中\n（4.5%）'</blank>
+						<blank row="1">'高\n（6.0%）'</blank>
+						<blank row="1">'低\n（2.5%）'</blank>
+						<blank row="1">'中\n（4.5%）'</blank>
+						<blank row="1">'高\n（6.0%）'</blank>
+						<blank row="1">'低\n（2.5%）'</blank>
+						<blank row="1">'中\n（4.5%）'</blank>
+						<blank row="1">'高\n（6.0%）'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">I+AGE+1</blank>
+							<blank style="########0">IT.PREMIUM_YEAR(I)</blank>
+							<blank style="########0">IT.PREMIUM_APPEND(I)</blank>
+							<blank style="########0">IT.PREMIUM_ACC(I)</blank>
+							<blank style="########0">R.PRM_F[I]</blank>
+							<blank style="########0">R.MANAGE</blank>
+							<blank style="########0">R.PRM_I[I]</blank>
+							<blank style="########0">R.BONUS[I]</blank>
+							<blank style="########0">val(X_DRAW,I)</blank>
+							<blank style="########0">R.AMOUNT[I]+'\n'+H0098(R.THUNDER[I]*0.2) + '\n' + H0098(R.THUNDER[I])</blank>
+							<blank style="########0">V(R.FEE_L[I][0]) + '\n' + H0098(R.FEE_S[I][0]) + '\n' + H0098(R.FEE_T[I][0]) + '\n' + H006X(R.FEE_M[I][0])</blank>
+							<blank style="########0">V(R.FEE_L[I][1]) + '\n' + H0098(R.FEE_S[I][1]) + '\n' + H0098(R.FEE_T[I][1]) + '\n' + H006X(R.FEE_M[I][1])</blank>
+							<blank style="########0">V(R.FEE_L[I][2]) + '\n' + H0098(R.FEE_S[I][2]) + '\n' + H0098(R.FEE_T[I][2]) + '\n' + H006X(R.FEE_M[I][2])</blank>
+							<blank style="########0">V(R.ACCOUNT[I][0])</blank>
+							<blank style="########0">V(R.ACCOUNT[I][1])</blank>
+							<blank style="########0">V(R.ACCOUNT[I][2])</blank>
+							<blank style="########0">V(R.AMT_L[I][0]) + '\n' + V(R.AMT_S[I][0]) + '\n' + V(R.AMT_T[I][0])</blank>
+							<blank style="########0">V(R.AMT_L[I][1]) + '\n' + V(R.AMT_S[I][1]) + '\n' + V(R.AMT_T[I][1])</blank>
+							<blank style="########0">V(R.AMT_L[I][2]) + '\n' + V(R.AMT_S[I][2]) + '\n' + V(R.AMT_T[I][2])</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			<coverage>
+				<paragraph title="身故保险利益">
+					<table>
+						<row>
+							<blank>'身故保险金'</blank>
+							<blank>'若被保险人因疾病或意外身故，可获得的给付金额为：身故当时的基本保险金额与当时个人账户价值之和'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="满期保险利益">
+					<table>
+						<row>
+							<blank>'满期保险金'</blank>
+							<blank>'若被保险人于本合同保险期满时仍生存，我们按当时个人账户价值给付满期保险金'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="投保人意外身故或全残利益">
+					<item>投保人因意外伤害事故发生之日起180日内因该事故导致身故或全残，且投保人身故或全残时已满18周岁但未满65周岁，同时以前各期期交保险费已交纳，投保人并未变更，并且当期应交期交保险费在约定的交费日期或其后的60日内交纳。我们将豁免前十个保单年度内投保人未缴纳的期交保险费。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+		<rule skip="rule_0001,rule_9048,rule_9049,rule_9050,rule_9051,rule_9052,rule_9053,rule_9054,rule_9055,rule_9056,rule_9057,rule_9058,rule_9059,rule_9059,rule_9060,rule_9061,rule_9062,rule_9063,rule_9064,rule_9065,rule_9066,rule_9067,rule_9068,rule_9069,rule_9070,rule_9071,rule_9072,rule_9073,rule_9074,rule_9075,rule_9076,rule_9077,rule_9078,rule_9079,rule_9080,rule_9081,rule_9082,rule_9083,rule_9084,rule_9085,rule_9085,rule_9086,rule_9087,rule_9088,rule_9089,rule_9090,rule_9091,rule_9092,rule_9093,rule_9094,rule_9095,rule_9096,rule_9097,rule_9112,rule_9113,rule_9114,rule_9124,rule_9116,rule_9117,rule_9118,rule_9119,rule_9120,rule_9121,rule_9122,rule_9123">
+			<if condition="DAY lt 30 or AGE gt 60">
+				被保险人投保年龄为出生满30天（含）-60周岁
+			</if>
+			<if condition = "AMOUNT lt 10000 || AMOUNT % 10000 > 0">
+				本险种的最低保险金额为10000元，且为10000的整数倍
+			</if>
+			<if condition = "AMOUNT > PARENT.PREMIUM * 50">
+				本险种最高基本保险金额不能高于主险期交保费的50倍
+			</if>
+		</rule>
+	</product>
+</declare>
