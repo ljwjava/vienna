@@ -238,6 +238,7 @@ public class PlanDao2
                 Insurance ins = lifeins.getProduct(code);
                 if (ins != null)
                 {
+                    ins.setAdditional("classify", rs.getString("classify"));
                     ins.setAdditional("remark", rs.getString("remark"));
                     ins.setAdditional("tag", rs.getString("tag"));
                 }

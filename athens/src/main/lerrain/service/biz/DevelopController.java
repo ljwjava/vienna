@@ -37,6 +37,8 @@ public class DevelopController
     @ResponseBody
     public String reset()
     {
+        Script.STACK_MESSAGE = false;
+
         athensSrv.reset();
         return "success";
     }

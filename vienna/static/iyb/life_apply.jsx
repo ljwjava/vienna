@@ -39,6 +39,7 @@ env.def = {
         certValidate: true,
 		relation: [["4","父母"],["2","配偶"],["3","子女"]],
     },
+    effectiveDay: "1",
     certTypeId: "1",
     relationSelf: "1",
 };
@@ -222,7 +223,8 @@ class PlanForm extends Form {
 				};
 			}
 		});
-		form.push({name: "保单生效日", code: "insureTime", type: "static", value: "次日0时"});
+		var effDay = env.formOpt.effectiveDay == null ? "次日0时" : env.formOpt.effectiveDay + "日后";
+		form.push({name: "保单生效日", code: "effectiveTime", type: "static", value: effDay});
 		return this.buildForm(form);
 	}
 }
@@ -514,6 +516,7 @@ var Ground = React.createClass({
             packRefer: env.pack.referKey,
 			packDesc: this.getPlanDesc(),
             applyMode: env.pack.applyMode,
+			effectiveDay: env.formOpt.effectiveDay,
             shareType: common.param("shareType"),
             couponCode: common.param("couponCode"),
 			factors: this.getPlanFactors(),

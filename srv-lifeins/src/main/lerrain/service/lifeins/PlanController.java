@@ -216,6 +216,7 @@ public class PlanController
             m.put("vendor", ins.getVendor());
             m.put("company", ins.getCompany().getId());
             m.put("name", ins.getName());
+            m.put("classify", ins.getAdditional("classify"));
             m.put("tag", ins.getAdditional("tag"));
             m.put("remark", ins.getAdditional("remark"));
             m.put("type", !ins.isMain() ? "rider" : ins.getType() == Insurance.PACKAGE ? "package" : "clause");
