@@ -369,44 +369,46 @@ var Ground = React.createClass({
 		});
 	},
     getUseableCountByOrderNo(){
-        // common.req('/iybapi/open/activity/iybForwardActivityAjax/getUseableCountByOrderNo.json', {orderNo: env.order.extra.iybOrderNo}, (r)=>{
-        common.req('sale/get_useable_count.json', {orderNo: env.order.extra.iybOrderNo}, (r)=>{
-        	if(r.result != null){
-                this.refs.lottery.setState({isShow: true, orderNo: env.order.extra.iybOrderNo});
-                this.setState({shareObj: {
-                    title  : r.result.packageName,
-                    desc   : r.result.productDesc,
-                    imgUrl : r.result.shareImage,
-                    link   : r.result.url
-				}}, ()=>{
-                    /*try {
-                        initShareInfo(this.state.shareObj, () => {
-                            this.shareCallback();
-                        });
-                    } catch (e) {
-                    }*/
-                    window.wxReady({
-                        title  : this.state.shareObj.title,
-                        desc   : this.state.shareObj.desc,
-                        imgUrl : this.state.shareObj.imgUrl,
-                        link   : this.state.shareObj.link
-                    }, this.shareCallback);
-                    /*window.wxShare({
-                        title  : this.state.shareObj.title,
-                        desc   : this.state.shareObj.desc,
-                        imgUrl : this.state.shareObj.imgUrl,
-                        link   : this.state.shareObj.link
-                    }, null);*/
-                    try{
-                        window.IYB.setTitle(this.state.shareObj.title || "投保结果");
+		if(env.order.detail.prizes){
+            // common.req('/iybapi/open/activity/iybForwardActivityAjax/getUseableCountByOrderNo.json', {orderNo: env.order.extra.iybOrderNo}, (r)=>{
+            common.req('sale/get_useable_count.json', {orderNo: env.order.extra.iybOrderNo}, (r)=>{
+                if(r.result != null){
+                    this.refs.lottery.setState({isShow: true, orderNo: env.order.extra.iybOrderNo});
+                    this.setState({shareObj: {
+                        title  : r.result.packageName,
+                        desc   : r.result.productDesc,
+                        imgUrl : r.result.shareImage,
+                        link   : r.result.url
+                    }}, ()=>{
+						/*try {
+						 initShareInfo(this.state.shareObj, () => {
+						 this.shareCallback();
+						 });
+						 } catch (e) {
+						 }*/
+                        window.wxReady({
+                            title  : this.state.shareObj.title,
+                            desc   : this.state.shareObj.desc,
+                            imgUrl : this.state.shareObj.imgUrl,
+                            link   : this.state.shareObj.link
+                        }, this.shareCallback);
+						/*window.wxShare({
+						 title  : this.state.shareObj.title,
+						 desc   : this.state.shareObj.desc,
+						 imgUrl : this.state.shareObj.imgUrl,
+						 link   : this.state.shareObj.link
+						 }, null);*/
                         try{
-                            document.title = (this.state.shareObj.title || "投保结果");
+                            window.IYB.setTitle(this.state.shareObj.title || "投保结果");
+                            try{
+                                document.title = (this.state.shareObj.title || "投保结果");
+                            }catch(e){}
                         }catch(e){}
-                    }catch(e){}
-				});
+                    });
 
-			}
-        }, (r)=>{console.log('IybForwardActivityAjax/share接口出错了');});
+                }
+            }, (r)=>{console.log('IybForwardActivityAjax/share接口出错了');});
+		}
 	},
 	// 抽奖完成回调
 	lotteryCallBack(data){

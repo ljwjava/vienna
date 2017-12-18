@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>formula</artifactId>
-			<version>6.1.5</version>
+			<version>6.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
