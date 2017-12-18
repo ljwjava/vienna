@@ -177,6 +177,8 @@ public class EnvDao
                 String script = rs.getString("script");
                 boolean lockEnv = "Y".equalsIgnoreCase(rs.getString("lock_env"));
 
+                Log.debug("loading env's function... " + consName);
+
                 try
                 {
                     Function f = new InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), lockEnv ? p.getStack() : null);
@@ -194,10 +196,7 @@ public class EnvDao
                     }
 
                     for (String fe : allName)
-                    {
-                        Log.debug("loading env's function... " + fe);
                         p.putVar(fe, f);
-                    }
                 }
                 catch (Exception e)
                 {
