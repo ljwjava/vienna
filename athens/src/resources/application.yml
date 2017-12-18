@@ -21,6 +21,7 @@ service:
   sale: http://localhost:7772
   vienna: http://localhost:7701
   commission: http://localhost:7769
+  image: http://localhost:7771
 
 path:
   root: ./static/

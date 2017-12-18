@@ -84,6 +84,7 @@ var Ground = React.createClass({
                 return;
             }
 		}
+
 		//console.log(env.order);
         // 判断是否可提交
         if(this.state.isSubmit){

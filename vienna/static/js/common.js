@@ -3,21 +3,21 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	//return "http://www.lerrain.com:7666/" + url;
+	// return "http://www.lerrain.com:7666/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {
 		host = "api" + host.substr(2);
 		server = location.protocol + "//" + host;
 	} else if (host.startsWith("lifeins")) {
-		server = location.protocol + "//";
-		if (location.pathname.startsWith("/rel/"))
-			server += "api.iyb.tm";
-		else if (location.pathname.startsWith("/uat/"))
-			server += "api-uat.iyb.tm";
-	}
+        server = location.protocol + "//";
+        if (location.pathname.startsWith("/rel/"))
+            server += "api.iyb.tm";
+        else if (location.pathname.startsWith("/uat/"))
+            server += "api-uat.iyb.tm";
+    }
 	return server + "/" + url;
-}
+};
 
 common.link = function(link) {
 	var server = location.protocol + "//" + location.host;
@@ -26,23 +26,41 @@ common.link = function(link) {
 	else if (location.pathname.startsWith("/uat/"))
 		server += "/uat";
 	return server + "/" + link;
-}
+};
 
 common.post = function(url, val, callback, failback) {
-	$.ajax({url:url, type:"POST", data:JSON.stringify(val), xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
-		if (r.result == "success")
-			callback(r.content);
-		else if (failback == null)
-			alert("失败 - " + r.reason);
-		else
-			failback(r.reason);
-	}, fail: function(r) {
-		alert("访问服务器失败");
-	}, dataType:"json"});
+    $.ajax({url:url, type:"POST", data:JSON.stringify(val), xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
+        if (r.result == "success") {
+            if(callback)callback(r.content);
+        } else if (failback == null) {
+            alert("失败 - " + r.reason);
+        } else {
+            if(failback)failback(r.reason);
+        }
+    }, fail: function(r) {
+        alert("访问服务器失败");
+    }, dataType:"json"});
+};
+
+common.postSync = function(url, val, callback, failback) {
+    $.ajax({url:url, type:"POST", data:JSON.stringify(val), async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
+        if (r.result == "success") {
+            if(callback)callback(r.content);
+        } else if (failback == null) {
+            alert("失败 - " + r.reason);
+        } else {
+            if(failback)failback(r.reason);
+        }
+    }, fail: function(r) {
+        alert("访问服务器失败");
+    }, dataType:"json"});
 };
 
 common.req = function(url, val, callback, failback) {
 	common.post(common.url(url), val, callback, failback);
+};
+common.reqSync = function(url, val, callback, failback) {
+	common.postSync(common.url(url), val, callback, failback);
 };
 
 common.param = function(name) {
