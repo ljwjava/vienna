@@ -192,7 +192,8 @@ var Ground = React.createClass({
 	getInitialState() {
 		return {
 			premium: -1,
-			dict: false
+			dict: false,
+            isSubmit: false
 		};
     },
     componentWillMount() {
@@ -330,36 +331,48 @@ var Ground = React.createClass({
 			owner: env.brokerId,
 			detail: apply
 		};
-		common.req("sale/check.json", order, r => {
-            common.save("iyb/orderId", r.orderId);
-            let checkRes = r.result;	// 校验规则
-			if(checkRes != null && checkRes.success != true && checkRes.rule != null && checkRes.rule != ''){
-                ToastIt(checkRes.rule);
-                return;
-			}
 
-			common.req("sale/apply.json", order, r => {
-                // document.location.href = r.nextUrl;
-                if (r.success != false && r.nextUrl != null) {
-                	if(r.params != null){
-                        var f = common.initForm(r.nextUrl, r.params, r.method);
-                        f.submit();
-					}else{
-                        document.location.href = r.nextUrl;
-					}
-                }else{
-                    ToastIt(r.errCode + " - " + r.errMsg);
-				}
+        // 判断是否可提交
+        if(this.state.isSubmit){
+            ToastIt("数据提交中，请耐心等待");
+            return false;
+        }
+        this.setState({isSubmit: true}, ()=>{
+            common.req("sale/check.json", order, r => {
+                common.save("iyb/orderId", r.orderId);
+                let checkRes = r.result;	// 校验规则
+                if(checkRes != null && checkRes.success != true && checkRes.rule != null && checkRes.rule != ''){
+                    ToastIt(checkRes.rule);
+                    this.setState({isSubmit: false});
+                    return;
+                }
+
+                common.req("sale/apply.json", order, r => {
+                    this.setState({isSubmit: false});
+                    // document.location.href = r.nextUrl;
+                    if (r.success != false && r.nextUrl != null) {
+                        if(r.params != null){
+                            var f = common.initForm(r.nextUrl, r.params, r.method);
+                            f.submit();
+                        }else{
+                            document.location.href = r.nextUrl;
+                        }
+                    }else{
+                        ToastIt(r.errCode + " - " + r.errMsg);
+                    }
+                }, r => {
+                    if(r != null){
+                        ToastIt(r);
+                    }
+                    this.setState({isSubmit: false});
+                });
             }, r => {
                 if(r != null){
                     ToastIt(r);
                 }
+                this.setState({isSubmit: false});
             });
-        }, r => {
-            if(r != null){
-                ToastIt(r);
-            }
-		});
+        });
 	},
 	render() {
 		// 若没有机构信息，则不进行渲染
@@ -397,7 +410,7 @@ var Ground = React.createClass({
 							<div className="col left">
 								首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>下一步</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "核保中..." : "下一步"}</div>
 						</div>
 					</div>
 				</div>

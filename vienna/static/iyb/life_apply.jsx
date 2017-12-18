@@ -663,7 +663,7 @@ var Ground = React.createClass({
 							<div className="col left">
                                 {env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>下一步</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : "下一步"}</div>
 						</div>
 					</div>
 				</div>
