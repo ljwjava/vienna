@@ -2,6 +2,7 @@ package lerrain.project.vienna;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
 import lerrain.tool.Disk;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,16 @@ import java.security.cert.X509Certificate;
 @Controller
 public class RequestController
 {
+    @Autowired
+    ServiceMgr serviceMgr;
+
+    @RequestMapping("/ware/perform.json")
+    @ResponseBody
+    public JSONObject warePerform(@RequestBody JSONObject json)
+    {
+        return serviceMgr.req("athens", "iybweb/ware/perform.json", json);
+    }
+
     @RequestMapping("/request")
     @ResponseBody
     public String request(@RequestBody JSONObject json)
