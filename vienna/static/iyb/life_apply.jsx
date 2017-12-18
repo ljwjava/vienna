@@ -514,6 +514,7 @@ var Ground = React.createClass({
 			packId: env.packId,
 			packCode: env.pack.code,
             packRefer: env.pack.referKey,
+			prizes: env.pack.env.prizes == null ? false : env.pack.env.prizes,
 			packDesc: this.getPlanDesc(),
             applyMode: env.pack.applyMode,
 			effectiveDay: env.formOpt.effectiveDay,
