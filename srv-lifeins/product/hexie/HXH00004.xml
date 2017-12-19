@@ -42,7 +42,7 @@
 				var r = IT.PLS(A1,2);
 				if (r > 0)
 					return r;
-				if (A1 == 0)
+				if (A1 le 0)
 					return AMOUNT;
 				return IT.AMT(A1-1);
 			</item>
@@ -93,7 +93,7 @@
 				return x;
 			</item>
 			<item name="PRMS" param="A1,A2">
-				if (AGE>=18) return 0;
+				if (AGE lt 0 or AGE>=18) return 0;
 				var age = AGE+A1;
 				var A3=(A2==0?A1-1:A1);
 				var A4=(A2==0?11:A2-1);
@@ -169,7 +169,7 @@
 		</attachment>
 
 		<rule>
-			<if condition="AGE > 17 or 28 > DAY" type="customer">
+			<if condition="AGE == null or AGE > 17 or 28 > DAY" type="customer">
 				被保人年龄要求年龄未满18周岁，且出生满28天。
 			</if>
 		</rule>
