@@ -3,6 +3,14 @@ env: dev
 server:
   port: 7666
 
+management:
+  context-path: /sys
+
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+
 datasource:
   url: jdbc:mysql://101.37.72.72:5306/athens_t?useUnicode=true&characterEncoding=UTF-8
   username: iyb

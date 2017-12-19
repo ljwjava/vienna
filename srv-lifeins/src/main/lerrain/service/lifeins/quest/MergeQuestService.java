@@ -30,21 +30,21 @@ public class MergeQuestService
         env = new Stack(questDao.loadQuestConst());
     }
 
-    public List<String> refreshQuestText(Plan plan)
+    public List<Object> refreshQuestText(Plan plan)
     {
         Map<MergeQuest, Map<String, List>> temp = new LinkedHashMap<>();
 
-        for (MergeQuest quest : list)
+        for (MergeQuest quest : list) //遍历所有告知
         {
             if (quest.getCondition() != null && !Value.booleanOf(quest.getCondition(), plan.getFactors()))
                 continue;
 
-            for (int i = 0; i < plan.size(); i++)
+            for (int i = 0; i < plan.size(); i++) //遍历产品
             {
                 Commodity c = plan.getCommodity(i);
                 Insurance ins = c.getProduct();
 
-                if (ins.getAdditional(quest.getCode()) != null)
+                if (ins.getAdditional(quest.getCode()) != null) //该产品有这条告知
                 {
                     Map<String, List> vals;
                     if (!temp.containsKey(quest))
@@ -60,6 +60,7 @@ public class MergeQuestService
                         vals = temp.get(quest);
                     }
 
+                    //每一个问题项，每个产品都有个值，<问题项，值列表>
                     for (String var : quest.getVars().keySet())
                     {
                         List list = vals.get(var);
@@ -69,7 +70,7 @@ public class MergeQuestService
             }
         }
 
-        List<String> r = new ArrayList<>();
+        Map<String, String> res = new LinkedHashMap<>();
         for (Map.Entry<MergeQuest, Map<String, List>> q : temp.entrySet())
         {
             MergeQuest quest = q.getKey();
@@ -86,9 +87,32 @@ public class MergeQuestService
                 }
             }
 
-            r.add(text);
+            res.put(quest.getCode(), text);
         }
 
-        return r;
+        List<Object> r1 = new ArrayList<>();
+        List<String> r2 = new ArrayList<>();
+        for (MergeQuest quest : list)
+        {
+            String text = res.get(quest.getCode());
+            if (text != null)
+            {
+                if (quest.getCode().length() > 6)
+                {
+                    r2.add(text);
+                }
+                else
+                {
+                    if (!r2.isEmpty())
+                    {
+                        r1.add(r2);
+                        r2 = new ArrayList<>();
+                    }
+                    r1.add(text);
+                }
+            }
+        }
+
+        return r1;
     }
 }

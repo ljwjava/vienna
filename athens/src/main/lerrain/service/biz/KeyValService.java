@@ -8,7 +8,7 @@ import java.util.*;
 @Service
 public class KeyValService
 {
-    public static final long TIME_OUT = 3600000L * 20;
+    public static final long TIME_OUT = 3600000L * 24;
 
     Map<String, Value> map = new HashMap<>();
 
