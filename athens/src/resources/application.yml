@@ -1,4 +1,4 @@
-env: test
+env: dev
 
 server:
   port: 7666

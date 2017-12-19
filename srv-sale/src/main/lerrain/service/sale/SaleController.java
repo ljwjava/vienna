@@ -3,6 +3,7 @@ package lerrain.service.sale;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
 import lerrain.service.sale.pack.Lifeins;
 import lerrain.service.sale.pack.PackIns;
@@ -10,7 +11,9 @@ import lerrain.service.sale.pack.PackService;
 import lerrain.service.sale.pack.PackUtil;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
+import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +34,17 @@ public class SaleController
 
     @Autowired ServiceMgr serviceMgr;
 
+    @Value("${env}")
+    String srvEnv;
+
     @PostConstruct
     @RequestMapping("/reset")
     @ResponseBody
     public String reset()
     {
+        Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv) || "uat".equalsIgnoreCase(srvEnv));
+        Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
+
         wareSrv.reset();
         packSrv.reset();
         cmsSrv.reset();

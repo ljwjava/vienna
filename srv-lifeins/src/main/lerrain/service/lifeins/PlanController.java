@@ -10,10 +10,12 @@ import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.*;
 
+import lerrain.service.common.Log;
 import lerrain.service.lifeins.quest.MergeQuestService;
 import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +40,17 @@ public class PlanController
 
     Map<String, Script> scriptMap = new HashMap<>();
 
+    @Value("${env}")
+    String srvEnv;
+
     @PostConstruct
     @RequestMapping({"/reset"})
     @ResponseBody
     public String reset()
     {
+        Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv) || "uat".equalsIgnoreCase(srvEnv));
+        Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
+
         lifeins.reset();
         planSrv.reset();
 
