@@ -58,7 +58,7 @@ var SimDraw = React.createClass({
 
 var Console = React.createClass({
 	getInitialState() {
-		return {};
+		return {classify: "hot"};
 	},
 	save() {
 		common.req("proposal/save.json", {proposalId:env.proposalId}, r => {
@@ -67,7 +67,6 @@ var Console = React.createClass({
 	},
 	apply() {
 		common.req("proposal/apply.json", {proposalId:env.proposalId}, r => {
-			console.log(r);
 			common.req("order/save.json", {orderId:r.id}, r => {
 				alert(r);
 			});
@@ -75,7 +74,7 @@ var Console = React.createClass({
 	},
 	componentDidMount() {
 		common.req("proposal/list_clause.json", {}, r => {
-			this.setState({clauses: r.map(v => (
+			this.setState({clauses: r.map(v => (v.classify != this.state.classify ? null :
 				<li key={v.id}>
 					<table style={{margin:"10px 24px 10px 10px"}}>
 						<tbody onClick={this.addProduct.bind(this, v.id)} style={{whiteSpace:"nowrap"}}>

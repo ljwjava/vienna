@@ -39,7 +39,6 @@ env.def = {
         certValidate: true,
 		relation: [["4","父母"],["2","配偶"],["3","子女"]],
     },
-    effectiveDay: "1",
     certTypeId: "1",
     relationSelf: "1",
 };
@@ -211,8 +210,11 @@ class PlanForm extends Form {
 	form() {
 		if (this.props.fields == null)
 			return [];
+		var effDays = false;
 		let form = this.props.fields.map(v => {
 			if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0)) {
+				if (v.code == "EFFECTIVE_DAYS" || v.code == "EFFECTIVE_DATE")
+					effDays = true;
 				return {
 					name: v.label,
 					code: v.name,
@@ -223,8 +225,8 @@ class PlanForm extends Form {
 				};
 			}
 		});
-		var effDay = env.formOpt.effectiveDay == null ? "次日0时" : env.formOpt.effectiveDay + "日后";
-		form.push({name: "保单生效日", code: "effectiveTime", type: "static", value: effDay});
+		if (!effDays)
+			form.push({name: "保单生效日", code: "effectiveTime", type: "static", value: "次日0时"});
 		return this.buildForm(form);
 	}
 }
@@ -517,7 +519,6 @@ var Ground = React.createClass({
 			prizes: env.pack.env.prizes == null ? false : env.pack.env.prizes,
 			packDesc: this.getPlanDesc(),
             applyMode: env.pack.applyMode,
-			effectiveDay: env.formOpt.effectiveDay,
             shareType: common.param("shareType"),
             couponCode: common.param("couponCode"),
 			factors: this.getPlanFactors(),

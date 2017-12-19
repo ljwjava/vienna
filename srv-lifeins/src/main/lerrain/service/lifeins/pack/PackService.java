@@ -470,7 +470,15 @@ public class PackService
 	{
 		Date date = Common.dateOf(stack.get("EFFECTIVE_DATE"));
 		if (date != null)
+		{
 			plan.setInsureTime(date);
+		}
+		else
+		{
+			int days = Common.intOf(stack.get("EFFECTIVE_DAYS"), -1);
+			if (days > 0)
+				plan.setInsureTime(new Date(new Date().getTime() + days * 3600000L * 24));
+		}
 
 		Customer applicant = (Customer)plan.getApplicant();
 		applicant.setAge(30);

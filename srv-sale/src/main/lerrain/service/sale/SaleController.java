@@ -175,7 +175,7 @@ public class SaleController
         return pack;
     }
 
-    @RequestMapping({ "/pack/view.json" })
+    @RequestMapping("/pack/view.json")
     @ResponseBody
     public JSONObject viewPack(@RequestBody JSONObject json)
     {
