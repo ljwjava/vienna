@@ -65,6 +65,29 @@ public class LifeinsUtil
 		return res;
 	}
 
+	private static String currencyOf(int currency)
+	{
+		switch (currency)
+		{
+			case Insurance.CURRENCY_CNY:
+				return "cny";
+			case Insurance.CURRENCY_TWD:
+				return "twd";
+			case Insurance.CURRENCY_HKD:
+				return "hkd";
+			case Insurance.CURRENCY_USD:
+				return "usd";
+			case Insurance.CURRENCY_GBP:
+				return "gbp";
+			case Insurance.CURRENCY_JPY:
+				return "jpy";
+			case Insurance.CURRENCY_EUR:
+				return "eur";
+		}
+
+		return null;
+	}
+
 	public static JSONObject toSaveJson(Plan plan)
 	{
 		JSONObject r = new JSONObject();
@@ -208,6 +231,7 @@ public class LifeinsUtil
 		m.put("name", c.getProduct().getName());
 		m.put("abbrName", c.getProduct().getAbbrName());
 		m.put("age", c.getFactor("AGE"));
+		m.put("currency", currencyOf(c.getProduct().getCurrency()));
 		m.put("other", c.getFactor("OTHER"));
 
 		try

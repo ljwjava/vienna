@@ -1,6 +1,6 @@
 var printer = {};
 {
-	var imageUrl = "https://sv.iyb.tm/printer/resource/template/";
+	var imageUrl = "https://sv-uat.iyb.tm/printer/resource/template/";
 
 	var imgNum = 0;
 	var scale = 100;
@@ -192,7 +192,7 @@ var printer = {};
 	printer.test = function(templateCode, contentId) {
 		env.templateCode = templateCode;
 		env.contentId = contentId;
-		common.post("https://sv.iyb.tm/printer/test.json", {templateCode: env.templateCode, outputType: "data"}, r => {
+		common.post("https://sv-uat.iyb.tm/printer/test.json", {templateCode: env.templateCode, outputType: "data"}, r => {
 			draw(r);
 		});
 	}
@@ -200,7 +200,7 @@ var printer = {};
 	printer.preview = function(templateCode, contentId, data) {
 		env.templateCode = templateCode;
 		env.contentId = contentId;
-		common.post("https://sv.iyb.tm/printer/print.json", {templateCode: env.templateCode, outputType: "data", content: data}, r => {
+		common.post("https://sv-uat.iyb.tm/printer/print.json", {templateCode: env.templateCode, outputType: "data", content: data}, r => {
 			draw(r);
 		});
 	}

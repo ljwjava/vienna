@@ -37,6 +37,14 @@ public class SaleController
     @Value("${env}")
     String srvEnv;
 
+    @RequestMapping("/admin/address")
+    @ResponseBody
+    public String service(@RequestBody JSONObject req)
+    {
+        serviceMgr.reset(req);
+        return "success";
+    }
+
     @PostConstruct
     @RequestMapping("/reset")
     @ResponseBody

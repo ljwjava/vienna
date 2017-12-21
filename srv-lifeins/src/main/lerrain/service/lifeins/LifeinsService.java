@@ -64,7 +64,7 @@ public class LifeinsService
                     for (Insurance prd : (List<Insurance>) e.getValue().getProductList())
                     {
 //                        System.out.println(String.format("CLAUSE LOAD: %s - %s", prd.getId(), prd.getName()));
-                        System.out.println(String.format("insert into t_ins_clause(code,name) values('%s','%s');", prd.getId(), prd.getName()));
+                        System.out.println(String.format("loading <%s> %s);", prd.getId(), prd.getName()));
                         product.put(prd.getId(), prd);
                     }
                 }

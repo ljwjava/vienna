@@ -215,7 +215,7 @@ public class PlanController
         for (int i=0;i<p.size();i++)
         {
             Insurance ins = lifeins.getProduct(p.getString(i));
-            if (ins == null)
+            if (ins == null || !ins.isMain())
                 continue;
 
             JSONObject m = new JSONObject();
@@ -495,6 +495,9 @@ public class PlanController
 
                 if (parentIndex < 0)
                 {
+                    if (!plan.isEmpty() && plan.primaryCommodity().getProduct().getCurrency() != product.getCurrency())
+                        throw new RuntimeException("同一投保计划要求币种相同");
+
                     c = plan.newCommodity(product);
                 }
                 else

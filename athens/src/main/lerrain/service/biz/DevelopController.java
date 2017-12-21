@@ -3,12 +3,14 @@ package lerrain.service.biz;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Function;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,18 @@ public class DevelopController
     @Autowired
     AthensService athensSrv;
 
-    @RequestMapping("/reset")
+    @Autowired
+    ServiceMgr serviceMgr;
+
+    @RequestMapping("/admin/address")
+    @ResponseBody
+    public String service(@RequestBody JSONObject req)
+    {
+        serviceMgr.reset(req);
+        return "success";
+    }
+
+    @RequestMapping({"/reset", "/admin/reset"})
     @ResponseBody
     public String reset()
     {

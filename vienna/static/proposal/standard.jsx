@@ -14,6 +14,14 @@ var env = {
 	insurant: {gender:"M", age:18},
 };
 
+env.setCurrency = function(c) {
+	if (c == "cny") env.currency = "(元)";
+    else if (c == "hkd") env.currency = "(港元)";
+    else if (c == "twd") env.currency = "(新台币)";
+    else if (c == "jpy") env.currency = "(日元)";
+    else if (c == "usd") env.currency = "(美元)";
+    else env.currency = null;
+}
 env.style = {
 	menu: {
 		product: {
@@ -60,18 +68,6 @@ var Console = React.createClass({
 	getInitialState() {
 		return {classify: "hot"};
 	},
-	save() {
-		common.req("proposal/save.json", {proposalId:env.proposalId}, r => {
-			alert("已保存");
-		});
-	},
-	apply() {
-		common.req("proposal/apply.json", {proposalId:env.proposalId}, r => {
-			common.req("order/save.json", {orderId:r.id}, r => {
-				alert(r);
-			});
-		});
-	},
 	componentDidMount() {
 		common.req("proposal/list_clause.json", {}, r => {
 			this.setState({clauses: r.map(v => (v.classify != this.state.classify ? null :
@@ -113,8 +109,6 @@ var Console = React.createClass({
 						{ this.props.plan.applicant == null ? null : <Customer tag="applicant" show="投保人" plan={this.props.plan} val={this.props.plan.applicant} refresh={this.props.refresh}/> }
 						{ this.props.plan.insurant == null ? null : <Customer tag="insurant" show="被保险人" plan={this.props.plan} val={this.props.plan.insurant} refresh={this.props.refresh}/> }
 						<ul className="nav navbar-nav navbar-right">
-							<li><a onClick={this.save}>保存</a></li>
-							<li><a onClick={this.apply}>投保</a></li>
 						</ul>
 					</div>
 				</div>
@@ -152,20 +146,16 @@ var Customer = React.createClass({
 				<li><a href="#" style={{color:"#AAA"}}>{this.props.show}</a></li>
 				<li className={this.props.val.gender=="M"?"active":null}><a onClick={this.setGender.bind(this, "M")}>男</a></li>
 				<li className={this.props.val.gender=="F"?"active":null}><a onClick={this.setGender.bind(this, "F")}>女</a></li>
-				<li></li>
 				<li className="dropdown">
 					<a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						<a onClick={this.addAge.bind(this, 1)}>▲</a>
-						&nbsp;&nbsp;
-						<a>
-							{this.props.val.age}周岁 <span className="caret"></span>
-						</a>
-						&nbsp;&nbsp;
-						<a onClick={this.addAge.bind(this, -1)}>▼</a>
+						{this.props.val.age}周岁 <span className="caret"></span>
 					</a>
 					<ul className="dropdown-menu">{ages}</ul>
 				</li>
-				<li></li>
+				<li>
+					<div onClick={this.addAge.bind(this, 1)} style={{lineHeight:"26px"}}>▲</div>
+					<div onClick={this.addAge.bind(this, -1)} style={{lineHeight:"26px"}}>▼</div>
+				</li>
 			</ul>
 		);
 	}
@@ -313,7 +303,7 @@ var Plan = React.createClass({
 							<th style={{width:"15%"}}>保额/份数/档次</th>
 							<th style={{width:"10%"}}>保障期间</th>
 							<th style={{width:"10%"}}>缴费期间</th>
-							<th style={{width:"10%"}}>保费(元)</th>
+							<th style={{width:"10%"}}>保费{env.currency}</th>
 							<th style={{width:"9%"}}></th>
 						</tr>
 					</thead>
@@ -331,13 +321,29 @@ var Main = React.createClass({
 	getInitialState() {
 		return {plan:{}, mode:null, show:null};
 	},
+    save() {
+        common.req("proposal/save.json", {proposalId:env.proposalId}, r => {
+            alert("已保存");
+        });
+    },
+    apply() {
+        common.req("proposal/apply.json", {proposalId:env.proposalId}, r => {
+            common.req("order/save.json", {orderId:r.id}, r => {
+                alert(r);
+            });
+        });
+    },
 	componentWillMount() {
 		this.refresh();
 	},
 	refresh(r) {
-		if (r != null)
-			this.setState({plan: r});
-		else common.req("proposal/plan/edit.json", {planId: this.props.planId}, r => {
+        if (r != null) {
+            if (r.product != null && r.product.length > 0)
+                env.setCurrency(r.product[0].currency);
+            this.setState({plan: r});
+        } else common.req("proposal/plan/edit.json", {planId: this.props.planId}, r => {
+            if (r.product != null && r.product.length > 0)
+                env.setCurrency(r.product[0].currency);
 			this.setState({plan: r});
 		});
 	},
@@ -386,13 +392,21 @@ var Main = React.createClass({
 				<br/>
 				<Console plan={this.state.plan} refresh={this.refresh}/>
 				<Plan plan={this.state.plan} refresh={this.refresh}/>
+				<div className="container-fluid">
+					<div className="collapse navbar-collapse">
+						<div className="nav navbar-nav navbar-right">
+							合计保费：{this.state.plan.premium}{env.currency}
+						</div>
+					</div>
+				</div>
 				<br/>
 				<nav className="navbar navbar-default">
 					<div className="container-fluid">
 						<div className="collapse navbar-collapse">
 							<ul className="nav navbar-nav">{barList}</ul>
 							<ul className="nav navbar-nav navbar-right">
-								<li><a>合计保费：{ this.state.plan.premium }</a></li>
+								<li><a onClick={this.save}>保存</a></li>
+								<li><a onClick={this.apply}>投保</a></li>
 							</ul>
 						</div>
 					</div>

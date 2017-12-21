@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="FBL00003"
+            corporation_id="fubon"
+            code="ELA"
+            name="富足e生網路投保利率變動型養老保險"
+            name_abbr="富足e生"
+            unit="10000"
+            currency="hkd"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            last_modify_date="2017-01-01">
+
+        <data>
+            <item parser="dds" value="FBL00003" />
+        </data>
+
+        <param>
+            <pay>
+                <item code="single"/>
+            </pay>
+            <insure>
+                <item code="term_20"/>
+            </insure>
+        </param>
+
+        <init>
+            <item name="P6" value="6"/>
+            <item name="RATE1" value="0.0291"/>
+            <item name="RATE2" value="0.015"/>
+            <item name="RATEX" value="RATE1-RATE2"/>
+        </init>
+
+
+        <interest>
+            <item name="CSV" param="I">DS.CSV[0][I]*QUANTITY</item>
+            <item name="AMT" param="I">DS.DIE[0][I]*QUANTITY</item>
+            <item name="EXP" param="I">I+1==INSURE_PERIOD?IT.AMT(I):0</item>
+
+            <item name="C" param="I">DS.PV0[0][I+1]*QUANTITY</item>
+            <item name="CA" param="I">round(IT.C(I)*RATEX)</item>
+            <item name="CB" param="I">I>0?IT.W(I)*IT.Z(I-1)/UNIT*RATEX:0</item>
+            <item name="Z" param="I">(I>0?IT.Z(I-1):0)+IT.Y(I)</item>
+            <item name="W" param="I">DS.PVFB[0][I]*QUANTITY</item>
+            <item name="X" param="I">IT.CA(I)+IT.CB(I)</item>
+            <item name="Y" param="I">I lt P6?IT.X(I)*UNIT/IT.W(I):0</item>
+        </interest>
+
+        <attachment>
+            <coverage filter="coverage" parser="coverage">
+                <paragraph title="年金的計算">
+                    <item>在年金給付開始日時，本公司以當時之年金保單價值準備金（如有保險單借款應扣除保險單借款及其應付利息後），為一次給付年金金額。如為分期給付年金者，應再依據當時預定利率及年金生命表計算每期給付年金金額。</item>
+                    <item>前項每期領取之年金金額若低於新臺幣五仟元時，本公司改依年金保單價值準備金於年金給付開始日一次給付受益人，本契約即行終止。</item>
+                </paragraph>
+                <paragraph title="年金的給付">
+                    <item>本公司應按要保人選擇之年金給付方式，依下列約定給付年金：</item>
+                    <item>一、一次給付：被保險人於年金給付開始日仍生存者，本公司給付依計算所得之一次年金金額予被保險人後，本契約即行終止。</item>
+                    <item>二、分期給付：被保險人於年金給付開始日仍生存者，本公司應按約定之分期年金給付方式，給付依計算所得之分期年金金額予被保險人，至其身故或保險年齡屆滿一百一十歲為止。</item>
+                    <item>被保險人於本契約分期年金「保證期間」內身故者，本公司仍應將「未支領之年金餘額」給付予本契約之身故受益人或其他應得之人至「保證期間」屆滿為止；被保險人於「保證期間」屆滿後身故者，本契約即行終止，本公司不再負給付年金之責。</item>
+                    <item>要保人於年金給付開始日前，得以書面或其他約定方式通知本公司變更年金給付方式，其書面或其他約定方式通知須於年金給付開始日之前送達本公司始生效力。</item>
+                    <item>本公司應於年金給付開始日之三十日前主動以書面或其他約定方式通知要保人得行使前項年金給付方式之變更。</item>
+                </paragraph>
+            </coverage>
+
+            <benefit_table filter="table" parser="table">
+                <table>
+                    <row type="title">
+                        <blank row="1">'年度'</blank>
+                        <blank row="1">'保險年齡'</blank>
+                        <blank row="1">'年度實繳保費'</blank>
+                        <blank row="1">"年度末增值回饋分享金(預估值)"</blank>
+                        <blank row="1">"累積實繳保費"</blank>
+                        <blank row="1">'年度末身故/完全殘廢保障'</blank>
+                        <blank row="1">'年度末解約金'</blank>
+                        <blank row="1">'滿期保險金'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">I+1</blank>
+                            <blank style="##0">AGE+I</blank>
+                            <blank align="right" style="########0">PremiumYear(I)</blank>
+                            <blank align="right" style="########0">IT.X(I)</blank>
+                            <blank align="right" style="########0">PremiumSum(I)</blank>
+                            <blank align="right" style="########0">IT.AMT(I)</blank>
+                            <blank align="right" style="########0">IT.CSV(I)</blank>
+                            <blank align="right" style="########0">IT.EXP(I)</blank>
+                        </row>
+                    </loop>
+                </table>
+            </benefit_table>
+
+            <benefit_chart filter="chart" parser="chart">
+                <chart from="0" to="INSURE_PERIOD-1" name="I">
+                    <line name="现金价值" color="#0066FF">IT.CSV(I)</line>
+                </chart>
+            </benefit_chart>
+        </attachment>
+
+        <rule>
+            <if condition="AGE lt 20 or AGE > 80" type="customer">
+                投保年齡：20足歲(若未滿20足歲須為已婚)~80歲
+            </if>
+            <if condition="AMOUNT > 6000000 or AMOUNT lt 60000 or AMOUNT % 10000 > 0">
+                投保保費：新臺幣6～600萬元(以萬元為單位)
+            </if>
+        </rule>
+    </product>
+</declare>
