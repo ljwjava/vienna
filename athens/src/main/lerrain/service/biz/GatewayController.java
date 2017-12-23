@@ -42,7 +42,8 @@ public class GatewayController
 
     private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
-        Log.debug(host + "/" + uri + " <== " + param.toString());
+        if (uri.indexOf("dict/") < 0)
+            Log.debug(host + "/" + uri + " <== " + param.toString());
 
         Gateway gateway = gatewaySrv.getGateway(uri);
 
@@ -83,8 +84,6 @@ public class GatewayController
 
             val = script.run(stack);
         }
-
-        Log.debug(uri + " <== " + val);
 
         if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)
         {

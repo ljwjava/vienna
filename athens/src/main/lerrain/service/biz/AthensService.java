@@ -35,6 +35,9 @@ public class AthensService
 		Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv) || "uat".equalsIgnoreCase(srvEnv));
 		Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
 
+		if ("prd".equalsIgnoreCase(srvEnv) || "uat".equalsIgnoreCase(srvEnv))
+			Log.resetWriteLevel("info,error,alert");
+
 		JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
 
 		gatewaySrv.reset();

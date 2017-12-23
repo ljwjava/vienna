@@ -9,13 +9,13 @@ var CertValidEditor = React.createClass({
     },
 	val() {
 		return {
-			certExpire: this.refs.certExpire.val(),
+			certExpire: this.state.long?null:this.refs.certExpire.val(),
 			certLong: this.state.long
 		};
 	},
 	verify() {
 		let alert = null;
-		let expire = this.refs.certExpire.val();
+		let expire = this.state.long?null:this.refs.certExpire.val();
 		if (expire != null && expire != "") {
 			let y2 = Number(expire.substr(0, 4));
 			let m2 = Number(expire.substr(5, 2));
@@ -41,12 +41,11 @@ var CertValidEditor = React.createClass({
 			this.props.onChange(this); 
 	},
 	setExpire() {
-		let val = this.refs.certExpire.val();
+		let val = this.state.long?null:this.refs.certExpire.val();
 		this.setState({long:val == null || val == "", isInit: false});
 	},
 	setLong() {
-		this.refs.certExpire.setTime(null);
-		this.setState({long:true, isInit: false});
+		this.setState({long:!this.state.long, isInit: false});
 	},
 	render() {
 		let val = this.props.value == null ? {} : this.props.value;
@@ -57,8 +56,8 @@ var CertValidEditor = React.createClass({
 
 		return (
 			<div>
-				<DateEditor ref="certExpire" valReq="yes" defaultValue="" onChange={this.setExpire} value={val.certExpire}/>
-				<span className={this.state.long?"blockSel":"block"} onClick={this.setLong}>长期</span>
+				<a className="inputPad" onClick={this.setLong}><span style={{color:"#888"}}>{this.state.long?"◤ ":"      ◥"}</span>{this.state.long?"长期有效":""}</a>
+				{this.state.long?null:<DateEditor ref="certExpire" valReq="yes" defaultValue="" onChange={this.setExpire} value={val.certExpire}/>}
 			</div>
 		);
 	}

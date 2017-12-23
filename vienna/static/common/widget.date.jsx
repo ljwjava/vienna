@@ -4,7 +4,7 @@ import React from 'react';
 
 var DateEditor = React.createClass({
 	getInitialState() {
-		return {alert: null};
+		return {alert: null, text: null};
     },
     val() {
 		return this.refs.self.value;
@@ -20,17 +20,19 @@ var DateEditor = React.createClass({
 	},
 	setTime(time) {
 		this.refs.self.value = time;
+		this.setState({text:time});
 	},
 	onChange() {
 		if (this.props.onChange)
-			this.props.onChange(this); 
+			this.props.onChange(this);
+        this.setState({text:this.refs.self.value});
 	},
 	change(val) {
-		this.refs.self.value = val;
+        this.setTime(val);
 	},
 	render() {
 		let val = this.props.value;
-		if (val == "now" || val == "today") val = new Date().format("yyyy-MM-DD");
+		if (val == null || val == "" || val == "now" || val == "today") val = new Date().format("yyyy-MM-dd");
 		return (<input ref="self" type="date" placeholder={this.props.placeholder} onChange={this.onChange} onBlur={this.onChange} defaultValue={val}/>);
 	}
 });

@@ -73,7 +73,7 @@ class Beneficiary extends Form {
 		let v = [
             {name:"是被保险人的", code:"relation", type:"select", options:env.formOpt.beneficiary.relation, showAddit: false},
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.beneficiary.cert},
+			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.beneficiary.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
 		if (env.formOpt.beneficiary.certValidate)
@@ -103,7 +103,7 @@ class ApplicantForm extends Form {
 	form() {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.applicant.cert},
+			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.applicant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
         if (env.formOpt.applicant.certValidate)
@@ -131,7 +131,7 @@ class InsurantForm extends Form {
 	form() {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"switch", refresh:"yes", options:env.formOpt.insurant.cert},
+			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.insurant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
         if (env.formOpt.insurant.certValidate)
@@ -198,7 +198,7 @@ class ContactForm extends Form {
 		let form = this.buildForm(v);
 		form.push(['短信验证码', (
 			<div>
-				<div style={{display:"inline-block"}}><Inputer ref="smsCode" valCode="smsCode" valType="number" valReg="^\d{6}$" valMistake="验证码为6位数字" valReq="yes" onChange={this.onChange} placeholder="请输入验证码"/></div>
+				<div style={{display:"inline-block", width:"50%"}}><Inputer ref="smsCode" valCode="smsCode" valType="number" valReg="^\d{6}$" valMistake="验证码为6位数字" valReq="yes" onChange={this.onChange} placeholder="请输入验证码"/></div>
 				<span className="blockSel" onClick={this.sendSms.bind(this)}>{!this.state.show || this.state.show <= 0 ? "发送" : (this.state.show+"s")}</span>
 			</div>
 		), "smsCode"]);
@@ -668,7 +668,7 @@ var Ground = React.createClass({
 							<div className="col left">
                                 {env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : "下一步"}</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : "下一步 ●"}</div>
 						</div>
 					</div>
 				</div>
