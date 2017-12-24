@@ -1,20 +1,14 @@
 package lerrain.service.user;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class User
 {
 	private int status = Constant.STATUS_TOURIST;
 
 	private Long id;
-	private Long platformId;
+	private Long companyId;
 
 	private String password;
 
@@ -90,14 +84,14 @@ public class User
 		return this.status;
 	}
 
-	public Long getPlatformId()
+	public Long getCompanyId()
 	{
-		return platformId;
+		return companyId;
 	}
 
-	public void setPlatformId(Long platformId)
+	public void setCompanyId(Long companyId)
 	{
-		this.platformId = platformId;
+		this.companyId = companyId;
 	}
 
 	public void setStatus(int status)

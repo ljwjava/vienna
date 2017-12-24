@@ -4,6 +4,7 @@ import React from 'react';
 
 var Summary = React.createClass({
 	render() {
+		let i=0;
 		let summary = this.props.content.map(item => {
 			let content = null;
 			if (item.type == "image") {
@@ -20,7 +21,7 @@ var Summary = React.createClass({
 				content = <div dangerouslySetInnerHTML={{__html:item.content}}/>;
 			}
 			return (
-				<div className="summary-block">
+				<div className="summary-block" key={i++}>
 					{ item.title == null || item.title == "" ? null : (<div className="summary-title">{item.title}</div>) }
 					<div>{content}</div>
 				</div>

@@ -82,6 +82,8 @@ var City = React.createClass({
 			opt3: this.build(this.state.options[val1].list[val2].list)
 		});
 	},
+    onChange3() {
+    },
 	open() {
 		this.setState({open:true});
 	},
@@ -115,7 +117,7 @@ var City = React.createClass({
 						<br/><br/>
 						<Selecter ref="lv2" onChange={this.onChange2} options={this.state.opt2} value={this.state.val2}/>
 						<br/><br/>
-						<Selecter ref="lv3" options={this.state.opt3} value={this.state.value}/>
+						<Selecter ref="lv3" onChange={this.onChange3} options={this.state.opt3} value={this.state.value}/>
 						<br/><br/>
 					</div>
 					<div className="line"/>

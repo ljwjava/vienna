@@ -59,12 +59,12 @@ public class ModuleService
 			}
 		}
 
-		r.sort(new Comparator<Module>()
+		Collections.sort(r, new Comparator<Module>()
 		{
 			@Override
 			public int compare(Module o1, Module o2)
 			{
-				if (o1.getParentId() == o2.getParentId())
+				if (o1.getParentId().equals(o2.getParentId()))
 					return o1.getSequence() < o2.getSequence() ? -1 : 1;
 				else
 					return getModule(o1.getParentId()).getSequence() < getModule(o2.getParentId()).getSequence() ? -1 : 1;

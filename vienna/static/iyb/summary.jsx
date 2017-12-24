@@ -27,21 +27,22 @@ var Summary = React.createClass({
                 content = (<div style={{lineHeight:"30px", padding:"10px 5px"}}>{docs}</div>);
 			} else if (item.type == "table" && this.props.vals != null) {
 				let v = this.props.vals[item.content];
-				let tables = v.map(t2 => {
-					let head = t2.head.map(t3 => {
-						let row = t3.map(t4 => {
+				let tables = v.map((t2,k) => {
+					let head = t2.head.map((t3,j) => {
+						let row = t3.map((t4,i) => {
 							if (t4 == null) return null;
-							return (<th colSpan={t4.col} rowSpan={t4.row}>{t4.text}</th>);
+							return (<th colSpan={t4.col} rowSpan={t4.row} key={i++}>{t4.text}</th>);
 						});
-						return (<tr>{row}</tr>);
+						return (<tr key={j++}>{row}</tr>);
 					});
-					let body = t2.body.map(t3 => {
-						let row = t3.map(t4 => {
-							return (<td>{t4}</td>);
+					let body = t2.body.map((t3,j) => {
+						let i=0;
+						let row = t3.map((t4,i) => {
+							return (<td key={i++}>{t4}</td>);
 						});
-						return (<tr style={{textAlign:"right"}}>{row}</tr>);
+						return (<tr key={j++} style={{textAlign:"right"}}>{row}</tr>);
 					});
-					return (<table className="bordered" width={'100%'}>
+					return (<table className="bordered" width={'100%'} key={k}>
 						<thead>{head}</thead>
 						<tbody>{body}</tbody>
 					</table>)

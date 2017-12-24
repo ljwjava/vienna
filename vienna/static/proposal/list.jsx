@@ -34,13 +34,17 @@ class ProposalList extends List {
 	}
 	buildConsole() {
 		return (
-			<div className="container-fluid">
-				<div className="collapse navbar-collapse">
-					<div className="nav navbar-nav navbar-right">
-						<a onClick={this.create}>＋ 新建建议书</a>
+			<nav className="navbar navbar-default">
+				<div className="container-fluid">
+					<div className="collapse navbar-collapse">
+						<ul className="nav navbar-nav">
+						</ul>
+						<ul className="nav navbar-nav navbar-right">
+							<li><a onClick={this.create}>新建建议书</a></li>
+						</ul>
 					</div>
 				</div>
-			</div>
+			</nav>
 		);
 	}
 	buildTableTitle() {

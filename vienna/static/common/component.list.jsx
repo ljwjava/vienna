@@ -37,10 +37,7 @@ var List = React.createClass({
 		return (
 			<div className="listA">
 				<br/>
-				<div className="container-fluid">
-					{ this.buildConsole() }
-				</div>
-				<br/>
+				{ this.buildConsole() }
 				<table>
 					<thead>{ this.buildTableTitle() }</thead>
 					<tbody>{ this.state.content.list.map(v => this.buildTableLine(v)) }</tbody>

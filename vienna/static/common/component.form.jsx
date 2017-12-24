@@ -3,7 +3,6 @@
 import React from 'react';
 import Switcher from './widget.switcher.jsx';
 import Selecter from './widget.selecter.jsx';
-import IdCard from './widget.idcard.jsx';
 import CertValidEditor from './widget.certValidate.jsx';
 import DateEditor from './widget.date.jsx';
 import Inputer from './widget.inputer.jsx';
@@ -47,7 +46,7 @@ var Form = React.createClass({
 			} else if (v.type == "static") {
                 comp = (<input ref={v.code} type="text" readOnly="true" value={v.value}/>);
             } else if (v.type == "hidden") {
-                comp = (<div style={{display: "none"}}><input readOnly="true" ref={v.code} value={v.value}/></div>);
+                comp = (<div style={{display: "none"}}><input ref={v.code} value={v.value}/></div>);
             } else {
 				return null;
 			}

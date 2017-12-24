@@ -48,7 +48,7 @@ public class UserDao
 		user.setId(Common.toLong(m.get("user_id")));
 //		user.setPassword((String) m.get("password"));
 		user.setName((String) m.get("user_name"));
-		user.setPlatformId(Common.toLong(m.get("platform_id")));
+		user.setCompanyId(Common.toLong(m.get("company_id")));
 		user.setLoginTime((Date) m.get("login_time"));
 		user.setStatus(Common.intOf(m.get("status"), 0));
 

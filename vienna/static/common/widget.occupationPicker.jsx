@@ -1,7 +1,6 @@
 "use strict";
 
 import React from 'react';
-import React from 'react';
 // import Selecter from './widget.selecter.jsx';
 
 var OccupationPicker = React.createClass({
