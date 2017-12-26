@@ -124,9 +124,9 @@ var Ware = React.createClass({
     refreshPremium() {
 		let factors = this.refs.plan.val();
 		factors.packId = this.state.detail.target;
-        if(factors.ZONE != null && factors.ZONE.code != null) {
+        if (factors.ZONE != null && factors.ZONE.code != null) {
             factors.ZONE = factors.ZONE.code;
-		}else{
+		} else {
             factors.ZONE = null;
 		}
 		if(factors.OCCUPATION_C != null) {
@@ -269,32 +269,14 @@ $(document).ready( function() {
                     document.title = r.name;
                 }catch(e){}
 			}catch(e){}
-		}else{
+		} else {
             window.wxReady({
                 title: env.ware.name,
                 desc: env.ware.remark,
                 imgUrl: env.ware.logo,
                 link: window.location.href
             }, null);
-            /*window.wxShare({
-                title: env.ware.name,
-                desc: env.ware.remark,
-                imgUrl: env.ware.logo,
-                link: window.location.href
-            }, null);*/
 		}
-
-		/*try {
-			initShareInfo({
-                title: env.ware.name,
-                desc: env.ware.remark,
-                imgUrl: env.ware.logo,
-                link: window.location.href
-			}, function(){
-				// console.log("rs", rs);
-			});
-		} catch (e) {
-		}*/
 	});
 
 });

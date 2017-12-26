@@ -196,7 +196,7 @@ var Ground = React.createClass({
             isSubmit: false
 		};
     },
-    componentWillMount() {
+    componentDidMount() {
 		common.req("sale/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
@@ -204,9 +204,14 @@ var Ground = React.createClass({
 			env.company = r.vendor.code;
 			env.wareCode = r.ware.code;
 			this.setState({factors:r.factors}, () => {
-                this.render();
-				if (this.props.defVal.factors != null)
-					this.refreshPremium();
+                if (this.props.defVal.wareId) {
+                    this.refs.applicant.verifyAll();
+                    this.refs.insurant.verifyAll();
+                    this.refs.plan.verifyAll();
+                }
+				if (this.props.defVal.factors) {
+                    this.refreshPremium();
+                }
 			});
 
             document.title = r.name;
@@ -216,14 +221,6 @@ var Ground = React.createClass({
 		});
     },
 	getPlanFactors() {
-    	/*let factors = {packId: env.packId};
-        this.refs.plan.props.fields.map(v => {
-        	var x = this.refs.plan.refs[v.name];
-        	if (x == null)
-        		x = this.refs.insurant.refs[v.name];
-			if (x != null)
-				factors[v.name] = x.val();
-		});*/
         let factors = {...this.refs.insurant.val(), ...this.refs.plan.val()};
         // console.log(factors);
         factors.packId = env.packId;
@@ -411,7 +408,7 @@ var Ground = React.createClass({
 							<div className="col left">
 								首年保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "核保中..." : "下一步"}</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "核保中..." : "下一步 ●"}</div>
 						</div>
 					</div>
 				</div>

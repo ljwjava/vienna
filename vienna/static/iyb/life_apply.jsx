@@ -253,7 +253,7 @@ var Ground = React.createClass({
 			isSubmit: false
 		};
     },
-    componentWillMount() {
+    componentDidMount() {
 		common.req("sale/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
@@ -276,8 +276,16 @@ var Ground = React.createClass({
 			if (env.formOpt.beneficiary.custom)
                 opts.push(["other","指定"]);
 			this.setState({factors:r.factors, benefit:opts, insurant:ins}, () => {
-                if (this.props.defVal.factors != null)
+				if (this.props.defVal.wareId) {
+                    this.refs.applicant.verifyAll();
+                    if (this.refs.insurant)
+                        this.refs.insurant.verifyAll();
+                    if (this.refs.plan)
+                        this.refs.plan.verifyAll();
+                }
+                if (this.props.defVal.factors) {
                     this.refreshPremium();
+                }
             });
 
 			/*
@@ -344,7 +352,7 @@ var Ground = React.createClass({
 		return r;
 	},
     refreshPremium() {
-    	let factors = this.getPlanFactors();
+        let factors = this.getPlanFactors();
     	if (factors["BIRTHDAY"] == null || factors["BIRTHDAY"] == "") {
 			this.setState({premium: -1, rules: null});
     	} else {
