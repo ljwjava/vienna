@@ -42,8 +42,7 @@ public class GatewayController
 
     private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
-        if (uri.indexOf("dict/") < 0)
-            Log.debug(host + "/" + uri + " <== " + param.toString());
+        Log.debug(host + "/" + uri + " <== " + param.toString());
 
         Gateway gateway = gatewaySrv.getGateway(uri);
 

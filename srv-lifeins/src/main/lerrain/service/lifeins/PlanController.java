@@ -345,11 +345,17 @@ public class PlanController
 
         JSONArray items = new JSONArray();
 
-        if (ins.getInput() != null  && !"default".equals(p.get("mode")))
+        List<Field> fields = (List<Field>)ins.getAdditional("input");
+        if (fields == null || fields.isEmpty())
+            fields = ins.getInput();
+
+        if (fields != null && !fields.isEmpty() && !"default".equals(p.get("mode")))
         {
-            List<Field> fields = ins.getInput();
             for (Field field : fields)
             {
+                if (field == null)
+                    continue;
+
                 JSONObject item = new JSONObject();
                 item.put("name", field.getName());
                 item.put("label", field.getLabel());

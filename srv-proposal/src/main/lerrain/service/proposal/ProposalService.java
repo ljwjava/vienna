@@ -143,6 +143,11 @@ public class ProposalService
 		return proposalDao.save(p);
 	}
 
+	public void saveSupply(Proposal p)
+	{
+		proposalDao.updateSupply(p);
+	}
+
 	public List<Object[]> listBless(String owner, Long platformId)
 	{
 		return proposalDao.listBless(owner, platformId);

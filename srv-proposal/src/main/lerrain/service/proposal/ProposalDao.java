@@ -1,5 +1,6 @@
 package lerrain.service.proposal;
 
+import java.rmi.activation.ActivationGroup_Stub;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -155,6 +156,15 @@ public class ProposalDao
 		}
 
 		return true;
+	}
+
+	public void updateSupply(Proposal c)
+	{
+		String other = c.getOther() == null ? null : JSON.toJSONString(c.getOther());
+		String tag = c.getPlanList() != null && c.getPlanList().size() > 1 ? "multi" : "single";
+
+		String sql = "update t_proposal set proposal_name = ?, bless = ?, other = ?, remark = ?, insure_time = ?, cover = ?, tag = ?, updater = ?, update_time = ? where proposal_id = ?";
+		jdbc.update(sql, c.getName(), c.getBless(), other, c.getRemark(), c.getInsureTime(), c.getCover(), tag, c.getOwner(), new Date(), c.getId());
 	}
 	
 	public boolean delete(String proposalId)

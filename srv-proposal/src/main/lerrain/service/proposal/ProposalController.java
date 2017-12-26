@@ -191,6 +191,8 @@ public class ProposalController
 		if (other != null)
 			proposal.getOther().putAll(other);
 
+		ps.saveSupply(proposal);
+
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
 		res.put("content", proposalTool.jsonOf(proposal));

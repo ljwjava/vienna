@@ -353,4 +353,27 @@ public class LifeinsUtil
 		
 		return r;
 	}
+
+	public static Object translate(String type, Object value)
+	{
+		if ("boolean".equals(type))
+			return Common.boolOf(value, false);
+		else if ("integer".equals(type))
+			return Common.intOf(value, 0);
+		else if ("string".equals(type))
+			return value == null ? null : value.toString();
+		else if ("date".equals(type))
+		{
+			if ("today".equals(value))
+				return new Date();
+			else if ("tomorrow".equals(value))
+				return new Date(new Date().getTime() + 3600000L * 24);
+			else if ("yesterday".equals(value))
+				return new Date(new Date().getTime() - 3600000L * 24);
+			else
+				return Common.dateOf(value);
+		}
+		else
+			return value;
+	}
 }

@@ -5,15 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.plan.UnstableList;
-import lerrain.project.insurance.product.Insurance;
-import lerrain.project.insurance.product.InsuranceRecom;
-import lerrain.project.insurance.product.Portfolio;
-import lerrain.project.insurance.product.Purchase;
+import lerrain.project.insurance.product.*;
 import lerrain.service.common.Log;
 import lerrain.service.lifeins.Customer;
 import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.LifeinsUtil;
 import lerrain.tool.Common;
+import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -235,12 +233,43 @@ public class PlanDao2
             public void processRow(ResultSet rs) throws SQLException
             {
                 String code = rs.getString("code");
-                Insurance ins = lifeins.getProduct(code);
+                final Insurance ins = lifeins.getProduct(code);
                 if (ins != null)
                 {
                     ins.setAdditional("classify", rs.getString("classify"));
                     ins.setAdditional("remark", rs.getString("remark"));
                     ins.setAdditional("tag", rs.getString("tag"));
+
+                    Long inputId = rs.getLong("input_id");
+                    if (inputId != null)
+                    {
+                        List<Field> input = jdbc.query("select * from t_input where input_id = ? order by seq", new RowMapper<Field>()
+                        {
+                            @Override
+                            public Field mapRow(ResultSet m, int rowNum) throws SQLException
+                            {
+                                String scope = m.getString("scope");
+                                if (scope == null)
+                                    return null;
+                                if ((!ins.isRider() && scope.indexOf("primary") < 0) && (scope.indexOf(ins.getId()) < 0))
+                                    return null;
+
+                                Field c = new Field();
+                                c.setName(m.getString("name"));
+                                c.setLabel(m.getString("label"));
+                                c.setType(m.getString("type"));
+                                c.setWidget(m.getString("widget"));
+                                c.setValue(LifeinsUtil.translate(c.getType(), m.getString("value")));
+
+                                Formula f = Script.scriptOf(m.getString("detail"));
+                                if (f != null)
+                                    c.setOptions(f);
+
+                                return c;
+                            }
+                        }, inputId);
+                        ins.setAdditional("input", input);
+                    }
                 }
                 else
                 {
