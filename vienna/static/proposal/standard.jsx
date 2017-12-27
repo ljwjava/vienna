@@ -256,9 +256,9 @@ var Plan = React.createClass({
 				i++;
 				let append = null;
 				if (v.children != null) {
-					append = [<a onClick={this.openChild.bind(this, i)}>{this.state.child ? "▲" : "▼"}</a>];
+					append = [<a key="0" onClick={this.openChild.bind(this, i)}>{this.state.child ? "▲" : "▼"}</a>];
 					if (this.state.child) v.children.map(v => {
-						append.push(<div style={{fontSize:"12px", lineHeight:"24px", marginLeft:"5px"}}>● {v.name}</div>);
+						append.push(<div key={v.id} style={{fontSize:"12px", lineHeight:"24px", marginLeft:"5px"}}>● {v.name}</div>);
 					});
 				}
 				return (
@@ -348,9 +348,9 @@ var Main = React.createClass({
 		});
 	},
 	doEvent(x) {
-		if (x == "0") {
+		if (x == "7") {
 			common.req("proposal/fee.json", {proposalId: env.proposalId}, r => {
-				this.setState({mode:x, show:JSON.stringify(r)});
+				this.setState({mode:x, show:r, type:"json"});
 			});
 		} else if (x == "1") {
 			common.req("proposal/plan/show_list.json", {planId: this.props.planId, type: "liability"}, r => {
@@ -379,13 +379,13 @@ var Main = React.createClass({
                 this.setState({mode:x, show:r, type:"mergeQuest"});
             });
 		} else {
-			this.setState({mode:x, show:null});
+			this.setState({mode:x, show:null, type:"text"});
 		}
 	},
 	render() {
-		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"]];
+		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"],["7","费用"]];
 		var barList = bar.map(r => {
-			return (<li className={this.state.mode == r[0] ? "active" : null}><a onClick={this.doEvent.bind(this, r[0])}>{r[1]}</a></li>);
+			return (<li key={r[0]} className={this.state.mode == r[0] ? "active" : null}><a onClick={this.doEvent.bind(this, r[0])}>{r[1]}</a></li>);
 		});
 		return (
 			<div>
@@ -516,7 +516,7 @@ var Show = React.createClass({
 				r.push(<div><div id="chart"></div></div>);
 			}
 		} else if (this.props.type == "preview") {
-			r = <div id="preview" style={{backgroundColor:"#AAA", paddingTop:"10", paddingBottom:"10"}}></div>;
+			r = <div id="preview" style={{backgroundColor:"#AAA", paddingTop:"10px", paddingBottom:"10px"}}></div>;
 		} else if (this.props.type == "liability") {
 			r = [this.buildConsole(this.showLiability)];
 			if (this.state.content != null && this.state.type == this.props.type) {

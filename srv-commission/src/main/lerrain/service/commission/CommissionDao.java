@@ -21,7 +21,7 @@ public class CommissionDao
 		c.setId(tools.nextId("commission"));
 
 		jdbc.update("insert into t_commission(id, biz_no, product_id, amount, type, unit, estimate, freeze, pay, status, platform_id, user_id, from_user_id, auto, memo, extra_info, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-				c.getId(), c.getBizNo(), c.getProductId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getUserId(), c.getFromUserId(), c.isAuto() ? "Y" : "N", c.getMemo(), c.getExtraInfo(), c.getCreateTime());
+				c.getId(), c.getBizNo(), c.getProductId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getUserId(), c.getFromUserId(), c.isAuto() ? "Y" : "N", c.getMemo(), c.getExtra(), c.getCreateTime());
 
 		return c.getId();
 	}

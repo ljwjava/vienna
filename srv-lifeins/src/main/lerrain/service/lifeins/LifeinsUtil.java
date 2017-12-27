@@ -65,6 +65,70 @@ public class LifeinsUtil
 		return res;
 	}
 
+	public static JSONObject feeOf3(Plan plan)
+	{
+		List<Commodity> detail = plan.getCommodityList().toList();
+
+		int max = 0;
+		for (Commodity c : detail)
+		{
+			if (c.getPay() != null)
+			{
+				int year = c.getPay().getPeriodYear();
+				if (max < year)
+					max = year;
+			}
+		}
+
+		double[] v = new double[max];
+		double[] f = new double[max];
+
+		for (Commodity c : detail)
+		{
+			int year = c.getPay().getPeriodYear();
+			for (int i=0; i<v.length && i<year; i++)
+			{
+				double prm = c.getPremium(Commodity.PREMIUM_YEAR, i);;
+				v[i] += prm;
+			}
+		}
+
+		JSONObject res = new JSONObject();
+		res.put("premium", v);
+		res.put("commission", f);
+
+		return res;
+	}
+
+	public static JSONArray feeOf2(Plan plan)
+	{
+		JSONArray r = new JSONArray();
+
+		List<Commodity> detail = plan.getCommodityList().toList();
+		for (Commodity c : detail)
+		{
+			JSONObject l = new JSONObject();
+			l.put("productId", c.getProduct().getId());
+
+			if (c.getPay() != null)
+			{
+				int year = c.getPay().getPeriodYear();
+				double[] v = new double[year];
+
+				for (int i = 0; i < v.length && i < year; i++)
+					v[i] = c.getPremium(Commodity.PREMIUM_YEAR, i);
+
+				l.put("premium", v);
+				l.put("payPeriod", year);
+				l.put("payFreq", "year");
+			}
+
+			r.add(l);
+		}
+
+		return r;
+	}
+
 	private static String currencyOf(int currency)
 	{
 		switch (currency)

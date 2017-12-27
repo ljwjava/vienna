@@ -386,6 +386,49 @@ public class ProposalController
 		for (String planId : proposal.getPlanList())
 		{
 			req.put("planId", planId);
+
+//			JSONObject r = serviceMgr.req("lifeins", "plan/fee.json", req);
+//			if ("success".equals(r.get("result")))
+//			{
+//				JSONArray prds = r.getJSONArray("content");
+//				if (prds != null)
+//				{
+//					JSONArray ja = new JSONArray();
+//					for (int j = 0; j < prds.size(); j++)
+//					{
+//						JSONObject prd = prds.getJSONObject(j);
+//
+//						JSONObject ppp = new JSONObject();
+//						Long platformId = c.getLong("platformId");
+//						Long envId = c.getLong("envId");
+//						String product = c.getString("product");
+//						String group = c.getString("group");
+//						ppp.put("platformId", p.getLong("platformId"));
+//
+//						ppp.put("product", prd.getString("productId"));
+//						ppp.put("payFreq", prd.getString("payFreq"));
+//						ppp.put("payPeriod", prd.getString("payPeriod"));
+//					}
+//				}
+//
+//				if (c != null)
+//				{
+//					prm[i] = c.getJSONArray("premium");
+//					fee[i] = c.getJSONArray("commission");
+//
+//					if (prm[i] != null && l < prm[i].size())
+//						l = prm[i].size();
+//					if (fee[i] != null && l < fee[i].size())
+//						l = prm[i].size();
+//
+//					JSONObject plan = new JSONObject();
+//					plan.put("planId", planId);
+//					plan.put("premium", prm[i]);
+//					plan.put("commission", fee[i]);
+//					detail.add(plan);
+//				}
+//			}
+
 			JSONObject r = serviceMgr.req("lifeins", "plan/fee.json", req);
 
 			if ("success".equals(r.get("result")))

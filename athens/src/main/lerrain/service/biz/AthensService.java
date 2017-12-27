@@ -39,6 +39,7 @@ public class AthensService
 		sv.setLog("sale", 2);
 		sv.setLog("lifeins", 2);
 		sv.setLog("proposal", 2);
+		sv.setLog("commission", 2);
 
 		Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv) || "uat".equalsIgnoreCase(srvEnv));
 		Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);

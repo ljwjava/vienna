@@ -21,7 +21,7 @@ public class CmsDao
     {
         final Map<String, List<CmsDefine>> m = new HashMap<>();
 
-        String sql = "select * from t_ware_pack_commission where valid is null order by platform_id, pack_id, pay_freq, pay_period, begin, end";
+        String sql = "select * from t_commission_define where valid is null order by platform_id, product, pay_freq, pay_period, begin, end";
 
         jdbc.query(sql, new RowCallbackHandler()
         {
@@ -29,13 +29,13 @@ public class CmsDao
             public void processRow(ResultSet rs) throws SQLException
             {
                 Long platformId = rs.getLong("platform_id");
-                Long packId = rs.getLong("pack_id");
+                Long product = rs.getLong("product");
 
                 String group = rs.getString("group");
                 String payFreq = rs.getString("pay_freq");
                 String payPeriod = rs.getString("pay_period");
 
-                String key = platformId + "/" + group + "/" + packId + "/" + payFreq + "/" + payPeriod;
+                String key = platformId + "/" + group + "/" + product + "/" + payFreq + "/" + payPeriod;
 
                 List<CmsDefine> list = m.get(key);
                 if (list == null)

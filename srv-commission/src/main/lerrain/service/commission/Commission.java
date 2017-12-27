@@ -23,7 +23,7 @@ public class Commission
     String productId; //对应的产品id，考虑活动code设置为string
     String bizNo; //对应的业务流水号，一般是保单号
     String memo; //备注
-    String extraInfo;   // 扩展信息
+    String extra;   // 扩展信息
 
     int type; //类型，0未知 1直佣 2间佣 3活动奖金 4抽奖
     int unit; //单位：1rmb 2转发基础 3积分
@@ -115,17 +115,17 @@ public class Commission
     }
 
     public JSONObject getExtraInfoJson(){
-        if(StringUtils.isEmpty(this.extraInfo)){
+        if(StringUtils.isEmpty(this.extra)){
             return null;
         }
-        return JSONObject.parseObject(this.extraInfo);
+        return JSONObject.parseObject(this.extra);
     }
-    public String getExtraInfo() {
-        return extraInfo;
+    public String getExtra() {
+        return extra;
     }
 
-    public void setExtraInfo(String extraInfo) {
-        this.extraInfo = extraInfo;
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
 
     public int getUnit()
@@ -221,9 +221,9 @@ public class Commission
         Object extra = c.get("extra_info");
         if(extra != null && !"".equals(extra)){
             if(extra instanceof  String){
-                r.extraInfo = Common.trimStringOf(extra);
+                r.extra = Common.trimStringOf(extra);
             }else{
-                r.extraInfo = ((JSONObject) JSONObject.toJSON(extra)).toJSONString();
+                r.extra = ((JSONObject) JSONObject.toJSON(extra)).toJSONString();
             }
         }
 

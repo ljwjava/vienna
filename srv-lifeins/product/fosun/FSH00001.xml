@@ -74,12 +74,18 @@
 				41周岁≤被保险人年龄≤55周岁可选择：保至80周岁、终身
 			</if>
 			<if condition="AGE + PAY_PERIOD >= 70">
-				缴费期间+投保年龄要求小于70周岁
+				交费期满时，被保险人年龄要求小于70周岁
 			</if>
-			<if condition="DAY >= 30 and 17 >= AGE and AMOUNT > 300000">
+			<if condition="APPLICANT.AGE + PAY_PERIOD >= 70">
+				交费期满时，投保人年龄要求小于70周岁
+			</if>
+			<if condition="DAY >= 30 and 10 >= AGE and AMOUNT > 200000">
 				30天-17岁保额不得超过30万
 			</if>
-			<if condition="AGE >= 18 and 40 >= AGE and AMOUNT > 500000">
+			<if condition="AGE >= 11 and 18 >= AGE and AMOUNT > 500000">
+				30天-17岁保额不得超过30万
+			</if>
+			<if condition="AGE >= 19 and 40 >= AGE and AMOUNT > 500000">
 				18-40岁保额不得超过50万
 			</if>
 			<if condition="AGE >= 41 and 45 >= AGE and AMOUNT > 400000">
@@ -87,6 +93,12 @@
 			</if>
 			<if condition="AGE >= 46 and 50 >= AGE and AMOUNT > 300000">
 				46-50岁保额不得超过30万
+			</if>
+			<if condition="AGE >= 41 and 45 >= AGE and (PAY_VALUE == 30 or INSURE_VALUE == 70)">
+				41-45岁投保，交费期限定10年/15年/20年，保障期间限定至80岁/至终身
+			</if>
+			<if condition="AGE >= 46 and 50 >= AGE and (PAY_VALUE == 30 or PAY_VALUE == 20 or INSURE_VALUE == 70)">
+				41-45岁投保，交费期限定10年/15年，保障期间限定至80岁/至终身
 			</if>
 		</rule>
 	</product>

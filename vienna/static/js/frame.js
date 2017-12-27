@@ -17,9 +17,9 @@ $(document).ready( function() {
                 str += '<li><a onclick="document.location.href = common.link(\'' + i.link + '\');">' + i.name + '</a></li>';
             });
             str += '</ul></li>';
-        }, function(r) {
-            console.log(r);
         });
         $("#menu").html('<ul class="nav navbar-nav">' + str + '</ul>');
+    }, function(r) {
+        console.log(r);
     });
 });
