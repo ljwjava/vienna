@@ -284,6 +284,10 @@ var Ground = React.createClass({
 			ToastIt("请确认保费已正确计算");
 			return;
 		}
+        if (!this.refs.plan.verifyAll()) {
+            ToastIt("请检查保险计划信息");
+            return;
+        }
 		if (!this.refs.contact.verifyAll()) {
 			ToastIt("请检查通讯信息");
 			return;
