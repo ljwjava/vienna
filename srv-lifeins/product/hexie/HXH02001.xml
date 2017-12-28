@@ -9,11 +9,9 @@
 
 		<attachment>
 			<fgraph filter="fgraph" parser="fgraph">
-				<item name="OTHER_DISABILITY">AMOUNT</item>
-				<item name="TOTAL_DISABILITY1">AMOUNT</item>
-				<item name="TOTAL_DISABILITY2">AMOUNT*2</item>
-				<item name="THUNDER">AMOUNT</item>
-				<item name="MILD">AMOUNT</item>
+				<item name="TOTAL_DISABILITY">[AMOUNT,AMOUNT*2]</item>
+				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
+				<item name="MILD">min(AMOUNT*0.5,100000)</item>
 				<item name="PAYBACK_DEATH">1</item>
 			</fgraph>
 		</attachment>

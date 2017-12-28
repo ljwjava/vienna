@@ -273,7 +273,7 @@ public class PackService
 		return r;
 	}
 
-	public Map<String, Object> fee(PackIns packIns, Map<String, Object> vals)
+	public List<Object> fee(PackIns packIns, Map<String, Object> vals)
 	{
 		Stack stack = factorsOf(packIns, vals);
 		Plan plan = (Plan) stack.get("plan");

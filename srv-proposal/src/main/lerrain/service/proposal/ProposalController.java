@@ -217,7 +217,7 @@ public class ProposalController
 		else
 		{
 			res.put("result", "fail");
-			res.put("reason", "不能保存空建议书");
+			res.put("reason", "内容为空，不能保存");
 		}
 		return res;
 	}

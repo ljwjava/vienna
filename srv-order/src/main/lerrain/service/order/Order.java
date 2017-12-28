@@ -17,6 +17,8 @@ public class Order
     String productName;
     int productType; //1长期寿险 2短期健康险 3驾乘险 4自定义组合1
 
+    String consumer;
+
     Long vendorId;
     Long platformId;
 
@@ -236,6 +238,16 @@ public class Order
     public void setPrice(BigDecimal price)
     {
         this.price = price;
+    }
+
+    public String getConsumer()
+    {
+        return consumer;
+    }
+
+    public void setConsumer(String consumer)
+    {
+        this.consumer = consumer;
     }
 
     public int getType()

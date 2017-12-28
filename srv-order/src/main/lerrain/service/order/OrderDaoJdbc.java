@@ -28,8 +28,8 @@ public class OrderDaoJdbc
 
 		if (!exists(order.getId()))
 		{
-			jdbc.update("insert into t_order(id,parent_id,apply_no,biz_no,product_id,product_type,product_name,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
-					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+			jdbc.update("insert into t_order(id,parent_id,apply_no,biz_no,product_id,product_type,product_name,consumer,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
+					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				order.getId(),
 				order.getParentId(),
 				order.getApplyNo(),
@@ -37,6 +37,7 @@ public class OrderDaoJdbc
 				order.getProductId(),
 				order.getProductType(),
 				order.getProductName(),
+				order.getConsumer(),
 				order.getVendorId(),
 				order.getPlatformId(),
 				order.getOwner(),
@@ -54,7 +55,7 @@ public class OrderDaoJdbc
 		}
 		else
 		{
-			jdbc.update("update t_order set apply_no=?,biz_no=?, type=?, product_id=?, product_type=?, product_name=?, vendor_id=?, price=?, pay=?, status=?, detail=?, extra=?, update_time=? where id=?", order.getApplyNo(), order.getBizNo(), order.getType(), order.getProductId(), order.getProductType(), order.getProductName(), order.getVendorId(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), order.getDetail() != null ? JSON.toJSONString(order.getDetail()) : null, order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
+			jdbc.update("update t_order set apply_no=?,biz_no=?, type=?, product_id=?, product_type=?, product_name=?, consumer=?, vendor_id=?, price=?, pay=?, status=?, detail=?, extra=?, update_time=? where id=?", order.getApplyNo(), order.getBizNo(), order.getType(), order.getProductId(), order.getProductType(), order.getProductName(), order.getConsumer(), order.getVendorId(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), order.getDetail() != null ? JSON.toJSONString(order.getDetail()) : null, order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
 		}
 	}
 
@@ -109,24 +110,24 @@ public class OrderDaoJdbc
 			@Override
 			public Order mapRow(ResultSet m, int rowNum) throws SQLException
 			{
-				Order order = new Order();
-				order.setId(m.getLong("id"));
-				order.setApplyNo(m.getString("apply_no"));
-				order.setBizNo(m.getString("biz_no"));
-				order.setType(m.getInt("type"));
-				order.setProductId(m.getString("product_id"));
-				order.setProductType(m.getInt("product_type"));
-				order.setProductName(m.getString("product_name"));
-				order.setVendorId(m.getLong("vendor_id"));
-				order.setCreateTime(m.getTimestamp("create_time"));
-				order.setModifyTime(m.getTimestamp("update_time"));
-				order.setPlatformId(m.getLong("platform_id"));
-				order.setOwner(m.getString("owner"));
-				order.setPrice(m.getBigDecimal("price"));
-				order.setPay(m.getInt("pay"));
-				order.setStatus(m.getInt("status"));
+//				Order order = new Order();
+//				order.setId(m.getLong("id"));
+//				order.setApplyNo(m.getString("apply_no"));
+//				order.setBizNo(m.getString("biz_no"));
+//				order.setType(m.getInt("type"));
+//				order.setProductId(m.getString("product_id"));
+//				order.setProductType(m.getInt("product_type"));
+//				order.setProductName(m.getString("product_name"));
+//				order.setVendorId(m.getLong("vendor_id"));
+//				order.setCreateTime(m.getTimestamp("create_time"));
+//				order.setModifyTime(m.getTimestamp("update_time"));
+//				order.setPlatformId(m.getLong("platform_id"));
+//				order.setOwner(m.getString("owner"));
+//				order.setPrice(m.getBigDecimal("price"));
+//				order.setPay(m.getInt("pay"));
+//				order.setStatus(m.getInt("status"));
 
-				return order;
+				return orderOf(m);
 			}
 		});
 	}
@@ -141,6 +142,7 @@ public class OrderDaoJdbc
 		order.setProductId(m.getString("product_id"));
 		order.setProductType(m.getInt("product_type"));
 		order.setProductName(m.getString("product_name"));
+		order.setConsumer(m.getString("consumer"));
 		order.setVendorId(m.getLong("vendor_id"));
 		order.setCreateTime(m.getTimestamp("create_time"));
 		order.setModifyTime(m.getTimestamp("update_time"));

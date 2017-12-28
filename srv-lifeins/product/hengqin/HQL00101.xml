@@ -70,8 +70,7 @@
 
 		<attachment>
 			<fgraph filter="fgraph" parser="fgraph">
-				<item name="ACCIDENT_DISABILITY">AMOUNT</item>
-				<item name="OTHER_DISABILITY">AMOUNT</item>
+				<item name="TOTAL_DISABILITY">[AMOUNT,AMOUNT]</item>
 				<item name="ACCIDENT_DEATH">AMOUNT</item>
 				<item name="OTHER_DEATH">AMOUNT</item>
 			</fgraph>

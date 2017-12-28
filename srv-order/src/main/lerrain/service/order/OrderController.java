@@ -240,6 +240,8 @@ public class OrderController
             order.setProductId(p.getString("productId"));
         if (p.containsKey("productName"))
             order.setProductName(p.getString("productName"));
+        if (p.containsKey("consumer"))
+            order.setConsumer(p.getString("consumer"));
         if (p.containsKey("productType"))
             order.setProductType(p.getIntValue("productType"));
         if (p.containsKey("applyNo"))

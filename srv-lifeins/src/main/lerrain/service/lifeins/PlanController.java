@@ -581,7 +581,7 @@ public class PlanController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", LifeinsUtil.feeOf2(plan));
+        res.put("content", LifeinsUtil.feeOf(plan));
 
         return res;
     }

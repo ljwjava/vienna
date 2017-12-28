@@ -240,7 +240,7 @@ public class PlanDao2
                     ins.setAdditional("remark", rs.getString("remark"));
                     ins.setAdditional("tag", rs.getString("tag"));
 
-                    Long inputId = rs.getLong("input_id");
+                    Long inputId = Common.toLong(rs.getString("input_id"));
                     if (inputId != null)
                     {
                         List<Field> input = jdbc.query("select * from t_input where input_id = ? order by seq", new RowMapper<Field>()
