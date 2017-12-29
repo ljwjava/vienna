@@ -47,7 +47,7 @@ var Form = React.createClass({
 			} else if (v.type == "static") {
                 comp = (<input ref={v.code} type="text" readOnly="true" value={v.value}/>);
 			} else if (v.type == "label") {
-                comp = (<div>{v.value}</div>);
+                comp = (<div style={{textAlign: "right", paddingRight: "5px"}}>{v.value}</div>);
             } else if (v.type == "hidden") {
                 comp = (<div style={{display: "none"}}><input readOnly="true" ref={v.code} value={v.value}/></div>);
             } else {
