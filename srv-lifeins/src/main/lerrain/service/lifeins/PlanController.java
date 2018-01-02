@@ -332,7 +332,7 @@ public class PlanController
 
         if (productIndex < 0) //新建
         {
-            ins = (Insurance) lifeins.getProduct(productId);
+            ins = lifeins.getProduct(productId);
         }
         else //修改
         {
@@ -491,13 +491,15 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
+        p = p.getJSONObject("detail");
+
         Plan plan = planSrv.getPlan(planId);
         synchronized (plan)
         {
             Commodity c;
             if (productIndex < 0)
             {
-                Insurance product = (Insurance) lifeins.getProduct(productId);
+                Insurance product = lifeins.getProduct(productId);
 
                 if (parentIndex < 0)
                 {
@@ -517,45 +519,58 @@ public class PlanController
                 c = plan.getCommodity(productIndex);
             }
 
-            p = p.getJSONObject("detail");
-            if (p != null)
-            {
-                //自定义模式
-                if (c.getProduct().getInput() != null)
-                {
-                    for (Field f : (List<Field>) c.getProduct().getInput())
-                    {
-                        Object val = p.get(f.getName());
-                        if (val == null)
-                            continue;
-                        else if ("integer".equalsIgnoreCase(f.getType()))
-                            val = Common.intOf(val, 0);
-                        else if ("boolean".equalsIgnoreCase(f.getType()))
-                            val = Common.boolOf(val, false);
+            List<Field> fields = (List<Field>)c.getProduct().getAdditional("input");
+            if (p != null && "default".equals(p.get("mode")))
+                fields = null;
+            else if (fields == null || fields.isEmpty())
+                fields = c.getProduct().getInput();
 
-                        c.setValue(f.getName(), val);
+            if (fields != null && !fields.isEmpty())
+            {
+                if (productIndex < 0 && p == null)
+                {
+                    p = new JSONObject();
+                    for (Field f : fields)
+                    {
+                        if (f != null && f.getValue() != null)
+                            p.put(f.getName(), f.getValue());
                     }
                 }
-                else
+
+                if (p != null) for (Field f : fields)
                 {
-                    String str = "PAY,INSURE,SIM";
-                    String num = "PREMIUM,AMOUNT,QUANTITY";
+                    if (f == null)
+                        continue;
 
-                    for (String s : str.split(","))
-                    {
-                        Object val = p.get(s);
-                        if (val != null)
-                            c.setValue(s, val);
-                    }
+                    Object val = p.get(f.getName());
 
-                    for (String s : num.split(","))
-                    {
-                        BigDecimal val = p.getBigDecimal(s);
-                        if (val != null)
-                            c.setValue(s, val);
-                    }
+                    if (val == null)
+                        continue;
+                    else if ("integer".equalsIgnoreCase(f.getType()))
+                        val = Common.intOf(val, 0);
+                    else if ("boolean".equalsIgnoreCase(f.getType()))
+                        val = Common.boolOf(val, false);
 
-                    System.out.println(c.getValue());
+                    c.setValue(f.getName(), val);
+                }
+            }
+            else if (p != null)
+            {
+                String str = "PAY,INSURE,SIM";
+                String num = "PREMIUM,AMOUNT,QUANTITY";
+
+                for (String s : str.split(","))
+                {
+                    Object val = p.get(s);
+                    if (val != null)
+                        c.setValue(s, val);
+                }
+
+                for (String s : num.split(","))
+                {
+                    BigDecimal val = p.getBigDecimal(s);
+                    if (val != null)
+                        c.setValue(s, val);
                 }
             }
         }

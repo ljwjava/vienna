@@ -69,7 +69,7 @@
 
 		<rule>
 			<if condition="DAY lt 30 or AGE > 50" type="customer">
-				投保年龄须为出生满30天~55周岁
+				投保年龄须为出生满30天~50周岁
 			</if>
 			<if condition="AGE + PAY_PERIOD >= 70">
 				交费期满时，被保险人年龄要求小于70周岁

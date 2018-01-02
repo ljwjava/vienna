@@ -16,28 +16,34 @@ public class RoleService
 	@Autowired
 	RoleDao roleDao;
 
-	Map<Object, Role> roles;
+	List<Role> roleList;
+	Map<Object, Role> roleMap;
 
 	@PostConstruct
 	public void reset()
 	{
-		roles = new HashMap<Object, Role>();
+		roleMap = new HashMap<Object, Role>();
 		
-		List<Role> roleList = roleDao.loadAll();
+		roleList = roleDao.loadAll();
 		for (Role role : roleList)
 		{
-			roles.put(role.getId(), role);
-			roles.put(role.getCode(), role);
+			roleMap.put(role.getId(), role);
+			roleMap.put(role.getCode(), role);
 		}
+	}
+
+	public List<Role> getRoleList()
+	{
+		return roleList;
 	}
 	
 	public Role getRole(Long roleId)
 	{
-		return roles.get(roleId);
+		return roleMap.get(roleId);
 	}
 
 	public Role getRole(String roleCode)
 	{
-		return roles.get(roleCode);
+		return roleMap.get(roleCode);
 	}
 }

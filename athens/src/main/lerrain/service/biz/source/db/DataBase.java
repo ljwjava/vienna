@@ -93,7 +93,7 @@ public class DataBase extends HashMap
         return null;
     }
 
-    public Map queryMap(String sql, Object[] vals)
+    public Map queryMap(String sql, Object[] vals, Map<String, String> mapping)
     {
         try (DruidPooledConnection dpc = dds.getConnection())
         {
@@ -106,14 +106,24 @@ public class DataBase extends HashMap
             if (rs.first())
             {
                 JSONObject v = new JSONObject();
-                ResultSetMetaData rsmd = rs.getMetaData();
 
-                int num = rsmd.getColumnCount();
-                for (int i = 1; i <= num; i++) {
-                    String key = rsmd.getColumnLabel(i);
-                    Object val = rs.getObject(i);
+                if (mapping == null)
+                {
+                    ResultSetMetaData rsmd = rs.getMetaData();
 
-                    v.put(key, val);
+                    int num = rsmd.getColumnCount();
+                    for (int i = 1; i <= num; i++)
+                    {
+                        String key = rsmd.getColumnLabel(i);
+                        Object val = rs.getObject(i);
+
+                        v.put(key, val);
+                    }
+                }
+                else
+                {
+                    for (Map.Entry<String, String> e : mapping.entrySet())
+                        v.put(e.getValue(), rs.getObject(e.getKey()));
                 }
 
                 return v;
@@ -169,7 +179,7 @@ public class DataBase extends HashMap
         return false;
     }
 
-    public List queryList(String sql, Object[] vals)
+    public List queryList(String sql, Object[] vals, Map<String, String> mapping)
     {
         try (DruidPooledConnection dpc = dds.getConnection())
         {
@@ -188,11 +198,20 @@ public class DataBase extends HashMap
             {
                 JSONObject v = new JSONObject();
 
-                for (int i = 1; i <= num; i++) {
-                    String key = rsmd.getColumnLabel(i);
-                    Object val = rs.getObject(i);
+                if (mapping == null)
+                {
+                    for (int i = 1; i <= num; i++)
+                    {
+                        String key = rsmd.getColumnLabel(i);
+                        Object val = rs.getObject(i);
 
-                    v.put(key, val);
+                        v.put(key, val);
+                    }
+                }
+                else
+                {
+                    for (Map.Entry<String, String> e : mapping.entrySet())
+                        v.put(e.getValue(), rs.getObject(e.getKey()));
                 }
 
                 r.add(v);

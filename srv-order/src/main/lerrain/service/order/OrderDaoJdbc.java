@@ -110,22 +110,23 @@ public class OrderDaoJdbc
 			@Override
 			public Order mapRow(ResultSet m, int rowNum) throws SQLException
 			{
-//				Order order = new Order();
-//				order.setId(m.getLong("id"));
-//				order.setApplyNo(m.getString("apply_no"));
-//				order.setBizNo(m.getString("biz_no"));
-//				order.setType(m.getInt("type"));
-//				order.setProductId(m.getString("product_id"));
-//				order.setProductType(m.getInt("product_type"));
-//				order.setProductName(m.getString("product_name"));
-//				order.setVendorId(m.getLong("vendor_id"));
-//				order.setCreateTime(m.getTimestamp("create_time"));
-//				order.setModifyTime(m.getTimestamp("update_time"));
-//				order.setPlatformId(m.getLong("platform_id"));
-//				order.setOwner(m.getString("owner"));
-//				order.setPrice(m.getBigDecimal("price"));
-//				order.setPay(m.getInt("pay"));
-//				order.setStatus(m.getInt("status"));
+				Order order = new Order();
+				order.setId(m.getLong("id"));
+				order.setApplyNo(m.getString("apply_no"));
+				order.setBizNo(m.getString("biz_no"));
+				order.setType(m.getInt("type"));
+				order.setProductId(m.getString("product_id"));
+				order.setProductType(m.getInt("product_type"));
+				order.setProductName(m.getString("product_name"));
+				order.setConsumer(m.getString("consumer"));
+				order.setVendorId(m.getLong("vendor_id"));
+				order.setCreateTime(m.getTimestamp("create_time"));
+				order.setModifyTime(m.getTimestamp("update_time"));
+				order.setPlatformId(m.getLong("platform_id"));
+				order.setOwner(m.getString("owner"));
+				order.setPrice(m.getBigDecimal("price"));
+				order.setPay(m.getInt("pay"));
+				order.setStatus(m.getInt("status"));
 
 				return orderOf(m);
 			}

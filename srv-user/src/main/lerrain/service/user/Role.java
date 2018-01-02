@@ -8,7 +8,9 @@ import java.util.List;
 public class Role implements Serializable
 {
 	Long id;
+
 	String code;
+	String name;
 
 	int rank;
 
@@ -30,6 +32,16 @@ public class Role implements Serializable
 	public void setId(Long id)
 	{
 		this.id = id;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	public String getCode()

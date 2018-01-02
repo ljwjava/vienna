@@ -2,13 +2,13 @@ package lerrain.service.user;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class User
 {
 	private int status = Constant.STATUS_TOURIST;
 
 	private Long id;
-	private Long companyId;
 
 	private String password;
 
@@ -18,6 +18,8 @@ public class User
 	private Date loginTime;
 
 	private List<Role> role;
+
+	private Map<String, Object> extra;
 
 	public Long getId()
 	{
@@ -84,18 +86,18 @@ public class User
 		return this.status;
 	}
 
-	public Long getCompanyId()
-	{
-		return companyId;
-	}
-
-	public void setCompanyId(Long companyId)
-	{
-		this.companyId = companyId;
-	}
-
 	public void setStatus(int status)
 	{
 		this.status = status;
+	}
+
+	public Map<String, Object> getExtra()
+	{
+		return extra;
+	}
+
+	public void setExtra(Map<String, Object> extra)
+	{
+		this.extra = extra;
 	}
 }

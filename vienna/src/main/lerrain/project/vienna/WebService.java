@@ -25,7 +25,7 @@ public class WebService
     Map<String, String> map = new HashMap<>();
 
     @PostConstruct
-    private void reset()
+    public void reset()
     {
         System.out.println(new File(dir).getAbsolutePath());
 

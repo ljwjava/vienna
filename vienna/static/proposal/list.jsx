@@ -10,6 +10,10 @@ var env = {
 	number: 10
 }
 
+env.create = function() {
+    document.location.href = "standard.web";
+}
+
 class ProposalList extends List {
 	create() {
 		document.location.href = "standard.web";
@@ -32,29 +36,13 @@ class ProposalList extends List {
 			this.refresh();
 		});
 	}
-	buildConsole() {
-		return (
-			<nav className="navbar navbar-default">
-				<div className="container-fluid">
-					<div className="collapse navbar-collapse">
-						<ul className="nav navbar-nav">
-						</ul>
-						<ul className="nav navbar-nav navbar-right">
-							<li><a onClick={this.create}>新建建议书</a></li>
-						</ul>
-					</div>
-				</div>
-			</nav>
-		);
-	}
 	buildTableTitle() {
 		return (
 			<tr>
-				<th width="5%"></th>
-				<th width="40%">建议书名称</th>
-				<th width="20%">修改时间</th>
-				<th width="15%">保费</th>
-				<th width="20%"></th>
+				<th style={{width: "40%"}}><div>建议书名称</div></th>
+				<th><div>修改时间</div></th>
+				<th><div>保费</div></th>
+				<th style={{width:"200px"}}>{this.buildPageComponent()}</th>
 			</tr>
 		);
 	}
@@ -62,11 +50,10 @@ class ProposalList extends List {
 		let date = new Date(v.updateTime);
 		return (
 			<tr key={v.id}>
-				<td>{v.tag}</td>
-				<td>{v.name}</td>
-				<td>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
-				<td>{v.premium}</td>
-				<td>
+				<td><img src={v.tag == "single" ? "../images/user.png" : "../images/users.png"} style={{width:"24px", height:"24px"}}/> {v.name}</td>
+				<td style={{textAlign:"center"}}>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
+				<td style={{textAlign:"center"}}>{v.premium}</td>
+				<td style={{textAlign:"center"}}>
 					<a onClick={this.copy.bind(this, v.id)} style={{marginRight:"10px"}}>复制</a>
 					<a onClick={this.open.bind(this, v.id)} style={{marginRight:"10px"}}>编辑</a>
 					<a onClick={this.delete.bind(this, v.id)}>删除</a>
@@ -78,6 +65,15 @@ class ProposalList extends List {
 
 $(document).ready( function() {
 	ReactDOM.render(
-		<ProposalList env={env}/>, document.getElementById("content")
+		<div>
+			<div className="container-fluid">
+				<ul className="nav navbar-nav">
+				</ul>
+				<ul className="nav navbar-nav navbar-right">
+					<li><a onClick={env.create}>新建建议书</a></li>
+				</ul>
+			</div>
+			<ProposalList ref="list" env={env}/>
+		</div>, document.getElementById("content")
 	);
 });

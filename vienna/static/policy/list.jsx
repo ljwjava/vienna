@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Navi from '../common/component.list.jsx';
+import List from '../common/component.list.jsx';
 
 var env = {
     search: null,

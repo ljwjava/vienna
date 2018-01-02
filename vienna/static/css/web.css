@@ -367,3 +367,94 @@ table tbody td{
   background: #EEE;
   border: 1px solid #DDD;
 }
+
+.listB .bottom
+{
+    font-size: 14px;
+    text-align: center;
+}
+
+.listB table thead {
+    border-bottom: 1px solid #DDD;
+}
+
+.listB table tbody td {
+    padding: 5px 10px 0px 10px;
+    text-align: left;
+    font-size: 14px;
+    height: 24px;
+    color: #000;
+}
+
+.listB table thead th {
+    padding: 8px 10px 8px 10px;
+    text-align: left;
+    font-size: 14px;
+    color: #08C;
+    weight: 100;
+    height: 40px;
+    line-height: 24px;
+}
+
+.listB table thead th div {
+    border-right: 1px solid #DDD;
+}
+
+.listC table tbody tr td {
+    padding: 0px 10px 0px 10px;
+    text-align: left;
+    font-size: 14px;
+    line-height: 28px;
+    height: 36px;
+    color: #000;
+    border-bottom: 1px solid #DDD;
+}
+
+.listC table thead tr th {
+    padding: 8px 10px 8px 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #FFF;
+    background-color: #0AF;
+    weight: 100;
+    height: 40px;
+    line-height: 24px;
+}
+
+.listC table thead tr th div {
+    border-right: 1px solid #FFF;
+}
+
+.listC table thead tr th span a {
+    color: #FFF;
+}
+
+.block
+{
+    border:1px solid #CCC;
+    border-radius:16px;
+    display:inline-block;
+    text-align:center;
+    line-height:30px;
+    min-width:60px;
+    height:32px;
+    color:#FFF;
+    background-color:#666;
+    padding: 0 12px 0 12px;
+    margin: 4px 0 4px 5px;
+}
+
+.blockSel
+{
+    border:1px solid #CCC;
+    border-radius:16px;
+    display:inline-block;
+    text-align:center;
+    line-height:30px;
+    min-width:60px;
+    height:32px;
+    color:#FFF;
+    background-color:#1AE;
+    padding: 0 12px 0 12px;
+    margin: 4px 0 4px 5px;
+}

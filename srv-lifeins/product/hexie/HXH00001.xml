@@ -38,6 +38,7 @@
 		<interest>
 			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
 			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
 		</interest>
 
 		<duty>
@@ -54,6 +55,7 @@
 						<blank row="1">'累计保险费'</blank>
 						<blank row="1">'重大疾病保险金'</blank>
 						<blank row="1">'全残保险金'</blank>
+						<blank row="1">'现金价值'</blank>
 						<blank c="R02!=null" row="1">'轻症疾病保险金'</blank>
 						<blank c="R03!=null" row="1">'轻症豁免保险费'</blank>
 					</row>
@@ -65,6 +67,7 @@
 							<blank align="right" style="########0">IT.PRM_T(I)+(R02==null?0:R02.IT.PRM_T(I))</blank>
 							<blank align="right" style="########0">I==0?AMOUNT:AMOUNT*2</blank>
 							<blank align="right" style="########0">I==0?AMOUNT:AMOUNT*2</blank>
+							<blank align="right" style="########0">IT.CSV(I)+(R02==null?0:R02.IT.CSV(I))</blank>
 							<blank c="R02!=null" align="right" style="########0">R02.AMOUNT</blank>
 							<blank c="R03!=null" align="right" style="########0">PREMIUM*PAY_PERIOD-IT.PRM_T(I)</blank>
 						</row>
@@ -92,6 +95,7 @@
 					<bar name="年交保险费" color="#CC0000">IT.PRM(I)+(R02==null?0:R02.IT.PRM(I))</bar>
 					<line name="重大疾病保险金" color="#0000FF">I==0?AMOUNT:AMOUNT*2</line>
 					<line name="轻症疾病保险金" color="#CCAA00">R02==null?0:R02.AMOUNT</line>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)+(R02==null?0:R02.IT.CSV(I))</line>
 				</chart>
 			</benefit_chart>
 

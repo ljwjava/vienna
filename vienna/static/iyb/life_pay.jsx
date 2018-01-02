@@ -34,7 +34,7 @@ class PayForm extends Form {
 			{name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank},
             {name:'银行帐号', code:"bankCard", type:"number", req:"yes", value: bc, mistake:"请输入正确的银行卡号", desc:"银行卡号码"}
 		];
-	    if(env.company == "shlife"){
+	    if(env.company == "shlife") {
             v.push({name:'开户行所在地区', code:"bankCity", type:"bankCity", value: bcity, company: env.company, refresh:"yes", req:"yes", desc:"开户行所在地"});
 		}
 	    v.push({name:'开户人', code:"bankUser", type:"static", req:"yes", value:env.order.detail.applicant.name});

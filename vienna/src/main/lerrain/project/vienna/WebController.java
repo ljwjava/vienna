@@ -16,6 +16,15 @@ public class WebController
     @Autowired
     WebService jsxSrv;
 
+    @RequestMapping("/reset")
+    @ResponseBody
+    @CrossOrigin
+    public String reset()
+    {
+        jsxSrv.reset();
+        return "success";
+    }
+
     @RequestMapping("/{path}/{file}.{type:web|mobile}")
     @CrossOrigin
     public void web2(@PathVariable String path, @PathVariable String file, @PathVariable String type, HttpServletResponse resp)

@@ -286,7 +286,7 @@ public class LifeinsUtil
 	private static Map<String, Object> mapOf(Commodity c, List list)
 	{
 		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("commodityId", c.getId());
+		m.put("id", c.getId());
 		m.put("productId", c.getProduct().getId());
 		m.put("vendor", c.getCompany().getId());
 		m.put("code", c.getProduct().getCode());
@@ -299,6 +299,7 @@ public class LifeinsUtil
 		m.put("age", c.getFactor("AGE"));
 		m.put("currency", currencyOf(c.getProduct().getCurrency()));
 		m.put("other", c.getFactor("OTHER"));
+		m.put("value", c.getValue());
 
 		try
 		{

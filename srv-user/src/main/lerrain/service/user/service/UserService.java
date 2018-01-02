@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService
@@ -15,7 +16,7 @@ public class UserService
 
 	public User login(String loginName, String password)
 	{
-		String userId = userDao.verify(loginName, password);
+		Long userId = userDao.verify(loginName, password);
 		
 		if (userId == null || "".equals(userId))
 			throw new RuntimeException("用户不存在或密码错误");
@@ -39,7 +40,7 @@ public class UserService
 		}
 	}
 
-	public User getUser(String userId)
+	public User getUser(Long userId)
 	{
 		return userDao.load(userId);
 	}
@@ -67,5 +68,15 @@ public class UserService
 	public void updatePassword(String usersId, String password)
 	{
 		userDao.updatePassword(usersId, password);
+	}
+
+	public List<User> list(String search, int from, int num)
+	{
+		return userDao.list(search, from, num);
+	}
+
+	public int count(String search)
+	{
+		return userDao.count(search);
 	}
 }

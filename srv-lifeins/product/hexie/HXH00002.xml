@@ -19,6 +19,7 @@
 		<interest>
 			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
 			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
 		</interest>
 
 		<duty>

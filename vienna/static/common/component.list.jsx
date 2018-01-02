@@ -23,27 +23,22 @@ var List = React.createClass({
 		let env = this.props.env;
 		env.total = this.state.content.total;
 		for (var i=0;i<env.total/env.number;i++) {
-			page.push(<a key={i} onClick={this.page.bind(this, i)}>&nbsp;{i+1}&nbsp;</a>);
+			page.push(<li key={i} onClick={this.page.bind(this, i)}>第 {i + 1} 页</li>);
 		}
 		return (
-			<div className="bottom">
-				<a onClick={this.page.bind(this, env.from / env.number - 1)}>上一页&nbsp;&nbsp;</a>
-				{page}
-				<a onClick={this.page.bind(this, env.from / env.number + 1)}>&nbsp;&nbsp;下一页</a>
-			</div>
+			<span>
+				<a data-toggle="dropdown" href="#">{env.from / env.number + 1} ▼</a>
+				<ul className="dropdown-menu">{page}</ul>
+			</span>
 		);
 	},
 	render() {
 		return (
-			<div className="listA">
-				<br/>
-				{ this.buildConsole() }
+			<div className="listC">
 				<table>
 					<thead>{ this.buildTableTitle() }</thead>
 					<tbody>{ this.state.content.list.map(v => this.buildTableLine(v)) }</tbody>
 				</table>
-				<br/>
-				{ this.buildPageComponent() }
 			</div>
 		);
 	}

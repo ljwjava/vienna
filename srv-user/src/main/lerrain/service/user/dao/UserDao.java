@@ -1,5 +1,6 @@
 package lerrain.service.user.dao;
 
+import com.alibaba.fastjson.JSON;
 import lerrain.service.user.Constant;
 import lerrain.service.user.Role;
 import lerrain.service.user.User;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -37,7 +39,7 @@ public class UserDao
 		return jdbc.queryForObject(sql, new Object[] {loginName}, String.class);
 	}
 	
-	public User load(String userId)
+	public User load(Long userId)
 	{
 		String sql;
 		
@@ -48,7 +50,6 @@ public class UserDao
 		user.setId(Common.toLong(m.get("user_id")));
 //		user.setPassword((String) m.get("password"));
 		user.setName((String) m.get("user_name"));
-		user.setCompanyId(Common.toLong(m.get("company_id")));
 		user.setLoginTime((Date) m.get("login_time"));
 		user.setStatus(Common.intOf(m.get("status"), 0));
 
@@ -71,11 +72,11 @@ public class UserDao
 	 * @param password
 	 * @return userId
 	 */
-	public String verify(String account, String password)
+	public Long verify(String account, String password)
 	{
 		String sql = "select a.user_id, a.status from t_user a, t_login b where a.user_id = b.user_id and b.login_name = ? and a.password = ?";
-		
-		String userId = null;
+
+		Long userId = null;
 		int status = 0;
 		
 		try
@@ -84,7 +85,7 @@ public class UserDao
 			if (r == null || r.isEmpty())
 				throw new RuntimeException("用户名或密码错误");
 			
-			userId = Common.trimStringOf(r.get("user_id"));
+			userId = Common.toLong(r.get("user_id"));
 			status = Common.intOf(r.get("status"), 0);
 
 			if (userId == null)
@@ -133,5 +134,38 @@ public class UserDao
 		String sql = "update t_user set password = ? where user_id = ?";
 		for (String userId : usersId)
 			jdbc.update(sql, new Object[] {Common.md5Of(password), userId}, null);
+	}
+
+	public int count(String search)
+	{
+		StringBuffer sql = new StringBuffer("select count(*) from t_user where valid is null");
+		if (search != null && !"".equals(search))
+			sql.append(" and user_name like '%" + search + "%' ");
+
+		return jdbc.queryForObject(sql.toString(), Integer.class);
+	}
+
+	public List<User> list(String search, int from, int number)
+	{
+		StringBuffer sql = new StringBuffer("select * from t_user where valid is null");
+		if (search != null && !"".equals(search))
+			sql.append(" and user_name like '%" + search + "%' ");
+		sql.append(" order by update_time desc");
+		sql.append(" limit ?, ?");
+
+		return jdbc.query(sql.toString(), new Object[] {from, number}, new RowMapper<User>()
+		{
+			@Override
+			public User mapRow(ResultSet m, int arg1) throws SQLException
+			{
+				User p = new User();
+				p.setId(m.getLong("user_id"));
+				p.setName(m.getString("user_name"));
+				p.setStatus(m.getInt("status"));
+				p.setExtra(JSON.parseObject(m.getString("extra")));
+
+				return p;
+			}
+		});
 	}
 }

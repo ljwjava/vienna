@@ -100,6 +100,8 @@ public class GatewayController
             val = json.get("content");
         }
 
+        Log.debug(host + "/" + uri + " ==> " + val);
+
         return val;
     }
 

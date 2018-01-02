@@ -18,14 +18,6 @@ public class OrderController
     @Autowired
     OrderService orderSrv;
 
-    /*@RequestMapping("/health")
-    @ResponseBody
-    @CrossOrigin
-    public String health()
-    {
-        return "success";
-    }*/
-
     @RequestMapping("/create.json")
     @ResponseBody
     public JSONObject create(@RequestBody JSONObject p)
@@ -171,7 +163,7 @@ public class OrderController
             throw new RuntimeException("no orderId");
 
         Order order = orderSrv.getOrder(orderId);
-        if (order.getStatus() != 1)
+        if (order.getStatus() != 1 && order.getStatus() != 4)
             throw new RuntimeException("订单<"+orderId+">处理失败：只有未提交或退回的订单才可以修改");
 
         synchronized (order)

@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import lerrain.service.user.service.ModuleService;
 import lerrain.service.user.service.RoleService;
 import lerrain.service.user.service.UserService;
+import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -96,6 +96,61 @@ public class UserController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", menu);
+
+        return res;
+    }
+
+    @RequestMapping("/list.json")
+    @ResponseBody
+    public JSONObject list(@RequestBody JSONObject p)
+    {
+        int from = Common.intOf(p.get("from"), 0);
+        int num = Common.intOf(p.get("num"), 20);
+
+        JSONArray list = new JSONArray();
+        for (User user : userSrv.list(null, from, num))
+        {
+            JSONObject obj = new JSONObject();
+            obj.put("id", user.getId());
+            obj.put("name", user.getName());
+            obj.put("status", user.getStatus());
+            obj.put("extra", user.getExtra());
+
+            list.add(obj);
+        }
+
+        JSONObject r = new JSONObject();
+        r.put("list", list);
+        r.put("total", userSrv.count(null));
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
+    @RequestMapping({ "/role.json" })
+    @ResponseBody
+    public JSONObject role(@RequestBody JSONObject json)
+    {
+        Long userId = json.getLong("userId");
+        User user = userSrv.getUser(userId);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", user.getRole());
+
+        return res;
+    }
+
+    @RequestMapping({ "/role_all.json" })
+    @ResponseBody
+    public JSONObject roleAll()
+    {
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", roleSrv.getRoleList());
 
         return res;
     }

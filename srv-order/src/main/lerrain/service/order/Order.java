@@ -40,7 +40,7 @@ public class Order
 
     int type;
     int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 6部分付款 9支付异常 0无状态
-    int status  = 1;    //1填写中 2已提交 3成功 4失败 5终止 8转至其他系统处理 9异常
+    int status  = 1;    //1填写中 2已提交 3成功 4失败退回 5终止 6失败并失效 8转至其他系统处理 9异常
 
     public String getBizNo()
     {
