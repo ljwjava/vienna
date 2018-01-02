@@ -344,8 +344,8 @@ var Ground = React.createClass({
 				let c = self.refs[v.name];
 				r.push({
 					name: v.label,
-					val: v.widget == 'static' ? v.value : c.val(),
-					text: v.widget == 'static' ? v.value : (c.text ? c.text() : c.val())
+					val: v.widget == 'static' || v.widget == 'label' ? v.value : c.val(),
+					text: v.widget == 'static' || v.widget == 'label' ? v.value : (c.text ? c.text() : c.val())
 				});
 			}
 		});

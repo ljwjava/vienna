@@ -237,8 +237,8 @@ var Ground = React.createClass({
                     x = this.refs.insurant.refs[v.name];
                 if (x != null) r.push({
 					name: v.label,
-					val: v.widget == 'static' ? v.value : x.val(),
-					text: v.widget == 'static' ? v.value : (x.text ? x.text() : x.val())
+					val: v.widget == 'static' || v.widget == 'label' ? v.value : x.val(),
+					text: v.widget == 'static' || v.widget == 'label' ? v.value : (x.text ? x.text() : x.val())
 				});
 			}
 		});
