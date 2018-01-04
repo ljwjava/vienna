@@ -1,5 +1,8 @@
 package lerrain.service.lifeins.manage;
 
+import lerrain.project.insurance.product.Company;
+import lerrain.service.lifeins.LifeinsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +17,16 @@ public class EditorService
     @Value("${path.lifeins}")
     String dataPath;
 
+    @Autowired
+    LifeinsService lifeSrv;
+
+    Map<String, Company> allCompany;
+
     Map<String, InsXml> map = new HashMap<>();
 
-    @PostConstruct
     public void reset()
     {
+        allCompany = lifeSrv.getAllCompany();
         scan(new File(dataPath));
     }
 
@@ -35,7 +43,7 @@ public class EditorService
             {
                 try
                 {
-                    InsXml ins = new InsXml(f);
+                    InsXml ins = new InsXml(f, allCompany);
                     if (ins.isInsurance())
                     {
                         map.put(ins.getId(), ins);

@@ -12,6 +12,8 @@ public class FormField
     Object detail;
     Object value;
 
+    int length;
+
     public Object getDetail()
     {
         return detail;
@@ -42,6 +44,16 @@ public class FormField
         this.label = label;
     }
 
+    public int getLength()
+    {
+        return length;
+    }
+
+    public void setLength(int length)
+    {
+        this.length = length;
+    }
+
     public Object getValue()
     {
         return value;
@@ -64,12 +76,18 @@ public class FormField
 
     public static FormField fieldOf(String code, String label, String widget, Object detail, Object value)
     {
+        return fieldOf(code, label, widget, detail, value, 1);
+    }
+
+    public static FormField fieldOf(String code, String label, String widget, Object detail, Object value, int length)
+    {
         FormField field = new FormField();
         field.code = code;
         field.label = label;
         field.widget = widget;
         field.detail = detail;
         field.value = value;
+        field.length = length;
 
         return field;
     }

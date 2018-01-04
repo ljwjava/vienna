@@ -162,9 +162,9 @@ public class Xml
 		this.text = text;
 	}
 
-	public String getAttributeInOrder(String name)
+	public String getAttribute(String name, String def)
 	{
-		return getAttribute(name.split(","));
+		return hasAttribute(name) ? getAttribute(name) : def;
 	}
 
 	public boolean hasAttribute(String name)

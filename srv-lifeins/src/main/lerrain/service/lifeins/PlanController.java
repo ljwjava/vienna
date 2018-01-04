@@ -11,6 +11,7 @@ import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.*;
 
 import lerrain.service.common.Log;
+import lerrain.service.lifeins.manage.EditorService;
 import lerrain.service.lifeins.quest.MergeQuestService;
 import lerrain.tool.Common;
 import lerrain.tool.script.Script;
@@ -38,6 +39,9 @@ public class PlanController
     @Autowired
     MergeQuestService mergeQuestSrv;
 
+    @Autowired
+    EditorService editorSrv;
+
     Map<String, Script> scriptMap = new HashMap<>();
 
     @Value("${env}")
@@ -55,6 +59,8 @@ public class PlanController
         planSrv.reset();
 
         mergeQuestSrv.reset();
+
+        editorSrv.reset();
 
         return "success";
     }

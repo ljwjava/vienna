@@ -61,6 +61,11 @@ public class LifeinsService
         }
     }
 
+    public Map<String, Company> getAllCompany()
+    {
+        return company;
+    }
+
     public Company getCompany(String vendor)
     {
         if (vendor == null)

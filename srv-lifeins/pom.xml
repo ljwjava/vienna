@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>finance</artifactId>
-			<version>6.0.12</version>
+			<version>6.0.13</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>

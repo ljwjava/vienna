@@ -2,11 +2,13 @@ package lerrain.service.lifeins.manage;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.project.insurance.product.Company;
 import org.w3c.dom.Element;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class InsXml
 {
@@ -16,11 +18,11 @@ public class InsXml
 
     Xml root;
 
-    Xml param, data, init, interest, duty, attachment, rule, rider;
+    Company company;
 
     List<InsPart> list = new ArrayList();
 
-    public InsXml(File f)
+    public InsXml(File f, Map<String, Company> allc)
     {
         this.file = f;
 
@@ -29,7 +31,7 @@ public class InsXml
             xml = Xml.nodeOf(f);
 
             if ("declare".equals(xml.getName()))
-                analyse();
+                analyse(allc);
         }
         else
         {
@@ -37,26 +39,33 @@ public class InsXml
             root = new Xml("product");
             xml.addChild(root);
 
-            analyse();
+            analyse(allc);
         }
     }
 
-    private void analyse()
+    private void analyse(Map<String, Company> allc)
     {
         root = xml.firstChild();
 
         if (!"product".equals(root.getName()))
             return;
 
-        list.add(new BaseXml(xml));
-        list.add(new ParamXml(xml.firstChild("param")));
-        list.add(new DataXml(xml.firstChild("data")));
-        list.add(new FixedXml(xml,"attachment", "展示"));
+        company = allc.get(getCompanyId());
+
+        list.add(new BaseXml(root));
+        list.add(new ParamXml(root.firstChild("param"), company));
+        list.add(new DataXml(root.firstChild("data")));
+        list.add(new FixedXml(root,"attachment", "展示"));
     }
 
     public String getId()
     {
         return root.getAttribute("id");
+    }
+
+    public String getCompanyId()
+    {
+        return root.getAttribute("corporation_id");
     }
 
     public boolean isInsurance()
