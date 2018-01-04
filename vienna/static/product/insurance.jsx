@@ -6,6 +6,7 @@ import Switcher from '../common/widget.switcher.jsx';
 import Selecter from '../common/widget.selecter.jsx';
 import DateEditor from '../common/widget.date.jsx';
 import Inputer from '../common/widget.inputer.jsx';
+import MultiSwt from '../common/widget.multiswt.jsx';
 import Form from '../common/component.form.jsx';
 
 var env = {};
@@ -14,7 +15,7 @@ class BaseForm extends Form {
     form() {
         if (this.props.fields == null)
             return [];
-        return this.buildForm(this.props.fields.map(v => {return {name:v.label, code:v.name, type:v.widget, refresh:"yes", options:v.detail, value:v.value}}));
+        return this.buildForm(this.props.fields.map(v => {return {name:v.label, code:v.name, type:v.widget, refresh:"yes", options:v.detail, long:v.length, value:v.value}}));
     }
 }
 

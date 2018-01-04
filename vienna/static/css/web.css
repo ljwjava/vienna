@@ -493,6 +493,13 @@ input[type="text"]
 .field-comp
 {
     padding: 5px 5px 5px 5px;
-    height: 40px;
+    min-height: 40px;
+    line-height: 40px;
     border: 1px;
+}
+
+.form-field
+{
+    display: block;
+    height: 42px;
 }

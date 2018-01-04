@@ -5,6 +5,7 @@ import Switcher from './widget.switcher.jsx';
 import Selecter from './widget.selecter.jsx';
 import DateEditor from './widget.date.jsx';
 import Inputer from './widget.inputer.jsx';
+import MultiSwt from './widget.multiswt.jsx';
 
 var Form = React.createClass({
 	getInitialState() {
@@ -23,6 +24,8 @@ var Form = React.createClass({
 				comp = (<Inputer ref={v.code} valCode={v.code} valType="text" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={v.desc} value={v.value}/>);
 			} else if (v.type == "switch") {
 				comp = (<Switcher ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value}/>);
+            } else if (v.type == "multiswt") {
+                comp = (<MultiSwt ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value}/>);
 			} else if (v.type == "date") {
 				comp = (<DateEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} placeholder={v.desc} options={v.options} value={v.value}/>);
 			} else if (v.type == "select") {
@@ -80,7 +83,7 @@ var Form = React.createClass({
 			if (form[i] == null) {
 				i++;
 			} else if (form[i].length > 4 && form[i][4] > 1) {
-				r1.push(<div>
+				r1.push(<div className="form-field">
 					<div className="col-sm-2 field-label">{form[i][0]}</div>
 					<div className="col-sm-10 field-comp">{form[i][1]}</div>
 				</div>);
@@ -89,12 +92,15 @@ var Form = React.createClass({
 				var r2 = [];
 				for (var j = 0; j < 3 && i < form.length; i++) {
                     if (form[i] != null) {
+                    	if (form[i].length > 4 && form[i][4] > 1) {
+                    		break;
+                        }
                         r2.push(<div className="col-sm-2 field-label">{form[i][0]}</div>);
                         r2.push(<div className="col-sm-2 field-comp">{form[i][1]}</div>);
                         j++;
                     }
 				}
-				r1.push(<div>{r2}</div>);
+				r1.push(<div className="form-field">{r2}</div>);
 			}
 		}
 		return (<div className="form-horizontal">{r1}</div>);
