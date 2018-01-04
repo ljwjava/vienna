@@ -13,15 +13,17 @@ public class CmsDefine
 
     int freeze;
     int unit;
+    int type;
 
     String memo;
 
-    public CmsDefine(Date begin, Date end, double[] self, double[] parent, int freeze, int unit)
+    public CmsDefine(Date begin, Date end, double[] self, double[] parent, int freeze, int unit, int type)
     {
         this.begin = begin;
         this.end = end;
         this.freeze = freeze;
         this.unit = unit;
+        this.type = type;
 
         this.self = self;
         this.parent = parent;
@@ -35,6 +37,16 @@ public class CmsDefine
     public void setFreeze(int freeze)
     {
         this.freeze = freeze;
+    }
+
+    public int getType()
+    {
+        return type;
+    }
+
+    public void setType(int type)
+    {
+        this.type = type;
     }
 
     public double[] getSelfRate()

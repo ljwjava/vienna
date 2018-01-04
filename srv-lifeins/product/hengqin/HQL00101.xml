@@ -115,8 +115,20 @@
 			<if condition="INSURANT.OCCUPATION_L != null and (INSURANT.OCCUPATION_L lt 1 or INSURANT.OCCUPATION_L > 4)">
 				职业要求为1~4类
 			</if>
-			<if condition="ZONE == null" level="alert">
-				请选择所在地区
+			<if condition="ZONE == null and AGE >= 18 and AGE le 40" level="alert">
+				北上广深最高150万，北上广深以外的一线城市及省会城市最高100万，其他地区50万
+			</if>
+			<if condition="ZONE == null and AGE >= 41 and AGE le 50" level="alert">
+				北上广深最高100万，北上广深以外的一线城市及省会城市最高50万，其他地区50万
+			</if>
+			<if condition="ZONE == null and AGE >= 51 and AGE le 60" level="alert">
+				北上广深最高50万，北上广深以外的一线城市及省会城市最高50万，其他地区30万
+			</if>
+			<if condition="RELATION == null" level="alert">
+				本险种要求投保人与被保险人为同一人
+			</if>
+			<if condition="RELATION != null and RELATION != '00'">
+				本险种要求投保人与被保险人为同一人
 			</if>
 			<if>
 				if (ZONE == null)

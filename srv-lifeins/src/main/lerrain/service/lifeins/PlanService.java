@@ -1,5 +1,6 @@
 package lerrain.service.lifeins;
 
+import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.Company;
@@ -52,7 +53,7 @@ public class PlanService
 			@Override
 			public Object run(Object[] objects, Factors factors)
 			{
-				return getPlan(objects[0].toString());
+				return getPlan(objects[0].toString(), null);
 			}
 		});
 
@@ -170,17 +171,36 @@ public class PlanService
 
 	public Plan getPlan(String planId)
 	{
+		return getPlan(planId, null);
+	}
+
+	public Plan getPlan(String planId, JSONObject p)
+	{
 		if (planId == null)
 			return null;
 
 		Plan plan = cache.get(planId);
-		
+
 		if (plan == null)
 		{
-			plan = pd.load(planId);
+			try
+			{
+				if (p != null)
+					plan = LifeinsUtil.toPlan(lifeins, p);
+				else
+					plan = pd.load(planId);
+			}
+			catch (Exception e)
+			{
+				plan = null;
+			}
+
+			if (plan == null)
+				throw new RuntimeException("已过期，请重新打开该计划");
+
 			cache.put(plan.getId(), plan);
 		}
-		
+
 		return plan;
 	}
 	

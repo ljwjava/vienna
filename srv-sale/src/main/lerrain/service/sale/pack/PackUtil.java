@@ -31,6 +31,7 @@ public class PackUtil
 
         r.put("env", packIns.getEnv());
         r.put("docs", packIns.getEnv()); //兼容
+        r.put("show", packIns.getShow());
 
         return r;
     }

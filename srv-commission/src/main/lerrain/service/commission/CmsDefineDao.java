@@ -59,13 +59,14 @@ public class CmsDefineDao
 
 				int freeze = Common.intOf(rs.getObject("freeze"), 0);
 				int unit = Common.intOf(rs.getObject("unit"), 0);
+				int type = Common.intOf(rs.getObject("type"), 0);
 
 				Date begin = rs.getDate("begin");
 				Date end = rs.getDate("end");
 
 				if (unit > 0)
 				{
-					CmsDefine pc = new CmsDefine(begin, end, self, parent, freeze, unit);
+					CmsDefine pc = new CmsDefine(begin, end, self, parent, freeze, unit, type);
 					pc.setMemo(rs.getString("memo"));
 
 					list.add(pc);

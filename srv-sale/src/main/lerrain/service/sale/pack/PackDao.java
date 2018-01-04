@@ -58,6 +58,7 @@ public class PackDao
             {
                 try
                 {
+                    String showStr = m.getString("show");
                     String envStr = m.getString("env");
                     String price = m.getString("price");
                     String referKey = m.getString("refer_key");
@@ -77,6 +78,8 @@ public class PackDao
                         packIns.setEnv(JSONObject.parseObject(envStr));
                     if (!Common.isEmpty(formOpt))
                         packIns.setFormOpt(JSONObject.parseObject(formOpt));
+                    if (!Common.isEmpty(showStr))
+                        packIns.setShow(JSONObject.parseObject(showStr));
                     if (input != null)
                     {
                         List<InputField> list = loadInputForm(input);

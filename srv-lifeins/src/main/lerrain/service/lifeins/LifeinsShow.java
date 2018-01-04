@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
+import lerrain.project.insurance.plan.UnstableList;
 import lerrain.project.insurance.plan.filter.StaticText;
 import lerrain.project.insurance.plan.filter.chart.Chart;
 import lerrain.project.insurance.plan.filter.chart.ChartLine;
@@ -24,6 +25,8 @@ import java.util.Map;
 
 public class LifeinsShow
 {
+    static Formula f = Script.scriptOf("if (IT == null || IT.CSV == null) { return null }; var l = new list(); for (var I=0;I<INSURE_PERIOD;I++) { l += IT.CSV(I); } return l;");
+
     public static Object formatRadarGraph(Plan plan)
     {
         FGraphFilter fgf = new FGraphFilter();
@@ -34,8 +37,6 @@ public class LifeinsShow
     {
         Map r = new HashMap();
 
-        Formula f = Script.scriptOf("if (IT == null || IT.CSV == null) { return null }; var l = new list(); for (var I=0;I<INSURE_PERIOD;I++) { l += IT.CSV(I); } return l;");
-
         List res = new ArrayList();
         for (int i=0;i<plan.size();i++)
         {
@@ -43,17 +44,13 @@ public class LifeinsShow
             List list = (List)f.run(c.getFactors());
             if (list != null)
             {
-                for (int j=0;j<list.size();j++)
-                {
-                    if (res.size() <= j)
-                    {
-                        res.add(list.get(j));
-                    }
-                    else
-                    {
-                        res.set(j, Common.doubleOf(res.get(j), 0) + Common.doubleOf(list.get(j), 0));
-                    }
-                }
+                addUpCsv(res, list);
+            }
+            else
+            {
+                UnstableList children = c.getChildren();
+                for (int k = 0; children != null && k < children.size(); k++)
+                    addUpCsv(res, (List)f.run(children.get(k).getFactors()));
             }
         }
 
@@ -63,6 +60,19 @@ public class LifeinsShow
         return r;
     }
 
+    private static void addUpCsv(List res, List list)
+    {
+        if (list != null)
+        {
+            for (int j=0;j<list.size();j++)
+            {
+                if (res.size() <= j)
+                    res.add(list.get(j));
+                else
+                    res.set(j, Common.doubleOf(res.get(j), 0) + Common.doubleOf(list.get(j), 0));
+            }
+        }
+    }
 
     public static JSONArray formatTable(Plan plan)
     {

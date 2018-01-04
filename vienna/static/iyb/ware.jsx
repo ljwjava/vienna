@@ -84,14 +84,6 @@ var Ware = React.createClass({
 	changePlan(i) {
         let v = this.props.detail;
         let r = {detail:v.detail[i]};
-		if (r.detail.summary != null) {
-			r.exps = [];
-			for (let label in r.detail.summary) {
-				r.exps.push([label, label]);
-				if (r.summary == null)
-					r.summary = r.detail.summary[label];
-			}
-        }
         env.packId = r.detail.target;
         common.req("sale/detail.json", {packId: env.packId}, s => {
         	env.pack = s;
@@ -102,9 +94,20 @@ var Ware = React.createClass({
             r.factors = s.factors;
             r.vendor = s.vendor;
             r.company = s.vendor.code;
+            if (r.detail.summary == null) {
+                r.detail.summary = env.pack.show;
+			}
+            if (r.detail.summary != null) {
+                r.exps = [];
+                for (let label in r.detail.summary) {
+                    r.exps.push([label, label]);
+                    if (r.summary == null)
+                        r.summary = r.detail.summary[label];
+                }
+            }
             this.setState(r, () => {
             	// console.log(this.state.packs);
-            	if(this.refs.detailTabs){
+            	if(this.refs.detailTabs) {
                     this.refs.detailTabs.setState({code: this.refs.detailTabs.props.options[0][0]});
 				}
             	this.refreshPremium();

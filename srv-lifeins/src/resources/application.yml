@@ -9,4 +9,4 @@ datasource:
   password: Abcd2017
 
 path:
-  lifeins: ./iyb/lifeins/
+  lifeins: ./product/

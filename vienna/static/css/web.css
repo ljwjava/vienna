@@ -458,3 +458,41 @@ table tbody td{
     padding: 0 12px 0 12px;
     margin: 4px 0 4px 5px;
 }
+
+select
+{
+    font: 12pt 微软雅黑;
+    width: 100%;
+    height: 30px;
+}
+
+input[type="date"]
+{
+    bottom: 0;
+    width: 100%;
+    font: 12pt 微软雅黑;
+    height: 30px;
+}
+
+input[type="text"]
+{
+    font: 12pt 微软雅黑;
+    width: 100%;
+    height: 30px;
+}
+
+.field-label
+{
+    height: 40px;
+    line-height: 40px;
+    font-weight: 400;
+    border: 1px solid #FFF;
+    background-color: #EEEEEE;
+}
+
+.field-comp
+{
+    padding: 5px 5px 5px 5px;
+    height: 40px;
+    border: 1px;
+}

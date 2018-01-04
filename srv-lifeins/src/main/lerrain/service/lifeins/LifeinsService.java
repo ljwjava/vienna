@@ -23,8 +23,6 @@ public class LifeinsService
 
     private Map<String, Insurance> product;
 
-    public static final String[] INSURANCE_PATH = {"./product/", "X:/files/lifeins/"};
-
     @Value("${path.lifeins}")
     String dataPath;
 
@@ -35,26 +33,11 @@ public class LifeinsService
 
         try
         {
-            String PATH = null;
-
-            if (dataPath != null && new File(dataPath).isDirectory())
-            {
-                PATH = dataPath;
-            }
-            else for (String path : INSURANCE_PATH)
-            {
-                if (new File(path).isDirectory())
-                {
-                    PATH = path;
-                    break;
-                }
-            }
-
             product = new HashMap<>();
 
-            System.out.println("CLAUSE PATH: " + PATH);
+            System.out.println("CLAUSE PATH: " + dataPath);
 
-            InsuranceMgr ins = InsuranceMgr.managerOf(PATH, "insurance.xml");
+            InsuranceMgr ins = InsuranceMgr.managerOf(dataPath, "insurance.xml");
             company = ins.load();
 
             for (Entry<String, Company> e : company.entrySet())

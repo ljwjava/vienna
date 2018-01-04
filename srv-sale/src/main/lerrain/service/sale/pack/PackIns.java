@@ -26,6 +26,7 @@ public class PackIns
     int priceType;
 
     Object price;
+    Object show;
 
     List<InputField> inputForm;
 
@@ -165,6 +166,16 @@ public class PackIns
     public void setVendor(Map<String, Object> vendor)
     {
         this.vendor = vendor;
+    }
+
+    public Object getShow()
+    {
+        return show;
+    }
+
+    public void setShow(Object show)
+    {
+        this.show = show;
     }
 
     public String getCode()

@@ -98,13 +98,6 @@
 					<line name="现金价值" color="#00AAFF">IT.CSV(I)+(R02==null?0:R02.IT.CSV(I))</line>
 				</chart>
 			</benefit_chart>
-
-			<fgraph filter="fgraph" parser="fgraph">
-				<item name="TOTAL_DISABILITY1">AMOUNT</item>
-				<item name="TOTAL_DISABILITY2">AMOUNT*2</item>
-				<item name="MILD">min(AMOUNT/2,100000)</item>
-				<item name="MILD_EXEMPT">1</item>
-			</fgraph>
 		</attachment>
 
 		<rule>

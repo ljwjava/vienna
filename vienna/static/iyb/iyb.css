@@ -84,6 +84,7 @@ input[type="checkbox"]
 {
 	display: table-cell;
 	vertical-align: middle;
+	padding: 2px 0 2px 0;
 }
 
 .line
@@ -154,7 +155,7 @@ input[type="checkbox"]
 .block
 {
 	border:1px solid #CCC;
-	border-radius:16px;
+	border-radius:4px;
 	display:inline-block;
 	text-align:center;
 	line-height:30px;
@@ -163,13 +164,13 @@ input[type="checkbox"]
 	color:#FFF;
 	background-color:#666;
 	padding: 0 12px 0 12px;
-	margin: 4px 0 4px 5px;
+	margin: 2px 0 2px 5px;
 }
 
 .blockSel
 {
 	border:1px solid #CCC;
-	border-radius:16px;
+	border-radius:4px;
 	display:inline-block;
 	text-align:center;
 	line-height:30px;
@@ -178,7 +179,7 @@ input[type="checkbox"]
 	color:#FFF;
 	background-color:#1AE;
 	padding: 0 12px 0 12px;
-	margin: 4px 0 4px 5px;
+	margin: 2px 0 2px 5px;
 }
 
 .console
@@ -191,7 +192,7 @@ input[type="checkbox"]
 	bottom: 0px;
 	width: 100%;
 	height: 50px;
-	line-height: 50px;
+	line-height: 46px;
 	color: #FFF;
 	text-align: center;
 }

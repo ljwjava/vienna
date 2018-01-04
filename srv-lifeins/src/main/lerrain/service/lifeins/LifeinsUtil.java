@@ -271,9 +271,9 @@ public class LifeinsUtil
 			for (Rule rule : rs)
 			{
 				if (rule.getLevel() == Rule.LEVEL_FAIL)
-					r1.add(rule.getDesc());
+					r1.add(Common.trimStringOf(rule.getDesc()));
 				else if (rule.getLevel() == Rule.LEVEL_ALERT)
-					r2.add(rule.getDesc());
+					r2.add(Common.trimStringOf(rule.getDesc()));
 			}
 
 			if (!r1.isEmpty())
@@ -440,6 +440,7 @@ public class LifeinsUtil
 		c.setGenderCode("M".equals(gender) ? Customer.GENDER_MALE : Customer.GENDER_FEMALE);
 		c.setBirthday(birthday);
 		c.setName((String)map.get("name"));
+		c.vals = map;
 		
 		return c;
 	}
