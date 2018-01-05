@@ -267,7 +267,7 @@ var Plan = React.createClass({
 							<div className="dropdown">
 								<a href="#" onClick={this.showRiders.bind(this, i)} className="dropdown-toggle"
 								   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-									<img src="images/add.png" style={{width:"30px", height:"30px"}}/>
+									<img src="../images/add.png" style={{width:"30px", height:"30px"}}/>
 								</a>
 								<ul className="dropdown-menu" style={{width:"320px"}}>{this.state.riders[i]}</ul>
 							</div>}
@@ -286,7 +286,7 @@ var Plan = React.createClass({
 						<td>{v.pay}</td>
 						<td>{v.premium}</td>
 						<td>
-							{v.auto ? null: (<a onClick={this.remove.bind(this, i)}><img src="images/delete.png" style={{width:"30px", height:"30px"}}/></a>)}
+							{v.auto ? null: (<a onClick={this.remove.bind(this, i)}><img src="../images/delete.png" style={{width:"30px", height:"30px"}}/></a>)}
 						</td>
 					</tr>
 				);

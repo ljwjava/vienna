@@ -19,6 +19,32 @@ class BaseForm extends Form {
     }
 }
 
+var RuleForm = React.createClass({
+    render() {
+        var rules = this.props.value;
+        var form = rules.map(v => {
+            return  <div style={{border:"2px solid #00AAFF", height:"90px", padding:"3px 0 3px 0", marginBottom:"5px"}}>
+                <div className="col-sm-10 field-comp">
+                    <Inputer ref="rule" value={v.rule}/>
+                </div>
+                <div className="col-sm-2 field-comp">
+                    <Selecter ref="type" options={[["default", "默认"],["product", "产品"],["customer", "客户"]]} value={v.type}/>
+                </div>
+                {/*<div className="col-sm-1" style={{textAlign:"right"}}>*/}
+                    {/*<img src="../images/delete.png" style={{width:"30px", height:"30px"}}/>*/}
+                {/*</div>*/}
+                <div className="col-sm-10 field-comp">
+                    <Inputer ref="text" value={v.text}/>
+                </div>
+                <div className="col-sm-2 field-comp">
+                    <Selecter ref="level" options={[["default", "默认"],["fail", "失败"],["alert", "警告"]]} value={v.level}/>
+                </div>
+            </div>;
+        });
+        return <div>{form}</div>;
+    }
+});
+
 var Main = React.createClass({
     getInitialState() {
         return {};
@@ -26,15 +52,12 @@ var Main = React.createClass({
     componentDidMount() {
     },
     render() {
-        var keys = ["base", "data", "param", "rider", "duty"];
+        var keys = ["base", "data", "param", "rider", "duty", "rule"];
         var form = keys.map(v => {
             var f = env.product[v];
-            if (f == null) {
-                return null;
-            }
-            return <div className="container-fluid">
-                <div>{f.name}</div>
-                <BaseForm fields={f.form}/>
+            return f == null ? null : <div className="container-fluid">
+                <div className="form-label"><span style={{color:"#00AAFF"}}>█</span>&nbsp;&nbsp;{f.name}</div>
+                {f.type == "rule" ? <RuleForm value={f.value}/> : <BaseForm fields={f.form}/>}
             </div>;
         });
         return (
