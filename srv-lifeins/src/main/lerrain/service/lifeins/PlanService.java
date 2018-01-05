@@ -24,6 +24,9 @@ public class PlanService
 	PlanDao2 pd;
 
 	@Autowired
+	PlanDao pdo;
+
+	@Autowired
 	LifeinsService lifeins;
 
 	Stack env;
@@ -53,7 +56,7 @@ public class PlanService
 			@Override
 			public Object run(Object[] objects, Factors factors)
 			{
-				return getPlan(objects[0].toString(), null);
+				return getPlan(objects[0].toString());
 			}
 		});
 
@@ -65,7 +68,8 @@ public class PlanService
 				if (objects != null && objects.length > 0)
 					((Stack)factors).set("vendor", objects[0]);
 
-				return new Plan(new Customer(), new Customer());
+				Plan plan = new Plan(new Customer(), new Customer());
+				return plan;
 			}
 		});
 
@@ -171,11 +175,6 @@ public class PlanService
 
 	public Plan getPlan(String planId)
 	{
-		return getPlan(planId, null);
-	}
-
-	public Plan getPlan(String planId, JSONObject p)
-	{
 		if (planId == null)
 			return null;
 
@@ -185,10 +184,7 @@ public class PlanService
 		{
 			try
 			{
-				if (p != null)
-					plan = LifeinsUtil.toPlan(lifeins, p);
-				else
-					plan = pd.load(planId);
+				plan = pdo.load(planId);
 			}
 			catch (Exception e)
 			{
@@ -203,7 +199,7 @@ public class PlanService
 
 		return plan;
 	}
-	
+
 	public void savePlan(Plan p)
 	{
 		pd.save(p);

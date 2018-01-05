@@ -42,12 +42,12 @@ public class PlanDao2
 
         if (exists(plan.getId()))
         {
-            String sql = "update t_ins_plan set content = ?, APPLICANT = ?, INSURANT = ?, INSURE_TIME = ?, UPDATE_TIME = ? where PLAN_ID = ?";
+            String sql = "update t_ins_plandef set content = ?, APPLICANT = ?, INSURANT = ?, INSURE_TIME = ?, UPDATE_TIME = ? where PLAN_ID = ?";
             jdbc.update(sql, json.toJSONString(), LifeinsUtil.jsonOf(applicant).toJSONString(), LifeinsUtil.jsonOf(insurant).toJSONString(), plan.getInsureTime(), now, plan.getId());
         }
         else
         {
-            String sql = "insert into t_ins_plan(PLAN_ID, content, APPLICANT, INSURANT, INSURE_TIME, TYPE, CREATE_TIME, UPDATE_TIME) values(?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "insert into t_ins_plandef(PLAN_ID, content, APPLICANT, INSURANT, INSURE_TIME, TYPE, CREATE_TIME, UPDATE_TIME) values(?, ?, ?, ?, ?, ?, ?, ?)";
             jdbc.update(sql, plan.getId(), json.toJSONString(), LifeinsUtil.jsonOf(applicant).toJSONString(), LifeinsUtil.jsonOf(insurant).toJSONString(), plan.getInsureTime(), 1, now, now);
         }
 
@@ -56,13 +56,13 @@ public class PlanDao2
 
     public boolean exists(String planId)
     {
-        String sql = "select exists(*) from t_ins_plan where PLAN_ID = ? and VALID is null";
+        String sql = "select exists(*) from t_ins_plandef where PLAN_ID = ? and VALID is null";
         return jdbc.queryForObject(sql, new Object[]{planId}, Boolean.class);
     }
 
     public boolean delete(String planId)
     {
-        String sql = "update t_ins_plan set VALID = 'N', UPDATE_TIME = ? where PLAN_ID = ?";
+        String sql = "update t_ins_plandef set VALID = 'N', UPDATE_TIME = ? where PLAN_ID = ?";
         jdbc.update(sql, new Date(), planId);
 
         return true;
@@ -70,7 +70,7 @@ public class PlanDao2
 
     public Plan load(String planId)
     {
-        String sql = "select * from t_ins_plan where plan_id = ? and valid is null";
+        String sql = "select * from t_ins_plandef where plan_id = ? and valid is null";
         return jdbc.queryForObject(sql, new Object[]{planId}, new RowMapper<Plan>()
         {
             @Override
@@ -166,7 +166,7 @@ public class PlanDao2
     {
         final Map<String, Object> r = new HashMap<>();
 
-        jdbc.query("select a.* from t_ins_plan a where a.VALID is null", new RowCallbackHandler()
+        jdbc.query("select a.* from t_ins_plandef a where a.VALID is null", new RowCallbackHandler()
         {
             @Override
             public void processRow(ResultSet rs) throws SQLException

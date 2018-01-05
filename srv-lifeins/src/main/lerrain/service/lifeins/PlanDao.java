@@ -35,63 +35,15 @@ public class PlanDao
         Date now = new Date();
         JSONObject json = LifeinsUtil.toSaveJson(plan);
 
-        if (exists(plan.getId()))
-        {
-            String sql = "update t_life_plan set content = ?, update_time = ? where id = ?";
-            jdbc.update(sql, json.toJSONString(), now, plan.getId());
-        }
-        else
-        {
-            String sql = "insert into t_life_plan(id, content, creator, create_time, updater, update_time) values(?, ?, ?, ?, ?, ?)";
-            jdbc.update(sql, plan.getId(), json.toJSONString(), 1, now, 1, now);
-        }
-    }
-
-    public boolean exists(String planId)
-    {
-        if (Common.isEmpty(planId))
-            return false;
-
-        String sql = "select exists(*) from t_life_plan where id = ? and valid is null";
-        return jdbc.queryForObject(sql, new Object[]{planId}, Boolean.class);
-    }
-
-    public boolean delete(String planId)
-    {
-        String sql = "update t_life_plan set valid = 'N', update_time = ? where id = ?";
-        jdbc.update(sql, new Date(), planId);
-
-        return true;
+        String sql = "replace into t_ins_plan(id, plan, update_time) values(?, ?, ?)";
+        jdbc.update(sql, plan.getId(), json.toJSONString(), now);
     }
 
     public Plan load(String planId)
     {
-        String sql = "select content from t_life_plan where id = ? and valid is null";
+        String sql = "select plan from t_ins_plan where id = ? and valid is null";
         String res = jdbc.queryForObject(sql, new Object[]{planId}, String.class);
 
         return LifeinsUtil.toPlan(lifeins, JSON.parseObject(res));
-    }
-
-    public void supplyClauses()
-    {
-        jdbc.query("select * from t_ins_clause", new RowCallbackHandler()
-        {
-            @Override
-            public void processRow(ResultSet rs) throws SQLException
-            {
-                String code = rs.getString("code");
-                Insurance ins = lifeins.getProduct(code);
-                if (ins != null)
-                {
-                    ins.setAdditional("classify", rs.getString("classify"));
-                    ins.setAdditional("remark", rs.getString("remark"));
-                    ins.setAdditional("tag", rs.getString("tag"));
-                }
-                else
-                {
-                    Log.error(code + " is not found.");
-                }
-            }
-        });
     }
 }

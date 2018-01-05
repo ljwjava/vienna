@@ -42,6 +42,9 @@ public class PlanController
     @Autowired
     EditorService editorSrv;
 
+    @Autowired
+    MsgQueue queue;
+
     Map<String, Script> scriptMap = new HashMap<>();
 
     @Value("${env}")
@@ -61,6 +64,8 @@ public class PlanController
         mergeQuestSrv.reset();
 
         editorSrv.reset();
+
+        queue.start();
 
         return "success";
     }
@@ -94,6 +99,8 @@ public class PlanController
         LifeinsUtil.customerOf((Customer) plan.getInsurant(), p.getJSONObject("insurant"));
 
         plan.clearCache();
+
+        queue.add(plan);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -204,11 +211,11 @@ public class PlanController
         Plan plan = planSrv.getPlan(planId);
         plan.remove(productIndex);
 
+        queue.add(plan);
+
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", LifeinsUtil.jsonOf(plan));
-
-        //		System.out.println(res.toJSONString());
 
         return res;
     }
@@ -581,6 +588,8 @@ public class PlanController
             }
         }
 
+        queue.add(plan);
+
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", LifeinsUtil.jsonOf(plan));
@@ -655,6 +664,8 @@ public class PlanController
 
             res.put("content", planSrv.perform(plan, script, p.getJSONObject("with")));
         }
+
+        queue.add(plan);
 
         return res;
     }
