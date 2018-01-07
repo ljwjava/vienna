@@ -1,12 +1,10 @@
-package lerrain.service.lifeins.pack;
+package lerrain.service.sale;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.tool.Common;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lerrain on 2017/5/5.
@@ -24,13 +22,17 @@ public class PackUtil
         r.put("applyMode", packIns.getApplyMode());
         r.put("formOpt", packIns.getFormOpt());
 
+        r.put("wareId", packIns.getWare().getId());
+        r.put("wareCode", packIns.getWare().getCode());
+
         JSONArray factors = new JSONArray();
         r.put("factors", factors);
 
         for (InputField field : packIns.getInputForm())
             factors.add(field);
 
-        r.put("docs", packIns.getDocs());
+        r.put("extra", packIns.getExtra());
+        r.put("show", packIns.getShow());
 
         return r;
     }

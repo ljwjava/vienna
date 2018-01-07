@@ -1,11 +1,9 @@
-package lerrain.service.sale.pack;
+package lerrain.service.sale;
 
 import com.alibaba.fastjson.JSONObject;
-import lerrain.service.common.ServiceMgr;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
-import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Formula;
-import lerrain.tool.formula.Function;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +20,49 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class PackDao
+public class SaleDao
 {
     @Autowired
     JdbcTemplate   jdbc;
 
     @Autowired
     Lifeins lifeins;
+
+    public List<Ware> loadAll()
+    {
+        return jdbc.query("select * from t_ware", new RowMapper<Ware>()
+        {
+            @Override
+            public Ware mapRow(ResultSet m, int rowNum) throws SQLException
+            {
+                Ware c = new Ware();
+                c.setId(m.getLong("id"));
+                c.setName(m.getString("name"));
+                c.setCode(m.getString("code"));
+                c.setAbbrName(m.getString("abbr_name"));
+//                c.setType(m.getInt("type"));
+//                c.setTag(m.getString("tag"));
+                c.setPrice(m.getString("price"));
+                c.setLogo(m.getString("logo"));
+                c.setRemark(m.getString("remark"));
+
+                String banner = m.getString("banner");
+                if (banner != null)
+                    c.setBanner(banner.split(","));
+
+//                String detail = m.getString("detail");
+//                if (detail != null)
+//                    c.setDetail(JSON.parseArray(detail));
+
+                return c;
+            }
+        });
+    }
+
+    public List<Long> find(Long platformId)
+    {
+        return jdbc.queryForList("select ware_id from t_platform_ware where platform_id = ?", Long.class, platformId);
+    }
 
     public Double getPackRate(PackIns packIns, String key)
     {
@@ -45,23 +79,18 @@ public class PackDao
         }
     }
 
-    public Map<Object, PackIns> loadPacks()
+    public List<PackIns> loadPacks(final Map<Object, Ware> wareMap, final Map<Long, Map> vendorMap)
     {
-        final Map<Long, Map> vendorMap = this.loadAllVendors();
-
-        final Map<Object, PackIns> r = new HashMap<>();
-
-        jdbc.query("select * from t_ware_pack", new RowMapper<Object>()
+        return jdbc.query("select * from t_ware_pack order by sequence desc, id", new RowMapper<PackIns>()
         {
             @Override
-            public Object mapRow(ResultSet m, int rowNum) throws SQLException
+            public PackIns mapRow(ResultSet m, int rowNum) throws SQLException
             {
                 try
                 {
                     String showStr = m.getString("show");
-                    String envStr = m.getString("env");
+                    String extra = m.getString("extra");
                     String price = m.getString("price");
-                    String referKey = m.getString("refer_key");
                     String formOpt = m.getString("form_opt");
 
                     Long input = Common.toLong(m.getObject("input"));
@@ -70,16 +99,17 @@ public class PackDao
                     packIns.setId(m.getLong("id"));
                     packIns.setCode(m.getString("code"));
                     packIns.setName(m.getString("name"));
+                    packIns.setWare(wareMap.get(m.getLong("ware_id")));
                     packIns.setType(m.getInt("type"));
                     packIns.setApplyMode(m.getInt("apply_mode"));
-                    packIns.setReferKey(referKey);
 
-                    if (!Common.isEmpty(envStr))
-                        packIns.setEnv(JSONObject.parseObject(envStr));
                     if (!Common.isEmpty(formOpt))
                         packIns.setFormOpt(JSONObject.parseObject(formOpt));
                     if (!Common.isEmpty(showStr))
                         packIns.setShow(JSONObject.parseObject(showStr));
+                    if (!Common.isEmpty(extra))
+                        packIns.setExtra(JSONObject.parseObject(extra));
+
                     if (input != null)
                     {
                         List<InputField> list = loadInputForm(input);
@@ -90,47 +120,55 @@ public class PackDao
                     if (vendorId != null)
                         packIns.setVendor(vendorMap.get(vendorId));
 
+                    Stack stack = new Stack();
+                    stack.declare("PACK", packIns);
+                    stack.declare("PACK_ID", packIns.getId());
+                    stack.declare("PACK_CODE", packIns.getCode());
+                    stack.declare("life", lifeins);
+
+                    packIns.setStack(stack);
+
                     if (!Common.isEmpty(price))
                     {
-                        if (price.startsWith("factors/"))
+                        if (price.startsWith("factors:"))
                         {
                             String factors = price.substring(8);
                             packIns.setPriceType(PackIns.PRICE_FACTORS);
                             if (!Common.isEmpty(factors))
                                 packIns.setPrice(factors.split(","));
                         }
-                        else
+                        else if (price.startsWith("plan:"))
+                        {
+                            String planId = price.substring(5);
+                            packIns.setPriceType(PackIns.PRICE_PLAN);
+                            if (!Common.isEmpty(planId))
+                            {
+                                packIns.setPrice(planId);
+                                stack.declare("PLAN_ID", planId);
+                            }
+                        }
+                        else if (price != null)
                         {
                             packIns.setPriceType(PackIns.PRICE_FIXED);
                             packIns.setPrice(new BigDecimal(price));
+                        }
+                        else
+                        {
+                            packIns.setPriceType(PackIns.PRICE_OTHER);
                         }
                     }
 
                     packIns.setOpts(loadPackPerform(packIns.getId()));
 
-                    Stack stack = new Stack();
-                    stack.declare("PACK", packIns);
-                    stack.declare("PACK_ID", packIns.getId());
-                    stack.declare("PACK_CODE", packIns.getCode());
-                    stack.declare("REFER_KEY", packIns.getReferKey());
-                    stack.declare("life", lifeins);
-                    stack.setAll(packIns.getEnv());
-
-                    packIns.setStack(stack);
-
-                    r.put(packIns.getId(), packIns);
-                    r.put(packIns.getCode(), packIns);
+                    return packIns;
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    Log.error(e);
+                    return null;
                 }
-
-                return null;
             }
         });
-
-        return r;
     }
 
     public List<InputField> loadInputForm(Long inputId)
@@ -164,14 +202,12 @@ public class PackDao
         }, inputId);
     }
 
-    public Map<Long, Map> loadAllVendors()
+    public List<Map> loadAllVendor()
     {
-        final Map<Long, Map> res = new HashMap<>();
-
-        jdbc.query("select id, code, name, logo, succ_tips from t_company", new RowCallbackHandler()
+        return jdbc.query("select id, code, name, logo, succ_tips from t_company", new RowMapper<Map>()
         {
             @Override
-            public void processRow(ResultSet rs) throws SQLException
+            public Map mapRow(ResultSet rs, int rowNum) throws SQLException
             {
                 JSONObject r = new JSONObject();
                 r.put("id", rs.getLong("id"));
@@ -180,11 +216,9 @@ public class PackDao
                 r.put("logo", rs.getString("logo"));
                 r.put("succTips", rs.getString("succ_tips"));
 
-                res.put(rs.getLong("id"), r);
+                return r;
             }
         });
-
-        return res;
     }
 
     public Map<String, Formula> loadPackPerform(Long packId)

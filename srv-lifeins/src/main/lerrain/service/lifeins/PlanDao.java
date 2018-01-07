@@ -44,6 +44,6 @@ public class PlanDao
         String sql = "select plan from t_ins_plan where id = ? and valid is null";
         String res = jdbc.queryForObject(sql, new Object[]{planId}, String.class);
 
-        return LifeinsUtil.toPlan(lifeins, JSON.parseObject(res));
+        return LifeinsUtil.toPlan(lifeins, JSON.parseObject(res), planId);
     }
 }

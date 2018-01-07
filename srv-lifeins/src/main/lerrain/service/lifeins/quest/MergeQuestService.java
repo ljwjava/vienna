@@ -113,6 +113,9 @@ public class MergeQuestService
             }
         }
 
+        if (!r2.isEmpty())
+            r1.add(r2);
+
         return r1;
     }
 }

@@ -1,5 +1,7 @@
 package lerrain.service.sale;
 
+import java.util.List;
+
 /**
  * Created by lerrain on 2017/5/4.
  */
@@ -17,21 +19,23 @@ public class Ware
 
     String[] banner;
 
-    int type;
+    List<PackIns> detail;
 
-    String tag;
+//    int type;
 
-    Object detail;
+//    String tag;
 
-    public String getTag()
-    {
-        return tag;
-    }
+//    Object detail;
 
-    public void setTag(String tag)
-    {
-        this.tag = "," + tag + ",";
-    }
+//    public String getTag()
+//    {
+//        return tag;
+//    }
+//
+//    public void setTag(String tag)
+//    {
+//        this.tag = "," + tag + ",";
+//    }
 
     public Long getVendorId()
     {
@@ -43,26 +47,26 @@ public class Ware
         this.vendorId = vendorId;
     }
 
-    public Object getDetail()
+    public List<PackIns> getDetail()
     {
         return detail;
     }
 
-    public void setDetail(Object detail)
+    public void setDetail(List<PackIns> detail)
     {
         this.detail = detail;
     }
 
-    public boolean match(String tag)
-    {
-        if (tag == null)
-            return true;
-
-        if (this.tag == null)
-            return false;
-
-        return this.tag.indexOf("," + tag + ",") >= 0;
-    }
+//    public boolean match(String tag)
+//    {
+//        if (tag == null)
+//            return true;
+//
+//        if (this.tag == null)
+//            return false;
+//
+//        return this.tag.indexOf("," + tag + ",") >= 0;
+//    }
 
     public String getPrice()
     {
@@ -134,15 +138,15 @@ public class Ware
         this.remark = remark;
     }
 
-    public int getType()
-    {
-        return type;
-    }
-
-    public void setType(int type)
-    {
-        this.type = type;
-    }
+//    public int getType()
+//    {
+//        return type;
+//    }
+//
+//    public void setType(int type)
+//    {
+//        this.type = type;
+//    }
 
     public String getLogo()
     {

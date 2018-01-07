@@ -55,6 +55,8 @@ public class InsXml
         list.add(new BaseXml(root));
         list.add(new ParamXml(root.firstChild("param"), company));
         list.add(new DataXml(root.firstChild("data")));
+        list.add(new InitXml(root.firstChild("init")));
+        list.add(new InterestXml(root.firstChild("interest")));
         list.add(new RiderXml(root.firstChild("rider"), company));
         list.add(new RuleXml(root.firstChild("rule")));
         list.add(new FixedXml(root,"attachment", "展示"));

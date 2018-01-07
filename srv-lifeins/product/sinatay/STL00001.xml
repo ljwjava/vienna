@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="STL00001" corporation_id="sinatay" code="13F00180" name="信泰i立方多次赔付防癌险" name_abbr="i立方" unit="1000"
+		type_code="cancer" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="STL00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_20" />
+				<item code="term_30" />
+			</pay>
+			<insure>
+				<item code="to_70" />
+				<item code="to_full" />
+			</insure>
+		</param>
+		
+		<interest>
+			<!--<var name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY" />-->
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="恶性肿瘤保险金">
+					<item>被保险人于等待期后被专科医生初次确诊本合同所列的恶性肿瘤（不论一种或多种），我们按本合同基本保险金额给付第一次恶性肿瘤保险金。</item>
+					<item>我们给付第一次恶性肿瘤保险金后，本合同现金价值减少为零。</item>
+					<item>被保险人生存至第一次恶性肿瘤保险金所对应的恶性肿瘤确诊之日起三年后，若被专科医生第二次确诊本合同所列的恶性肿瘤（不论一种或多种），我们按本合同基本保险金额给付第二次恶性肿瘤保险金。</item>
+					<item>被保险人生存至第二次恶性肿瘤保险金所对应的恶性肿瘤确诊之日起三年后，若被专科医生第三次确诊本合同所列的恶性肿瘤（不论一种或多种），我们按本合同基本保险金额给付第三次恶性肿瘤保险金，本合同终止。</item>
+					<item>第二次及第三次确诊的恶性肿瘤包括以下情况：（1）与前一次恶性肿瘤无关的新发恶性肿瘤；（2）前一次恶性肿瘤复发、转移；（3）前一次恶性肿瘤仍持续。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+			<if condition="DAY lt 28 or AGE > 55" type="customer">
+				投保年龄须为出生满28天~55周岁
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
+				保额最低为10000元，且必须为1000元的整数倍。
+			</if>
+			<if condition="AMOUNT*1.5 > 450000">
+				累计癌症风险保额须≤45万元
+			</if>
+			<if condition="PAY_PERIOD > INSURE_PERIOD">
+				交费期间不得大于保障期间
+			</if>
+			<if condition="AGE lt 18 and RELATION != '02'" level="alert">
+				被保险人年龄为出生28天-17周岁，投保人须为被保险人父母
+			</if>
+			<if condition="AGE >= 18 and RELATION != '00' and RELATION != '01' and RELATION != '02'" level="alert">
+				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,4 +1,4 @@
-package lerrain.service.sale.pack;
+package lerrain.service.sale;
 
 /**
  * Created by lerrain on 2017/5/6.

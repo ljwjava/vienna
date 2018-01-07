@@ -197,14 +197,13 @@ var Ground = React.createClass({
 		};
     },
     componentDidMount() {
-		common.req("sale/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
+		common.req("sale/detail.json", {packId:env.packId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
 			env.vendorId = r.vendor.id;
 			env.company = r.vendor.code;
-			env.wareCode = r.ware.code;
 			this.setState({factors:r.factors}, () => {
-                if (this.props.defVal.wareId) {
+                if (this.props.defVal.packId) {
                     this.refs.applicant.verifyAll();
                     this.refs.insurant.verifyAll();
                     this.refs.plan.verifyAll();
@@ -298,12 +297,11 @@ var Ground = React.createClass({
         }
         let contact = this.refs.contact.val();
 		let apply = {
-			wareId: env.wareId,
-			wareCode: env.wareCode,
+			wareId: env.pack.wareId,
+			wareCode: env.pack.wareCode,
 			packId: env.packId,
 			packCode: env.pack.code,
-            packRefer: env.pack.referKey,
-            prizes: env.pack.env.prizes == null ? false : env.pack.env.prizes,
+            prizes: env.pack.extra.prizes == null ? false : env.pack.extra.prizes,
             applyMode: env.pack.applyMode,
 			packDesc: this.getPlanDesc(),
             shareType: common.param("shareType"),
@@ -323,6 +321,7 @@ var Ground = React.createClass({
 		let order = {	
 			orderId: env.orderId,
 			productId: env.packId,
+            productCode: env.pack.code,
 			productName: env.pack.name,
             productType: env.pack.type,
 			vendorId: env.vendorId,
@@ -432,7 +431,6 @@ $(document).ready( function() {
 	if (env.orderId == null)
 		env.orderId = common.load("iyb/orderId", 1800000);
 	if (env.orderId == null || env.orderId == "") {
-		env.wareId = common.param("wareId");
 		env.packId = common.param("packId");
 		env.brokerId = common.param("accountId");
 		common.req("order/create.json", {}, r => {
@@ -450,7 +448,6 @@ $(document).ready( function() {
 		});
 	} else {
 		common.req("order/view.json", {orderId: env.orderId}, r => {
-			env.wareId = r.detail.wareId;
 			env.packId = r.productId;
 			env.brokerId = r.owner;
 			if (r.detail != null) {

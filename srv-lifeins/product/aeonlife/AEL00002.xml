@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="AEL00002" corporation_id="aeonlife" code="5302" name="百年附加康惠保特定疾病保险" name_abbr="附加康惠保" unit="1000"
+		is_main="no" is_rider="yes" type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="AEL00002" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="parent" />
+			</insure>
+		</param>
+		
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY"/>
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="特定疾病保险金">
+					<item>在本附加合同有效期内，被保险人于本附加合同持续生效180天（若本附加合同中止后复效，则以最后复效日起持续生效180天为准）以后（不含当日）首次确诊患本附加合同约定的特定疾病中的一种或多种，经公司承认的医疗机构和医师诊断确认，我们给付主合同基本保额的25%作为特定疾病保险金，本附加合同效力终止，主合同继续有效，且基本保额不变。</item>
+				</paragraph>
+				<paragraph title="特定疾病豁免保费">
+					<item>在本附加合同有效期内，被保险人于本附加合同持续生效180天（若本附加合同中止后复效，则以最后复效日起持续生效180天为准）以后（不含当日）首次确诊患本附加合同约定的特定疾病中的一种或多种，经公司承认的医疗机构和医师诊断确认，我们将豁免主合同和本附加合同缴费期间内的首次确诊日以后各期保险费，本附加合同终止，主合同继续有效。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>
+

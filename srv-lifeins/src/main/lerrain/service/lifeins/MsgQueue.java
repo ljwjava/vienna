@@ -55,7 +55,16 @@ public class MsgQueue implements Runnable
 			if (pack.size() > 0)
 			{
 				for (Plan plan : pack.values())
-					planDao.save(plan);
+				{
+					try
+					{
+						planDao.save(plan);
+					}
+					catch (Exception e)
+					{
+						Log.alert(e);
+					}
+				}
 
 				try
 				{

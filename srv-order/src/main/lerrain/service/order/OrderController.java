@@ -230,6 +230,8 @@ public class OrderController
             order.setPrice(Common.decimalOf(p.get("price")));
         if (p.containsKey("productId"))
             order.setProductId(p.getString("productId"));
+        if (p.containsKey("productCode"))
+            order.setProductCode(p.getString("productCode"));
         if (p.containsKey("productName"))
             order.setProductName(p.getString("productName"));
         if (p.containsKey("consumer"))

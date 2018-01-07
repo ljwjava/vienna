@@ -1,4 +1,4 @@
-package lerrain.service.sale.pack;
+package lerrain.service.sale;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceMgr;
@@ -21,7 +21,7 @@ public class Lifeins implements Function
     public Object run(Object[] objects, Factors factors)
     {
         JSONObject json = new JSONObject();
-        json.put("planId", factors.get("REFER_KEY"));
+        json.put("planId", factors.get("PLAN_ID"));
         json.put("script", objects[0]);
         json.put("with", objects.length >= 2 ? translate((PackIns)factors.get("PACK"), (Map)objects[1]) : null);
 

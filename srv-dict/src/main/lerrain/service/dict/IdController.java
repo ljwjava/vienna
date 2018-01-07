@@ -21,9 +21,8 @@ public class IdController
     @ResponseBody
     public synchronized String reqId(@RequestBody String code)
     {
-        if(skip <= 0){
+        if(skip <= 0)
             skip = jdbc.queryForObject("select step from s_sequence where code = ?", Integer.class, code);
-        }
 
         long r1 = jdbc.queryForObject(sql, Long.class, code);
         long r0 = r1 - skip + 1;

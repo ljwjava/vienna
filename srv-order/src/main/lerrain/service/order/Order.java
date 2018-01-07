@@ -14,7 +14,9 @@ public class Order
     Long parentId;
 
     String productId;
+    String productCode;
     String productName;
+
     int productType; //1长期寿险 2短期健康险 3驾乘险 4自定义组合1
 
     String consumer;
@@ -75,6 +77,16 @@ public class Order
     public void setParentId(Long parentId)
     {
         this.parentId = parentId;
+    }
+
+    public String getProductCode()
+    {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode)
+    {
+        this.productCode = productCode;
     }
 
     public int getProductType()

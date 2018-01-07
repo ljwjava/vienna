@@ -11,6 +11,7 @@ import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.*;
 
 import lerrain.service.common.Log;
+import lerrain.service.common.ServiceTools;
 import lerrain.service.lifeins.manage.EditorService;
 import lerrain.service.lifeins.quest.MergeQuestService;
 import lerrain.tool.Common;
@@ -45,6 +46,9 @@ public class PlanController
     @Autowired
     MsgQueue queue;
 
+    @Autowired
+    ServiceTools tools;
+
     Map<String, Script> scriptMap = new HashMap<>();
 
     @Value("${env}")
@@ -57,6 +61,8 @@ public class PlanController
     {
         Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv) || "uat".equalsIgnoreCase(srvEnv));
         Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
+
+        Log.EXCEPTION_STACK = Script.STACK_MESSAGE;
 
         lifeins.reset();
         planSrv.reset();
@@ -74,7 +80,11 @@ public class PlanController
     @ResponseBody
     public JSONObject create(@RequestBody JSONObject p)
     {
-        Plan plan = LifeinsUtil.toPlan(lifeins, p);
+        String planId = p.getString("planId");
+        if (Common.isEmpty(planId))
+            planId = tools.nextId("plan") + "";
+
+        Plan plan = LifeinsUtil.toPlan(lifeins, p, planId);
         planSrv.newPlan(plan);
 
         JSONObject res = new JSONObject();
@@ -178,24 +188,24 @@ public class PlanController
         return res;
     }
 
-    @RequestMapping({"/plan/save.json"})
-    @ResponseBody
-    public JSONObject save(@RequestBody JSONObject p)
-    {
-        String planId = (String) p.get("planId");
-
-        if (Common.isEmpty(planId))
-            throw new RuntimeException("缺少planId");
-
-        Plan plan = planSrv.getPlan(planId);
-        planSrv.savePlan(plan);
-
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", LifeinsUtil.jsonOf(plan));
-
-        return res;
-    }
+//    @RequestMapping({"/plan/save.json"})
+//    @ResponseBody
+//    public JSONObject save(@RequestBody JSONObject p)
+//    {
+//        String planId = (String) p.get("planId");
+//
+//        if (Common.isEmpty(planId))
+//            throw new RuntimeException("缺少planId");
+//
+//        Plan plan = planSrv.getPlan(planId);
+//        planSrv.savePlan(plan);
+//
+//        JSONObject res = new JSONObject();
+//        res.put("result", "success");
+//        res.put("content", LifeinsUtil.jsonOf(plan));
+//
+//        return res;
+//    }
 
     @RequestMapping({"/plan/remove_clause.json"})
     @ResponseBody
@@ -643,7 +653,6 @@ public class PlanController
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        Plan plan = planSrv.getPlan(planId);
         String str = p.getString("script");
 
         JSONObject res = new JSONObject();
@@ -651,7 +660,7 @@ public class PlanController
 
         if (Common.isEmpty(str))
         {
-            res.put("content", planSrv.perform(plan, null, p.getJSONObject("with")));
+            res.put("content", planSrv.perform(planId, null, p.getJSONObject("with")));
         }
         else
         {
@@ -662,10 +671,10 @@ public class PlanController
                 scriptMap.put(str, script);
             }
 
-            res.put("content", planSrv.perform(plan, script, p.getJSONObject("with")));
+            res.put("content", planSrv.perform(planId, script, p.getJSONObject("with")));
         }
 
-        queue.add(plan);
+//        queue.add(plan);
 
         return res;
     }

@@ -30,13 +30,13 @@ public class CmsDefineDao
 			public void processRow(ResultSet rs) throws SQLException
 			{
 				Long platformId = rs.getLong("platform_id");
-				String product = rs.getString("product");
+				Long productId = rs.getLong("product_id");
 
 				String group = rs.getString("group");
 				String payFreq = rs.getString("pay_freq");
 				String payPeriod = rs.getString("pay_period");
 
-				String key = platformId + "/" + group + "/" + product + "/" + payFreq + "/" + payPeriod;
+				String key = platformId + "/" + group + "/" + productId + "/" + payFreq + "/" + payPeriod;
 
 				List<CmsDefine> list = m.get(key);
 				if (list == null)

@@ -5,10 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
-import lerrain.service.sale.pack.Lifeins;
-import lerrain.service.sale.pack.PackIns;
-import lerrain.service.sale.pack.PackService;
-import lerrain.service.sale.pack.PackUtil;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Script;
@@ -27,12 +23,14 @@ import java.util.Map;
 @Controller
 public class SaleController
 {
-    @Autowired WareService wareSrv;
-    @Autowired PackService packSrv;
-    @Autowired CmsService cmsSrv;
-    @Autowired VendorService vendorSrv;
+    @Autowired
+    SaleService saleSrv;
 
-    @Autowired ServiceMgr serviceMgr;
+    @Autowired
+    CmsService cmsSrv;
+
+    @Autowired
+    ServiceMgr serviceMgr;
 
     @Value("${env}")
     String srvEnv;
@@ -53,35 +51,53 @@ public class SaleController
         Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv) || "uat".equalsIgnoreCase(srvEnv));
         Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
 
-        wareSrv.reset();
-        packSrv.reset();
+        saleSrv.reset();
         cmsSrv.reset();
-        vendorSrv.reset();
 
         return "success";
     }
 
-    @RequestMapping("/list.json")
-    @ResponseBody
-    public JSONObject premium(@RequestBody JSONObject json)
-    {
-        Long platformId = json.getLong("platformId");
-
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", wareSrv.find(platformId, json.getString("tag")));
-
-        return res;
-    }
+//    @RequestMapping("/list.json")
+//    @ResponseBody
+//    public JSONObject premium(@RequestBody JSONObject json)
+//    {
+//        Long platformId = json.getLong("platformId");
+//
+//        JSONObject res = new JSONObject();
+//        res.put("result", "success");
+//        res.put("content", saleSrv.find(platformId, json.getString("tag")));
+//
+//        return res;
+//    }
 
     @RequestMapping("/view.json")
     @ResponseBody
     public JSONObject view(@RequestBody JSONObject json)
     {
-        Ware c = json.containsKey("wareId") ? wareSrv.getWare(json.getLong("wareId")) : wareSrv.getWare(json.getString("wareCode"));
+        Ware c = json.containsKey("wareId") ? saleSrv.getWare(json.getLong("wareId")) : saleSrv.getWare(json.getString("wareCode"));
 
-        JSONObject r = (JSONObject)JSON.toJSON(c);
-        r.put("vendor", vendorSrv.getVendor(c.getVendorId()));
+        JSONObject r = new JSONObject();
+        r.put("id", c.getId());
+        r.put("code", c.getCode());
+        r.put("name", c.getName());
+        r.put("abbrName", c.getAbbrName());
+        r.put("remark", c.getRemark());
+        r.put("logo", c.getLogo());
+        r.put("price", c.getPrice());
+        r.put("banner", c.getBanner());
+
+        r.put("vendor", saleSrv.getVendor(c.getVendorId()));
+
+        JSONArray detail = new JSONArray();
+        for (PackIns pack : c.getDetail())
+        {
+            JSONObject p = new JSONObject();
+            p.put("target", pack.getId());
+            p.put("name", pack.getName());
+            p.put("summary", pack.getShow());
+            detail.add(p);
+        }
+        r.put("detail", detail);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -94,18 +110,8 @@ public class SaleController
     @ResponseBody
     public JSONObject detail(@RequestBody JSONObject req)
     {
-//        JSONObject json = serviceMgr.req("lifeins", "pack/view.json", req);
-//        JSONObject content = json.getJSONObject("content");
-
-        JSONObject content = PackUtil.toJson(getPack(req));
-
-        if (req.containsKey("wareId"))
-        {
-            Ware ware = wareSrv.getWare(req.getLong("wareId"));
-            JSONObject wareJson = new JSONObject();
-            wareJson.put("code", ware.getCode());
-            content.put("ware", wareJson);
-        }
+        PackIns pack = getPack(req);
+        JSONObject content = PackUtil.toJson(pack);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -129,16 +135,16 @@ public class SaleController
 
         if (script != null)
         {
-            r = packSrv.perform(script, packIns, content);
+            r = saleSrv.perform(script, packIns, content);
         }
         else if ("try".equals(opt) || "premium".equals(opt))
         {
-            r = packSrv.getPrice(packIns, content);
+            r = saleSrv.getPrice(packIns, content);
         }
-        else if ("plan".equals(opt))
+        else if ("detail".equals(opt) || "plan".equals(opt)) //plan以后由detail替代，可以查看其他类型产品的详情
         {
             JSONObject json = new JSONObject();
-            json.put("planId", packIns.getReferKey());
+            json.put("planId", packIns.getPrice());
             json.put("script", null);
             json.put("with", Lifeins.translate(packIns, content));
 
@@ -183,11 +189,11 @@ public class SaleController
         PackIns pack = null;
 
         if (vals.containsKey("packId"))
-            pack = packSrv.getPack(Common.toLong(vals.get("packId")));
+            pack = saleSrv.getPack(Common.toLong(vals.get("packId")));
         else if (vals.containsKey("productId"))
-            pack = packSrv.getPack(Common.toLong(vals.get("productId")));
+            pack = saleSrv.getPack(Common.toLong(vals.get("productId")));
         else if (vals.containsKey("packCode"))
-            pack = packSrv.getPack((String)vals.get("packCode"));
+            pack = saleSrv.getPack((String)vals.get("packCode"));
 
         return pack;
     }

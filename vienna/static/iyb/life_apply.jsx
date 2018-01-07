@@ -254,12 +254,11 @@ var Ground = React.createClass({
 		};
     },
     componentDidMount() {
-		common.req("sale/detail.json", {packId:env.packId, wareId:env.wareId}, r => {
+		common.req("sale/detail.json", {packId:env.packId}, r => {
 			env.pack = r;
 			env.vendor = r.vendor;
 			env.vendorId = r.vendor.id;
 			env.company = r.vendor.code;
-			env.wareCode = r.ware.code;
 			env.formOpt = r.formOpt == null ? {} : r.formOpt;
 
 			for (var x1 in env.def) {
@@ -276,7 +275,7 @@ var Ground = React.createClass({
 			if (env.formOpt.beneficiary.custom)
                 opts.push(["other","指定"]);
 			this.setState({factors:r.factors, benefit:opts, insurant:ins}, () => {
-				if (this.props.defVal.wareId) {
+				if (this.props.defVal.packId) {
                     this.refs.applicant.verifyAll();
                     if (this.refs.insurant)
                         this.refs.insurant.verifyAll();
@@ -519,12 +518,11 @@ var Ground = React.createClass({
 		env.applicant.mobile = contact.mobile;
 		env.applicant.email = contact.email;
 		let apply = {
-			wareId: env.wareId,
-			wareCode: env.wareCode,
+			wareId: env.pack.wareId,
+            wareCode: env.pack.wareCode,
 			packId: env.packId,
 			packCode: env.pack.code,
-            packRefer: env.pack.referKey,
-			prizes: env.pack.env.prizes == null ? false : env.pack.env.prizes,
+			prizes: env.pack.extra.prizes == null ? false : env.pack.extra.prizes,
 			packDesc: this.getPlanDesc(),
             applyMode: env.pack.applyMode,
             shareType: common.param("shareType"),
@@ -540,14 +538,15 @@ var Ground = React.createClass({
 			smsCode: contact.smsCode,
 			smsKey: env.smsKey,
 			photo: env.photo,
-            read: env.pack.docs.read,
-            readAddDesc: env.pack.docs.readAddDesc,
+            read: env.pack.extra.read,
+            readAddDesc: env.pack.extra.readAddDesc,
 			pay: this.props.defVal.pay,
 			vendor: env.vendor
 		};
 		let order = {	
 			orderId: env.orderId,
 			productId: env.packId,
+            productCode: env.pack.code,
 			productName: env.pack.name,
 			productType: env.pack.type,
 			vendorId: env.vendorId,
@@ -696,7 +695,6 @@ $(document).ready( function() {
 	if (env.orderId == null)
 		env.orderId = common.load("iyb/orderId", 1800000);
 	if (env.orderId == null || env.orderId == "") {
-		env.wareId = common.param("wareId");
 		env.packId = common.param("packId");
 		env.brokerId = common.param("accountId");
 		common.req("order/create.json", {}, r => {
@@ -719,7 +717,6 @@ $(document).ready( function() {
 		});
 	} else {
 		common.req("order/view.json", {orderId: env.orderId}, r => {
-			env.wareId = r.detail.wareId;
 			env.packId = r.productId;
 			env.brokerId = r.owner;
 			if (r.detail != null) {

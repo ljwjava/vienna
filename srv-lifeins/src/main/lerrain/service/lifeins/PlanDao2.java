@@ -68,7 +68,7 @@ public class PlanDao2
         return true;
     }
 
-    public Plan load(String planId)
+    public Plan load(final String planId)
     {
         String sql = "select * from t_ins_plandef where plan_id = ? and valid is null";
         return jdbc.queryForObject(sql, new Object[]{planId}, new RowMapper<Plan>()
@@ -79,7 +79,7 @@ public class PlanDao2
                 String res = rs.getString("content");
 
                 if (!Common.isEmpty(res))
-                    return LifeinsUtil.toPlan(lifeins, JSON.parseObject(res));
+                    return LifeinsUtil.toPlan(lifeins, JSON.parseObject(res), planId);
                 else
                     return planOf(rs);
             }
@@ -232,14 +232,10 @@ public class PlanDao2
             @Override
             public void processRow(ResultSet rs) throws SQLException
             {
-                String code = rs.getString("code");
-                final Insurance ins = lifeins.getProduct(code);
+                String clauseId = rs.getString("clause_id");
+                final Insurance ins = lifeins.getProduct(clauseId);
                 if (ins != null)
                 {
-                    ins.setAdditional("classify", rs.getString("classify"));
-                    ins.setAdditional("remark", rs.getString("remark"));
-                    ins.setAdditional("tag", rs.getString("tag"));
-
                     Long inputId = Common.toLong(rs.getString("input_id"));
                     if (inputId != null)
                     {
@@ -273,7 +269,7 @@ public class PlanDao2
                 }
                 else
                 {
-                    Log.error(code + " is not found.");
+                    Log.error(clauseId + " is not found.");
                 }
             }
         });

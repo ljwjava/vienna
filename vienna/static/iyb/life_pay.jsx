@@ -72,8 +72,7 @@ var Ground = React.createClass({
             env.order.extra.pay = this.refs.pay.val();
             env.order.extra.pay.bankText = this.refs.pay.refs.bank.text();
 		}
-		if (this.refs.photos)
-		{
+		if (this.refs.photos) {
             env.order.extra.photos = this.refs.photos.val();
             if(env.order.extra.photos.length < 2) {
                 ToastIt("请上传完整证件影像");

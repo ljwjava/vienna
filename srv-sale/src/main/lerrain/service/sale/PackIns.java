@@ -1,4 +1,4 @@
-package lerrain.service.sale.pack;
+package lerrain.service.sale;
 
 import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Stack;
@@ -13,13 +13,14 @@ public class PackIns
 {
     public static final int PRICE_FIXED     = 1;
     public static final int PRICE_FACTORS   = 2;
-    public static final int PRICE_OTHER     = 3;
+    public static final int PRICE_PLAN      = 3;
+    public static final int PRICE_OTHER     = 9;
 
     Long id;
+    Ware ware;
 
     String code;
     String name;
-    String referKey;
 
     int type;
     int applyMode;
@@ -34,7 +35,7 @@ public class PackIns
 
     Map<String, Formula> opts;
 
-    Map<String, Object> env;
+    Map<String, Object> extra;
     Map<String, Object> vendor;
     Map<String, Object> formOpt;
 
@@ -48,14 +49,24 @@ public class PackIns
         this.type = type;
     }
 
-    public String getReferKey()
+    public Map<String, Object> getExtra()
     {
-        return referKey;
+        return extra;
     }
 
-    public void setReferKey(String referKey)
+    public void setExtra(Map<String, Object> extra)
     {
-        this.referKey = referKey;
+        this.extra = extra;
+    }
+
+    public Ware getWare()
+    {
+        return ware;
+    }
+
+    public void setWare(Ware ware)
+    {
+        this.ware = ware;
     }
 
     public Stack getStack()
@@ -126,16 +137,6 @@ public class PackIns
     public void setApplyMode(int applyMode)
     {
         this.applyMode = applyMode;
-    }
-
-    public Map<String, Object> getEnv()
-    {
-        return env;
-    }
-
-    public void setEnv(Map<String, Object> env)
-    {
-        this.env = env;
     }
 
     public Long getId()

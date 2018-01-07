@@ -7,6 +7,7 @@ import lerrain.project.insurance.product.Company;
 import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.rule.Rule;
 import lerrain.project.insurance.product.rule.RuleUtil;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Formula;
@@ -158,27 +159,33 @@ public class PlanService
 		return new Stack(functions);
 	}
 
-	public Object perform(Plan plan, Formula f, Map vals)
+	public Object perform(String planId, Formula f, Map vals)
 	{
+		Stack stack = new Stack(env);
+		stack.declare("self", vals);
+
+		Plan plan = getPlan(planId, stack);
 		reset(plan, vals);
 
 		if (f == null)
 			return LifeinsUtil.jsonOf(plan);
 
-		Stack stack = new Stack(env);
 		stack.declare("plan", plan);
 		stack.declare("PLAN", plan.getFactors());
-		stack.declare("self", vals);
-
 		return f.run(stack);
 	}
 
 	public Plan getPlan(String planId)
 	{
+		return getPlan(planId, null);
+	}
+
+	public Plan getPlan(String planId, Factors f)
+	{
 		if (planId == null)
 			return null;
 
-		Plan plan = cache.get(planId);
+		Plan plan = cache.get(planId, f);
 
 		if (plan == null)
 		{
@@ -188,6 +195,7 @@ public class PlanService
 			}
 			catch (Exception e)
 			{
+				Log.alert("load " + planId + " fail - " + e.toString());
 				plan = null;
 			}
 
@@ -198,11 +206,6 @@ public class PlanService
 		}
 
 		return plan;
-	}
-
-	public void savePlan(Plan p)
-	{
-		pd.save(p);
 	}
 
 	public void newPlan(Plan plan)
@@ -365,13 +368,13 @@ public class PlanService
 			}
 		}
 
-		public <T> T get(Object id)
+		public <T> T get(Object id, Factors f)
 		{
 			synchronized (cache)
 			{
 				Object val = cache.get(id);
 				if (val instanceof Formula)
-					val = ((Formula)val).run(factors);
+					val = ((Formula)val).run(f != null ? f : factors);
 
 				return (T)val;
 			}

@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="AEL00001" corporation_id="aeonlife" code="5301" name="百年康惠保重大疾病保险" name_abbr="康惠保" unit="1000"
+		type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="AEL00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+				<item code="term_30" />
+			</pay>
+			<insure>
+				<item code="to_70" />
+				<item code="to_full" />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="AEL00002"/>
+		</rider>
+
+		<init>
+			<item name="R" value="RIDER('AEL00002')"/>
+		</init>
+		
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY" />
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="重大疾病保险金">
+					<item>在本合同有效期间内，被保险人在等待期内初次患本合同所约定的重大疾病中一种或多种，经公司承认的医疗机构和医师诊断确认，我们返还所交保险费（不计利息），本合同效力终止；</item>
+					<item>在本合同有效期间内，被保险人因遭受意外伤害事故或在等待期后初次患本合同所约定的重大疾病中一种或多种，经公司承认的医疗机构和医师诊断确认，我们给付基本保额，本合同效力终止。</item>
+					<item>若被保险人因本合同所约定的重大疾病以外的原因身故，我们返还身故当时的保单现金价值，本合同效力终止。</item>
+				</paragraph>
+			</coverage>
+
+			<benefit_chart filter="chart" parser="chart">
+			    <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="重大疾病保险金" color="#0000FF">AMOUNT</line>
+					<line name="轻症疾病保险金" color="#CCAA00">R==null?0:R02.AMOUNT</line>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)+(R==null?0:R.IT.CSV(I))</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule>
+		    <if condition="AGE > 55">
+				被保险人年龄要求0~55周岁。
+			</if>
+			<if condition="AMOUNT lt 1000 or AMOUNT % 1000 > 0">
+				保额最低为1000，且必须为1000元的整数倍。
+			</if>
+			<if condition="AGE >= 0 and AGE le 40 and AMOUNT > 500000">
+				0~40周岁，最高保额为50万
+			</if>
+			<if condition="AGE >= 41 and AGE le 50 and AMOUNT > 300000">
+				41~50周岁，最高保额为30万
+			</if>
+			<if condition="AGE >= 51 and AGE le 55 and AMOUNT > 100000">
+				51~55周岁，最高保额为10万
+			</if>
+			<if condition="PAY_PERIOD > INSURE_PERIOD">
+				交费期间不得大于保障期间
+			</if>
+			<if condition="AGE lt 18 and RELATION != '02'" level="alert">
+				未成年人只能由其父母投保
+			</if>
+		</rule>
+	</product>
+</declare>

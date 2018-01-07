@@ -154,12 +154,10 @@ public class LifeinsUtil
 		return r;
 	}
 
-	public static Plan toPlan(LifeinsService lifeins, JSONObject saveJson)
+	public static Plan toPlan(LifeinsService lifeins, JSONObject saveJson, String planId)
 	{
-		String planId = saveJson.getString("planId");
-
 		Plan plan = new Plan(customerOf(saveJson.getJSONObject("applicant")), customerOf(saveJson.getJSONObject("insurant")));
-		plan.setId(Common.isEmpty(planId) ? Common.nextId("plan") : planId);
+		plan.setId(planId);
 
 		if (saveJson.containsKey("product")) for (Object prd : saveJson.getJSONArray("product"))
 		{

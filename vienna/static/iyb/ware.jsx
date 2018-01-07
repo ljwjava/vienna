@@ -87,7 +87,7 @@ var Ware = React.createClass({
         env.packId = r.detail.target;
         common.req("sale/detail.json", {packId: env.packId}, s => {
         	env.pack = s;
-            env.docs = s.docs;
+            env.docs = s.extra;
             env.packType = s.type;
             env.vendor = s.vendor;
             env.company = s.vendor.code;
@@ -152,7 +152,7 @@ var Ware = React.createClass({
     	this.setState({summary: this.state.detail.summary[code]});
     },
 	openPoster() {
-		document.location.href = "iyunbao://poster?code=" + env.ware.code;
+		document.location.href = "iyunbao://poster?code=" + env.pack.wareCode;
 	},
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
