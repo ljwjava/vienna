@@ -7,13 +7,14 @@ import List from '../common/component.list.jsx';
 var env = {
     search: null,
     from: 0,
-    number: 10
+    number: 20
 }
 
-class StandardList extends List {
-    upload() {
-        document.location.href = "upload.web";
-    }
+env.upload = function() {
+    document.location.href = "upload.web";
+}
+
+class PolicyList extends List {
     open(id) {
         document.location.href = "policy.web?policyId=" + id;
     }
@@ -21,21 +22,6 @@ class StandardList extends List {
         common.req("policy/list.json", env, r => {
             this.setState({content:r});
         });
-    }
-    buildConsole() {
-        return (
-			<nav className="navbar navbar-default">
-				<div className="container-fluid">
-					<div className="collapse navbar-collapse">
-						<ul className="nav navbar-nav">
-						</ul>
-						<ul className="nav navbar-nav navbar-right">
-							<li><a onClick={this.upload}>上传保单</a></li>
-						</ul>
-					</div>
-				</div>
-			</nav>
-        );
     }
     buildTableTitle() {
         return (
@@ -68,8 +54,25 @@ class StandardList extends List {
     }
 }
 
+var Main = React.createClass({
+    render() {
+        return <div className="form-horizontal">
+			<div className="form-group">
+				<div className="col-sm-12">
+					<div className="container-fluid">
+						<ul className="nav navbar-nav">
+						</ul>
+						<ul className="nav navbar-nav navbar-right">
+							<li><a onClick={env.create}>上传保单</a></li>
+						</ul>
+					</div>
+					<PolicyList env={env}/>
+				</div>
+			</div>
+		</div>;
+    }
+});
+
 $(document).ready( function() {
-    ReactDOM.render(
-		<StandardList env={env}/>, document.getElementById("content")
-    );
+    ReactDOM.render(<Main orgId={env.orgId}/>, document.getElementById("content"));
 });
