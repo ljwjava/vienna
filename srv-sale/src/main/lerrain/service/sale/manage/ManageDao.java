@@ -58,7 +58,7 @@ public class ManageDao
 
         if (!Common.isEmpty(search))
             sql.append(" and name like '%" + search + "%' ");
-        sql.append(" order by name desc limit " + from + ", " + number);
+        sql.append(" order by a.id desc limit " + from + ", " + number);
 
         return jdbc.query(sql.toString(), new RowMapper<Product>()
         {

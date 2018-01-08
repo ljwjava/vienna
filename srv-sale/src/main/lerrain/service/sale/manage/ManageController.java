@@ -1,5 +1,6 @@
 package lerrain.service.sale.manage;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.sale.SaleService;
 import lerrain.service.sale.Ware;
@@ -36,9 +37,11 @@ public class ManageController
         base.put("name", "基础信息");
 
         List<FormField> list = new ArrayList();
-        list.add(FormField.fieldOf("code", "CODE", "text", null, prd.getCode()));
+        list.add(FormField.fieldOf("id", "产品ID", "text", null, prd.getId()));
+        list.add(FormField.fieldOf("code", "产品CODE", "text", null, prd.getCode()));
         list.add(FormField.fieldOf("name", "名称", "text", null, prd.getName()));
         list.add(FormField.fieldOf("company", "公司", "select", manageSrv.getCompanyList(), prd.getCompanyId()));
+        list.add(FormField.fieldOf("type", "类型", "select", JSON.parseArray("[['1','个险条款'],['2','个险组合'],['3','团险组合']]"), "2"));
         base.put("form", list);
 
         r.put("base", base);

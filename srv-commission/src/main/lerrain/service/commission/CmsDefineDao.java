@@ -22,7 +22,7 @@ public class CmsDefineDao
 	{
 		final Map<String, List<CmsDefine>> m = new HashMap<>();
 
-		String sql = "select * from t_commission_define where valid is null order by platform_id, `group`, product, pay_freq, pay_period, begin, end";
+		String sql = "select * from t_commission_define where valid is null order by platform_id, `group`, product_id, pay_freq, pay_period, begin, end";
 
 		jdbc.query(sql, new RowCallbackHandler()
 		{
