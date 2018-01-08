@@ -314,7 +314,7 @@ var Ground = React.createClass({
 			smsCode: contact.smsCode,
 			smsKey: env.smsKey,
 			photo: env.photo,
-			read: env.pack.docs.read,
+			read: env.pack.extra.read,
 			pay: this.props.defVal.pay,
 			vendor: env.vendor
 		};
