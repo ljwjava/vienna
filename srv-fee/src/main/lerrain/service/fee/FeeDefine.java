@@ -1,13 +1,17 @@
-package lerrain.service.commission;
+package lerrain.service.fee;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lerrain on 2017/9/9.
  */
-public class CmsDefine
+public class FeeDefine
 {
-    double[] self, parent;
+    Double a1, a2, a3, a4;
+    List b1, b2, b3, b4;
+    Map c1, c2, c3, c4;
 
     Date begin, end;
 
@@ -17,16 +21,13 @@ public class CmsDefine
 
     String memo;
 
-    public CmsDefine(Date begin, Date end, double[] self, double[] parent, int freeze, int unit, int type)
+    public FeeDefine(Date begin, Date end, int freeze, int unit, int type)
     {
         this.begin = begin;
         this.end = end;
         this.freeze = freeze;
         this.unit = unit;
         this.type = type;
-
-        this.self = self;
-        this.parent = parent;
     }
 
     public int getFreeze()
@@ -49,26 +50,6 @@ public class CmsDefine
         this.type = type;
     }
 
-    public double[] getSelfRate()
-    {
-        return self;
-    }
-
-    public double[] getSelfRate(double[] t)
-    {
-        return mix(self, t);
-    }
-
-    public double[] getParentRate()
-    {
-        return parent;
-    }
-
-    public double[] getParentRate(double[] t)
-    {
-        return mix(parent, t);
-    }
-
     public int getUnit()
     {
         return unit;
@@ -87,19 +68,6 @@ public class CmsDefine
     public void setMemo(String memo)
     {
         this.memo = memo;
-    }
-
-    private double[] mix(double[] r, double[] t)
-    {
-        if (t == null)
-            return r;
-
-        double[] x = new double[Math.max(r.length, t.length)];
-
-        for (int i=0;i<x.length;i++)
-            x[i] = (r.length > i ? r[i] : 0) + (t.length > i ? t[i] : 0);
-
-        return x;
     }
 
     public boolean match()

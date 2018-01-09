@@ -303,7 +303,7 @@ public class PlanService
 		boolean forSelf = "self".equals(relation);
 
 		Customer insurant = forSelf ? applicant : new Customer();
-		insurant.set("RELATIVE", relation);
+		insurant.set("RELATION", relation);
 
 		plan.setInsurant(insurant);
 

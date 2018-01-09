@@ -1,5 +1,6 @@
-package lerrain.service.commission;
+package lerrain.service.fee;
 
+import com.alibaba.fastjson.JSON;
 import lerrain.service.common.Log;
 import lerrain.tool.Network;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,7 @@ public class IybPay
     String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChNwVveOgmYOOw6RiEOmXgn2H+Obeb10vVrdNMk80PS3KeeiXG55DGyoK8SOgq9QEO20NMwnWap9GCRPIdaLREq0+uDAwNkX4ebCUvLPety5mFRHUdzoQvD1KxEl7Uh+OyhylDUpV2qXKBr1K1pfMqvgI1HMcV/goVhpnL2iLdbwIDAQAB";
     String privateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIE2Pbwi54ShvxRTKAC75jadv5JrI8IzZNJKVTHx9HJSyRD5odvR3wtjtEcaYAEUazeMasRBPh6+tqCdEiY68VWylwIEsNqXSMbbSgcdSPABUhcKUqFSrYRbHjqgOkWy+GlLSbGOK4azzwMA4lJ0zZ5qZVAv9ALy946tdqoMD1HdAgMBAAECgYAoi7HBmJ5Xsz23jgSOfmfWGZgkxPP6m4/2oRaszoTrXujzJ7JPvUKlW0sVyMP5csPWMXzLSsHIegXqzn8EehiCXpxOUzKXSnR7lxsPQ5a5y2OoT0DKIrHCyuPWLLqsS67y3Gww+ICfzxjQygSZHhu0yIhf/qJMrMD29Sn0wt4IgQJBALZ4i+jmzm5rNoPnMXa6IWerl3HUkgOXvUgkeODun1LNEijQ1eOYK09enBfS9z4uE3MnJAn8kBYJAiK6696fjP0CQQC1R5EKXNUJr2rTwwF8Tu4LEvCKX/FD26NKHSi5q7ag9bf3M3dWJ/LqvIM1IH73+RKWYWHZrfZapuzEFXveDl5hAkB6FKbOuPUuDQ8ZKun+HEPTP4uAfg7+1luuU7CIFT6FQGzA4A/qSNnZLVxT2DLQ6DTdGzfScqbYB0jlgZfjh23lAkA7zWQ3uvA8xbXELiyrSY6V8KWRwJzi+e4gYQYyWkdhSi5qSnwv2/XzIkVWnWXFgFF1cqLJIO6IcVDiTwQR+UOBAkEAivs58l2pQN+Ex+F5Tl40EnuucDq37XGGcpBGAWiWpg7COpnaJKg8qeK5Mqd3Ue8+a1zxZ9NblwJlKAwDu6pMRw==";
 
-	public String pay(Long userId, int type, int mode, double bonus, String productName, int day, String messageTitle, Long bizId, String bizNo, Long fromUserId, Long productId, double premium)
+	public Object pay(Long userId, int type, double bonus, String productName, int day, String messageTitle, Long bizId, String bizNo, Long fromUserId, Long productId, double premium)
 	{
 		JSONObject content = new JSONObject();
 		content.put("accountId", userId);
@@ -79,7 +80,7 @@ public class IybPay
 
 			String res = Network.request(serviceIyb + SERVER_URL, req.toJSONString());
 			Log.info(serviceIyb+">>> request:"+content.toJSONString()+" <<< response:"+res);
-			return res;
+			return JSON.parseObject(res);
 		}
 		catch (Exception e)
 		{

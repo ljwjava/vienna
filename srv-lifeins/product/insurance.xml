@@ -96,4 +96,8 @@
     <corporation id="aeonlife" name="百年人寿" extends="insurance">
         <item src="aeonlife/*.xml"/>
     </corporation>
+
+    <corporation id="sinatay" name="信泰人寿" extends="insurance">
+        <item src="sinatay/*.xml"/>
+    </corporation>
 </declare>

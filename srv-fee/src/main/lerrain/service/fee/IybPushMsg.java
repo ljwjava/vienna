@@ -1,4 +1,4 @@
-package lerrain.service.commission;
+package lerrain.service.fee;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.tool.Network;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
-public class PushMsg
+public class IybPushMsg
 {
 	@Value("${service.iyb}")
 	String serviceIyb;

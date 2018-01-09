@@ -1,8 +1,7 @@
-package lerrain.service.commission;
+package lerrain.service.fee;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import lerrain.tool.Common;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.Map;
@@ -10,12 +9,16 @@ import java.util.Map;
 /**
  * Created by lerrain on 2017/9/13.
  */
-public class Commission
+public class Fee
 {
     Long id;
-    Long userId;
-    Long fromUserId;
     Long platformId;
+
+    int draweeType;
+    Long drawee;
+
+    int payeeType;
+    Long payee;
 
     double amount;
     boolean auto; //是否自动支付
@@ -23,7 +26,6 @@ public class Commission
     String productId; //对应的产品id，考虑活动code设置为string
     String bizNo; //对应的业务流水号，一般是保单号
     String memo; //备注
-    String extra;   // 扩展信息
 
     int type; //类型，0未知 1直佣 2间佣 3活动奖金 4抽奖
     int unit; //单位：1rmb 2转发基础 3积分
@@ -33,6 +35,8 @@ public class Commission
     Date estimate; //预计支付时间
     Date payTime; //实际支付时间
     Date createTime;
+
+    Map extra;   // 扩展信息
 
     public double getAmount()
     {
@@ -114,17 +118,11 @@ public class Commission
         this.memo = memo;
     }
 
-    public JSONObject getExtraInfoJson(){
-        if(StringUtils.isEmpty(this.extra)){
-            return null;
-        }
-        return JSONObject.parseObject(this.extra);
-    }
-    public String getExtra() {
+    public Map getExtra() {
         return extra;
     }
 
-    public void setExtra(String extra) {
+    public void setExtra(Map extra) {
         this.extra = extra;
     }
 
@@ -178,24 +176,6 @@ public class Commission
         this.type = type;
     }
 
-    public Long getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(Long userId)
-    {
-        this.userId = userId;
-    }
-
-    public Long getFromUserId() {
-        return fromUserId;
-    }
-
-    public void setFromUserId(Long fromUserId) {
-        this.fromUserId = fromUserId;
-    }
-
     public int getStatus()
     {
         return status;
@@ -206,26 +186,70 @@ public class Commission
         this.status = status;
     }
 
-    public static Commission commissionOf(Map c)
+    public int getDraweeType()
     {
-        Commission r = new Commission();
+        return draweeType;
+    }
+
+    public void setDraweeType(int draweeType)
+    {
+        this.draweeType = draweeType;
+    }
+
+    public Long getDrawee()
+    {
+        return drawee;
+    }
+
+    public void setDrawee(Long drawee)
+    {
+        this.drawee = drawee;
+    }
+
+    public int getPayeeType()
+    {
+        return payeeType;
+    }
+
+    public void setPayeeType(int payeeType)
+    {
+        this.payeeType = payeeType;
+    }
+
+    public Long getPayee()
+    {
+        return payee;
+    }
+
+    public void setPayee(Long payee)
+    {
+        this.payee = payee;
+    }
+
+    public static Fee feeOf(Map c)
+    {
+        if (c == null)
+            return null;
+
+        Fee r = new Fee();
 
         r.id = Common.toLong(c.get("id")); //
-        r.userId = Common.toLong(c.get("user_id"));
-        r.fromUserId = Common.toLong(c.get("from_user_id"));
         r.platformId = Common.toLong(c.get("platform_id"));
+
+        r.draweeType = Common.intOf(c.get("drawee_type"), 0);
+        r.drawee = Common.toLong(c.get("drawee"));
+        r.payeeType = Common.intOf(c.get("payee_type"), 0);
+        r.payee = Common.toLong(c.get("payee"));
 
         r.productId = Common.trimStringOf(c.get("product_id"));
         r.bizNo = Common.trimStringOf(c.get("biz_no"));
         r.memo = Common.trimStringOf(c.get("memo"));
-        Object extra = c.get("extra_info");
-        if(extra != null && !"".equals(extra)){
-            if(extra instanceof  String){
-                r.extra = Common.trimStringOf(extra);
-            }else{
-                r.extra = ((JSONObject) JSONObject.toJSON(extra)).toJSONString();
-            }
-        }
+
+        Object extra = c.get("extra");
+        if (extra instanceof String)
+            r.extra = JSON.parseObject(extra.toString());
+        else
+            r.extra = (Map)JSON.toJSON(extra);
 
         r.amount = Common.doubleOf(c.get("amount"), 0);
         r.auto = Common.boolOf(c.get("auto"), false);
@@ -238,6 +262,7 @@ public class Commission
 
         r.payTime = Common.dateOf(c.get("pay")); //
         r.createTime = Common.dateOf(c.get("create_time"), new Date()); //
+
         return r;
     }
 }

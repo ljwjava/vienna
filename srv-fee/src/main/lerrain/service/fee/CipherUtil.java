@@ -1,4 +1,4 @@
-package lerrain.service.commission;
+package lerrain.service.fee;
 
 import lerrain.tool.Common;
 

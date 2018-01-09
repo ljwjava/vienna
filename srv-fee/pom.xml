@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>lerrain</groupId>
-	<artifactId>srv-commission</artifactId>
+	<artifactId>srv-fee</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<parent>
@@ -15,12 +15,17 @@
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0.2</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>service</artifactId>
 			<version>1.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>lerrain</groupId>
+			<artifactId>formula</artifactId>
+			<version>6.4.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

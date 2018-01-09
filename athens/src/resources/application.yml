@@ -31,6 +31,7 @@ service:
   sale: http://localhost:7772
   vienna: http://localhost:7701
   commission: http://localhost:7769
+  fee: http://localhost:7768
   image: http://localhost:7771
 
 path:

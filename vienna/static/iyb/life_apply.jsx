@@ -317,6 +317,8 @@ var Ground = React.createClass({
 			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
 			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
 			factors["RELATION"] = this.refs.relation.val();
+			if (env.formOpt.relationMapping != null)
+                factors["RELATION"] = env.formOpt.relationMapping[factors["RELATION"]];
 	    } else {
 	    	factors["GENDER"] = this.refs.applicant.refs.gender.val();
 	    	factors["BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
@@ -675,7 +677,7 @@ var Ground = React.createClass({
 							<div className="col left">
                                 {env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : "下一步 ●"}</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : "下一步"}</div>
 						</div>
 					</div>
 				</div>

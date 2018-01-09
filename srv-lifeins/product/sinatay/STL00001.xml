@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="STL00001" corporation_id="sinatay" code="13F00180" name="信泰i立方多次赔付防癌险" name_abbr="i立方" unit="1000"
+	<product id="STL00001" corporation_id="sinatay" code="13F00180" name="信泰i立方恶性肿瘤疾病保险" name_abbr="i立方" unit="1000"
 		type_code="cancer" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
 
 		<data>
@@ -49,10 +49,10 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不得大于保障期间
 			</if>
-			<if condition="AGE lt 18 and RELATION != '02'" level="alert">
+			<if condition="AGE lt 18 and RELATION != null and RELATION != 'lineal'">
 				被保险人年龄为出生28天-17周岁，投保人须为被保险人父母
 			</if>
-			<if condition="AGE >= 18 and RELATION != '00' and RELATION != '01' and RELATION != '02'" level="alert">
+			<if condition="AGE >= 18 and RELATION != null and RELATION != 'self' and RELATION != 'coupon' and RELATION != 'lineal'">
 				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
 			</if>
 		</rule>
