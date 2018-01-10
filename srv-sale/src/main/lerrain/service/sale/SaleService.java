@@ -144,6 +144,7 @@ public class SaleService
         if (packIns.getPriceType() == PackIns.PRICE_FIXED)
         {
             r.put("total", packIns.getPrice());
+            r.put("premium", packIns.getPrice()); //兼容
         }
         else if (packIns.getPriceType() == PackIns.PRICE_FACTORS)
         {
@@ -175,6 +176,7 @@ public class SaleService
             {
                 Double total = rate * Common.doubleOf(vals.get("QUANTITY"), 1);
                 r.put("total", total);
+                r.put("premium", total); //兼容
             }
         }
         else if (packIns.getPriceType() == PackIns.PRICE_PLAN)
@@ -183,11 +185,18 @@ public class SaleService
             json.put("planId", packIns.getPrice());
             json.put("with", Lifeins.translate(packIns, vals));
 
-            JSONObject res = serviceMgr.req("lifeins", "plan/perform.json", json);
+            JSONObject res = serviceMgr.req("lifeins", "plan/perform.json", json).getJSONObject("content");
             r.put("total", res.get("premium"));
         }
+        else if (packIns.getPriceType() == PackIns.PRICE_LIFE)
+        {
+            JSONObject json = new JSONObject();
+            json.put("scriptId", packIns.getPrice());
+            json.put("opt", "try");
+            json.put("with", Lifeins.translate(packIns, vals));
 
-        r.put("premium", r.get("total")); //兼容
+            return serviceMgr.req("lifeins", "perform.json", json).getJSONObject("content");
+        }
 
         return r;
     }

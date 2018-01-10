@@ -145,7 +145,7 @@ var Ware = React.createClass({
 				if (res != null)
 					e.value = res;
 			});
-			this.setState({premium: r.total, rules: r.rules, vals:r, factors:factors});
+			this.setState({premium:r.total, rules:r.rules, alert:r.alert, vals:r, factors:factors});
 		});
 	},
     onSummary(code) {
@@ -195,6 +195,8 @@ var Ware = React.createClass({
 		}
 
 		let v = this.props.detail;
+        let r1 = this.state.rules == null ? null : this.state.rules.map(r => (<div className="error" key={r}>{r}</div>));
+        let r2 = this.state.alert == null ? null : this.state.alert.map(r => (<div className="alert" key={r}>{r}</div>));
 		return (
 			<div className="common">
 				<div>
@@ -211,15 +213,11 @@ var Ware = React.createClass({
 					{ this.state.factors == null ? null :
 						<div className="form">
 							<PlanForm ref="plan" parent={this} fields={this.state.factors} company={this.state.company} onRefresh={this.refreshPremium}/>
-						</div>
-					}
-					{ this.state.rules == null ? null :
-						<div className="form">
-							{ this.state.rules.map(r => (<div className="alert" key={r}>{r}</div>)) }
+							<div style={{paddingTop:"10px"}}>{r1}{r2}</div>
 						</div>
 					}
 				</div>
-				<div className="font-bm" style={{height:"40px", lineHeight:"40px", textAlign:"center", borderTop: "1px solid #CCC", borderBottom: "1px solid #CCC"}}>
+				<div className="font-bm" style={{height:"40px", lineHeight:"40px", textAlign:"center", borderBottom: "1px solid #CCC"}}>
 					{ this.state.vendor.logo == null ? null : <img src={this.state.vendor.logo} style={{height:"20px", verticalAlign:"middle", paddingBottom:"5px"}}/> }
 					&nbsp;&nbsp;由{this.state.vendor.name}承保并负责理赔
 				</div>

@@ -49,10 +49,16 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不得大于保障期间
 			</if>
-			<if condition="AGE lt 18 and RELATION != null and RELATION != 'lineal'">
+			<if condition="AGE lt 18 and RELATIVE == null" level="alert">
 				被保险人年龄为出生28天-17周岁，投保人须为被保险人父母
 			</if>
-			<if condition="AGE >= 18 and RELATION != null and RELATION != 'self' and RELATION != 'coupon' and RELATION != 'lineal'">
+			<if condition="AGE >= 18 and RELATIVE == null" level="alert">
+				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
+			</if>
+			<if condition="AGE lt 18 and RELATIVE != null and RELATIVE != 'lineal'">
+				被保险人年龄为出生28天-17周岁，投保人须为被保险人父母
+			</if>
+			<if condition="AGE >= 18 and RELATIVE != null and RELATIVE != 'self' and RELATIVE != 'coupon' and RELATIVE != 'lineal'">
 				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
 			</if>
 		</rule>

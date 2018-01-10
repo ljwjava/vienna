@@ -24,6 +24,7 @@ public class PackUtil
 
         r.put("wareId", packIns.getWare().getId());
         r.put("wareCode", packIns.getWare().getCode());
+        r.put("wareName", packIns.getWare().getName());
 
         JSONArray factors = new JSONArray();
         r.put("factors", factors);

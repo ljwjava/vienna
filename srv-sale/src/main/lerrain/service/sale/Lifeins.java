@@ -41,7 +41,7 @@ public class Lifeins implements Function
         app.put("BIRTHDAY", Common.dateOf(vals.get("A_BIRTHDAY")));
 
         r.put("applicant", app);
-        r.put("RELATION", vals.get("RELATION"));
+        r.put("RELATIVE", vals.get("RELATIVE"));
 
         if (packIns.getInputForm() != null) for (InputField field : packIns.getInputForm())
         {

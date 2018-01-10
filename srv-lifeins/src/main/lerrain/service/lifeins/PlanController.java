@@ -47,9 +47,10 @@ public class PlanController
     MsgQueue queue;
 
     @Autowired
-    ServiceTools tools;
+    ScriptService scriptSrv;
 
-    Map<String, Script> scriptMap = new HashMap<>();
+    @Autowired
+    ServiceTools tools;
 
     @Value("${env}")
     String srvEnv;
@@ -66,6 +67,7 @@ public class PlanController
 
         lifeins.reset();
         planSrv.reset();
+        scriptSrv.reset();
 
         mergeQuestSrv.reset();
 
@@ -640,41 +642,6 @@ public class PlanController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", mergeQuestSrv.refreshQuestText(plan));
-
-        return res;
-    }
-
-    @RequestMapping("/plan/perform.json")
-    @ResponseBody
-    public JSONObject perform(@RequestBody JSONObject p)
-    {
-        String planId = (String) p.get("planId");
-
-        if (Common.isEmpty(planId))
-            throw new RuntimeException("缺少planId");
-
-        String str = p.getString("script");
-
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-
-        if (Common.isEmpty(str))
-        {
-            res.put("content", planSrv.perform(planId, null, p.getJSONObject("with")));
-        }
-        else
-        {
-            Script script = scriptMap.get(str);
-            if (script == null)
-            {
-                script = Script.scriptOf(str);
-                scriptMap.put(str, script);
-            }
-
-            res.put("content", planSrv.perform(planId, script, p.getJSONObject("with")));
-        }
-
-//        queue.add(plan);
 
         return res;
     }

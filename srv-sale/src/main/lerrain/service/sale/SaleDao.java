@@ -147,6 +147,15 @@ public class SaleDao
                                 stack.declare("PLAN_ID", planId);
                             }
                         }
+                        else if (price.startsWith("life:"))
+                        {
+                            String scriptId = price.substring(5);
+                            packIns.setPriceType(PackIns.PRICE_LIFE);
+                            if (!Common.isEmpty(scriptId))
+                            {
+                                packIns.setPrice(scriptId);
+                            }
+                        }
                         else if (price != null)
                         {
                             packIns.setPriceType(PackIns.PRICE_FIXED);

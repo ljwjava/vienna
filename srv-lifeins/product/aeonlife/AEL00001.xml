@@ -69,7 +69,7 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不得大于保障期间
 			</if>
-			<if condition="AGE lt 18 and RELATION != 'lineal'" level="alert">
+			<if condition="AGE lt 18 and RELATIVE != 'lineal'" level="alert">
 				未成年人只能由其父母投保
 			</if>
 		</rule>

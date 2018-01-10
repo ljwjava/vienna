@@ -8,6 +8,8 @@ import lerrain.service.common.Log;
 import lerrain.service.lifeins.LifeinsService;
 import lerrain.service.lifeins.LifeinsUtil;
 import lerrain.tool.Common;
+import lerrain.tool.formula.Formula;
+import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -45,5 +47,35 @@ public class PlanDao
         String res = jdbc.queryForObject(sql, new Object[]{planId}, String.class);
 
         return LifeinsUtil.toPlan(lifeins, JSON.parseObject(res), planId);
+    }
+
+    public Map loadAllScript()
+    {
+        final Map<Object, Formula> m = new HashMap<>();
+
+        jdbc.query("select * from t_ins_perform", new RowCallbackHandler()
+        {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException
+            {
+                Long id = rs.getLong("id");
+                String opt1Name = rs.getString("opt1_name");
+                String opt1 = rs.getString("opt1");
+                String opt2Name = rs.getString("opt2_name");
+                String opt2 = rs.getString("opt2");
+                String opt3Name = rs.getString("opt3_name");
+                String opt3 = rs.getString("opt3");
+
+                m.put(id, Script.scriptOf(rs.getString("create")));
+                if (!Common.isEmpty(opt1Name))
+                    m.put(id + "/" + opt1Name, Script.scriptOf(opt1));
+                if (!Common.isEmpty(opt2Name))
+                    m.put(id + "/" + opt2Name, Script.scriptOf(opt2));
+                if (!Common.isEmpty(opt3Name))
+                    m.put(id + "/" + opt3Name, Script.scriptOf(opt3));
+            }
+        });
+
+        return m;
     }
 }

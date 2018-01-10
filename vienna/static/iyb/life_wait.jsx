@@ -313,14 +313,24 @@ var Ground = React.createClass({
 
 		let s = {};
 
-		if (t == 1){
-			var vd = env.order.detail.vendor;
-			s = {modify:0, title:"投保成功", text: !!vd.succTips ? vd.succTips : "投保成功，"+vd.name+"会在承保后进行回访，回访重要，请注意接听", memo:text, icon:"images/insure_succ.png"};
+        var vd = env.order.detail.vendor;
+        var succText, failText;
+        if (!!env.order.detail.tips) {
+            succText = env.order.detail.tips.success;
+            failText = env.order.detail.tips.fail;
+        }
+        if (!succText)
+            succText = !!vd.succTips ? vd.succTips : "投保成功，" + vd.name + "会在承保后进行回访，回访重要，请注意接听";
+        if (!failText)
+        	failText = !!vd.failTips ? vd.failTips : "请修改后重新提交";
+
+        if (t == 1) {
+			s = {modify:0, title:"投保成功", text:text, memo:succText, icon:"images/insure_succ.png"};
             this.getUseableCountByOrderNo();
-        }else if (t == 20)
-			s = {modify:2, title:"核保失败", text:text, memo:"请修改后重新提交", icon:"images/insure_fail.png"};
+        } else if (t == 20)
+			s = {modify:2, title:"核保失败", text:text, memo:failText, icon:"images/insure_fail.png"};
 		else if (t == 21)
-			s = {modify:2, title:"投保失败", text:text, memo:"请修改后重新提交", icon:"images/insure_fail.png"};
+			s = {modify:2, title:"投保失败", text:text, memo:failText, icon:"images/insure_fail.png"};
 		else if (t == 30)
 			s = {modify:1, title:"支付失败", text:text, memo:"请修改支付信息后重新提交", icon:"images/insure_fail.png"};
 		else if (t == 40)
@@ -441,7 +451,7 @@ var Ground = React.createClass({
 					<div style={{paddingTop:"10px"}} className="font-wm">
 						{this.state.text}
 					</div>
-					<div style={{height:"30px"}} className="font-wm">
+					<div style={{height:"50px"}} className="font-wm">
 						{this.state.asking > 0 ? this.state.asking : this.state.memo}
 					</div>
 					{

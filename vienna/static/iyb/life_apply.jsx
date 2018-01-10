@@ -20,16 +20,18 @@ env.company = 'iyb';
 env.def = {
     applicant: {
         cert: [["1","身份证"]],
-        certValidate: true,
+        certValidate: false,
         city: true,
         address: true
     },
     insurant: {
         cert: [["1","身份证"]],
-        certValidate: true,
-        city: true,
-        address: true,
+        certValidate: false,
+        city: false,
+        address: false,
 		occupation: false,
+		weight: false,
+		height: false,
         relation: [["1","本人"]]
     },
     beneficiary: {
@@ -160,6 +162,10 @@ class InsurantMore extends Form {
 		let v = [];
         if (env.formOpt.insurant.occupation)
             v.push({name:'职业', code:"occupation", type:"occupation", refresh:"yes", req:"yes", desc:"请选择职业"});
+        if (env.formOpt.insurant.height)
+            v.push({name:'身高', code:"height", type:"text", req:"yes", desc:"请填写身高"});
+        if (env.formOpt.insurant.weight)
+            v.push({name:'体重', code:"weight", type:"text", req:"yes", desc:"请填写体重"});
 		return this.buildForm(v);
 	}
 }
@@ -316,9 +322,9 @@ var Ground = React.createClass({
 				factors["ZONE"] = this.refs.insurant.refs.city.val().code;
 			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
 			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
-			factors["RELATION"] = this.refs.relation.val();
+			factors["RELATIVE"] = this.refs.relation.val();
 			if (env.formOpt.relationMapping != null)
-                factors["RELATION"] = env.formOpt.relationMapping[factors["RELATION"]];
+                factors["RELATIVE"] = env.formOpt.relationMapping[factors["RELATIVE"]];
 	    } else {
 	    	factors["GENDER"] = this.refs.applicant.refs.gender.val();
 	    	factors["BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
@@ -326,7 +332,7 @@ var Ground = React.createClass({
 				factors["ZONE"] = this.refs.applicant.refs.city.val().code;
 			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
 			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
-			factors["RELATION"] = "self";
+			factors["RELATIVE"] = "self";
 		}
 		if (this.refs.more) {
             if (env.formOpt.insurant.occupation) {
@@ -542,6 +548,7 @@ var Ground = React.createClass({
 			photo: env.photo,
             read: env.pack.extra.read,
             readAddDesc: env.pack.extra.readAddDesc,
+			tips: env.pack.extra.tips,
 			pay: this.props.defVal.pay,
 			vendor: env.vendor
 		};
@@ -549,7 +556,7 @@ var Ground = React.createClass({
 			orderId: env.orderId,
 			productId: env.packId,
             productCode: env.pack.code,
-			productName: env.pack.name,
+			productName: env.pack.wareName,
 			productType: env.pack.type,
 			vendorId: env.vendorId,
 			price: apply.premium,
@@ -644,7 +651,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					{env.formOpt.insurant.occupation ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
+					{env.formOpt.insurant.occupation || env.formOpt.insurant.height || env.formOpt.insurant.weight ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
 				<div className="title">保险计划（{env.pack.name}）</div>
 				<div className="form">

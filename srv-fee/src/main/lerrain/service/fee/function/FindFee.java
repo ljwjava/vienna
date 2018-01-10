@@ -17,6 +17,6 @@ public class FindFee implements Function
     @Override
     public Object run(Object[] objects, Factors factors)
     {
-        return feeSrv.getFeeRate(Common.toLong(objects[0]), Common.toLong(objects[1]), objects[2].toString(), objects[3].toString(), objects[4].toString(), objects[5].toString());
+        return feeSrv.getFeeRate(Common.toLong(objects[0]), Common.toLong(objects[1]), objects[2].toString(), objects[3].toString(), (Object[])objects[4]);
     }
 }

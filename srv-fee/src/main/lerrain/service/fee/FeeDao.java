@@ -61,9 +61,10 @@ public class FeeDao
 		jdbc.update("update t_fee set pay = ?, status = ? where id = ?", time, status, id);
 	}
 
-	public Map<String, List<FeeDefine>> loadFeeDefine()
+	public FeeGrp loadFeeDefine()
 	{
-		final Map<String, List<FeeDefine>> m = new HashMap<>();
+//		final Map<String, List<FeeDefine>> m = new HashMap<>();
+		final FeeGrp feeGrp = new FeeGrp();
 
 		String sql = "select * from t_fee_define where valid is null order by platform_id, agency_id, `group`, product_id, pay_freq, pay_period, begin, end";
 
@@ -75,19 +76,19 @@ public class FeeDao
 				Long platformId = rs.getLong("platform_id");
 				Long productId = rs.getLong("product_id");
 				Long agencyId = rs.getLong("agency_id");
-
 				String group = rs.getString("group");
+
 				String payFreq = rs.getString("pay_freq");
 				String payPeriod = rs.getString("pay_period");
+				String insure = rs.getString("insure");
 
-				String key = platformId + "/" + agencyId + "/" + group + "/" + productId + "/" + payFreq + "/" + payPeriod;
-
-				List<FeeDefine> list = m.get(key);
-				if (list == null)
-				{
-					list = new ArrayList<FeeDefine>();
-					m.put(key, list);
-				}
+//				String key = platformId + "/" + agencyId + "/" + group + "/" + productId + "/" + payFreq + "/" + payPeriod;
+//				List<FeeDefine> list = m.get(key);
+//				if (list == null)
+//				{
+//					list = new ArrayList<FeeDefine>();
+//					m.put(key, list);
+//				}
 
 				int freeze = Common.intOf(rs.getObject("freeze"), 0);
 				int unit = Common.intOf(rs.getObject("unit"), 0);
@@ -117,13 +118,13 @@ public class FeeDao
 
 					pc.setMemo(rs.getString("memo"));
 
-					list.add(pc);
+					feeGrp.addKey(platformId + "/" + agencyId + "/" + group + "/" + productId, new Object[] {payFreq, payPeriod, insure}, pc);
 				}
 			}
 
 		});
 
-		return m;
+		return feeGrp;
 	}
 
 	public PlatformFee loadPlatformScript()

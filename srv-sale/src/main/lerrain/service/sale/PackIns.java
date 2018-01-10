@@ -14,6 +14,7 @@ public class PackIns
     public static final int PRICE_FIXED     = 1;
     public static final int PRICE_FACTORS   = 2;
     public static final int PRICE_PLAN      = 3;
+    public static final int PRICE_LIFE      = 4;
     public static final int PRICE_OTHER     = 9;
 
     Long id;

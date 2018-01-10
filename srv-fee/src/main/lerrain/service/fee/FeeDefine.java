@@ -70,10 +70,8 @@ public class FeeDefine
         this.memo = memo;
     }
 
-    public boolean match()
+    public boolean match(Date now)
     {
-        Date now = new Date();
-
         if (begin != null && begin.after(now))
             return false;
 

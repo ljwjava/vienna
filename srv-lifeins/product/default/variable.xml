@@ -10,6 +10,7 @@
 		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
 		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
 		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="RELATIVE" formula="INSURANT.RELATIVE"/>
 	</variable>
 	
 	<variable type="product">
@@ -23,6 +24,7 @@
 		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
 		<item name="SMOKE" formula="INSURANT.SMOKE"/>
 		<item name="ZONE" formula="INSURANT.ZONE"/>
+		<item name="RELATIVE" formula="INSURANT.RELATIVE"/>
 		<item name="DEF_ID" formula="PRODUCT_ID"/>
 		
 		<item name="COMMISSION" formula="COMMISSION_RATE(MONTH)*PREMIUM" param="MONTH"/>
