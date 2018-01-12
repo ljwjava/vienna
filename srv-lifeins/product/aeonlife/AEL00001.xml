@@ -72,6 +72,9 @@
 			<if condition="AGE lt 18 and RELATIVE != 'lineal'" level="alert">
 				未成年人只能由其父母投保
 			</if>
+			<if condition="INSURANT.OCCUPATION_L != null and (INSURANT.OCCUPATION_L lt 1 or INSURANT.OCCUPATION_L > 6)">
+				职业要求为1~6类
+			</if>
 		</rule>
 	</product>
 </declare>
