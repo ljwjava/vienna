@@ -41,19 +41,21 @@ public class ScriptController
     public JSONObject perform(@RequestBody JSONObject p)
     {
         Long scriptId = p.getLong("scriptId");
-
-        if (scriptId == null)
-            throw new RuntimeException("缺少scriptId");
-
+        JSONArray productId = p.getJSONArray("productId");
         String opt = p.getString("opt");
+
+        Object r;
+        if (scriptId != null || productId != null)
+            r = scriptSrv.perform(scriptId, productId, Common.isEmpty(opt) ? null : opt, p.getJSONObject("with"));
+        else
+            throw new RuntimeException("缺少scriptId或productId");
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", scriptSrv.perform(scriptId, Common.isEmpty(opt) ? null : opt, p.getJSONObject("with")));
+        res.put("content", r);
 
         return res;
     }
-
 
     @RequestMapping("/plan/perform.json")
     @ResponseBody

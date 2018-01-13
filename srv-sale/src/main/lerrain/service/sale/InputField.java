@@ -1,5 +1,7 @@
 package lerrain.service.sale;
 
+import lerrain.tool.formula.Formula;
+
 /**
  * Created by lerrain on 2017/5/6.
  */
@@ -13,15 +15,17 @@ public class InputField
 
     String[] scope;
 
-    Object detail;
+    Formula condition;
+    Formula detail;
+
     Object value;
 
-    public Object getDetail()
+    public Formula getDetail()
     {
         return detail;
     }
 
-    public void setDetail(Object detail)
+    public void setDetail(Formula detail)
     {
         this.detail = detail;
     }
@@ -84,6 +88,16 @@ public class InputField
     public void setValue(Object value)
     {
         this.value = value;
+    }
+
+    public Formula getCondition()
+    {
+        return condition;
+    }
+
+    public void setCondition(Formula condition)
+    {
+        this.condition = condition;
     }
 
     public String getWidget()

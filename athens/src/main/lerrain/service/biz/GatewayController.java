@@ -100,7 +100,14 @@ public class GatewayController
             val = json.get("content");
         }
 
-        Log.debug(host + "/" + uri + " ==> " + val);
+        String str = null;
+        if (val != null)
+        {
+            str = val.toString();
+            if (str.length() > 1024)
+                str = str.substring(0, 1024) + " ......";
+        }
+        Log.debug(host + "/" + uri + " ==> " + str);
 
         return val;
     }

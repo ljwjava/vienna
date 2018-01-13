@@ -20,7 +20,7 @@ env.company = 'iyb';
 env.def = {
     applicant: {
         cert: [["1","身份证"]],
-        certValidate: false,
+        certValidate: true,
         city: true,
         address: true
     },
@@ -280,7 +280,7 @@ var Ground = React.createClass({
             var opts = [["law","法定"]];
 			if (env.formOpt.beneficiary.custom)
                 opts.push(["other","指定"]);
-			this.setState({factors:r.factors, benefit:opts, insurant:ins}, () => {
+			this.setState({form:r.form, benefit:opts, insurant:ins}, () => {
 				if (this.props.defVal.packId) {
                     this.refs.applicant.verifyAll();
                     if (this.refs.insurant)
@@ -364,14 +364,14 @@ var Ground = React.createClass({
 			this.setState({premium: -1, rules: null});
     	} else {
 			common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
-                let factors = this.state.factors;
-                if (r.form != null) factors.map(function(e) {
-                    var res = r.form[e.name];
+                var form = r.form == null ? this.state.form : r.form;
+                if (r.factors != null) form.map(function(e) {
+                    var res = r.factors[e.name];
                     if (res != null)
                         e.value = res;
                 });
                 env.photo = r.photo;
-                this.setState({premium: r.total, rules: r.rules, factors:factors});
+                this.setState({premium: r.total, rules: r.rules, form:form});
 			});
 		}
 	},
@@ -655,11 +655,11 @@ var Ground = React.createClass({
 				</div>
 				<div className="title">保险计划（{env.pack.name}）</div>
 				<div className="form">
-					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.factors} onRefresh={this.refreshPremium}/>
+					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.form} onRefresh={this.refreshPremium}/>
 				</div>
 				{ this.state.rules == null ? null :
 					<div className="form">
-						{ this.state.rules.map(r => (<div className="alert" key={r}>{r}</div>)) }
+						{ this.state.rules.map(r => (<div className="error" key={r}>{r}</div>)) }
 					</div>
 				}
                 { !env.formOpt.beneficiary.display ? null : <div className="title">身故受益人</div> }

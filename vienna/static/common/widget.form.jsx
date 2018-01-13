@@ -88,7 +88,7 @@ var Form = React.createClass({
 				<td className="left">{v[0]}</td>
 				<td className="right">
 					<div>{v[1]}</div>
-					<div className="alert">{this.state.alert[v[1].ref]}</div>
+					<div className="error">{this.state.alert[v[1].ref]}</div>
 				</td>
 			</tr>
 		));

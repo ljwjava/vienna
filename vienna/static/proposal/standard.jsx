@@ -66,11 +66,11 @@ var SimDraw = React.createClass({
 
 var Console = React.createClass({
 	getInitialState() {
-		return {classify: "hot"};
+		return {};
 	},
 	componentDidMount() {
 		common.req("proposal/list_clause.json", {}, r => {
-			this.setState({clauses: r.map(v => (v.classify != this.state.classify ? null :
+			this.setState({clauses: r.map(v =>
 				<li key={v.id}>
 					<table style={{margin:"10px 24px 10px 10px"}}>
 						<tbody onClick={this.addProduct.bind(this, v.id)} style={{whiteSpace:"nowrap"}}>
@@ -85,7 +85,7 @@ var Console = React.createClass({
 						</tbody>
 					</table>
 				</li>
-			))});
+			)});
 		});
 	},
 	addProduct(productId) {

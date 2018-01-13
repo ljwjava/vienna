@@ -9,25 +9,21 @@ import java.util.Map;
  */
 public class FeeDefine
 {
-    Double a1, a2, a3, a4;
-    List b1, b2, b3, b4;
-    Map c1, c2, c3, c4;
+    Object f1, f2, f3, f4, f5;
 
     Date begin, end;
 
     int freeze;
     int unit;
-    int type;
 
     String memo;
 
-    public FeeDefine(Date begin, Date end, int freeze, int unit, int type)
+    public FeeDefine(Date begin, Date end, int freeze, int unit)
     {
         this.begin = begin;
         this.end = end;
         this.freeze = freeze;
         this.unit = unit;
-        this.type = type;
     }
 
     public int getFreeze()
@@ -38,16 +34,6 @@ public class FeeDefine
     public void setFreeze(int freeze)
     {
         this.freeze = freeze;
-    }
-
-    public int getType()
-    {
-        return type;
-    }
-
-    public void setType(int type)
-    {
-        this.type = type;
     }
 
     public int getUnit()

@@ -41,11 +41,15 @@ public class OrderController
         if (Common.isEmpty(orderId))
             throw new RuntimeException("缺少orderId");
 
+        JSONArray children = p.getJSONArray("children");
+        if (children == null || children.isEmpty())
+            throw new RuntimeException("children为空");
+
         Order order = orderSrv.getOrder(orderId);
 
         List<Order> c = new ArrayList<>();
-        JSONArray children = p.getJSONArray("children");
-        for (int i=0;i<children.size();i++)
+
+        for (int i = 0; i < children.size(); i++)
         {
             Order child = orderSrv.newOrder();
             fill(child, children.getJSONObject(i));

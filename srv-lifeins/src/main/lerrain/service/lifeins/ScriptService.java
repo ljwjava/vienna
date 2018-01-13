@@ -2,11 +2,9 @@ package lerrain.service.lifeins;
 
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
-import lerrain.project.insurance.product.Company;
 import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.rule.Rule;
 import lerrain.project.insurance.product.rule.RuleUtil;
-import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Formula;
@@ -25,6 +23,9 @@ public class ScriptService
 
 	@Autowired
 	LifeinsService lifeins;
+
+	@Autowired
+	PlanService planSrv;
 
 	Map<Object, Formula> map;
 
@@ -46,7 +47,7 @@ public class ScriptService
 			@Override
 			public Object run(Object[] objects, Factors factors)
 			{
-				return getPlan(Common.toLong(objects[0]), null);
+				return planSrv.getPlan(objects[0].toString());
 			}
 		});
 
@@ -157,12 +158,39 @@ public class ScriptService
 		return new Stack(functions);
 	}
 
-	public Object perform(Long scriptId, String opt, Map vals)
+//	public Object perform(List prds, String opt, Map vals)
+//	{
+//		Stack stack = new Stack(env);
+//		stack.declare("self", vals);
+//
+//		Plan plan = new Plan(new Customer(), new Customer());
+//		synchronized (plan)
+//		{
+//			String prdId = prds.get(0).toString();
+//			Commodity main = plan.newCommodity(lifeins.getProduct(prdId));
+//
+//			for (int i = 1; i < prds.size(); i++)
+//				plan.newCommodity(main, lifeins.getProduct(prds.get(i).toString()));
+//
+//			reset(plan, vals);
+//
+//			if (opt == null)
+//				return LifeinsUtil.jsonOf(plan);
+//
+//			stack.declare("plan", plan);
+//			stack.declare("PLAN", plan.getFactors());
+//
+//			Formula f = map.get("1/" + opt);
+//			return f.run(stack);
+//		}
+//	}
+
+	public Object perform(Long scriptId, List prds, String opt, Map vals)
 	{
 		Stack stack = new Stack(env);
 		stack.declare("self", vals);
 
-		Plan plan = getPlan(scriptId, stack);
+		Plan plan = getPlan(scriptId, prds, stack);
 		synchronized (plan)
 		{
 			reset(plan, vals);
@@ -174,17 +202,33 @@ public class ScriptService
 			stack.declare("PLAN", plan.getFactors());
 
 			Formula f = map.get(scriptId + "/" + opt);
+			if (f == null)
+				f = map.get("1/" + opt);
+
 			return f.run(stack);
 		}
 	}
 
-	public Plan getPlan(Long scriptId, Factors f)
+	public Plan getPlan(Long scriptId, List prds, Factors f)
 	{
-		if (scriptId == null)
-			return null;
+		Formula s = scriptId == null ? null : map.get(scriptId);
 
-		Formula s = map.get(scriptId);
-		return (Plan)s.run(f);
+		if (s == null)
+		{
+			Plan plan = new Plan(new Customer(), new Customer());
+
+			String prdId = prds.get(0).toString();
+			Commodity main = plan.newCommodity(lifeins.getProduct(prdId));
+
+			for (int i = 1; i < prds.size(); i++)
+				plan.newCommodity(main, lifeins.getProduct(prds.get(i).toString()));
+
+			return plan;
+		}
+		else synchronized (s)
+		{
+			return (Plan) s.run(f);
+		}
 	}
 
 	private List<String> getRule(Plan plan)

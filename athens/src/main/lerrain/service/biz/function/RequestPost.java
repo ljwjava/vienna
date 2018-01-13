@@ -51,7 +51,7 @@ public class RequestPost implements Function
     {
         String res = null;
 
-        Log.debug("req: " + urlstr + " << " + req);
+        Log.info("req: " + urlstr + " << " + req);
 
         HttpURLConnection conn = null;
         try
@@ -104,11 +104,11 @@ public class RequestPost implements Function
 
             res = baos.toString("utf-8");
 
-            Log.debug("res: " + urlstr + " >> " + res);
+            Log.info("res: " + urlstr + " >> " + res);
         }
         catch (Exception e)
         {
-            Log.debug("res: " + urlstr + " >> " + e.getMessage());
+            Log.alert("res: " + urlstr + " >> " + e.getMessage());
 
             throw new RuntimeException(e);
         }

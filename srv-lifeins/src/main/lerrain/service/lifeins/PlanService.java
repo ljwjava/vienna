@@ -36,8 +36,6 @@ public class PlanService
 
 	public void reset()
 	{
-		pd.supplyClauses();
-
 		env = initEnv();
 		cache = new Cache(env);
 

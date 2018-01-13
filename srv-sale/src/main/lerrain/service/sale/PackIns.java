@@ -15,6 +15,7 @@ public class PackIns
     public static final int PRICE_FACTORS   = 2;
     public static final int PRICE_PLAN      = 3;
     public static final int PRICE_LIFE      = 4;
+    public static final int PRICE_PRODUCT   = 5;
     public static final int PRICE_OTHER     = 9;
 
     Long id;
@@ -29,6 +30,8 @@ public class PackIns
 
     Object price;
     Object show;
+
+    boolean dynamicForm = false;
 
     List<InputField> inputForm;
 
@@ -178,6 +181,16 @@ public class PackIns
     public void setShow(Object show)
     {
         this.show = show;
+    }
+
+    public boolean isDynamicForm()
+    {
+        return dynamicForm;
+    }
+
+    public void setDynamicForm(boolean dynamicForm)
+    {
+        this.dynamicForm = dynamicForm;
     }
 
     public String getCode()

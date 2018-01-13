@@ -105,7 +105,7 @@ var Form = React.createClass({
 							</div>
 						</div>
 						{ txt == null || txt == "" ? null :
-							<div className="alert">{txt}</div>
+							<div className="error">{txt}</div>
 						}
 					</div>
 				</div>

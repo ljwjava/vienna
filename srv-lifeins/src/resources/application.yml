@@ -10,3 +10,6 @@ datasource:
 
 path:
   lifeins: ./product/
+
+service:
+  dict: http://localhost:7773

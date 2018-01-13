@@ -1,5 +1,6 @@
 package lerrain.service.fee.function;
 
+import com.alibaba.fastjson.JSON;
 import lerrain.service.fee.Fee;
 import lerrain.service.fee.IybPay;
 import lerrain.service.fee.IybPushMsg;
@@ -31,6 +32,9 @@ public class IYunBao extends HashMap<String, Object>
                 try
                 {
                     Fee fee = (Fee)objects[0];
+
+                    if (fee.getDraweeType() != 2 || fee.getDrawee() != 1 || fee.getPayeeType() != 1)
+                        return JSON.parseObject("{isSuccess: false}");
 
                     Long iybPolicyId = null;
                     Long productId = null;

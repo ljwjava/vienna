@@ -42,10 +42,18 @@ public class FeeService
 
 	public boolean pay(Fee fee)
 	{
-		boolean r = platformFee.pay(fee, new Date());
+		boolean r = false;
 
-		if (r)
-			feeDao.pay(fee.getId(), 1, new Date());
+		try
+		{
+			r = platformFee.pay(fee, new Date());
+		}
+		catch (Exception e)
+		{
+			Log.error(e);
+		}
+
+		feeDao.pay(fee.getId(), r ? 1 : 9, new Date());
 
 		return r;
 	}

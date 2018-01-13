@@ -216,25 +216,25 @@ input[type="checkbox"]
 	width: 50px;
 	margin: 0;
 	padding: 0;
-	border-right: 1px solid #AAA;
+	border-right: 1px solid #555;
 	text-align: center;
 	font-size: 0.9em;
-	background-color: #666;
+	background-color: #888;
 }
 
 .console .left
 {
 	color: #FFF;
 	text-align: center;
-	background-color: #666;
-	font-weight: 600;
+	background-color: #888;
+	font-weight: 400;
 }
 
 .console .right
 {
 	color: #FFF;
 	text-align: center;
-	width: 40%;
+	width: 30%;
 	background-color: #ffba34;
 	font-weight: 600;
 }

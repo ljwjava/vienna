@@ -92,29 +92,19 @@ public class FeeDao
 
 				int freeze = Common.intOf(rs.getObject("freeze"), 0);
 				int unit = Common.intOf(rs.getObject("unit"), 0);
-				int type = Common.intOf(rs.getObject("type"), 0);
 
 				Date begin = rs.getDate("begin");
 				Date end = rs.getDate("end");
 
 				if (unit > 0)
 				{
-					FeeDefine pc = new FeeDefine(begin, end, freeze, unit, type);
+					FeeDefine pc = new FeeDefine(begin, end, freeze, unit);
 
-					pc.a1 = Common.toDouble(rs.getObject("a1"));
-					pc.a2 = Common.toDouble(rs.getObject("a2"));
-					pc.a3 = Common.toDouble(rs.getObject("a3"));
-					pc.a4 = Common.toDouble(rs.getObject("a4"));
-
-					pc.b1 = JSON.parseArray(rs.getString("b1"));
-					pc.b2 = JSON.parseArray(rs.getString("b2"));
-					pc.b3 = JSON.parseArray(rs.getString("b3"));
-					pc.b4 = JSON.parseArray(rs.getString("b4"));
-
-					pc.c1 = JSON.parseObject(rs.getString("c1"));
-					pc.c2 = JSON.parseObject(rs.getString("c2"));
-					pc.c3 = JSON.parseObject(rs.getString("c3"));
-					pc.c4 = JSON.parseObject(rs.getString("c4"));
+					pc.f1 = valOf(rs.getString("f1"));
+					pc.f2 = valOf(rs.getString("f2"));
+					pc.f3 = valOf(rs.getString("f3"));
+					pc.f4 = valOf(rs.getString("f4"));
+					pc.f5 = valOf(rs.getString("f5"));
 
 					pc.setMemo(rs.getString("memo"));
 
@@ -125,6 +115,28 @@ public class FeeDao
 		});
 
 		return feeGrp;
+	}
+
+	public Object valOf(String str)
+	{
+		if (str == null)
+			return null;
+
+		str = str.trim();
+		if (str.startsWith("["))
+			return JSON.parseArray(str);
+		if (str.startsWith("{"))
+			return JSON.parseObject(str);
+		if (str.indexOf(",") >= 0)
+		{
+			String[] ss = str.split(",");
+			Object[] rs = new Object[ss.length];
+			for (int i=0;i<ss.length;i++)
+				rs[i] = Common.doubleOf(ss[i], 0);
+			return rs;
+		}
+
+		return new Object[] {Common.doubleOf(str, 0)};
 	}
 
 	public PlatformFee loadPlatformScript()

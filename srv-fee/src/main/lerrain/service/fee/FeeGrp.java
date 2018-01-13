@@ -41,7 +41,7 @@ public class FeeGrp
 
                 for (int i = 0; i < len; i++)
                 {
-                    if (v[i] != null && !v[i].equals(keys[i]))
+                    if (v[i] != null && (keys[i] == null || !v[i].equals(keys[i].toString())))
                     {
                         match = false;
                         break;

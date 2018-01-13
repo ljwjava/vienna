@@ -202,7 +202,7 @@ var Ground = React.createClass({
 			env.vendor = r.vendor;
 			env.vendorId = r.vendor.id;
 			env.company = r.vendor.code;
-			this.setState({factors:r.factors}, () => {
+			this.setState({form:r.form}, () => {
                 if (this.props.defVal.packId) {
                     this.refs.applicant.verifyAll();
                     this.refs.insurant.verifyAll();
@@ -246,13 +246,13 @@ var Ground = React.createClass({
     refreshPremium() {
     	let factors = this.getPlanFactors();
 		common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
-			let factors = this.state.factors;
-			if (r.form != null) factors.map(function(e) {
-				var res = r.form[e.name];
+            var form = r.form == null ? this.state.form : r.form;
+			if (r.factors != null) form.map(function(e) {
+				var res = r.factors[e.name];
 				if (res != null)
 					e.value = res;
 			});
-			this.setState({premium: r.total, rules: r.rules, factors:factors});
+			this.setState({premium: r.total, rules: r.rules, form:form});
 		});
 	},
 	submit() {
@@ -391,15 +391,15 @@ var Ground = React.createClass({
 				</div>
 				<div className="title">车辆信息</div>
 				<div className="form">
-					<InsurantForm ref="insurant" defVal={ins} fields={this.state.factors} onRefresh={this.refreshPremium}/>
+					<InsurantForm ref="insurant" defVal={ins} fields={this.state.form} onRefresh={this.refreshPremium}/>
 				</div>
 				<div className="title">保险计划</div>
 				<div className="form">
-					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.factors} onRefresh={this.refreshPremium}/>
+					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.form} onRefresh={this.refreshPremium}/>
 				</div>
 				{ this.state.rules == null ? null :
 					<div className="form">
-						{ this.state.rules.map(r => (<div className="alert" key={r}>{r}</div>)) }
+						{ this.state.rules.map(r => (<div className="error" key={r}>{r}</div>)) }
 					</div>
 				}
 				<div className="title">通讯信息</div>

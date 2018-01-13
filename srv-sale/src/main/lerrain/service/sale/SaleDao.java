@@ -23,7 +23,7 @@ import java.util.Map;
 public class SaleDao
 {
     @Autowired
-    JdbcTemplate   jdbc;
+    JdbcTemplate jdbc;
 
     @Autowired
     Lifeins lifeins;
@@ -112,7 +112,7 @@ public class SaleDao
 
                     if (input != null)
                     {
-                        List<InputField> list = loadInputForm(input);
+                        List<InputField> list = loadInputForm(packIns, input);
                         packIns.setInputForm(list);
                     }
 
@@ -156,6 +156,13 @@ public class SaleDao
                                 packIns.setPrice(scriptId);
                             }
                         }
+                        else if (price.startsWith("product:"))
+                        {
+                            String productId = price.substring(8);
+                            packIns.setPriceType(PackIns.PRICE_PRODUCT);
+                            if (!Common.isEmpty(productId))
+                                packIns.setPrice(productId.split(","));
+                        }
                         else if (price != null)
                         {
                             packIns.setPriceType(PackIns.PRICE_FIXED);
@@ -180,7 +187,7 @@ public class SaleDao
         });
     }
 
-    public List<InputField> loadInputForm(Long inputId)
+    public List<InputField> loadInputForm(final PackIns packIns, Long inputId)
     {
         return jdbc.query("select * from t_input where input_id = ? order by seq", new RowMapper<InputField>()
         {
@@ -199,12 +206,17 @@ public class SaleDao
                     c.setVar(c.getName());
 
                 Formula f = Script.scriptOf(m.getString("detail"));
-                if (f != null)
-                    c.setDetail(f.run(null));
+                c.setDetail(f);
 
                 String scope = m.getString("scope");
                 if (scope != null)
                     c.setScope(scope.split(","));
+
+                Formula condition = Script.scriptOf(m.getString("condition"));
+                c.setCondition(condition);
+
+                if (c.getCondition() != null)
+                    packIns.setDynamicForm(true);
 
                 return c;
             }

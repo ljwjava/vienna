@@ -197,6 +197,15 @@ public class SaleService
 
             return serviceMgr.req("lifeins", "perform.json", json).getJSONObject("content");
         }
+        else if (packIns.getPriceType() == PackIns.PRICE_PRODUCT)
+        {
+            JSONObject json = new JSONObject();
+            json.put("productId", packIns.getPrice());
+            json.put("opt", "try");
+            json.put("with", Lifeins.translate(packIns, vals));
+
+            return serviceMgr.req("lifeins", "perform.json", json).getJSONObject("content");
+        }
 
         return r;
     }

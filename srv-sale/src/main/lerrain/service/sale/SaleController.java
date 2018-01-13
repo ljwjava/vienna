@@ -1,6 +1,5 @@
 package lerrain.service.sale;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
@@ -111,7 +110,7 @@ public class SaleController
     public JSONObject detail(@RequestBody JSONObject req)
     {
         PackIns pack = getPack(req);
-        JSONObject content = PackUtil.toJson(pack);
+        JSONObject content = PackUtil.toJson(pack, null);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -139,7 +138,12 @@ public class SaleController
         }
         else if ("try".equals(opt) || "premium".equals(opt))
         {
-            r = saleSrv.getPrice(packIns, content);
+            Map<String, Object> r1 = saleSrv.getPrice(packIns, content);
+
+            if (packIns.isDynamicForm())
+                r1.put("form", PackUtil.toForm(packIns, content));
+
+            r = r1;
         }
         else if ("detail".equals(opt) || "plan".equals(opt)) //plan以后由detail替代，可以查看其他类型产品的详情
         {
@@ -196,16 +200,5 @@ public class SaleController
             pack = saleSrv.getPack((String)vals.get("packCode"));
 
         return pack;
-    }
-
-    @RequestMapping("/pack/view.json")
-    @ResponseBody
-    public JSONObject viewPack(@RequestBody JSONObject json)
-    {
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", PackUtil.toJson(getPack(json)));
-
-        return res;
     }
 }

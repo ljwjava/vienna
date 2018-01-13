@@ -91,7 +91,7 @@ var Ware = React.createClass({
             env.packType = s.type;
             env.vendor = s.vendor;
             env.company = s.vendor.code;
-            r.factors = s.factors;
+            r.form = s.form;
             r.vendor = s.vendor;
             r.company = s.vendor.code;
             if (r.detail.summary == null) {
@@ -139,13 +139,13 @@ var Ware = React.createClass({
         	factors.OCCUPATION_L = null;
 		}
 		common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
-			var factors = this.state.factors;
-			if (r.form != null) factors.map(function(e) {
-				var res = r.form[e.name];
+			var form = r.form == null ? this.state.form : r.form;
+			if (r.factors != null) form.map(function(e) {
+				var res = r.factors[e.name];
 				if (res != null)
 					e.value = res;
 			});
-			this.setState({premium:r.total, rules:r.rules, alert:r.alert, vals:r, factors:factors});
+			this.setState({premium:r.total, rules:r.rules, alert:r.alert, vals:r, form:form});
 		});
 	},
     onSummary(code) {
@@ -210,9 +210,9 @@ var Ware = React.createClass({
                     { this.state.packs == null ? null :
 						<Tabs onChange={this.changePlan} options={this.state.packs}/>
                     }
-					{ this.state.factors == null ? null :
+					{ this.state.form == null ? null :
 						<div className="form">
-							<PlanForm ref="plan" parent={this} fields={this.state.factors} company={this.state.company} onRefresh={this.refreshPremium}/>
+							<PlanForm ref="plan" parent={this} fields={this.state.form} company={this.state.company} onRefresh={this.refreshPremium}/>
 							<div style={{paddingTop:"10px"}}>{r1}{r2}</div>
 						</div>
 					}
@@ -231,7 +231,7 @@ var Ware = React.createClass({
 					<div className="tab">
 						<div className="row">
 							{env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
-							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}</div>
+							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
 							<div className="col right" onClick={(!!env.docs && !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>去投保</div>
 						</div>
 					</div>
