@@ -300,8 +300,8 @@ var ReturnVisitBox = React.createClass({
     render(){
         if (!!this.state.order && !!this.state.order.detail && !!this.state.order.detail.returnVisit && this.state.order.detail.returnVisit.length > 0) {
         	let appName = this.state.order.detail.applicant.name;	// 投保人姓名
-        	let firstPrem = this.state.order.price;	// 保费
-        	let regularPrem = this.state.order.detail.plan.premium;	// 年期保费
+        	let firstPrem = this.state.order.price == null ? "" : Number(this.state.order.price).toFixed(2);	// 保费
+        	let regularPrem = this.state.order.detail.plan.premium == null ? "" : Number(this.state.order.detail.plan.premium).toFixed(2);	// 年期保费
         	let payPeriod = "";	// 交费期间
         	let insPeriod = "";	// 保障期间
             this.state.order.detail.plan.product.map(v => {
