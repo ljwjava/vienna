@@ -142,6 +142,8 @@ var Ground = React.createClass({
                     { env.order.detail.applicant.certValidate == null ? null : <div><span>　证件有效期</span> {env.order.detail.applicant.certValidate.certLong ? '长期' : env.order.detail.applicant.certValidate.certExpire}</div>}
 					<div><span>　性别</span>{env.order.detail.applicant.genderName}</div>
 					<div><span>　出生日期</span>{env.order.detail.applicant.birthday}</div>
+                    {env.order.detail.applicant.height == null ? null : <div><span>　身高</span>{env.order.detail.applicant.height}(厘米)</div>}
+                    {env.order.detail.applicant.weight == null ? null : <div><span>　体重</span>{env.order.detail.applicant.weight}(公斤)</div>}
 					<div><span>　所在地区</span>{env.order.detail.applicant.cityName}</div>
 					<div><span>　通讯地址</span>{env.order.detail.applicant.address}</div>
 					{ env.order.detail.applicant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.applicant.occupation.text}({env.order.detail.applicant.occupation.level}类)</div>}
@@ -154,8 +156,11 @@ var Ground = React.createClass({
                         { env.order.detail.insurant.certValidate == null ? null : <div><span>　证件有效期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>}
 						<div><span>　性别</span>{env.order.detail.insurant.genderName}</div>
 						<div><span>　出生日期</span>{env.order.detail.insurant.birthday}</div>
-						<div><span>　所在地区</span>{env.order.detail.insurant.cityName}</div>
-						<div><span>　通讯地址</span>{env.order.detail.insurant.address}</div>
+                        {env.order.detail.insurant.height == null ? null : <div><span>　身高</span>{env.order.detail.insurant.height}(厘米)</div>}
+                        {env.order.detail.insurant.weight == null ? null : <div><span>　体重</span>{env.order.detail.insurant.weight}(公斤)</div>}
+						{env.order.detail.insurant.cityName == null ? null : <div><span>　所在地区</span>{env.order.detail.insurant.cityName}</div>}
+						{env.order.detail.insurant.address == null ? null : <div><span>　通讯地址</span>{env.order.detail.insurant.address}</div>}
+                        {env.order.detail.insurant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.insurant.occupation.text}({env.order.detail.insurant.occupation.level}类)</div>}
 					</div>
 				}
 				<div className="view">
