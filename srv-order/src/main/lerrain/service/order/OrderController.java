@@ -207,7 +207,7 @@ public class OrderController
             if (p.containsKey("bizMsg"))
                 order.setBizMsg(p.getString("bizMsg"));
             if (p.containsKey("extra"))
-                order.setExtra(fill(order.getExtra(), p.getJSONObject("extra")));
+                order.setExtra(fill(order.getExtra(), p.getJSONObject("extra"), p.getBoolean("resetExtra")));
 
             if (pay >= 0)
                 order.setPay(pay);
@@ -256,9 +256,9 @@ public class OrderController
             order.setOwner(p.getString("owner"));
 
         if (p.containsKey("detail"))
-            order.setDetail(fill(order.getDetail(), p.getJSONObject("detail")));
+            order.setDetail(fill(order.getDetail(), p.getJSONObject("detail"), p.getBoolean("resetDetail")));
         if (p.containsKey("extra"))
-            order.setExtra(fill(order.getExtra(), p.getJSONObject("extra")));
+            order.setExtra(fill(order.getExtra(), p.getJSONObject("extra"), p.getBoolean("resetExtra")));
 
 //        if (p.containsKey("pay"))
 //            order.setPay(p.getIntValue("pay"));
@@ -266,17 +266,16 @@ public class OrderController
 //            order.setStatus(p.getIntValue("status"));
     }
 
-    private Map fill(Map m1, Map m2)
+    private Map fill(Map m1, Map m2, Boolean reset)
     {
+        if(reset != null && reset){
+            return m2;
+        }
+
         if (m1 == null)
             return m2;
         if (m2 == null)
             return m1;
-
-        // 如果有投保人没有被保人，则移除（投保页选择非本人进入确认页，返回再选择本人提交）
-        if(m2.get("applicant") != null && m2.get("insurant") == null){
-            m1.remove("insurant");
-        }
 
         m1.putAll(m2);
         return m1;

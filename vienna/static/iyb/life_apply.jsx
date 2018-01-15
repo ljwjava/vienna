@@ -553,7 +553,7 @@ var Ground = React.createClass({
 			pay: this.props.defVal.pay,
 			vendor: env.vendor
 		};
-		let order = {	
+		let order = {
 			orderId: env.orderId,
 			productId: env.packId,
             productCode: env.pack.code,
@@ -565,6 +565,7 @@ var Ground = React.createClass({
 			platformId: 2,
 			owner: env.brokerId,
 			type: 2,
+			resetDetail: true,
 			detail: apply
 		};
 
