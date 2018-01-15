@@ -273,6 +273,11 @@ public class OrderController
         if (m2 == null)
             return m1;
 
+        // 如果有投保人没有被保人，则移除（投保页选择非本人进入确认页，返回再选择本人提交）
+        if(m2.get("applicant") != null && m2.get("insurant") == null){
+            m1.remove("insurant");
+        }
+
         m1.putAll(m2);
         return m1;
     }
