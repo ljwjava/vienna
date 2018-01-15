@@ -175,6 +175,9 @@ var Ground = React.createClass({
 							return (<div><span>　{v.name}</span>{v.text}</div>);
 						})
 					}
+					{
+						env.order.detail.factors.effectiveTime == null ? null : <div><span>　保单生效日</span>{env.order.detail.factors.effectiveTime}</div>
+					}
 				</div>
 				<div className="view">
 					<div><span>受益人</span></div>
