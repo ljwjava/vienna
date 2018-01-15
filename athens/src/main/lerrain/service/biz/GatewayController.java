@@ -63,12 +63,17 @@ public class GatewayController
             for (Map.Entry<String, String> w : ((Map<String, String>)gateway.getWith()).entrySet())
             {
                 String var = w.getValue();
-
-                Object val = root == null ? null : root.get(var);
-                if (val == null)
-                    val = session.getAttribute(var);
-
-                param.put(w.getKey(), val);
+                if (var.startsWith("#"))
+                {
+                    param.put(w.getKey(), var.substring(1));
+                }
+                else
+                {
+                    Object val = root == null ? null : root.get(var);
+                    if (val == null)
+                        val = session.getAttribute(var);
+                    param.put(w.getKey(), val);
+                }
             }
         }
 

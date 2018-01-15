@@ -208,6 +208,31 @@ public class DataBase extends HashMap
                         v.put(key, val);
                     }
                 }
+                else if (mapping.isEmpty())
+                {
+                    for (int i = 1; i <= num; i++)
+                    {
+                        String key = rsmd.getColumnLabel(i);
+                        Object val = rs.getObject(i);
+
+                        int pos = key.indexOf("_");
+                        while (pos >= 0)
+                        {
+                            try
+                            {
+                                key = key.substring(0, pos) + key.substring(pos + 1, pos + 2).toUpperCase() + key.substring(pos + 2);
+                            }
+                            catch (Exception e)
+                            {
+                                break;
+                            }
+
+                            pos = key.indexOf("_");
+                        }
+
+                        v.put(key, val);
+                    }
+                }
                 else
                 {
                     for (Map.Entry<String, String> e : mapping.entrySet())

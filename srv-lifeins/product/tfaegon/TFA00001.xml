@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="TFA00001" corporation_id="tfaegon" code="5301" name="康健一生终身重大疾病保险" name_abbr="多倍保" unit="1000"
+		type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="TFA00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+			</pay>
+			<insure>
+				<item code="to_full" />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="TFA00002"/>
+		</rider>
+
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY" />
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+					<item>若被保险人于等待期内因疾病导致身故，我们将向您无息返还本合同累计已交纳的保险费，本合同效力终止。</item>
+					<item>若被保险人因意外伤害或于等待期后因疾病导致身故，且身故时未满十八周岁，我们将按累计已交纳的保险费向身故保险金受益人给付身故保险金，本合同效力终止。</item>
+					<item>若被保险人因意外伤害或于等待期后因疾病导致身故，且身故时年满十八周岁，我们将按被保险人身故时本合同的基本保险金额向身故保险金受益人给付身故保险金，本合同效力终止。</item>
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+					<item>本合同约定的重大疾病分为A、B、C、D四组，详细疾病分组信息请见重大疾病分组。</item>
+					<item>每组重大疾病保险金的给付次数以一次为限，给付后该组重大疾病的保险责任终止。本合同重大疾病保险金的累计给付次数以三次为限，当累计给付达到三次时，本合同效力终止。</item>
+				</paragraph>
+				<paragraph title="轻症疾病保险金">
+					<item>本合同约定的轻症疾病分为A、B、C三组，详细疾病分组信息请见轻症疾病分组。</item>
+					<item>每组轻症疾病保险金的给付次数以一次为限，给付后该组轻症疾病的保险责任终止。本合同轻症疾病保险金的累计给付次数以三次为限，当累计给付达到三次时，本项保险责任终止。</item>
+					<item>若被保险人同时符合本合同约定的重大疾病定义和轻症疾病定义的，我们仅承担给付重大疾病保险金的保险责任。</item>
+				</paragraph>
+				<paragraph title="重大疾病或轻症疾病豁免保险费">
+					<item>若被保险人符合首次重大疾病保险金或首次轻症疾病保险金的给付条件，则我们自被保险人被确诊首次患有本合同约定的重大疾病或轻症疾病的下一个保险费约定支付日开始，豁免本合同应交纳的各期保险费至交费期限届满为止。</item>
+					<item>被豁免的保险费视为已交纳，同时本合同继续有效。</item>
+					<item>在豁免保险费期间，我们不接受本合同基本保险金额以及交费方式的变更。</item>
+				</paragraph>
+			</coverage>
+
+			<benefit_chart filter="chart" parser="chart">
+			    <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

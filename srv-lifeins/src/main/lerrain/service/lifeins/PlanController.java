@@ -564,7 +564,7 @@ public class PlanController
 
                 if (p != null) for (Field f : fields)
                 {
-                    if (f == null)
+                    if (f == null || f.getType() == null)
                         continue;
 
                     Object val = p.get(f.getName());

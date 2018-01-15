@@ -66,34 +66,36 @@ var SimDraw = React.createClass({
 
 var Console = React.createClass({
 	getInitialState() {
-		return {};
+		return {clause: [], select: null};
 	},
 	componentDidMount() {
 		common.req("proposal/list_clause.json", {}, r => {
-			this.setState({clauses: r.map(v =>
-				<li key={v.id}>
-					<table style={{margin:"10px 24px 10px 10px"}}>
-						<tbody onClick={this.addProduct.bind(this, v.id)} style={{whiteSpace:"nowrap"}}>
-							<tr>
-								<td rowSpan="2" style={{width:"60px"}}><img src={v.icon == null ? common.link("images/logo/iyb.png") : v.icon} style={{width:"50px", height:"50px"}}/></td>
-								<td>
-									<span>{v.name}</span>&nbsp;
-									<span style={{color:"#F00"}}>{v.tag}</span>
-								</td>
-							</tr>
-							<tr><td style={{fontSize:"10px", color:"#AAA"}}>{v.remark}</td></tr>
-						</tbody>
-					</table>
-				</li>
-			)});
+			this.setState({clause: r});
 		});
 	},
+    setVendor(vendorId) {
+		this.setState({select: vendorId});
+    },
 	addProduct(productId) {
 		common.req("proposal/plan/clause.json", {productId:productId, planId:this.props.plan.planId}, r => {
 			this.props.refresh(r);
 		});
 	},
 	render() {
+        var vendors = {};
+        var clauses = this.state.clause.map(v => {
+        	if (this.state.select == null)
+        		this.state.select = v.company;
+            vendors[v.company] = v.icon;
+            return v.company != this.state.select ? null : <div key={v.id} style={{padding: "10px 10px 10px 20px", whiteSpace: "nowrap"}} onClick={this.addProduct.bind(this, v.id)}>
+				<div style={{fontSize: "12pt", color: "#000", height:"25px"}}>{v.name}</div>
+				<div style={{fontSize: "10pt", color: "#AAA", height:"20px"}}>{v.remark}</div>
+			</div>;
+        });
+        var vr = [];
+        for (var v in vendors) {
+            vr.push(<div onMouseEnter={this.setVendor.bind(this, v)}><img src={vendors[v]} style={{width:"50px", height:"50px", margin:"5px 10px 5px 10px"}}/><span style={{height:"50px", borderRight: this.state.select == v ? "6px solid #0AF" : "none"}}></span></div>);
+        }
 		return (
 			<nav className="navbar navbar-default">
 				<div className="container-fluid">
@@ -103,13 +105,19 @@ var Console = React.createClass({
 								<a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 									添加产品 <span className="caret"></span>
 								</a>
-								<ul className="dropdown-menu" style={{width:"auto"}}>{this.state.clauses}</ul>
+								<table className="dropdown-menu" style={{width:"440px"}}>
+									<tbody>
+										<tr>
+											<td style={{width:"80px", verticalAlign:"top", borderRight:"1px solid #EEE"}}>{vr}</td>
+											<td style={{verticalAlign:"top"}}>{clauses}</td>
+										</tr>
+									</tbody>
+								</table>
 							</li>
 						</ul>
 						{ this.props.plan.applicant == null ? null : <Customer tag="applicant" show="投保人" plan={this.props.plan} val={this.props.plan.applicant} refresh={this.props.refresh}/> }
 						{ this.props.plan.insurant == null ? null : <Customer tag="insurant" show="被保险人" plan={this.props.plan} val={this.props.plan.insurant} refresh={this.props.refresh}/> }
-						<ul className="nav navbar-nav navbar-right">
-						</ul>
+						<ul className="nav navbar-nav navbar-right"></ul>
 					</div>
 				</div>
 			</nav>
@@ -256,11 +264,14 @@ var Plan = React.createClass({
 				i++;
 				let append = null;
 				if (v.children != null) {
-					append = [<a key="0" onClick={this.openChild.bind(this, i)}>{this.state.child ? "▲" : "▼"}</a>];
-					if (this.state.child) v.children.map(v => {
-						append.push(<div key={v.id} style={{fontSize:"12px", lineHeight:"24px", marginLeft:"5px"}}>● {v.name}</div>);
-					});
-				}
+					//append = [<a key="0" onClick={this.openChild.bind(this, i)}>{this.state.child ? "▲" : "▼"}</a>];
+					// if (this.state.child) v.children.map(v => {
+					// 	append.push(<span key={v.id} style={{fontSize:"12px", lineHeight:"24px", marginLeft:"5px", color:"#888"}}>● {v.name}</span>);
+					// });
+                    append = v.children.map(v => {
+                        return (<span key={v.id} style={{fontSize:"12px", lineHeight:"24px", marginLeft:"5px", color:"#888"}}>● {v.name}</span>);
+                    });
+                }
 				return (
 					<tr key={i}>
 						<td>{v.parent != null ? null :
@@ -298,13 +309,13 @@ var Plan = React.createClass({
 				<table>
 					<thead>
 						<tr>
-							<th style={{width:"4%"}}></th>
-							<th style={{width:"37%"}}>产品名称</th>
-							<th style={{width:"15%"}}>保额/份数/档次</th>
-							<th style={{width:"10%"}}>保障期间</th>
-							<th style={{width:"10%"}}>缴费期间</th>
-							<th style={{width:"10%"}}>保费{env.currency}</th>
-							<th style={{width:"9%"}}></th>
+							<th style={{width:"40px"}}></th>
+							<th>产品名称</th>
+							<th>保额/份数/档次</th>
+							<th>保障期间</th>
+							<th>缴费期间</th>
+							<th>保费{env.currency}</th>
+							<th style={{width:"40px"}}></th>
 						</tr>
 					</thead>
 					<tbody>

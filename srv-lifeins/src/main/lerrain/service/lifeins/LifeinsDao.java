@@ -99,11 +99,14 @@ public class LifeinsDao
                 String[][] keys = new String[][] {{"pay", "PAY"}, {"insure", "INSURE"}};
                 if (list != null) for (Field f : list)
                 {
-                    for (int j = 0; j < keys.length; j++)
+                    if (f != null) for (int j = 0; j < keys.length; j++)
                     {
                         if (ins.getOptionList(keys[j][0]) == null && keys[j][1].equals(f.getName()))
                         {
                             Formula fm = f.getOptions();
+                            if (fm == null)
+                                continue;
+
                             JSONArray listArr = (JSONArray) JSON.toJSON(fm.run(null));
                             for (int i = 0; i < listArr.size(); i++)
                             {

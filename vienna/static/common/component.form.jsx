@@ -34,6 +34,8 @@ var Form = React.createClass({
 				comp = (<Inputer ref={v.code} valCode={v.code} valType="number" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={"请输入"+v.name} value={v.value}/>);
 			} else if (v.type == "static") {
                 comp = (<input ref={v.code} type="text" readOnly="true" value={v.value}/>);
+            } else if (v.type == "label") {
+                comp = (<div style={{textAlign: "right", paddingRight: "5px"}}>{v.value}</div>);
             } else if (v.type == "hidden") {
                 comp = (<div style={{display: "none"}}><input ref={v.code} value={v.value}/></div>);
             } else {

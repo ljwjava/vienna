@@ -265,6 +265,16 @@
 					<item>在保险合同有效期内，保险合同生效日起一年期间或保单周年日起至下一个保单周年日的期间。</item>
                 </paragraph>
 			</coverage>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<bar name="累计领取" color="#00AA00">IT.LJLQ(I)</bar>
+					<line name="账户价值（低）" color="#0000FF">IT.QMZHJZ(I,0)</line>
+					<line name="账户价值（中）" color="#9900FF">IT.QMZHJZ(I,1)</line>
+					<line name="账户价值（高）" color="#FF00FF">IT.QMZHJZ(I,2)</line>
+					<line name="累计保费" color="#FF9900">IT.LJBF(I)</line>
+				</chart>
+			</benefit_chart>
 		</attachment>
 
 		<rule>

@@ -3,7 +3,7 @@
     <product id="NCI00717000" 
 		corporation_id="nci" 
 		code="00717000" 
-		name="住院费用医疗保险（2007）" 
+		name="附加住院费用医疗保险（2007）"
 		name_abbr="住院费用医疗2007" 
 		is_main="no"
 		is_rider="yes"

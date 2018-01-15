@@ -74,8 +74,16 @@ public class GatewayDao
                         String[] ss = with.split(",");
                         for (String str : ss)
                         {
-                            String[] s = str.split("[:]");
-                            map.put(s[0], s[1]);
+                            if (str.indexOf(":") > 0)
+                            {
+                                String[] s = str.split("[:]");
+                                map.put(s[0], "#" + s[1]);
+                            }
+                            else
+                            {
+                                String[] s = str.split("[=]");
+                                map.put(s[0], s[1]);
+                            }
                         }
                         gw.setWith(map);
                     }

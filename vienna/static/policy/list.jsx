@@ -26,13 +26,13 @@ class PolicyList extends List {
     buildTableTitle() {
         return (
 			<tr>
-				<th>保单code</th>
-				<th>主要产品</th>
-				<th>投保人</th>
-				<th>投保时间</th>
-				<th>保费</th>
-				<th>保单状态</th>
-				<th></th>
+				<th><div>保单code</div></th>
+				<th><div>主要产品</div></th>
+				<th><div>投保人</div></th>
+				<th><div>投保时间</div></th>
+				<th><div>保费</div></th>
+				<th><div>保单状态</div></th>
+				<th>{this.buildPageComponent()}</th>
 			</tr>
         );
     }

@@ -100,4 +100,9 @@
     <corporation id="sinatay" name="信泰人寿" extends="insurance">
         <item src="sinatay/*.xml"/>
     </corporation>
+
+    <corporation id="tfaegon" name="同方全球人寿" extends="insurance">
+        <item src="tfaegon/*.xml"/>
+    </corporation>
+
 </declare>
