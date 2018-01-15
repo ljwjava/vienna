@@ -50,7 +50,6 @@ var ModalLottery = React.createClass({
 		</div>);
 	}
 });
-
 var LotteryBox = React.createClass({
 	getInitialState(){
 		let cb = this.props.cb;
@@ -282,11 +281,70 @@ var LotteryBox = React.createClass({
 	}
 });
 
+var ReturnVisitBox = React.createClass({
+    getInitialState(){
+        let order = this.props.order;
+        return {isShow: false, order: order, callback: this.props.cb, isConfirm: false};
+    },
+    componentDidMount(){
+    },
+    confirmVisit(){
+        if(this.state.callback && !this.state.isConfirm){
+            this.state.callback();
+        }
+        this.setState({isShow: false});
+    },
+    close(){
+        this.setState({isShow: false});
+    },
+    render(){
+        if (!!this.state.order && !!this.state.order.detail && !!this.state.order.detail.returnVisit && this.state.order.detail.returnVisit.length > 0) {
+        	let appName = this.state.order.detail.applicant.name;	// 投保人姓名
+        	let firstPrem = this.state.order.price;	// 保费
+        	let regularPrem = this.state.order.detail.plan.premium;	// 年期保费
+        	let payPeriod = "";	// 交费期间
+        	let insPeriod = "";	// 保障期间
+            this.state.order.detail.plan.product.map(v => {
+            	if(v.parent == null){
+                    payPeriod = v.pay;
+                    insPeriod = v.insure;
+				}
+			});
+
+            return (<div style={{animationDuration: "300ms", display: this.state.isShow ? "" : "none", position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#fff", textAlign: "left"}}>
+				<div className="common">
+					<div className="title">网销在线回访</div>
+					<div className="text">
+						{this.state.order.detail.returnVisit.map(v => {
+							let content = v.content;
+							content = content.replace(/\$APP_NAME\$/g, appName);
+							content = content.replace(/\$FIRST_PREM\$/g, firstPrem);
+							content = content.replace(/\$PAY_PERIOD\$/g, payPeriod);
+							content = content.replace(/\$REGULAR_PREM\$/g, regularPrem);
+							content = content.replace(/\$INS_PERIOD\$/g, insPeriod);
+							return <p className="html" dangerouslySetInnerHTML={{__html:content}}></p>;
+                        })}
+                        {/*<Summary content={this.state.order.detail.returnVisit}/>*/}
+					</div>
+					<div className="console">
+						<div className="tab">
+							<div className="row">
+								<div className="col right" onClick={this.confirmVisit}>{this.state.isConfirm ? "您已完成以上回访内容" : "确认以上回访内容"}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>);
+        }
+        return <div></div>;
+    }
+});
+
 var Ground = React.createClass({
 	intervalId: null,
 	getInitialState() {
 		// ，投保成功后可获得抽奖机会哦
-		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面", memo:"", modify:0, icon:"images/insure_succ.png"};
+		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面", memo:"", modify:0, icon:"images/insure_succ.png", order: null};
 	},
 	back(step) {
 		common.req("order/restore.json", {orderId: env.order.id}, r => {
@@ -319,14 +377,19 @@ var Ground = React.createClass({
             succText = env.order.detail.tips.success;
             failText = env.order.detail.tips.fail;
         }
+        let succTopText = "";
+        if(env.order.productId	== "23"){	// 百年人寿
+            succTopText = "您的保单已承保，可登陆" + vd.name + "官网查看保单详情。";
+		}
         if (!succText)
             succText = !!vd.succTips ? vd.succTips : "投保成功，" + vd.name + "会在承保后进行回访，回访重要，请注意接听";
         if (!failText)
         	failText = !!vd.failTips ? vd.failTips : "请修改后重新提交";
 
         if (t == 1) {
-			s = {modify:0, title:"投保成功", text:text, memo:succText, icon:"images/insure_succ.png"};
-            this.getUseableCountByOrderNo();
+			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png", hasReturnVisit: (env.order.detail.returnVisit != null)};
+            try{this.getUseableCountByOrderNo();}catch (e){}
+            try{this.refs.returnVisit.setState({order: env.order, isConfirm: (env.order.extra.isConfirmReturnVisit == true)});}catch(e){}
         } else if (t == 20)
 			s = {modify:2, title:"核保失败", text:text, memo:failText, icon:"images/insure_fail.png"};
 		else if (t == 21)
@@ -442,6 +505,26 @@ var Ground = React.createClass({
         iHealthBridge.doAction("share", JSON.stringify(this.state.shareObj));
         this.shareCallback();
 	},
+    showReturnVisit(){
+    	this.refs.returnVisit.setState({isShow: true});
+	},
+	onConfirmVisit(){
+		// TODO: 提交回访确认请求
+		let _this = this;
+        common.req("sale/return_visit.json", {orderId: env.order.id}, r => {
+        	if(r.success){
+                ToastIt("在线回访成功！");
+                _this.refs.returnVisit.setState({isConfirm: true});
+			}else{
+                ToastIt(r.errMsg);
+			}
+        }, r => {
+            if(r != null){
+                ToastIt(r);
+            }
+            _this.refs.returnVisit.setState({isConfirm: false});
+        });
+	},
    	render() {
 		return (
 			<div className="graph" style={{maxWidth: "750px", minWidth: "320px", margin: "0 auto"}}>
@@ -451,6 +534,9 @@ var Ground = React.createClass({
 					<div style={{paddingTop:"10px"}} className="font-wm">
 						{this.state.text}
 					</div>
+                    {this.state.titleMemo == null || this.state.titleMemo == "" ? "" : (
+						<div style={{height:"auto", padding: "5px 0px"}} className="font-wm">{this.state.titleMemo}</div>
+                    )}
 					<div style={{height:"50px"}} className="font-wm">
 						{this.state.asking > 0 ? this.state.asking : this.state.memo}
 					</div>
@@ -459,6 +545,12 @@ var Ground = React.createClass({
 						<div style={{paddingBottom:"5px"}}>
 							<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.back.bind(this,-1*this.state.modify)}>修改信息</div>
 						</div>
+					}
+					{
+						!this.state.hasReturnVisit ? null :
+							<div style={{paddingBottom:"5px"}}>
+								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.showReturnVisit}>在线回访</div>
+							</div>
 					}
 				</div>
 				<LotteryBox ref="lottery" cb={this.lotteryCallBack}/>
@@ -472,6 +564,7 @@ var Ground = React.createClass({
 						:
 						<img className="paysuccess-share-img-h5" src="./images/lottery/share.png"/>}
 				</div>
+				<ReturnVisitBox ref="returnVisit" order={this.state.order} cb={this.onConfirmVisit}></ReturnVisitBox>
 			</div>
 		);
 	}
