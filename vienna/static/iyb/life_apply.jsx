@@ -26,7 +26,7 @@ env.def = {
     },
     insurant: {
         cert: [["1","身份证"]],
-        certValidate: false,
+        certValidate: true,
         city: false,
         address: false,
 		occupation: false,

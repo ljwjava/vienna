@@ -7,7 +7,7 @@
             name="e桶金網路投保利率變動型年金保險(甲型)"
             name_abbr="e桶金"
             unit="10000"
-            currency="hkd"
+            currency="twd"
             type_code="life"
             sequence="1000"
             sale_begin_date="2017-01-01"
