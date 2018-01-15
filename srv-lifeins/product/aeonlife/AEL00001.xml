@@ -51,8 +51,8 @@
 		</attachment>
 
 		<rule>
-		    <if condition="AGE > 55">
-				被保险人年龄要求0~55周岁。
+			<if condition="DAY lt 28 or AGE > 55">
+				被保险人年龄要求出生满28天~55周岁。
 			</if>
 			<if condition="AMOUNT lt 1000 or AMOUNT % 1000 > 0">
 				保额最低为1000，且必须为1000元的整数倍。

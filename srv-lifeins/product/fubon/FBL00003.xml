@@ -7,7 +7,7 @@
             name="富足e生網路投保利率變動型養老保險"
             name_abbr="富足e生"
             unit="10000"
-            currency="hkd"
+            currency="twd"
             type_code="life"
             sequence="1000"
             sale_begin_date="2017-01-01"
