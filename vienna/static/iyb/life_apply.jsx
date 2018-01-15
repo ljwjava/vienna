@@ -548,6 +548,7 @@ var Ground = React.createClass({
 			photo: env.photo,
             read: env.pack.extra.read,
             readAddDesc: env.pack.extra.readAddDesc,
+            returnVisit: env.pack.extra.returnVisit,
 			tips: env.pack.extra.tips,
 			pay: this.props.defVal.pay,
 			vendor: env.vendor
