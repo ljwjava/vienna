@@ -227,7 +227,7 @@ class PlanForm extends Form {
 			return [];
 		var effDays = false;
 		let form = this.props.fields.map(v => {
-            if (v.var == "EFFECTIVE_DAYS" || v.var == "EFFECTIVE_DATE")
+            if (v.var == "EFFECTIVE_DAYS" || v.var == "EFFECTIVE_DATE" || v.var == "EFFECTIVE_STR")
                 effDays = true;
 			if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0)) {
 				return {
