@@ -23,13 +23,13 @@ var List = React.createClass({
 		let env = this.props.env;
 		env.total = this.state.content.total;
 		for (var i=0;i<env.total/env.number;i++) {
-			page.push(<li key={i} onClick={this.page.bind(this, i)}>第 {i + 1} 页</li>);
+			page.push(<li key={i} onClick={this.page.bind(this, i)} style={{textAlign:"center", color:"#000"}}>第 {i + 1} 页</li>);
 		}
 		return (
-			<span>
+			<div className="dropdown">
 				<a data-toggle="dropdown" href="#">{env.from / env.number + 1} ▼</a>
 				<ul className="dropdown-menu">{page}</ul>
-			</span>
+			</div>
 		);
 	},
 	render() {

@@ -46,9 +46,7 @@ class PolicyList extends List {
 				<td>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
 				<td>{v.premium}</td>
 				<td>{v.status}</td>
-				<td>
-					<a onClick={this.open.bind(this, v.id)}>处理</a>
-				</td>
+				<td><a onClick={this.open.bind(this, v.id)}>处理</a></td>
 			</tr>
         );
     }

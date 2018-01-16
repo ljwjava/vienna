@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<product 
+		id="PICC730101"
+	    code="730101" 
+		corporation_id="nci" 
+		amount="DS.RATE[0,0]"
+	    is_main="yes" 
+		is_rider="no" 
+	    name="康利人生两全保险（分红型）" 
+	    name_abbr="康利人生" 
+	    type_code="common"
+	    last_modify_date="2017-04-01"
+	    sale_begin_date="2015-11-27"
+		sale_end_date="2017-04-01"		
+     	sequence="20300"
+		premium="1000"
+		input="premium" 
+     	>
+		
+		<!--  quantity="premium"  input="premium" unit_desc="amount"  amount="DS.RATE[0,0]*QUANTITY"-->
+		<data>
+			<item parser="dds" value="PICC730101" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_3"/>
+				<item code="term_5"/>
+			</pay>
+			<insure><!-- 保费期间 -->
+				<item code="term_5"/>
+				<item code="term_6"/>
+				<item code="term_8"/>
+				<item code="term_10"/>
+			</insure>
+		</param>
+		
+		<interest>
+
+				<var formula="A1 lt PAY_PERIOD ? PREMIUM : 0" name="PRM" param="A1" type="double"/>
+				<var formula="(A1 > 0 ? IT.ADP[A1-1] : 0)+IT.PRM[A1]" name="ADP" param="A1" type="double"/>
+				<var formula="DS.DATA[A1,2]*(PREMIUM/1000)" name="PTSGBXJ" param="A1" type="double"/><!--普通身故保险金-->
+				<var formula="DS.DATA[A1,3]*(PREMIUM/1000)" name="GGJT" param="A1" type="double"/><!--公共交通-->
+				<var formula="DS.DATA[A1,4]*(PREMIUM/1000)" name="MQB" param="A1" type="double"/><!--满期保险金-->
+				<var formula="DS.DATA[A1,5]*(PREMIUM/1000)" name="CSV" param="A1" type="double"/><!--现金价值-->
+				<var formula="DS.DATA[A1,6]*(PREMIUM/1000)" name="DNHL1" param="A1" type="double"/><!--当年红利-->
+				<var formula="DS.DATA[A1,7]*(PREMIUM/1000)" name="LJHL1" param="A1" type="double"/><!--累计红利-->
+				<var formula="DS.DATA[A1,8]*(PREMIUM/1000)" name="DNHL2" param="A1" type="double"/><!--当年红利-->
+				<var formula="DS.DATA[A1,9]*(PREMIUM/1000)" name="LJHL2" param="A1" type="double"/><!--累计红利-->
+				<var formula="DS.DATA[A1,10]*(PREMIUM/1000)" name="DNHL3" param="A1" type="double"/><!--当年红利-->
+				<var formula="DS.DATA[A1,11]*(PREMIUM/1000)" name="LJHL3" param="A1" type="double"/><!--累计红利-->
+		</interest>
+		
+		<attachment>
+			<benefit_table  name="table" parser="table">
+				<table  desc="假设投资回报率较高时">
+				
+					<row type="title">
+					
+						<blank row="2" col="1">'保\n\n单\n\n年\n\n度\n\n'</blank>
+						<blank row="1" col="2">'保险费'</blank>
+						<blank row="1" col="4">'保险利益给付'</blank>
+						<blank row="1" col="2">'低档红利（3%）'</blank>
+						<blank row="1" col="2">'中档红利（4.5%）'</blank>
+						<blank row="1" col="2">'高档红利（6%）'</blank>
+					</row>
+
+					<row type="title">
+						<blank row="1" col="1">'当期保险\n\n费(年初)'</blank>
+						<blank row="1" col="1">'累计已交\n\n保险费'</blank>
+						<blank row="1" col="1">'普通身故\n\n保险金'</blank>
+						<blank row="1" col="1">'公共交通\n\n意外身故\n\n保险金'</blank>
+						<blank row="1" col="1">'满期保\n\n险金'</blank>
+						<blank row="1" col="1">'现金\n\n价值'</blank>
+						<blank row="1" col="1">'当年\n\n红利'</blank>
+						<blank row="1" col="1">'累计\n\n红利'</blank>
+						<blank row="1" col="1">'当年\n\n红利'</blank>
+						<blank row="1" col="1">'累计\n\n红利'</blank>
+						<blank row="1" col="1">'当年\n\n红利'</blank>
+						<blank row="1" col="1">'累计\n\n红利'</blank>
+					</row>
+
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="############0">IT.PRM[I]</blank>
+							<blank align="right" style="############0">IT.ADP[I]</blank>
+							<blank align="right" style="############0">IT.PTSGBXJ[I]</blank>
+							<blank align="right" style="############0">IT.GGJT[I]</blank>
+							<blank align="right" style="############0">IT.MQB[I]</blank>
+							<blank align="right" style="############0">IT.CSV[I]</blank>
+							<blank align="right" style="############0">IT.DNHL1[I]</blank>
+							<blank align="right" style="############0">IT.LJHL1[I]</blank>
+							<blank align="right" style="############0">IT.DNHL2[I]</blank>
+							<blank align="right" style="############0">IT.LJHL2[I]</blank>
+							<blank align="right" style="############0">IT.DNHL3[I]</blank>
+							<blank align="right" style="############0">IT.LJHL3[I]</blank>
+						</row>
+					</loop>
+				</table>
+				<text>1.演示数据的相关解释以产品说明书为准</text>
+			</benefit_table>
+			
+			<coverage name="coverage" parser="coverage"><!-- 保险责任 -->
+				<paragraph title="满期保险金">
+					<item>保险期间届满时，被保险人生存且合同有效,按基本保额*交费期间（年数）给付满期保险金，合同终止；</item>
+				</paragraph>
+				<paragraph title="普通身故保险金">
+					<item>合同生效之日起被保险人身故，按基本保额*身故时的交费年度数给付普通身故保险金，合同终止；</item>
+				</paragraph>
+				<paragraph title="公共交通意外身故保险金"> 
+					<item>合同生效之日起，被保险人以乘客身份乘坐合法客运的公共交通工具时，遭受意外伤害导致身故，按基本保额*身故时交费年度数*3给付公共交通意外身故保险金，合同终止；</item>
+					<item>公共交通意外身故保险金的给付金额以基本保额*身故时交费年度数和300万元之和为限。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+		
+		<rider><!-- fujiaxian -->
+		</rider>
+
+		<rule skip="rule_0003,rule_02001">
+		
+		    <if condition="(AGE_DAY lt 28 || AGE > 65) and PAY_VALUE == 1">
+		          趸交，被保险人年龄未满28天或者大于65周岁。
+			</if>
+			<if condition="(AGE_DAY lt 28 || AGE > 60)and (PAY_PERIOD == 3 or PAY_PERIOD == 5)">
+				  期交，被保险人年龄未满28天或者大于60周岁。
+			</if>
+			
+			<if condition="(INSURE_PERIOD == 8 or INSURE_PERIOD == 10) and PAY_VALUE == 1">
+			 	   趸交，保险期间只能为5或6年。
+			</if>
+			<if condition="(INSURE_PERIOD == 5 or INSURE_PERIOD == 6) and PAY_VALUE == 3 ">
+			 	  三年期缴费时，保险期间应为8年或10年。
+			</if>
+			<if condition="(INSURE_PERIOD == 5 or INSURE_PERIOD == 6 or INSURE_PERIOD == 8) and PAY_VALUE == 5">
+			 	 五年期缴费时，保险期间应为10年。
+			</if>
+			<if condition="OCCUPATION_CATEGORY == 6">
+			    不受理6类职业的被保险人投保申请。
+			</if>
+			<!--
+			<if condition="(AGE &gt; 17 and AGE lt 41)  and AMOUNT &gt; 1000000   ">
+			    18-40周岁之间，基本保额需小于100万。
+			</if>
+			<if condition="(AGE &gt; 40 and AGE lt 56) and AMOUNT &gt; 500000" type="customer">
+			    41-55周岁之间，基本保额需小于50万。
+			</if>
+				<if condition="(AGE &gt; 55 and AGE lt 61) and AMOUNT &gt; 200000">
+			    56-60周岁之间，基本保额需小于20万。
+			</if>
+			<if condition="AGE &gt; 61 and AMOUNT &gt; 100000">
+			    61周岁以上，基本保额需小于10万。
+			</if>
+
+			<if condition="QUANTITY lt 3">
+			    最低为3份起售。
+			</if>
+			-->
+			<if condition="PREMIUM lt 3000">
+			    最低为3000元起售。
+			</if>
+			
+			<if condition = "PREMIUM % 1000 != 0">
+			    保费金额必须为1000元的整数倍
+			</if>
+		</rule>
+		
+	</product>
+</declare>

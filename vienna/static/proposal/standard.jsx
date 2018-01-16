@@ -251,7 +251,7 @@ var Plan = React.createClass({
 			if (r == null || r.length == 0) r = [{text:"无可用产品"}];
 			let v = {};
 			v[i] = r.map(j => {
-				return (<li key={j.code} style={{padding:"5px 16px 5px 16px"}} onClick={this.addRider.bind(this, i, j.code)}>{j.text}</li>);
+				return (<li key={j.id} style={{padding:"5px 16px 5px 16px"}} onClick={this.addRider.bind(this, i, j.id)}>{j.name}</li>);
 			});
 			this.setState({riders:v});
 		});
@@ -296,9 +296,7 @@ var Plan = React.createClass({
 						<td>{v.insure}</td>
 						<td>{v.pay}</td>
 						<td>{v.premium}</td>
-						<td>
-							{v.auto ? null: (<a onClick={this.remove.bind(this, i)}><img src="../images/delete.png" style={{width:"30px", height:"30px"}}/></a>)}
-						</td>
+						<td>{v.auto ? null: (<a onClick={this.remove.bind(this, i)}><img src="../images/delete.png" style={{width:"30px", height:"30px"}}/></a>)}</td>
 					</tr>
 				);
 			});
@@ -503,6 +501,7 @@ var Show = React.createClass({
 				let v = this.state.content;
 				for (let t1 in v) {
 					let tables = v[t1].map(t2 => {
+						if (t2.type != "table") return null;
 						let head = t2.head.map(t3 => {
 							let row = t3.map(t4 => {
 								if (t4 == null) return null;
