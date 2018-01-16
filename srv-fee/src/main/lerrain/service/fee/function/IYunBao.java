@@ -52,6 +52,9 @@ public class IYunBao extends HashMap<String, Object>
                         premium = Common.toDouble(map.get("premium"));
                     }
 
+                    if (premium > 0 && fee.getAmount() > premium)
+                        return JSON.parseObject("{isSuccess: false}");
+
                     return iybPay.pay(fee.getPayee(), fee.getType(), fee.getAmount(), productName, fee.getFreeze(), fee.getMemo(), iybPolicyId, fee.getBizNo(), parentUserId, productId, premium);
                 }
                 catch (Exception e)
