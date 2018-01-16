@@ -71,7 +71,7 @@ public class PlanController
 
         mergeQuestSrv.reset();
 
-        editorSrv.reset();
+        //editorSrv.reset();
 
         queue.start();
 

@@ -27,10 +27,10 @@ public class Fee
     String bizNo; //对应的业务流水号，一般是保单号
     String memo; //备注
 
-    int type; //类型，0未知 1直佣 2间佣 3活动奖金 4抽奖
+    int type; //类型，0未知 1佣金 2关联账号奖励 3渠道费用 4奖金
     int unit; //单位：1rmb 2转发基础 3积分
     int freeze; //支付后冻结一定时间
-    int status; //状态：0未付 1已付 2锁定 9失败
+    int status = 0; //状态：0未付 1已付 2锁定 9失败
 
     Date estimate; //预计支付时间
     Date payTime; //实际支付时间

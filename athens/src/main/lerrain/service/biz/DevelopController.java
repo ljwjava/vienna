@@ -229,7 +229,7 @@ public class DevelopController
         PrintStream oldPs = System.out;
         try (ByteArrayOutputStream sysOs = new ByteArrayOutputStream(); PrintStream sysPs = new PrintStream(sysOs))
         {
-            System.setOut(sysPs);
+//            System.setOut(sysPs);
 
             JSONObject res = new JSONObject();
             res.put("result", "success");

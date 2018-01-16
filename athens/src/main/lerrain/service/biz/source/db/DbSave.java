@@ -39,8 +39,8 @@ public class DbSave implements Function
 
         String res = null;
 
-        String sql = String.format("select * from %s where %s = %s", table, idCol, vals.get(idCol));
-        Map old = db.queryMap(sql, null, null);
+        String sql = String.format("select * from %s where %s = ?", table, idCol);
+        Map old = db.queryMap(sql, new Object[]{vals.get(idCol)}, null);
 
         if (old != null)
         {

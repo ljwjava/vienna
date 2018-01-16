@@ -46,6 +46,7 @@ public class DataBase extends HashMap
         this.put("query", new DbQuery(this));
         this.put("find", new DbFind(this));
         this.put("save", new DbSave(this));
+        this.put("replace", new DbReplace(this));
         this.put("column", new DbColumn(this));
     }
 
@@ -144,6 +145,7 @@ public class DataBase extends HashMap
         try (DruidPooledConnection dpc = dds.getConnection())
         {
             PreparedStatement ps = dpc.prepareStatement(sql);
+
             if (vals != null)
                 for (int i=0;i<vals.length;i++)
                     ps.setObject(i+1, vals[i]);
@@ -155,6 +157,34 @@ public class DataBase extends HashMap
             Log.error(e);
         }
     }
+
+//    public Map getCols(String table)
+//    {
+//        try (DruidPooledConnection dpc = dds.getConnection())
+//        {
+//            PreparedStatement ps = dpc.prepareStatement("select * from " + table + " limit 0, 0");
+//
+//            ResultSet rs = ps.executeQuery();
+//            ResultSetMetaData rsmd = rs.getMetaData();
+//
+//            Map<String, String> map = new HashMap<>();
+//
+//            int num = rsmd.getColumnCount();
+//            for (int i = 1; i <= num; i++)
+//            {
+//                String key = rsmd.getColumnLabel(i);
+//                map.put(key, rsmd.getColumnTypeName(i));
+//            }
+//
+//            return map;
+//        }
+//        catch (Exception e)
+//        {
+//            Log.error(e);
+//        }
+//
+//        return null;
+//    }
 
     public boolean queryBool(String sql, Object[] vals)
     {
