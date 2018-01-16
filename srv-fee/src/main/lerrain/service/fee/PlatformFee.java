@@ -37,6 +37,8 @@ public class PlatformFee
         root.declare("findFee", findFee);
         root.declare("store", store);
         root.declare("IYB", iyb);
+
+        map.clear();
     }
 
     public void setVals(Long platformId, Map vals)
