@@ -20,12 +20,14 @@ env.company = 'iyb';
 env.def = {
     applicant: {
         cert: [["1","身份证"]],
+        certValidateBegin: false,
         certValidate: true,
         city: true,
         address: true
     },
     insurant: {
         cert: [["1","身份证"]],
+        certValidateBegin: false,
         certValidate: true,
         city: false,
         address: false,
@@ -38,6 +40,7 @@ env.def = {
     	display: true,
         custom: true,
         cert: [["1","身份证"]],
+        certValidateBegin: false,
         certValidate: true,
 		relation: [["4","父母"],["2","配偶"],["3","子女"]],
     },
@@ -78,8 +81,10 @@ class Beneficiary extends Form {
 			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.beneficiary.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
+		if (env.formOpt.beneficiary.certValidateBegin)
+            v.push({name:'证件有效起期', code:"certValidateBegin", type:"date", req:"yes"});
 		if (env.formOpt.beneficiary.certValidate)
-            v.push({name:'证件有效期', code:"certValidate", type:"certValidate", req:"yes"});
+            v.push({name:'证件有效止期', code:"certValidate", type:"certValidate", req:"yes"});
         v.push({name:'性别', code:"gender", type:"switch", options:[["M","男"],["F","女"]]});
 		v.push({name:'出生日期', code:"birthday", type:"date", req:"yes", desc:"请选择出生日期"});
         v.push({name:"受益比例", code:"scale", type:"select", options:[["10","10%"],["20","20%"],["30","30%"],["40","40%"],["50","50%"],["60","60%"],["70","70%"],["80","80%"],["90","90%"],["100","100%"]]});
@@ -108,8 +113,10 @@ class ApplicantForm extends Form {
 			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.applicant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
+        if (env.formOpt.applicant.certValidateBegin)
+            v.push({name:'证件有效起期', code:"certValidateBegin", type:"date", req:"yes"});
         if (env.formOpt.applicant.certValidate)
-            v.push({name:'证件有效期', code:"certValidate", type:"certValidate", req:"yes"});
+            v.push({name:'证件有效止期', code:"certValidate", type:"certValidate", req:"yes"});
         v.push({name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]});
         v.push({name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"});
 		if (env.formOpt.applicant.city)
@@ -136,8 +143,10 @@ class InsurantForm extends Form {
 			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.insurant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
 		];
+        if (env.formOpt.insurant.certValidateBegin)
+            v.push({name:'证件有效起期', code:"certValidateBegin", type:"date", req:"yes"});
         if (env.formOpt.insurant.certValidate)
-            v.push({name:'证件有效期', code:"certValidate", type:"certValidate", req:"yes"});
+            v.push({name:'证件有效止期', code:"certValidate", type:"certValidate", req:"yes"});
 		v.push({name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]});
 		v.push({name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"});
         if (env.formOpt.insurant.city)
@@ -426,6 +435,7 @@ var Ground = React.createClass({
 		}
 		env.relation = this.refs.relation.val();
 		env.applicant = this.refs.applicant.val();
+		// 处理证件有效起期
 		env.applicant.certName = this.refs.applicant.refs.certType.text();
 		env.applicant.genderName = this.refs.applicant.refs.gender.text();
 		if (env.formOpt.applicant.city)
@@ -699,7 +709,7 @@ var draw = function(defVal) {
 	ReactDOM.render(
 		<Ground defVal={defVal}/>, document.getElementById("content")
 	);
-}
+};
 
 $(document).ready( function() {
 	env.orderId = common.param("orderId");

@@ -139,7 +139,8 @@ var Ground = React.createClass({
 					<div><span>投保人{env.order.detail.insurant == null ? " / 被保险人" : ""}</span></div>
 					<div><span>　姓名</span>{env.order.detail.applicant.name}</div>
 					<div><span>　证件</span>{env.order.detail.applicant.certName} {env.order.detail.applicant.certNo}</div>
-                    { env.order.detail.applicant.certValidate == null ? null : <div><span>　证件有效期</span> {env.order.detail.applicant.certValidate.certLong ? '长期' : env.order.detail.applicant.certValidate.certExpire}</div>}
+                    { env.order.detail.applicant.certValidateBegin == null ? null : <div><span>　证件有效起期</span> {env.order.detail.applicant.certValidateBegin}</div>}
+                    { env.order.detail.applicant.certValidate == null ? null : <div><span>　证件有效止期</span> {env.order.detail.applicant.certValidate.certLong ? '长期' : env.order.detail.applicant.certValidate.certExpire}</div>}
 					<div><span>　性别</span>{env.order.detail.applicant.genderName}</div>
 					<div><span>　出生日期</span>{env.order.detail.applicant.birthday}</div>
                     {env.order.detail.applicant.height == null ? null : <div><span>　身高</span>{env.order.detail.applicant.height}(厘米)</div>}
@@ -153,7 +154,8 @@ var Ground = React.createClass({
 						<div><span>被保险人</span></div>
 						<div><span>　姓名</span>{env.order.detail.insurant.name}</div>
 						<div><span>　证件</span>{env.order.detail.insurant.certName} {env.order.detail.insurant.certNo}</div>
-                        { env.order.detail.insurant.certValidate == null ? null : <div><span>　证件有效期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>}
+                        { env.order.detail.insurant.certValidateBegin == null ? null : <div><span>　证件有效起期</span> {env.order.detail.insurant.certValidateBegin}</div>}
+                        { env.order.detail.insurant.certValidate == null ? null : <div><span>　证件有效止期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>}
 						<div><span>　性别</span>{env.order.detail.insurant.genderName}</div>
 						<div><span>　出生日期</span>{env.order.detail.insurant.birthday}</div>
                         {env.order.detail.insurant.height == null ? null : <div><span>　身高</span>{env.order.detail.insurant.height}(厘米)</div>}
@@ -190,8 +192,10 @@ var Ground = React.createClass({
 									<span>　姓名</span>{v.name} [{env.dict.relation[v.relation]}]
 									<br/>
 									<span>　　　　　 {v.certName}</span>{v.certNo}
+                                    { v.certValidateBegin == null ? null : <br/>}
+                                    { v.certValidateBegin == null ? null : <span>　　　　　 证件有效起期{v.certValidateBegin}</span>}
 									<br/>
-									<span>　　　　　 证件有效期</span>{v.certValidate.certLong ? '长期' : v.certValidate.certExpire}
+									<span>　　　　　 证件有效止期</span>{v.certValidate.certLong ? '长期' : v.certValidate.certExpire}
 									<br/>
 									<span>　　　　　 受益比例</span>{v.scale}%
 								</div>
