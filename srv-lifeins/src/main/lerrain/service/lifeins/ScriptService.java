@@ -341,7 +341,7 @@ public class ScriptService
 		}
 		else
 		{
-			int days = Common.intOf(stack.get("EFFECTIVE_DAYS"), 1);
+			int days = Common.intOf(stack.get("EFFECTIVE_DAYS"), 0);
 
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.HOUR_OF_DAY, 0);
