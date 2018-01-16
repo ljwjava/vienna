@@ -147,12 +147,22 @@ public class SaleController
         }
         else if ("detail".equals(opt) || "plan".equals(opt)) //plan以后由detail替代，可以查看其他类型产品的详情
         {
-            JSONObject json = new JSONObject();
-            json.put("planId", packIns.getPrice());
-            json.put("script", null);
-            json.put("with", Lifeins.translate(packIns, content));
+            if (packIns.getPriceType() == PackIns.PRICE_PLAN)
+            {
+                JSONObject json = new JSONObject();
+                json.put("planId", packIns.getPrice());
+                json.put("with", Lifeins.translate(packIns, content));
 
-            return serviceMgr.req("lifeins", "plan/perform.json", json);
+                return serviceMgr.req("lifeins", "plan/perform.json", json);
+            }
+            else if (packIns.getPriceType() == PackIns.PRICE_LIFE)
+            {
+                JSONObject json = new JSONObject();
+                json.put("scriptId", packIns.getPrice());
+                json.put("with", Lifeins.translate(packIns, content));
+
+                return serviceMgr.req("lifeins", "perform.json", json);
+            }
         }
         else if ("cms".equals(opt))
         {
