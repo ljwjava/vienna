@@ -23,7 +23,7 @@ public class OrderController
     public JSONObject create(@RequestBody JSONObject p)
     {
         Order order = orderSrv.newOrder();
-        fill(order, p);
+        fill(order, p, false);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -52,7 +52,7 @@ public class OrderController
         for (int i = 0; i < children.size(); i++)
         {
             Order child = orderSrv.newOrder();
-            fill(child, children.getJSONObject(i));
+            fill(child, children.getJSONObject(i), false);
 
             c.add(child);
         }
@@ -156,6 +156,34 @@ public class OrderController
         return res;
     }
 
+    @RequestMapping("/replace.json")
+    @ResponseBody
+    public JSONObject replace(@RequestBody JSONObject p)
+    {
+        Long orderId = p.getLong("orderId");
+        if (orderId == null)
+            orderId = p.getLong("id");
+        if (orderId == null)
+            throw new RuntimeException("no orderId");
+
+        Order order = orderSrv.getOrder(orderId);
+        if (order.getStatus() != 1 && order.getStatus() != 4)
+            throw new RuntimeException("订单<"+orderId+">处理失败：只有未提交或退回的订单才可以修改");
+
+        synchronized (order)
+        {
+            fill(order, p, true);
+        }
+
+        orderSrv.saveOrder(order);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", order);
+
+        return res;
+    }
+
     @RequestMapping("/save.json")
     @ResponseBody
     public JSONObject save(@RequestBody JSONObject p)
@@ -172,7 +200,7 @@ public class OrderController
 
         synchronized (order)
         {
-            fill(order, p);
+            fill(order, p, false);
         }
 
         orderSrv.saveOrder(order);
@@ -207,7 +235,7 @@ public class OrderController
             if (p.containsKey("bizMsg"))
                 order.setBizMsg(p.getString("bizMsg"));
             if (p.containsKey("extra"))
-                order.setExtra(fill(order.getExtra(), p.getJSONObject("extra"), p.getBoolean("resetExtra")));
+                order.setExtra(fill(order.getExtra(), p.getJSONObject("extra"), false));
 
             if (pay >= 0)
                 order.setPay(pay);
@@ -224,7 +252,7 @@ public class OrderController
         return res;
     }
 
-    private void fill(Order order, JSONObject p)
+    private void fill(Order order, JSONObject p, boolean isReset)
     {
         order.setModifyTime(new Date());
 
@@ -256,9 +284,9 @@ public class OrderController
             order.setOwner(p.getString("owner"));
 
         if (p.containsKey("detail"))
-            order.setDetail(fill(order.getDetail(), p.getJSONObject("detail"), p.getBoolean("resetDetail")));
+            order.setDetail(fill(order.getDetail(), p.getJSONObject("detail"), isReset));
         if (p.containsKey("extra"))
-            order.setExtra(fill(order.getExtra(), p.getJSONObject("extra"), p.getBoolean("resetExtra")));
+            order.setExtra(fill(order.getExtra(), p.getJSONObject("extra"), isReset));
 
 //        if (p.containsKey("pay"))
 //            order.setPay(p.getIntValue("pay"));
