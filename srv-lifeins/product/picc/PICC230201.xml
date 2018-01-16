@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<product id="PICC230201"
+			 corporation_id="picc"
+			 code="230201"
+			 name="关爱专家定期重疾个人疾病保险"
+			 name_abbr="关爱专家定期重疾"
+			 unit_amount="10000"
+			 premium="DS.RATE[0,0]*AMOUNT/10000"
+			 input="amount"
+			 type_code="thunder"
+			 is_main="yes"
+			 is_rider="no"
+			 sale_begin_date="2010-05-12"
+			 sale_end_date="2099-01-01"
+			 last_modify_date="2014-05-12">
+
+		<data>
+			<item parser="dds" value="PICC230201" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</insure>
+		</param>
+
+		<risk>
+			<item code="nurse" formula="AMOUNT"/>
+		</risk>
+
+		<attachment>
+			<benefit_table name="table" parser="table">
+			    <table>
+					<row type="title">
+						<blank row="1" col="1">'保单年度'</blank>
+						<blank row="1" col="1">'年交保费'</blank>
+						<blank row="1" col="1">'累计已交保费'</blank>
+						<blank row="1" col="1">'重大疾病保险金'</blank>
+						<blank row="1" col="1">'身故保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="align" style="########0">PremiumYear(I)</blank>
+							<blank align="align" style="########0">PremiumSum(I)</blank>
+							<blank align="align" style="########0">AMOUNT</blank>
+							<blank align="align" style="########0">AMOUNT</blank>
+						</row>
+					</loop>
+				</table>
+				<text>1.演示数据的相关解释以产品说明书为准</text>
+			</benefit_table>
+
+			<health name="health" parser="health">
+				<item type="formula">'重大疾病保险金'</item>
+				<item type="formula">'●被保险人初次发生本合同约定的重大疾病，按合同约定保险金额给付重大疾病保险金。'</item>
+				<item type="formula">'身故保险金'</item>
+				<item type="formula">'●被保险人身故，按合同约定保险金额给付身故保险金。'</item>
+			</health>
+
+			<coverage name="coverage" parser="coverage">
+				<paragraph title="重大疾病保险金">
+					<item>自保险合同生效之日起（保险合同复效的则自最后一次复效之日起）因意外伤害原因，或自保险合同生效之日起（保险合同复效的则自最后一次复效之日起）180 天后因意外伤害之外的其它原因，被保险人初次发生本合同约定的重大疾病，本公司按照保险金额给付重大疾病保险金，本合同效力终止。</item>
+					<item>被保险人自保险合同生效之日起（保险合同复效的则自最后一次复效之日起）180 天内因意外伤害之外的其它原因初次发生本合同约定的重大疾病的，本公司按投保人已为该被保险人交纳的保险费金额给付重大疾病保险金，本合同效力终止。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>自保险合同生效之日起（保险合同复效的则自最后一次复效之日起）因意外伤害原因，或自保险合同生效之日起（保险合同复效的则自最后一次复效之日起）180 天后因意外伤害之外的其它原因被保险人身故，本公司按照保险金额给付身故保险金，本合同效力终止。</item>
+					<item>被保险人自保险合同生效之日起（保险合同复效的则自最后一次复效之日起）180 天内因意外伤害之外的其它原因身故，本公司按投保人已为该被保险人交纳的保险费金额给付身故保险金，本合同效力终止。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rider>
+			<product id="PICC121501"/>
+		</rider>
+
+		<rule skip="rule_02002,rule_02001">
+			<if condition="AMOUNT lt 10000 or AMOUNT % 10000 != 0" alert="amount">
+				本险种最低保额为1万元，且须为万元的整数倍。
+			</if>
+			<if condition = "PAY_VALUE != 1 and (AGE + PAY_VALUE) > 70">
+				被保险人年龄与交费年期之和必须小于70(含)。
+			</if>
+			<if condition = "DAY lt 28 or AGE > 50" type="customer">
+				本险种要求被保人投保年龄：出生满28天至50周岁。
+			</if>
+			<if condition="OCCUPATION_CATEGORY == 1 or OCCUPATION_CATEGORY == 2 or OCCUPATION_CATEGORY == 3 and AMOUNT > 2000000">
+				在本险种中，被保人职业类别为1-3类，单个被保险人投保保额最高上限为200万元。
+			</if>
+			<if condition="OCCUPATION_CATEGORY == 4 and AMOUNT > 300000">
+				在本险种中，被保人职业类别为4类，单个被保险人投保保额最高上限为30万元。
+			</if>
+			<if condition="OCCUPATION_CATEGORY == 5 and AMOUNT > 200000">
+				在本险种中，被保人职业类别为5类，单个被保险人投保保额最高上限为20万元。
+			</if>
+			<if condition="OCCUPATION_CATEGORY == 6" type="customer">
+				在本险种中，被保人职业类别为6类的，将不予受理。
+			</if>
+		</rule>
+	</product>
+</declare>

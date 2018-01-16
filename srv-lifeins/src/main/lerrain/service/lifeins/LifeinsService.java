@@ -44,7 +44,6 @@ public class LifeinsService
             company = ins.load();
 
             lifeinsDao.loadPacks();
-            lifeinsDao.supplyClauses();
 
             for (Entry<String, Company> e : company.entrySet())
             {
@@ -54,6 +53,8 @@ public class LifeinsService
                         addProduct(prd);
                 }
             }
+
+            lifeinsDao.supplyClauses();
         }
         catch (Exception e)
         {

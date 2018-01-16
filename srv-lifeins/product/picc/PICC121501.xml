@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<product 
+		id="PICC121501"
+		corporation_id="picc"
+		code="121501"
+		name="附加健康守护住院定额个人医疗保险"
+		name_abbr="附加健康守护住院定额"
+		purchase="rank"
+		is_main="no"
+		is_rider="yes"
+		premium="try(DS['RATE'+RANK_CODE][0][0],0)"
+		type_code="medical"
+		sequence="10010"
+		sale_begin_date="2017-8-10"
+		sale_end_date=""
+		last_modify_date="2017-8-10">
+		
+		<data>
+			<item parser="dds" value="PICC121501" />
+		</data>
+		
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="term_1"/>
+			</insure>
+			<rank>
+				<item code="1"/>
+				<item code="2"/>
+				<item code="3"/>
+				<item code="4"/>
+				<item code="5"/>
+			</rank>
+		</param>
+		
+		<interest>
+		</interest>
+		
+		<attachment>
+			<coverage name="coverage" parser="coverage">
+				<paragraph title="一般住院津贴保险金">
+					<item>被保险人因意外伤害原因或等待期满后因疾病原因经本公司指定医院诊断必须住院治疗，对于每次住院，本公司从被保险人入住指定医院第四天开始给付一般住院津贴保险金。即：一般住院津贴保险金给付天数＝实际入住指定医院的天数－3 天,保险期间内，一般住院津贴保险金的累计给付天数以180天为限。</item>
+				</paragraph>
+				<paragraph title="重症监护病房津贴保险金 ">
+					<item>被保险人因意外伤害原因或等待期满后因疾病原因经本公司指定医院诊断必须住院治疗，对于每次住院期间必须入住重症监护病房的，本公司按被保险人实际入住指定医院重症监护病房的天数给付重症监护病房津贴保险金。即：重症监护病房津贴保险金给付天数＝实际入住指定医院重症监护病房的天数保险期间内，重症监护病房津贴保险金的累计给付天数以180 天为限。</item>
+				</paragraph>
+				<paragraph title="癌症住院津贴保险金 ">
+					<item>被保险人等待期满后经本公司指定医院确诊初次发生本附加险合同约定的癌症，且必须住院治疗的，对于每次住院，本公司按照被保险人因癌症实际入住指定医院的天数给付癌症住院津贴保险金。即：癌症住院津贴保险金给付天数＝因癌症实际入住指定医院的天数保险期间内，癌症住院津贴保险金的累计给付天数以180 天为限。</item>
+				</paragraph>
+				<paragraph title="额外保障保险金 ">
+					<item>如果被保险人在本公司推荐医院进行治疗，本公司在给付上述一般住院津贴保险金、重症监护病房津贴保险金和癌症住院津贴保险金的基础上，再另外给付5%的额外保障保险金。即：额外保障保险金＝（一般住院津贴保险金+重症监护病房津贴保险金+癌症住院津贴保险金）×5%保险期间内，被保险人一般住院津贴保险金、重症监护病房津贴保险金和癌症住院津贴保险金可累计给付。每次住院给付的一般住院津贴保险金、重症监护病房津贴保险金、癌症住院津贴保险金和额外保障保险金的总和不得超过该次住院医疗费用总支出的150%。</item>
+				</paragraph>
+				<paragraph title="责任延续 ">
+					<item>对等待期满后保险期间内发生且延续至本附加险合同到期日后30 天内的住院治疗，本公司承担给付保险金的责任。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+
+		<rule skip="rule_02001,rule_01002">
+			<if condition="DAY lt 28 or AGE > 59" type="customer">
+				被保险人年龄范围：出生满28天—不满59周岁。
+			</if>
+			<if condition="PLAN.PRODUCT('00300036') != null">
+				费用型医疗保险不能重复购买。
+			</if>
+			<if condition="OCCUPATION_CATEGORY == 6" type="customer">
+				在本险种中，被保人职业类别为6类的，将不予受理。
+			</if>
+		</rule>
+	</product>
+</declare>

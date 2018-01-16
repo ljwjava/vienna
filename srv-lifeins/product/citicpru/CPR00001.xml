@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="CPR00001"
+		corporation_id="citicpru"
+		code="12030"
+		name="祯爱优选定期寿险"
+		name_abbr="祯爱优选"
+		unit="10000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		premium="200"
+		input="amount"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="CPR00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_30"/>
+				<item code="to_60"/>
+				<item code="to_70"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="SMOKE" value="1"/>
+		</init>
+
+		<interest>
+			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故或全残保险金">
+					<item>被保险人因遭遇意外伤害事故或在本主险合同生效日或最后复效日（以较迟者为准）起90天（不含）后因意外伤害事故以外的原因导致身故或全残，我们将按本主险合同的基本保险金额给付身故保险金或全残保险金，给付后本主险合同效力终止。</item>
+					<item>被保险人在本主险合同生效日或最后复效日（以较迟者为准）起90天（含）内因遭遇意外伤害事故以外的原因导致身故或全残，我们将按本主险合同已缴保险费给付身故保险金或全残保险金，给付后本主险合同效力终止。</item>
+				</paragraph>
+			</coverage>
+
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="TOTAL_DISABILITY">[AMOUNT,AMOUNT]</item>
+				<item name="ACCIDENT_DEATH">AMOUNT</item>
+				<item name="OTHER_DEATH">AMOUNT</item>
+			</fgraph>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<bar name="保费" color="#00AA00">PremiumYear(I)</bar>
+					<line name="累计保费" color="#0000FF">PremiumSum(I)</line>
+					<line name="现金价值" color="#0000FF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 50" type="customer">
+				投保年龄：18~50周岁
+			</if>
+			<if condition="AMOUNT lt 300000 or AMOUNT % 100000 > 0">
+				最低投保基本保险金额：30万元，且需要为10万元的整数倍
+			</if>
+			<if condition="PAY_VALUE != 30 and INSURE_VALUE == 30">
+				选择保30年时，需选择30年交
+			</if>
+			<if condition="PAY_VALUE != 20 and INSURE_VALUE == 20">
+				选择保20年时，需选择20年交
+			</if>
+			<if condition="PAY_PERIOD > INSURE_PERIOD">
+				交费期间不能大于保障期间
+			</if>
+		</rule>
+	</product>
+</declare>

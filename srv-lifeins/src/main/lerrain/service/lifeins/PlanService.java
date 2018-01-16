@@ -292,7 +292,21 @@ public class PlanService
 	{
 		Date date = Common.dateOf(stack.get("EFFECTIVE_DATE"));
 		if (date != null)
+		{
 			plan.setInsureTime(date);
+		}
+		else
+		{
+			int days = Common.intOf(stack.get("EFFECTIVE_DAYS"), 1);
+
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.add(Calendar.DAY_OF_MONTH, days);
+
+			plan.setInsureTime(cal.getTime());
+		}
 
 		Customer applicant = (Customer)plan.getApplicant();
 		applicant.setAge(30);

@@ -105,4 +105,8 @@
         <item src="tfaegon/*.xml"/>
     </corporation>
 
+    <corporation id="citicpru" name="中信保诚人寿" extends="insurance">
+        <item src="citicpru/*.xml"/>
+    </corporation>
+
 </declare>
