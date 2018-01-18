@@ -92,7 +92,7 @@ var OccupationPicker = React.createClass({
         return (<PickerStack dataSource={ this.state.occupation } // readOnly={ true }
 							 valueType='label'
 							 title='职业类别选择'
-							 cols={ 3 }
+							 cols={ 5 }
 							 value = {this.state.proPickerVal}
 							 placeholder="请选择职业类别"
 							 labelTpl={ ({ label, level }) => level === undefined ? label : `${ label }(${ level }类)` }
