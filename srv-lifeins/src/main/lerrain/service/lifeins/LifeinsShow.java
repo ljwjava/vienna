@@ -74,6 +74,11 @@ public class LifeinsShow
         }
     }
 
+    public static Object formatBenefit(Plan plan)
+    {
+        return plan.format("benefit");
+    }
+
     public static JSONArray formatTable(Plan plan)
     {
         JSONArray r = new JSONArray();

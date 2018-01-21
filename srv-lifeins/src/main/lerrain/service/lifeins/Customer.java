@@ -140,6 +140,6 @@ public class Customer implements InsuranceCustomer
 	
 	public void set(String key, Object val)
 	{
-			vals.put(key, val);
+		vals.put(key, val);
 	}
 }

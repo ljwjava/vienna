@@ -5,6 +5,7 @@
 
 		<data>
 			<item parser="dds" value="STL00001" />
+			<item parser="dds" value="OCCUPATION" />
 		</data>
 
 		<param>
@@ -60,6 +61,18 @@
 			</if>
 			<if condition="AGE >= 18 and RELATIVE != null and RELATIVE != 'self' and RELATIVE != 'coupon' and RELATIVE != 'lineal'">
 				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
+			</if>
+			<if condition="OCCUPATION_CODE == null" level="alert">
+				请选择职业
+			</if>
+			<if condition="var occRank = try(DS.OCC_RANK[0][0],null); OCCUPATION_CODE != null and (occRank == null or occRank ~= 0)">
+				职业不符合投保要求
+			</if>
+			<if condition="ZONE == null" level="alert">
+				请选择地区
+			</if>
+			<if condition="ZONE != null and try(DS.ZONE_LEVEL[0][0],null) == null">
+				该地区暂不销售
 			</if>
 		</rule>
 	</product>

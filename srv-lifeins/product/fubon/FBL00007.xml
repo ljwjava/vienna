@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="FBL00007"
+            corporation_id="fubon"
+            code="ULTB"
+            name="多富利變額壽險"
+            name_abbr="多富利"
+            unit="10000"
+            currency="twd"
+            type_code="life"
+            sequence="1000"
+            input="premium_and_amount"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            last_modify_date="2017-01-01">
+
+        <!--<data>-->
+            <!--<item parser="dds" value="FBL00007" />-->
+        <!--</data>-->
+
+        <param>
+            <pay>
+                <item code="single"/>
+            </pay>
+            <insure>
+                <item code="full_110"/>
+            </insure>
+        </param>
+
+        <init>
+        </init>
+
+        <interest>
+        </interest>
+
+        <attachment>
+            <coverage filter="coverage" parser="coverage">
+                <paragraph title="滿期金(祝壽金)">
+                    <item>本契約有效期間內，被保險人保險年齡屆滿一百一十歲仍生存者，本公司以當日為基準日，依附表三「評價時點一覽表」贖回評價時點所約定的淨值資產評價日之投資標的價值計算本契約保單帳戶價值給付「祝壽保險金」後，本契約之效力即行終止。</item>
+                </paragraph>
+            </coverage>
+        </attachment>
+
+        <rule>
+            <if condition="AGE > 80" type="customer">
+                投保年齡：0~80歲
+            </if>
+            <if condition="AMOUNT > 60000000 or AMOUNT lt 600000 or AMOUNT % 10000 > 0">
+                投保保額：新臺幣60～6000萬元，以萬元為單位
+            </if>
+        </rule>
+    </product>
+</declare>

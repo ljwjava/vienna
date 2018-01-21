@@ -329,6 +329,8 @@ var Ground = React.createClass({
 	    	factors["BIRTHDAY"] = this.refs.insurant.refs.birthday.val();
             if (env.formOpt.insurant.city)
 				factors["ZONE"] = this.refs.insurant.refs.city.val().code;
+            else if (env.formOpt.applicant.city)
+                factors["ZONE"] = this.refs.applicant.refs.city.val().code;
 			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
 			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
 			factors["RELATIVE"] = this.refs.relation.val();

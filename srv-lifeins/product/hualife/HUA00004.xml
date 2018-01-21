@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HUA00004"
+		corporation_id="hualife"
+		code="12030"
+		name="金管家养老年金保险（万能型F款）"
+		name_abbr="金管家"
+		unit="1000"
+		is_main="no"
+		is_rider="yes"
+		type_code="annuity"
+		input="none"
+		premium="0"
+		amount="0"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		last_modify_date="2017-01-01">
+
+		<param>
+			<pay>
+				<item code="none"/>
+			</pay>
+			<insure>
+				<item code="full_105"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="R">[3,4.5,6]</item>
+			<item name="RATE">5.6</item>
+		</init>
+
+		<interest>
+			<item name="SUV_T" param="A1,A2">IT.ACT(A1,A2)</item>
+			<item name="DIE_T" param="A1,A2">IT.ACT(A1,A2)</item>
+			<item name="CASH" param="A1">
+				var x = 0;
+				for (var P : PLAN.PRODUCTS) {
+					if (P.PARENT == THIS.PARENT or P == THIS.PARENT) {
+						x += try(P.IT.DRAW(A1),0);
+					}
+				}
+				return x;
+			</item>
+			<item name="ACT" param="A1,A2">
+				var x = A1 > 0 ? IT.ACT(A1-1,A2) : 0;
+				x += IT.CASH(A1);
+				return x*(1+(A2>=3?RATE:R[A2])/100);
+			</item>
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="2">'保单年度末'</blank>
+						<blank row="2">'年龄'</blank>
+						<blank row="2">'账户进入'</blank>
+						<blank col="4">'账户价值'</blank>
+					</row>
+					<row type="title">
+						<blank row="1">'3.0%'</blank>
+						<blank row="1">'4.5%'</blank>
+						<blank row="1">'6.0%'</blank>
+						<blank row="1">'5.0%'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0.00">IT.CASH(I)</blank>
+							<blank align="right" style="########0.00">IT.ACT(I,0)</blank>
+							<blank align="right" style="########0.00">IT.ACT(I,1)</blank>
+							<blank align="right" style="########0.00">IT.ACT(I,2)</blank>
+							<blank align="right" style="########0.00">IT.ACT(I,3)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<coverage filter="coverage" parser="coverage">
+			</coverage>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

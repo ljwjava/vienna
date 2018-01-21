@@ -387,12 +387,16 @@ var Main = React.createClass({
             common.req("proposal/plan/quest/merge.json", {planId: this.props.planId}, r => {
                 this.setState({mode:x, show:r, type:"mergeQuest"});
             });
+        } else if (x == "8") {
+            common.req("proposal/plan/format.json", {planId: this.props.planId, style: "benefit"}, r => {
+                this.setState({mode:x, show:r.benefit, type:"benefit"});
+            });
 		} else {
 			this.setState({mode:x, show:null, type:"text"});
 		}
 	},
 	render() {
-		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"],["7","费用"]];
+		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"],["7","费用"],["8","转发JSON"]];
 		var barList = bar.map(r => {
 			return (<li key={r[0]} className={this.state.mode == r[0] ? "active" : null}><a onClick={this.doEvent.bind(this, r[0])}>{r[1]}</a></li>);
 		});
@@ -436,37 +440,68 @@ var Show = React.createClass({
 		});
 	},
 	showChart(i) {
-		common.req("proposal/plan/show.json", {planId: this.props.plan.planId, type: "chart", index:i}, r => {
-			this.setState({select:i, content:r, type:"chart"}, () => {
-				for (var x in r) {
-					var cc = r[x];
-					var graph = document.getElementById("chart");
-					graph.style.height = graph.offsetWidth / 2;
-					var chart = echarts.init(graph, 'macarons');
-					var option = {
-						tooltip : {
-							trigger: 'axis'
-						},
-						calculable : true,
-						legend: {
-							data: cc.sets
-						},
-						xAxis : [{
-							type : 'category',
-							data : cc.axis
-						}],
-						yAxis : [{
-							type : 'value',
-							name : '金额',
-							axisLabel : { formatter: '{value}' }
-						}],
-						series : cc.data
-					};
-					chart.setOption(option);
-				}
-			});
-		});
-	},
+        common.req("proposal/plan/show.json", {planId: this.props.plan.planId, type: "chart", index:i}, r => {
+            this.setState({select:i, content:r, type:"chart"}, () => {
+                for (var x in r) {
+                    var cc = r[x];
+                    var graph = document.getElementById("chart");
+                    graph.style.height = graph.offsetWidth / 2;
+                    var chart = echarts.init(graph, 'macarons');
+                    var option = {
+                        tooltip : {
+                            trigger: 'axis'
+                        },
+                        calculable : true,
+                        legend: {
+                            data: cc.sets
+                        },
+                        xAxis : [{
+                            type : 'category',
+                            data : cc.axis
+                        }],
+                        yAxis : [{
+                            type : 'value',
+                            name : '金额',
+                            axisLabel : { formatter: '{value}' }
+                        }],
+                        series : cc.data
+                    };
+                    chart.setOption(option);
+                }
+            });
+        });
+    },
+    showBenefit(i) {
+        this.setState({select: i, content: r, type: "chart"}, this.drawChart.bind(this, r));
+    },
+    drawChart(cc) {
+		var graph = document.getElementById("chart");
+		graph.style.height = graph.offsetWidth / 2;
+		var chart = echarts.init(graph, 'macarons');
+		var data = [];
+		for (var i=0;i<cc.title.length;i++)
+            data.push({data: cc.value[i], type: "line", name: cc.title[i]});
+		var option = {
+			tooltip : {
+				trigger: 'axis'
+			},
+			calculable : true,
+			legend: {
+				data: cc.title
+			},
+			xAxis : [{
+				type : 'category',
+				data : cc.axis
+			}],
+			yAxis : [{
+				type : 'value',
+				name : '金额',
+				axisLabel : { formatter: '{value}' }
+			}],
+			series : data
+		};
+		chart.setOption(option);
+    },
 	showLiability(i) {
 		common.req("proposal/plan/show.json", {planId: this.props.plan.planId, type: "liability", index:i}, r => {
 			this.setState({select:i, content:r, type:"liability"});
@@ -476,8 +511,7 @@ var Show = React.createClass({
 		let prds = null;
 		if (this.props.content.length > 0) {
 			prds = this.props.content.map(v => {
-				return <li className={this.state.select == v ? "active" : null}><a
-					onClick={func.bind(this, v)}>{this.props.plan.product[v].name}</a></li>;
+				return <li className={this.state.select == v ? "active" : null}><a onClick={func.bind(this, v)}>{this.props.plan.product[v].name}</a></li>;
 			});
 			if (this.state.content == null || this.state.type != this.props.type) {
 				func(this.props.content[0]);
@@ -525,6 +559,15 @@ var Show = React.createClass({
 			if (this.state.content != null && this.state.type == this.props.type) {
 				r.push(<div><div id="chart"></div></div>);
 			}
+        } else if (this.props.type == "benefit") {
+			r = [<nav className="navbar navbar-default" style={{marginTop:"10px"}}>
+				<div className="container-fluid">
+					<div className="collapse navbar-collapse">
+						<ul className="nav navbar-nav">{this.props.content.map(v => <li><a onClick={this.drawChart.bind(this, v)}>{v.name}</a></li>)}</ul>
+					</div>
+				</div>
+			</nav>];
+			r.push(<div><div id="chart"></div></div>);
 		} else if (this.props.type == "preview") {
 			r = <div id="preview" style={{backgroundColor:"#AAA", paddingTop:"10px", paddingBottom:"10px"}}></div>;
 		} else if (this.props.type == "liability") {

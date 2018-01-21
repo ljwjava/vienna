@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="FBL00005"
+            corporation_id="fubon"
+            code="HKR"
+            name="享安心住院醫療定額健康保險"
+            name_abbr="享安心"
+            unit="10000"
+            currency="twd"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            last_modify_date="2017-01-01">
+
+        <data>
+            <item parser="dds" value="FBL00005" />
+        </data>
+
+        <param>
+            <pay>
+                <item code="to_85"/>
+            </pay>
+            <insure>
+                <item code="to_85"/>
+            </insure>
+        </param>
+
+        <init>
+            <item name="PAY_RATE" value="[1, 0.52, 0.262, 0.088]"/>
+        </init>
+
+        <interest>
+        </interest>
+
+        <attachment>
+            <coverage filter="coverage" parser="coverage">
+            </coverage>
+        </attachment>
+
+        <rule>
+            <if condition="AGE > 65" type="customer">
+                投保年齡：0~65歲
+            </if>
+            <if condition="AGE > 23 and RELATIVE == null" level="alert">
+                關係未設定，可能影響投保。本人或配偶：0歲~65歲，子女：0歲~未滿23足歲
+            </if>
+            <if condition="AGE > 23 and RELATIVE != null and RELATIVE != 'self' and RELATIVE != 'coupon'">
+                大於23歲，僅限本人或配偶投保
+            </if>
+            <if condition="AMOUNT > 2000 or AMOUNT lt 100 or AMOUNT % 100 > 0">
+                投保保費：新臺幣100～2000元，以百元為單位
+            </if>
+        </rule>
+    </product>
+</declare>

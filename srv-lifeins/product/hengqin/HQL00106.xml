@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HQL00106"
+		corporation_id="hengqin"
+		code="34010"
+		name="横琴宜家年金保险（万能型）"
+		name_abbr="横琴宜家年金保险（万能型）"
+		unit="10000" 
+		is_rider="no" 
+		is_main="yes" 
+		input="premium" 
+		amount="0" 
+		quantity="1"
+		type_code="universal" 
+		sequence="1000" 
+		sale_begin_date="2017-01-01" 
+		sale_end_date="" 
+		last_modify_date="2017-01-01">
+
+		<param>
+			<pay>
+				<item code="single"/>
+			</pay>
+			<insure>
+				<item code="to_full"/>
+			</insure>
+		</param>
+		
+		<init premium="0">
+			<item name="R" value="[1.025,1.045,1.06]" />
+			<item name="S" value="[0.05,0.04,0.03,0.02,0.01]" />
+			<!-- 是否多主险销售 -->
+			<item name="ISMULTI">true</item>
+			<item name="ENDING" type="string">1.该利益演示基于公司的精算及其他假设，不代表公司的历史经营业绩，也不代表对公司未来经营业绩的预期，最低保证利率之上的投资收益是不确定的，实际保单账户利益可能低于中、高档利益演示水平。利益演示中的低、中、高档结算利率分别为2.5%、4.5%、6%。\n2.以上演示是在投保人选择将年金、生存金和祝寿金作为追加保费转入万能账户，且万能账户没有年金领取和部分领取的基础上进行的，所有数值均为取整所得，与实际数值可能会略有差异。
+</item>
+		<!-- 获取HQL00105的配置 -->
+		<item name="NJ">
+				var ppp = PLAN.PRODUCTS;
+				for(var i=0;i lt size(ppp);i++) {
+					var c = ppp[i];
+					if(c.PRODUCT_ID == 'HQL00105'){
+						return c;
+					}
+				}
+				return null;
+			</item>
+		</init>
+		<interest>
+			<!-- 保费 -->
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<!-- 累计保险费 -->
+			<var name="PRM_P" param="A1" formula="(A1>0?IT.PRM_P(A1-1):0)+IT.PRM(A1)" />
+			<!-- 追加保险费 -->
+			<var name="PRM_ZJ" param="A1" formula="A1==0?0:try(NJ.IT.ANNUITY(A1-1),0)+try(NJ.IT.SUV(A1-1),0)+try(NJ.IT.ZSJ(A1-1),0)" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM_ZJ(A1)" />
+			<!-- 初始费用-->
+			<var name="INC" param="A1" formula="(IT.PRM_ZJ(A1)+IT.PRM(A1))*0.01"/>
+			<!--进入万能保单账户的价值 -->
+			<var name="CV" param="A1" formula="IT.PRM_ZJ(A1)+IT.PRM(A1)-IT.INC(A1)"/>
+			<!--累计进入万能保单账户的价值 -->
+			<var name="CV_T" param="A1" formula="(A1>0?IT.CV_T(A1-1):0)+IT.CV(A1)"/>
+			<!--<var name="DRAW" param="A1" formula="A1>=1?0:IT.CV(A1)*0.04"/>-->
+			<!--年金-->
+			<var name="ANNUITY" param="A1,A2" formula="((A1+1)>=20 or A1+1+AGE>=70)?IT.PV(A1,A2)*0.05:0" />
+			<!--<var name="PV" param="A1,A2" formula="A1==0?IT.CV_T(A1)*R[A2]:(IT.PV(A1-1,A2)+IT.CV(A1)-IT.ANNUITY(A1-1,A2))*R[A2]"/>--><!--年末保单价值 -->
+			<var name="PV" param="A1,A2" formula="A1==0?IT.CV_T(A1)*R[A2]:(IT.PV(A1-1,A2)+IT.CV(A1))*R[A2]"/><!--年末保单价值 -->
+			<var name="SV" param="A1,A2" formula="A1>4?0:IT.PV(A1,A2)*S[A1]"/>
+			<var name="CSV" param="A1,A2" formula="IT.PV(A1,A2)-IT.SV(A1,A2)" />
+		</interest>
+
+		<attachment>
+			<benefit_app filter="table" parser="table">
+				<table desc="table">
+					<row type="title">
+						<blank row="1">'趸交保险费(期初)'</blank>
+						<blank row="1">'追加保险费(期初)'</blank>
+						<blank row="1">'初始费用'</blank>
+						<blank row="1">'累计万能保单账户的价值'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="########0">IT.PRM_P(I)</blank>
+							<blank align="right" style="########0.00">IT.INC(I)</blank>
+							<blank align="right" style="########0.00">IT.CV_T(I)</blank>
+						</row>
+					</loop>
+				</table>
+				<table desc="low">
+					<row type="title">
+						<blank row="1">'低档-年末账户价值（年金给付前）'</blank>
+						<blank row="1">'低档-退保费用'</blank>
+						<blank row="1">'低档-年末现金价值（年金给付前）'</blank>
+						<blank row="1">'低档-年末身故保险金'</blank>
+						<!--<blank row="1">'年金'</blank>-->
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank align="right" style="########0.00">IT.PV(I,0)</blank>
+							<blank align="right" style="########0.00">IT.SV(I,0)</blank>
+							<blank align="right" style="########0.00">IT.CSV(I,0)</blank>
+							<blank align="right" style="########0.00">IT.PV(I,0)</blank>
+							<!--<blank align="right" style="########0.00">IT.ANNUITY(I,0)</blank>-->
+						</row>
+					</loop>
+				</table>
+				<table desc="middle" default="yes">
+					<row type="title">
+						<blank row="1">'中档-年末账户价值（年金给付前）'</blank>
+						<blank row="1">'中档-退保费用'</blank>
+						<blank row="1">'中档-年末现金价值（年金给付前）'</blank>
+						<blank row="1">'中档-年末身故保险金'</blank>
+						<!--<blank row="1">'年金'</blank>-->
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank align="right" style="########0.00">IT.PV(I,1)</blank>
+							<blank align="right" style="########0.00">IT.SV(I,1)</blank>
+							<blank align="right" style="########0.00">IT.CSV(I,1)</blank>
+							<blank align="right" style="########0.00">IT.PV(I,1)</blank>
+							<!--<blank align="right" style="########0.00">IT.ANNUITY(I,0)</blank>-->
+						</row>
+					</loop>
+				</table>
+				<table desc="high">
+					<row type="title">
+						<blank row="1">'高档-年末账户价值（年金给付前）'</blank>
+						<blank row="1">'高档-退保费用'</blank>
+						<blank row="1">'高档-年末现金价值（年金给付前）'</blank>
+						<blank row="1">'高档-年末身故保险金'</blank>
+						<!--<blank row="1">'年金'</blank>-->
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank align="right" style="########0.00">IT.PV(I,2)</blank>
+							<blank align="right" style="########0.00">IT.SV(I,2)</blank>
+							<blank align="right" style="########0.00">IT.CSV(I,2)</blank>
+							<blank align="right" style="########0.00">IT.PV(I,2)</blank>
+							<!--<blank align="right" style="########0.00">IT.ANNUITY(I,0)</blank>-->
+						</row>
+					</loop>
+				</table>
+			</benefit_app>
+
+			<liability filter="liability" parser="liability">
+				<paragraph title="5、身故保险金 - 宜家年金（万能型）">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+				  			<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'若被保险人身故，我们按身故保险金申请日的保单账户价值给付身故保险金，同时本合同效力终止。'</blank>
+							<blank>'保单账户价值'</blank>
+						</row>
+					</table>
+					<!-- <item>若被保险人身故，我们按身故保险金申请日的保单账户价值给付身故保险金，同时本合同效力终止。</item> -->
+				</paragraph>
+				<!-- <paragraph title="年金 - 宜家年金（万能型）">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+				  			<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'自合同生效满20年或被保险人年满70周岁后的首个保单周年日（以较早者为准）起，若每个保单周年日的保单账户价值不低于我们规定的最低金额，我们将于被保险人生存的每个保单周年日按当时保单账户价值的5%给付年金，给付后保单账户价值等额减少。'</blank>
+							<blank>'保单账户价值的5%给付年金'</blank>
+						</row>
+					</table> -->
+					<!-- <item>自本合同生效满20年或被保险人年满70周岁后的首个保单周年日（以较早者为准）起，若每个保单周年日的保单账户价值不低于我们规定的最低金额，我们将于被保险人生存的每个保单周年日按当时保单账户价值的5%给付年金，给付后保单账户价值等额减少。</item> -->
+				<!-- </paragraph> -->
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="DAY lt 28 or AGE >65" type="customer">
+				投保年龄：出生满28天-65周岁。
+			</if>
+			<if condition="PREMIUM lt 10">
+				趸交保费：本险种趸交保险费，保费不得低于10000元，与其他险种同时投保的，不得低于10元。
+			</if>
+			<!-- <if condition="">
+				追加保险法：每次交纳的追加保险费不低于1000元，并且为100元的整倍数；但以其他合同的红利和生存类保险金做为本合同追加保险费的，不受前述限制。
+			</if> -->
+			<if condition="!PLAN.HasProduct('HQL00105')">
+				《横琴宜家年金保险（万能型）》必须与《横琴金禧年年年金保险》同时投保，请点击添加主险按钮进行添加。
+			</if>
+		</rule>
+	</product>
+</declare>

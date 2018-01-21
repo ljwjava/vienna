@@ -124,7 +124,7 @@ public class LifeinsDao
 
     public void supplyClauses()
     {
-        jdbc.query("select * from t_product where type = 1 and refer_id is not null", new RowCallbackHandler()
+        jdbc.query("select * from t_product where type = 1 or type = 2 and refer_id is not null", new RowCallbackHandler()
         {
             @Override
             public void processRow(ResultSet rs) throws SQLException
@@ -145,7 +145,7 @@ public class LifeinsDao
         if (inputId == null)
             return null;
 
-       return jdbc.query("select * from t_input where input_id = ? order by seq", new RowMapper<Field>()
+        return jdbc.query("select * from t_input where input_id = ? order by seq", new RowMapper<Field>()
         {
             @Override
             public Field mapRow(ResultSet m, int rowNum) throws SQLException

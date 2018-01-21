@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HQL00104"
+		corporation_id="hengqin"
+		code="14030"
+		name="横琴优品添利年金保险"
+		name_abbr="优品添利年金"
+		unit="1000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		quantity="1"
+		input="premium"
+		amount="(PREMIUM/UNIT)*DS.RATE[0][0]"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="HQL00104" />
+		</data>
+
+		<param>
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="term_3" />
+			</pay>
+			<insure>
+				<item code="term_20" />
+			</insure>
+		</param>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="SUV" param="A1" formula="A1==(INSURE_PERIOD-1)?AMOUNT:0" /><!--满期生存保险金-->
+			<var name="CSV" param="A1" formula="(PREMIUM/UNIT)*DS.DATA[A1][0]" /><!--现金价值-->
+			<var name="ANNUITY" param="A1" formula="((A1+1)>=10 and (A1+1) le 19)?IT.PRM_T(A1)*0.15:0" /><!--年金-->
+			<var name="AMT" param="A1" formula="max(IT.PRM_T(A1),IT.CSV(A1))" /><!--身故保险金-->
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'当期保费'</blank>
+						<blank row="1">'累计保费'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'年金'</blank>
+						<blank row="1">'满期保险金'</blank>
+						<blank row="1">'身故保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0.00">IT.CSV(I)</blank>
+							<blank align="right" style="########0">IT.ANNUITY(I)</blank>
+							<blank align="right" style="########0">IT.SUV(I)</blank>
+							<blank align="right" style="########0">IT.AMT(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<benefit_app filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'保险金额'</blank>
+						<blank row="1">'年金'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'身故保险金'</blank>
+						<blank row="1">'满期金'</blank>
+						<blank row="1">'日开销'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">AGE+I+1</blank>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="########0">round(IT.PRM(I))+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT)+'元'</blank>
+							<blank align="right" style="########0">round(IT.ANNUITY(I))+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.CSV(I))+'元'</blank>
+							<blank align="right" style="########0">round(IT.PRM_T(I))+'元'</blank>
+							<blank align="right" style="########0">round(IT.AMT(I))+'元'</blank>
+							<blank align="right" style="########0">round(IT.SUV(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I)/365,2)+'元'</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_app>
+			
+			<liability filter="liability" parser="liability">
+				<paragraph title="1、年金">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+					<row>
+				  		<blank>'自本合同生效后的第10个保单周年日起至第19个保单周年日止，若被保险人在每个保单周年日时仍生存，我们将于每个保单周年日按本合同已交保险费的15%给付年金'</blank>
+				  		<blank>'单次年金金额为'+round(PREMIUM*PAY_PERIOD*0.15)+'元，最高给付10次'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="2、满期保险金">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+					<row>
+				  		<blank>'被保险人于保险期间届满时仍生存，我们按基本保险金额给付满期生存保险金，本合同终止。'</blank>
+				  		<blank>round(AMOUNT)+'元'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="3、身故保险金">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+					<row>
+				  		<blank>'若被保险人身故，我们按被保险人身故时本合同已交保险费与现金价值的较大者给付身故保险金，本合同终止。'</blank>
+				  		<blank>'随保单年度不同而动态变化，具体数值可参见下述利益金额表。'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule skip="">
+			<if condition="DAY lt 28 or AGE >60" type="customer">
+				投保年龄：出生满28天-60周岁。
+			</if>
+			<if condition="PREMIUM lt 3000 or PREMIUM % 1000>0">
+				保费要求：最低年交保费3000元，超过部份须为1000元的整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

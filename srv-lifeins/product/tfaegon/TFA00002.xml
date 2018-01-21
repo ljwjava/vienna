@@ -7,6 +7,10 @@
 			<item parser="dds" value="TFA00002" />
 		</data>
 
+		<init>
+			<item name="AGE" value="APPLICANT.AGE"/>
+		</init>
+
 		<param>
 			<pay>
 				<item code="exempt" />

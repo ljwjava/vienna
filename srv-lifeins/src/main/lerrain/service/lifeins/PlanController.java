@@ -268,11 +268,12 @@ public class PlanController
     @ResponseBody
     public JSONObject listProduct(@RequestBody JSONObject p)
     {
+        String productId = (String) p.get("productId");
         int parentIndex = Common.intOf(p.get("parentIndex"), -1);
 
         JSONArray products = new JSONArray();
 
-        if (parentIndex < 0)
+        if (Common.isEmpty(productId) && parentIndex < 0)
         {
             String company = Common.trimStringOf(p.get("company"));
             if (Common.isEmpty(company))
@@ -290,6 +291,7 @@ public class PlanController
                     m.put("code", ins.getId());
                     m.put("vendor", ins.getVendor());
                     m.put("name", ins.getName());
+                    m.put("abbrName", ins.getAbbrName());
                     m.put("tag", ins.getAdditional("tag"));
                     m.put("logo", ins.getAdditional("logo"));
                     m.put("remark", ins.getAdditional("remark"));
@@ -301,15 +303,24 @@ public class PlanController
         }
         else
         {
-            String planId = (String) p.get("planId");
-            if (Common.isEmpty(planId))
-                throw new RuntimeException("缺少planId");
+            Insurance insurance;
+            if (parentIndex >= 0)
+            {
+                String planId = (String) p.get("planId");
+                if (Common.isEmpty(planId))
+                    throw new RuntimeException("缺少planId");
 
-            Plan plan = planSrv.getPlan(planId);
-            if (plan.isEmpty())
-                throw new RuntimeException("plan为空");
+                Plan plan = planSrv.getPlan(planId);
+                if (plan.isEmpty())
+                    throw new RuntimeException("plan为空");
 
-            Insurance insurance = plan.getCommodity(parentIndex).getProduct();
+                insurance = plan.getCommodity(parentIndex).getProduct();
+            }
+            else
+            {
+                insurance = lifeins.getProduct(productId);
+            }
+
             List<String> riderList = insurance.getRiderList();
             if (!Common.isEmpty(riderList))
             {
@@ -323,6 +334,7 @@ public class PlanController
                         m.put("code", ins.getId());
                         m.put("vendor", ins.getVendor());
                         m.put("name", ins.getName());
+                        m.put("abbrName", ins.getAbbrName());
                         m.put("tag", ins.getAdditional("tag"));
                         m.put("logo", ins.getAdditional("logo"));
                         m.put("remark", ins.getAdditional("remark"));
@@ -370,11 +382,13 @@ public class PlanController
 
         JSONArray items = new JSONArray();
 
-        List<Field> fields = (List<Field>)ins.getAdditional("input");
-        if (fields == null || fields.isEmpty())
+        List<Field> fields = (List<Field>) ins.getAdditional("input");
+        if (p != null && "default".equals(p.get("mode")))
+            fields = null;
+        else if (fields == null || fields.isEmpty())
             fields = ins.getInput();
 
-        if (fields != null && !fields.isEmpty() && !"default".equals(p.get("mode")))
+        if (fields != null && !fields.isEmpty())
         {
             for (Field field : fields)
             {
@@ -393,7 +407,7 @@ public class PlanController
                     Object val = comm.getFactor(field.getName());
                     if (val instanceof Boolean)
                         val = ((Boolean)val) ? "Y" : "N";
-                        else if (val instanceof Number)
+                    else if (val instanceof Number)
                         val = ((Number)val).intValue();
                     item.put("value", val);
                 }
@@ -415,7 +429,7 @@ public class PlanController
                 item.put("name", s[0]);
                 item.put("label", s[1]);
 //                item.put("type", "string");
-                item.put("widget", "select");
+                item.put("widget", "switch");
                 item.put("req", true);
 
                 List<String[]> optList = new ArrayList<>();
@@ -438,7 +452,7 @@ public class PlanController
 //                item.put("type", "number");
                 item.put("widget", "number");
                 item.put("req", true);
-                item.put("value", BigDecimal.valueOf(comm == null ? 200000 : comm.getAmount()).toString());
+                item.put("value", BigDecimal.valueOf(comm == null ? 200000 : comm.getAmount()).intValue());
                 items.add(item);
             }
             else if (inputMode == Purchase.QUANTITY) //需要设定份数
@@ -449,7 +463,7 @@ public class PlanController
 //                item.put("type", "number");
                 item.put("widget", "number");
                 item.put("req", true);
-                item.put("value", BigDecimal.valueOf(comm == null ? 10 : comm.getQuantity()).toString());
+                item.put("value", BigDecimal.valueOf(comm == null ? 10 : comm.getQuantity()).intValue());
                 items.add(item);
             }
             else if (inputMode == Purchase.PREMIUM) //需要设定保费
@@ -460,7 +474,7 @@ public class PlanController
 //                item.put("type", "number");
                 item.put("widget", "number");
                 item.put("req", true);
-                item.put("value", BigDecimal.valueOf(comm == null ? 1000 : comm.getPremium()).toString());
+                item.put("value", BigDecimal.valueOf(comm == null ? 1000 : comm.getPremium()).intValue());
                 items.add(item);
             }
             else if (inputMode == Purchase.PREMIUM_AND_AMOUNT) //需要设定保额和保费
@@ -471,7 +485,7 @@ public class PlanController
 //                item.put("type", "number");
                 item.put("widget", "number");
                 item.put("req", true);
-                item.put("value", BigDecimal.valueOf(comm == null ? 1000 : comm.getPremium()).toString());
+                item.put("value", BigDecimal.valueOf(comm == null ? 1000 : comm.getPremium()).intValue());
                 items.add(item);
 
                 item = new JSONObject();
@@ -480,7 +494,7 @@ public class PlanController
 //                item.put("type", "number");
                 item.put("widget", "number");
                 item.put("req", true);
-                item.put("value", BigDecimal.valueOf(comm == null ? 200000 : comm.getAmount()).toString());
+                item.put("value", BigDecimal.valueOf(comm == null ? 200000 : comm.getAmount()).intValue());
                 items.add(item);
             }
         }
@@ -642,6 +656,109 @@ public class PlanController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", mergeQuestSrv.refreshQuestText(plan));
+
+        return res;
+    }
+
+    @RequestMapping("/plan/rebuild.json")
+    @ResponseBody
+    public JSONObject rebuild(@RequestBody JSONObject q)
+    {
+        String planId = (String) q.get("planId");
+
+        if (Common.isEmpty(planId))
+            throw new RuntimeException("缺少planId");
+
+        JSONArray x = q.getJSONArray("detail");
+
+        Plan plan = planSrv.getPlan(planId);
+        plan.removeAll();
+
+        synchronized (plan)
+        {
+            Map<String, Commodity> main = new HashMap();
+
+            for (int i = 0; i < x.size(); i++)
+            {
+                JSONObject p = x.getJSONObject(i);
+                String productId = p.getString("productId");
+                String parentId = p.getString("parentId");
+
+                Commodity c;
+                if (parentId == null)
+                {
+                    c = plan.newCommodity(lifeins.getProduct(productId));
+                    main.put(productId, c);
+                }
+                else
+                {
+                    c = plan.newCommodity(main.get(parentId), lifeins.getProduct(productId));
+                }
+
+                List<Field> fields = (List<Field>) c.getProduct().getAdditional("input");
+                if (p != null && "default".equals(p.get("mode")))
+                    fields = null;
+                else if (fields == null || fields.isEmpty())
+                    fields = c.getProduct().getInput();
+
+                p = p.getJSONObject("factors");
+
+                if (fields != null && !fields.isEmpty())
+                {
+                    if (p == null)
+                    {
+                        p = new JSONObject();
+                        for (Field f : fields)
+                        {
+                            if (f != null && f.getValue() != null)
+                                p.put(f.getName(), f.getValue());
+                        }
+                    }
+
+                    if (p != null) for (Field f : fields)
+                    {
+                        if (f == null || f.getType() == null)
+                            continue;
+
+                        Object val = p.get(f.getName());
+
+                        if (val == null)
+                            continue;
+                        else if ("integer".equalsIgnoreCase(f.getType()))
+                            val = Common.intOf(val, 0);
+                        else if ("boolean".equalsIgnoreCase(f.getType()))
+                            val = Common.boolOf(val, false);
+
+                        c.setValue(f.getName(), val);
+                    }
+                }
+                else if (p != null)
+                {
+                    String str = "PAY,INSURE,SIM";
+                    String num = "PREMIUM,AMOUNT,QUANTITY";
+
+                    for (String s : str.split(","))
+                    {
+                        Object val = p.get(s);
+                        if (val != null)
+                            c.setValue(s, val);
+                    }
+
+                    for (String s : num.split(","))
+                    {
+                        BigDecimal val = p.getBigDecimal(s);
+                        if (val != null)
+                            c.setValue(s, val);
+                    }
+                }
+            }
+        }
+
+        queue.add(plan);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", LifeinsUtil.jsonOf(plan));
 
         return res;
     }

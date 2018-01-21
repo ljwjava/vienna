@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HUA00002"
+		corporation_id="hualife"
+		code="12030"
+		name="爱相随定期寿险"
+		name_abbr="爱相随"
+		unit="1000"
+		is_main="no"
+		is_rider="yes"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="HUA00002" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+				<item code="to_60"/>
+				<item code="to_70"/>
+				<item code="to_88"/>
+			</insure>
+		</param>
+
+		<init>
+		</init>
+
+		<interest>
+			<!--<item name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY"/>-->
+			<!--<item name="AMT" param="A1" formula="max(IT.CSV(A1),PremiumSum(A1))"/>-->
+			<!--<item name="SUV_T" param="A1" formula="max(IT.CSV(A1),PremiumSum(A1))"/>-->
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+					<item>若被保险人于本合同生效或最后一次复效之日起90 日内（含第90 日）因意外伤害以外的原因导致身故，我们将按本合同已交保险费给付身故保险金，同时本合同终止。</item>
+					<item>若被保险人因意外伤害，或于本合同生效或最后一次复效之日起90 日后因意外伤害以外的原因导致身故，我们将按本合同基本保险金额给付身故保险金，同时本合同终止。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>若被保险人于本合同生效或最后一次复效之日起90 日内（含第90 日）因意外伤害以外的原因导致全残，我们将按本合同已交保险费给付全残保险金，同时本合同终止。</item>
+					<item>若被保险人因意外伤害，或于本合同生效或最后一次复效之日起90 日后因意外伤害以的原因导致全残，我们将按本合同基本保险金额给付全残保险金， 同时本合终止。 </item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

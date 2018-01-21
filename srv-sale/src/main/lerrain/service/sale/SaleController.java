@@ -163,6 +163,14 @@ public class SaleController
 
                 return serviceMgr.req("lifeins", "perform.json", json);
             }
+            else if (packIns.getPriceType() == PackIns.PRICE_PRODUCT)
+            {
+                JSONObject json = new JSONObject();
+                json.put("productId", packIns.getPrice());
+                json.put("with", Lifeins.translate(packIns, content));
+
+                return serviceMgr.req("lifeins", "perform.json", json);
+            }
         }
         else if ("cms".equals(opt))
         {

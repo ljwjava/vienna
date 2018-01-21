@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="FBL00006"
+            corporation_id="fubon"
+            code="IWM"
+            name="月月優利利率變動型增額還本終身保險"
+            name_abbr="月月優利"
+            unit="100"
+            currency="twd"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            last_modify_date="2017-01-01">
+
+        <!--<data>-->
+            <!--<item parser="dds" value="FBL00006" />-->
+        <!--</data>-->
+
+        <param>
+            <pay>
+                <item code="term_10"/>
+                <item code="term_15"/>
+                <item code="term_20"/>
+            </pay>
+            <insure>
+                <item code="full_110"/>
+            </insure>
+        </param>
+
+        <init>
+            <item name="PAY_RATE" value="[1, 0.52, 0.262, 0.088]"/>
+        </init>
+
+        <interest>
+        </interest>
+
+        <attachment>
+            <coverage filter="coverage" parser="coverage">
+                <paragraph title="滿期金(祝壽金)">
+                    <item>被保險人於本契約有效期間且保險年齡屆滿一百一十歲仍生存者，本公司依年繳保險費總和的一點零六倍，扣除被保險人依第十三條至第二十六條之約定所應申領之各項保險金累計總額後之餘額， 給付「祝壽保險金」後，本契約效力即行終止。</item>
+                </paragraph>
+            </coverage>
+        </attachment>
+
+        <rule>
+            <if condition="AGE > 78" type="customer">
+                投保年齡：0~78歲
+            </if>
+            <if condition="AMOUNT > 40000000 or AMOUNT lt 300000 or AMOUNT % 10000 > 0">
+                投保保額：新臺幣30～4000萬元，以萬元為單位
+            </if>
+        </rule>
+    </product>
+</declare>

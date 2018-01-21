@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ public class DevelopController
 
     @Autowired
     ServiceMgr serviceMgr;
+
+    Map config = new HashMap();
 
     @RequestMapping("/admin/address")
     @ResponseBody
@@ -214,6 +217,19 @@ public class DevelopController
         return res;
     }
 
+    @RequestMapping("/develop/config.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject config(@RequestBody JSONObject req)
+    {
+        config.putAll(req);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
     @RequestMapping("/develop/run.json")
     @ResponseBody
     @CrossOrigin
@@ -229,7 +245,8 @@ public class DevelopController
         PrintStream oldPs = System.out;
         try (ByteArrayOutputStream sysOs = new ByteArrayOutputStream(); PrintStream sysPs = new PrintStream(sysOs))
         {
-//            System.setOut(sysPs);
+//            if (Common.boolOf(config.get("develop/log"), true))
+//                System.setOut(sysPs);
 
             JSONObject res = new JSONObject();
             res.put("result", "success");

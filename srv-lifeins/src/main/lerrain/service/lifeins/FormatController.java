@@ -36,6 +36,8 @@ public class FormatController
                 content.put(style, LifeinsShow.formatRadarGraph(plan));
             else if ("valChart".equals(style))
                 content.put(style, LifeinsShow.formatValChart(plan));
+            else if ("benefit".equals(style))
+                content.put(style, plan.format("benefit"));
         }
 
         JSONObject res = new JSONObject();

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HQL00103"
+		corporation_id="hengqin"
+		code="13020"
+		name="横琴百万乐途两全保险"
+		name_abbr="横琴百万乐途两全保险"
+		unit="100000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		input="amount"
+		premium="(AMOUNT/UNIT)*DS.RATE[0][0]"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="HQL00103" />
+		</data>
+
+
+		<param>
+			<pay_freq>
+				<item code="single" />
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+			</pay>
+			<insure>
+				<item code="term_20" />
+				<item code="term_30" />
+			</insure>
+		</param>
+		<init>
+		</init>
+		<risk>
+			<item type="accident" formula="AMOUNT"/><!--意外-->
+			<item type="AirAccid" formula="AMOUNT*9"/><!--航空意外-->
+			<item type="CarAccid" formula="AMOUNT*29"/><!--自驾意外-->
+			<item type="PubTrafAccid" formula="AMOUNT*9"/><!--公共交通意外-->
+		</risk>
+
+		<interest>
+			<var name="TRANSFER_DESC" param="A1" formula="(A1%10000 gt 0 ? round(A1/10000,1) : round(A1/10000))+'万元'" />
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="SUV" param="A1" formula="A1==(INSURE_PERIOD-1)?(INSURE_PERIOD == 20?IT.PRM_T(A1)*1.1:IT.PRM_T(A1)*1.2):0" /><!--满期生存保险金-->
+			<var name="CSV" param="A1" formula="(AMOUNT/UNIT)*DS.DATA[A1][0]" /><!--现金价值-->
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'当期保费'</blank>
+						<blank row="1">'累计保费'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'满期生存保险金'</blank>
+						<blank row="1">'疾病身故或全残保险金'</blank>
+						<blank row="1">'意外身故或全残保险金'</blank>
+						<blank row="1">'自驾车意外身故或全残保险金'</blank>
+						<blank row="1">'高速动车、普通动车意外身故或全残保险金'</blank>
+						<blank row="1">'指定公共交通工具意外身故或全残保险金'</blank>
+						<blank row="1">'航空意外身故或全残保险金'</blank>
+						<blank row="1">'电梯意外身故或全残保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0">IT.PRM(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)</blank>
+							<blank align="right" style="########0">IT.CSV(I)</blank>
+							<blank align="right" style="########0">IT.SUV(I)</blank>
+							<blank align="right" style="########0">IT.PRM_T(I)*1.6</blank>
+							<blank align="right" style="########0">AMOUNT</blank>
+							<blank align="right" style="########0">AMOUNT*10</blank>
+							<blank align="right" style="########0">AMOUNT*15</blank>
+							<blank align="right" style="########0">AMOUNT*10</blank>
+							<blank align="right" style="########0">AMOUNT*30</blank>
+							<blank align="right" style="########0">AMOUNT*5</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<benefit_app filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'疾病身故或全残保险金'</blank>
+						<blank row="1">'意外身故或全残保险金'</blank>
+						<blank row="1">'电梯身故或全残保险金'</blank>
+						<blank row="1">'自驾车意外身故或全疾保障'</blank>
+						<blank row="1">'公共交通工具意外身故或全残保障'</blank>
+						<blank row="1">'高铁与动车意外身故或全残保障'</blank>
+						<blank row="1">'航空意外身故或全残保'</blank>
+						<blank row="1">'满期生存金'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'日开销'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">AGE+I+1</blank>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0">'最高'+round(IT.PRM_T(I)*1.6)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT*5)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT*10)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT*10)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT*15)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT*30)+'元'</blank>
+							<blank align="right" style="########0">round(IT.SUV(I))+'元'</blank>
+							<blank align="right" style="########0">round(IT.CSV(I))+'元'</blank>
+							<blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I)/365,2)+'元'</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_app>
+
+			<coverage filter="coverage" parser="coverage">
+
+				<paragraph title="满期生存保险金">
+					<item>被保险人于保险期间届满时仍生存，我们按下列约定给付满期生存保险金，本合同终止： </item>
+					<item>（1）若您选择的保险期间为二十年的，我们按本合同已交保险费的110%给付；</item>
+					<item>（2）若您选择的保险期间为三十年的，我们按本合同已交保险费的120%给付。</item>
+				</paragraph>
+				<paragraph title="疾病身故或全残保险金">
+					<item>（1）若被保险人于本合同生效或最后复效之日起90日内（含第90日当日）因疾病导致身故或全残，我们按本合同已交保险费给付疾病身故或全残保险金，本合同终止；</item>
+					<item>（2）若被保险人于本合同生效或最后复效之日起90日后因疾病导致身故或全残，我们按本合同已交保险费的160%给付疾病身故或全残保险金，本合同终止。 </item>
+				</paragraph>
+				<paragraph title="意外身故或全残保险金">
+					<item>被保险人遭受意外伤害事故，且自该意外伤害发生之日起180日内（含第180日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，我们按基本保险金额给付意外身故或全残保险金，本合同终止。</item>
+				</paragraph>
+				<paragraph title="自驾车意外身故或全残保险金">
+					<item>被保险人驾驶或者乘坐自驾车期间遭受意外伤害事故，且自该意外伤害发生之日起180日内（含第180日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的9倍给付自驾车意外身故或全残保险金，本合同终止。</item>
+				</paragraph>
+				<paragraph title="高速动车、普通动车意外身故或全残保险金">
+					<item>被保险人以乘客身份乘坐高速动车组列车、普通动车组列车期间遭受意外伤害事故，且自该意外伤害发生之日起180日内（含第180日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的14倍给付高速动车、普通动车意外身故或全残保险金，本合同终止。</item>
+				</paragraph>
+				<paragraph title="指定公共交通工具意外身故或全残保险金">
+					<item>被保险人以乘客身份乘坐客运公共交通工具（不含高速动车、普通动车）期间遭受意外伤害事故，且自该意外伤害发生之日起180日内（含第180日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除了给付意外身故或全残保险金外，我们还按本合同基本保险金额的9倍给付指定公共交通工具意外身故或全残保险金，本合同终止。</item>
+				</paragraph>
+				<paragraph title="航空意外身故或全残保险金">
+					<item>被保险人以乘客身份乘坐民航班机期间遭受意外伤害事故，且自该意外伤害发生之日起180日内（含第180日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的29倍给付航空意外身故或全残保险金，本合同终止。</item>
+				</paragraph>
+				<paragraph title="电梯意外身故或全残保险金">
+					<item>被保险人乘坐电梯时因电梯故障而遭受意外伤害事故，且自该意外伤害发生之日起180日内（含第180日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的4倍给付电梯意外身故或全残保险金，本合同终止。</item>
+					<item>在公共电梯里面提供电梯运载服务的工作人员不在保险责任范围之内。 </item>
+				</paragraph>
+				<paragraph title="在本合同有效期内，上述所列“自驾车意外身故或全残保险金”、“高速动车、普通动车意外身故或全残保险金”、“指定公共交通工具意外身故或全残保险金”、“航空意外身故或全残保险金”、“电梯意外身故或全残保险金”的给付累计以1种和1次为限。">
+				</paragraph>
+
+			</coverage>
+
+			<liability filter="liability" parser="liability">
+				<paragraph title="1.疾病身故或全疾保障">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因'</blank>
+				  		<blank>'给付金额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'（1）若被保险人于本合同生效或最后复效之日起 90 日内（含第 90 日当日）因疾病导致身故或全残，我们按本合同已交保险费给付疾病身故或全残保险金，本合同终止；（2）若被保险人于本合同生效或最后复效之日起 90 日后因疾病导致身故或全残，我们按本合同已交保险费的 160%给付疾病身故或全残保险金，本合同终止。'</blank>
+				  		<blank>'160%所交保费'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="2.意外身故或全疾保障">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因'</blank>
+				  		<blank>'给付金额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'被保险人遭受 意外伤害事故，且自该意外伤害发生之日起 180 日内（含第 180 日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，我们按基本保险金额给付意外身故或全残保险金，本合同终止。'</blank>
+				  		<blank>IT.TRANSFER_DESC(AMOUNT)</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="3.电梯意外身故或全疾保障">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因'</blank>
+				  		<blank>'给付金额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'被保险人乘坐电梯时因电梯故障而遭受意外伤害事故，且自该意外伤害发生之日起 180 日内（含第 180 日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的 4 倍给付电梯意外身故或全残保险金，本合同终止。在公共电梯里面提供电梯运载服务的工作人员不在保险责任范围之内。'</blank>
+				  		<blank>IT.TRANSFER_DESC(5*AMOUNT)</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="4.公共交通工具意外身故或全残保障">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因'</blank>
+				  		<blank>'给付金额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'被保险人以乘客身份乘坐客运公共交通工具（不含高速动车、普通动车）期间遭受意外伤害事故，且自该意外伤害发生之日起 180 日内（含第180 日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除了给付意外身故或全残保险金外，我们还按本合同基本保险金额的 9 倍给付指定公共交通工具意外身故或全残保险金，本合同终止。'</blank>
+				  		<blank>IT.TRANSFER_DESC(10*AMOUNT)</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="5.高铁与动车意外身故或全残保障">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因'</blank>
+				  		<blank>'给付金额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'被保险人以乘客身份乘坐高速 动车组列车、普通动车组列车期间遭受意外伤害事故，且自该意外伤害发生之日起 180 日内（含第 180 日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的 14 倍给付高速动车、普通动车意外身故或全残保险金，本合同终止。'</blank>
+				  		<blank>IT.TRANSFER_DESC(15*AMOUNT)</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="6.航空意外身故或全残保障">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因'</blank>
+				  		<blank>'给付金额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'被保险人以乘客身份乘坐民航班机期间（见 9.10）遭受意外伤害事故，且自该意外伤害发生之日起 180 日内（含第 180 日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的 29 倍给付航空意外身故或全残保险金，本合同终止。'</blank>
+				  		<blank>IT.TRANSFER_DESC(30*AMOUNT)</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="7.满期生存保险金">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因'</blank>
+				  		<blank>'给付金额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'被保险人以乘客身份乘坐民航班机期间（见 9.10）遭受意外伤害事故，且自该意外伤害发生之日起 180 日内（含第 180 日当日）因该意外伤害为直接且单独原因导致被保险人身故或全残，除给付意外身故或全残保险金外，我们还按本合同基本保险金额的 29 倍给付航空意外身故或全残保险金，本合同终止。'</blank>
+				  		<blank>round(IT.SUV(INSURE_PERIOD-1))+'元'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+			</liability>
+
+		</attachment>
+
+		<rule skip="">
+			<if condition="AGE lt 18 or AGE gt 55">
+				被保人年龄：18周岁-55周岁。
+			</if>
+			<if condition="AMOUNT lt 50000 or AMOUNT % 10000>0">
+				最低基本保险金额50000元，超过部份须为10000元的整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

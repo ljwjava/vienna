@@ -7,13 +7,13 @@ import Navi from '../common/component.list.jsx';
 var env = {
 	search: null,
 	from: 0,
-	number: 16
+	number: 16,
+	create: function() {
+        document.location.href = "edit.web";
+	}
 }
 
 class CustomerList extends List {
-	create() {
-		document.location.href = "edit.web";
-	}
 	open(id) {
 		document.location.href = "edit.web?customerId=" + id;
 	}
@@ -26,21 +26,6 @@ class CustomerList extends List {
 		common.req("customer/delete.json", {customerId:id}, r => {
 			this.refresh();
 		});
-	}
-	buildConsole() {
-		return (
-			<div className="collapse navbar-collapse">
-				<div className="nav navbar-nav">
-					<input type="text" className="form-control"/>
-				</div>
-				<div className="nav navbar-nav">
-					<button type="button" className="btn btn-primary" onClick={this.create}>查询</button>
-				</div>
-				<div className="nav navbar-nav navbar-right">
-					<a onClick={this.create}>＋ 新增客户</a>
-				</div>
-			</div>
-		);
 	}
 	buildTableTitle() {
 		return (
@@ -73,8 +58,30 @@ class CustomerList extends List {
 	}
 }
 
+var Main = React.createClass({
+    render() {
+        return <div className="form-horizontal">
+			<div className="form-group">
+				<div className="col-sm-12">
+					<div className="container-fluid">
+						<ul className="nav navbar-nav">
+							<li style={{verticalAlign:"middle"}}>
+								<input type="text" className="form-control"/>
+							</li>
+						</ul>
+						<ul className="nav navbar-nav navbar-right">
+							<li><a onClick={env.create}>新增客户</a></li>
+						</ul>
+					</div>
+					<CustomerList env={env}/>
+				</div>
+			</div>
+		</div>;
+    }
+});
+
 $(document).ready( function() {
 	ReactDOM.render(
-		<CustomerList env={env}/>, document.getElementById("content")
+		<Main/>, document.getElementById("content")
 	);
 });

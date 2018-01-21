@@ -6,13 +6,11 @@
 		code="12030"
 		name="祯爱优选定期寿险"
 		name_abbr="祯爱优选"
-		unit="10000"
+		unit="1000"
 		type_code="life"
 		sequence="1000"
 		sale_begin_date="2015-01-01"
 		sale_end_date=""
-		premium="200"
-		input="amount"
 		last_modify_date="2017-01-01">
 
 		<data>
@@ -32,10 +30,6 @@
 				<item code="to_70"/>
 			</insure>
 		</param>
-
-		<init>
-			<item name="SMOKE" value="1"/>
-		</init>
 
 		<interest>
 			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>

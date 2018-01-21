@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="FSH00002"
+		corporation_id="fosun"
+		code="110025"
+		name="康乐e生重大疾病保险（B款）"
+		name_abbr="康乐e生重疾"
+		unit="1000"
+		type_code="thunder"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		input="amount"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="FSH00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+				<item code="term_30" />
+			</pay>
+			<insure>
+				<item code="to_70" />
+				<item code="to_80" />
+				<item code="full_105" />
+			</insure>
+		</param>
+
+		<input>
+			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万']]</item>
+			<item name="PAY" label="缴费年期" widget="select">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>
+			<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>
+		</input>
+
+		<init>
+			<item name="OTHER">return {PLAN_CODE: "JH11002401", PRODUCT_CODE: "110024"}</item>
+		</init>
+
+		<interest>
+			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
+		</interest>
+
+		<duty>
+			<item name="110323" code="110251" premium="PREMIUM">AMOUNT</item>
+		</duty>
+
+		<attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
+				<item name="MILD">AMOUNT*0.9</item>
+				<item name="MILD_EXEMPT">1</item>
+			</fgraph>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<bar name="保费" color="#00AA00">PremiumYear(I)</bar>
+					<line name="累计保费" color="#0000FF">PremiumSum(I)</line>
+					<line name="现金价值" color="#0000FF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule>
+			<if condition="DAY lt 30 or AGE > 50" type="customer">
+				投保年龄须为出生满30天~50周岁
+			</if>
+			<if condition="AGE + PAY_PERIOD >= 70">
+				交费期满时，被保险人年龄要求小于70周岁
+			</if>
+			<if condition="APPLICANT.AGE + PAY_PERIOD >= 70">
+				交费期满时，投保人年龄要求小于70周岁
+			</if>
+			<if condition="DAY >= 30 and 10 >= AGE and AMOUNT > 200000">
+				出生满30天~10岁保额不得超过20万
+			</if>
+			<if condition="AGE >= 11 and 40 >= AGE and AMOUNT > 500000">
+				11~40岁保额不得超过50万
+			</if>
+			<if condition="AGE >= 41 and 45 >= AGE and AMOUNT > 400000">
+				41~45岁保额不得超过40万
+			</if>
+			<if condition="AGE >= 46 and 50 >= AGE and AMOUNT > 300000">
+				46~50岁保额不得超过30万
+			</if>
+			<if condition="AGE >= 41 and 45 >= AGE and (PAY_VALUE == 30 or INSURE_VALUE == 70)">
+				41~45岁投保，交费期限定10年/15年/20年，保障期间限定至80岁/至终身
+			</if>
+			<if condition="AGE >= 46 and 50 >= AGE and (PAY_VALUE == 30 or PAY_VALUE == 20 or INSURE_VALUE == 70)">
+				46~50岁投保，交费期限定10年/15年，保障期间限定至80岁/至终身
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -4,7 +4,7 @@ import React from 'react';
 
 var Switcher = React.createClass({
 	getInitialState() {
-		return {value: this.props.value != null ? this.props.value : (this.props.options == null ? null : this.props.options[0][0])};
+		return {value: this.props.value != null ? this.props.value : (this.props.options == null || this.props.options.length == 0 ? null : this.props.options[0][0])};
     },
 	val() {
 		return this.state.value;

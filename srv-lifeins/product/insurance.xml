@@ -109,4 +109,7 @@
         <item src="citicpru/*.xml"/>
     </corporation>
 
+    <corporation id="hualife" name="华夏人寿" extends="insurance">
+        <item src="hualife/*.xml"/>
+    </corporation>
 </declare>

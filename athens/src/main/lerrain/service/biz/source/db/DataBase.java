@@ -69,63 +69,20 @@ public class DataBase extends HashMap
 
     public Map getColumnType(String sql, Object[] vals)
     {
-        try (DruidPooledConnection dpc = dds.getConnection())
+        try (DruidPooledConnection dpc = dds.getConnection(); PreparedStatement ps = dpc.prepareStatement(sql);)
         {
-            PreparedStatement ps = dpc.prepareStatement(sql);
             if (vals != null)
                 for (int i=0;i<vals.length;i++)
                     ps.setObject(i+1, vals[i]);
 
-            JSONObject v = new JSONObject();
-
-            ResultSet rs = ps.executeQuery();
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int num = rsmd.getColumnCount();
-            for (int i = 1; i <= num; i++)
-                v.put(rsmd.getColumnLabel(i), rsmd.getColumnTypeName(i));
-
-            return v;
-        }
-        catch (Exception e)
-        {
-            Log.error(e);
-        }
-
-        return null;
-    }
-
-    public Map queryMap(String sql, Object[] vals, Map<String, String> mapping)
-    {
-        try (DruidPooledConnection dpc = dds.getConnection())
-        {
-            PreparedStatement ps = dpc.prepareStatement(sql);
-            if (vals != null)
-                for (int i=0;i<vals.length;i++)
-                    ps.setObject(i+1, vals[i]);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.first())
+            try (ResultSet rs = ps.executeQuery())
             {
                 JSONObject v = new JSONObject();
 
-                if (mapping == null)
-                {
-                    ResultSetMetaData rsmd = rs.getMetaData();
-
-                    int num = rsmd.getColumnCount();
-                    for (int i = 1; i <= num; i++)
-                    {
-                        String key = rsmd.getColumnLabel(i);
-                        Object val = rs.getObject(i);
-
-                        v.put(key, val);
-                    }
-                }
-                else
-                {
-                    for (Map.Entry<String, String> e : mapping.entrySet())
-                        v.put(e.getValue(), rs.getObject(e.getKey()));
-                }
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int num = rsmd.getColumnCount();
+                for (int i = 1; i <= num; i++)
+                    v.put(rsmd.getColumnLabel(i), rsmd.getColumnTypeName(i));
 
                 return v;
             }
@@ -138,14 +95,57 @@ public class DataBase extends HashMap
         return null;
     }
 
+    public Map queryMap(String sql, Object[] vals, Map<String, String> mapping)
+    {
+        try (DruidPooledConnection dpc = dds.getConnection(); PreparedStatement ps = dpc.prepareStatement(sql);)
+        {
+            if (vals != null)
+                for (int i=0;i<vals.length;i++)
+                    ps.setObject(i+1, vals[i]);
+
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.first())
+                {
+                    JSONObject v = new JSONObject();
+
+                    if (mapping == null)
+                    {
+                        ResultSetMetaData rsmd = rs.getMetaData();
+
+                        int num = rsmd.getColumnCount();
+                        for (int i = 1; i <= num; i++)
+                        {
+                            String key = rsmd.getColumnLabel(i);
+                            Object val = rs.getObject(i);
+
+                            v.put(key, val);
+                        }
+                    }
+                    else
+                    {
+                        for (Map.Entry<String, String> e : mapping.entrySet())
+                            v.put(e.getValue(), rs.getObject(e.getKey()));
+                    }
+
+                    return v;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.error(e);
+        }
+
+        return null;
+    }
+
     public void update(String sql, Object[] vals)
     {
-        Log.debug(sql);
+        Log.info(sql);
 
-        try (DruidPooledConnection dpc = dds.getConnection())
+        try (DruidPooledConnection dpc = dds.getConnection(); PreparedStatement ps = dpc.prepareStatement(sql);)
         {
-            PreparedStatement ps = dpc.prepareStatement(sql);
-
             if (vals != null)
                 for (int i=0;i<vals.length;i++)
                     ps.setObject(i+1, vals[i]);
@@ -156,6 +156,33 @@ public class DataBase extends HashMap
         {
             Log.error(e);
         }
+    }
+
+    public boolean updateAll(String sql, List<Object[]> list)
+    {
+        Log.info(sql + " <= " + list.size() + " rows");
+
+        try (DruidPooledConnection dpc = dds.getConnection(); PreparedStatement ps = dpc.prepareStatement(sql);)
+        {
+            boolean r = true;
+
+            for (Object[] vals : list)
+            {
+                if (vals != null)
+                    for (int i = 0; i < vals.length; i++)
+                        ps.setObject(i + 1, vals[i]);
+
+                r = ps.execute() && r;
+            }
+
+            return r;
+        }
+        catch (Exception e)
+        {
+            Log.error(e);
+        }
+
+        return false;
     }
 
 //    public Map getCols(String table)
@@ -188,18 +215,17 @@ public class DataBase extends HashMap
 
     public boolean queryBool(String sql, Object[] vals)
     {
-//        Log.debug(sql);
-
-        try (DruidPooledConnection dpc = dds.getConnection())
+        try (DruidPooledConnection dpc = dds.getConnection(); PreparedStatement ps = dpc.prepareStatement(sql);)
         {
-            PreparedStatement ps = dpc.prepareStatement(sql);
             if (vals != null)
                 for (int i=0;i<vals.length;i++)
                     ps.setObject(i+1, vals[i]);
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.first())
-                return rs.getBoolean(1);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.first())
+                    return rs.getBoolean(1);
+            }
         }
         catch (Exception e)
         {
@@ -211,65 +237,66 @@ public class DataBase extends HashMap
 
     public List queryList(String sql, Object[] vals, Map<String, String> mapping)
     {
-        try (DruidPooledConnection dpc = dds.getConnection())
+        try (DruidPooledConnection dpc = dds.getConnection(); PreparedStatement ps = dpc.prepareStatement(sql);)
         {
-            PreparedStatement ps = dpc.prepareStatement(sql);
             if (vals != null)
                 for (int i=0;i<vals.length;i++)
                     ps.setObject(i+1, vals[i]);
 
             JSONArray r = new JSONArray();
 
-            ResultSet rs = ps.executeQuery();
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int num = rsmd.getColumnCount();
-
-            while (rs.next())
+            try (ResultSet rs = ps.executeQuery())
             {
-                JSONObject v = new JSONObject();
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int num = rsmd.getColumnCount();
 
-                if (mapping == null)
+                while (rs.next())
                 {
-                    for (int i = 1; i <= num; i++)
-                    {
-                        String key = rsmd.getColumnLabel(i);
-                        Object val = rs.getObject(i);
+                    JSONObject v = new JSONObject();
 
-                        v.put(key, val);
-                    }
-                }
-                else if (mapping.isEmpty())
-                {
-                    for (int i = 1; i <= num; i++)
+                    if (mapping == null)
                     {
-                        String key = rsmd.getColumnLabel(i);
-                        Object val = rs.getObject(i);
-
-                        int pos = key.indexOf("_");
-                        while (pos >= 0)
+                        for (int i = 1; i <= num; i++)
                         {
-                            try
-                            {
-                                key = key.substring(0, pos) + key.substring(pos + 1, pos + 2).toUpperCase() + key.substring(pos + 2);
-                            }
-                            catch (Exception e)
-                            {
-                                break;
-                            }
+                            String key = rsmd.getColumnLabel(i);
+                            Object val = rs.getObject(i);
 
-                            pos = key.indexOf("_");
+                            v.put(key, val);
                         }
-
-                        v.put(key, val);
                     }
-                }
-                else
-                {
-                    for (Map.Entry<String, String> e : mapping.entrySet())
-                        v.put(e.getValue(), rs.getObject(e.getKey()));
-                }
+                    else if (mapping.isEmpty())
+                    {
+                        for (int i = 1; i <= num; i++)
+                        {
+                            String key = rsmd.getColumnLabel(i);
+                            Object val = rs.getObject(i);
 
-                r.add(v);
+                            int pos = key.indexOf("_");
+                            while (pos >= 0)
+                            {
+                                try
+                                {
+                                    key = key.substring(0, pos) + key.substring(pos + 1, pos + 2).toUpperCase() + key.substring(pos + 2);
+                                }
+                                catch (Exception e)
+                                {
+                                    break;
+                                }
+
+                                pos = key.indexOf("_");
+                            }
+
+                            v.put(key, val);
+                        }
+                    }
+                    else
+                    {
+                        for (Map.Entry<String, String> e : mapping.entrySet())
+                            v.put(e.getValue(), rs.getObject(e.getKey()));
+                    }
+
+                    r.add(v);
+                }
             }
 
             return r;

@@ -2,6 +2,6 @@ server:
   port: 7602
 
 datasource:
-  url: jdbc:mysql://www.lerrain.com:3307/vie_biz
-  username: root
-  password: ftp123
+  url: jdbc:mysql://101.37.72.72:5306/vie_biz_test
+  username: iyb
+  password: Abcd2017

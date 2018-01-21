@@ -11,6 +11,8 @@ import lerrain.project.insurance.product.Insurance;
 import lerrain.project.insurance.product.InsuranceMgr;
 
 import lerrain.service.common.Log;
+import lerrain.service.lifeins.format.BenefitFilter;
+import lerrain.service.lifeins.format.BenefitParser;
 import lerrain.service.lifeins.format.FGraphParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +34,10 @@ public class LifeinsService
     public void reset()
     {
 //        Config.addFilter("fgraph", new FGraphFilter());
+        Config.addFilter("benefit", new BenefitFilter());
+
         Config.addParser("fgraph", new FGraphParser());
+        Config.addParser("benefit", new BenefitParser());
 
         try
         {
