@@ -39,6 +39,7 @@ public class IYunBao extends HashMap<String, Object>
                     Long iybPolicyId = null;
                     Long productId = null;
                     Long parentUserId = null;
+                    Long fromUserId = null;
                     double premium = 0;
                     String productName = "";
 
@@ -48,6 +49,7 @@ public class IYunBao extends HashMap<String, Object>
                         productName = Common.trimStringOf(map.get("productName"));
                         iybPolicyId = Common.toLong(map.get("iybPolicyId"));
                         parentUserId = Common.toLong(map.get("parentUserId"));
+                        fromUserId = Common.toLong(map.get("fromUserId"));
                         productId = Common.toLong(map.get("productId"));
                         premium = Common.toDouble(map.get("premium"));
                     }
@@ -55,7 +57,7 @@ public class IYunBao extends HashMap<String, Object>
                     if (premium > 0 && fee.getAmount() > premium)
                         return JSON.parseObject("{isSuccess: false}");
 
-                    return iybPay.pay(fee.getPayee(), fee.getType(), fee.getAmount(), productName, fee.getFreeze(), fee.getMemo(), iybPolicyId, fee.getBizNo(), parentUserId, productId, premium);
+                    return iybPay.pay(fee.getPayee(), fee.getType(), fee.getAmount(), productName, fee.getFreeze(), fee.getMemo(), iybPolicyId, fee.getBizNo(), fromUserId, productId, premium);
                 }
                 catch (Exception e)
                 {

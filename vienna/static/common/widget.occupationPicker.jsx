@@ -23,7 +23,8 @@ var OccupationPicker = React.createClass({
             let val = this.state.value;
             var proPickerVal = [];
             if(val != null && val != '') {
-                for(var ov1 in r.occupation) {
+                proPickerVal = this.unzipPack(val, r.occupation, proPickerVal, 1);
+                /*for(var ov1 in r.occupation) {
                     var oc1 = r.occupation[ov1];
                     if(val.startsWith(oc1.value)){
                         proPickerVal.push(oc1);
@@ -40,13 +41,31 @@ var OccupationPicker = React.createClass({
                             }
                         }
                     }
-                }
+                }*/
             }
             this.setState({
                 occupation: r.occupation,
                 proPickerVal: proPickerVal
             });
         });
+    },
+    unzipPack(val, occ, propickval, idx){
+        propickval = propickval || [];
+        if(occ != null){
+            for(var ov in occ) {
+                var oc = occ[ov];
+                if(val.startsWith(oc.value) || (idx == 2 && val == "8888888")) {
+                    propickval.push(oc);
+                    if(oc.children != null && oc.children != ""){
+                        return this.unzipPack(val, oc.children, propickval, ++idx);
+                    }else if(val == oc.value){
+                        return propickval;
+                    }
+                }
+            }
+        }
+
+        return propickval;
     },
    	val() {
 		return {value: this.state.value, code: this.state.code, text: this.state.text, level: this.state.level};
@@ -92,7 +111,7 @@ var OccupationPicker = React.createClass({
         return (<PickerStack dataSource={ this.state.occupation } // readOnly={ true }
 							 valueType='label'
 							 title='职业类别选择'
-							 cols={ 3 }
+							 cols={ 5 }
 							 value = {this.state.proPickerVal}
 							 placeholder="请选择职业类别"
 							 labelTpl={ ({ label, level }) => level === undefined ? label : `${ label }(${ level }类)` }
