@@ -195,8 +195,8 @@ var Ware = React.createClass({
 		}
 
 		let v = this.props.detail;
-        let r1 = this.state.rules == null ? null : this.state.rules.map(r => (<div className="error" key={r}>{r}</div>));
-        let r2 = this.state.alert == null ? null : this.state.alert.map(r => (<div className="alert" key={r}>{r}</div>));
+        let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
+        let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
 		return (
 			<div className="common">
 				<div>

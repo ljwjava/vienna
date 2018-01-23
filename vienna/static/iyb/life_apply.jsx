@@ -382,7 +382,7 @@ var Ground = React.createClass({
                         e.value = res;
                 });
                 env.photo = r.photo;
-                this.setState({premium: r.total, rules: r.rules, form:form});
+                this.setState({premium:r.total, rules:r.rules, alert:r.alert, form:form});
 			});
 		}
 	},
@@ -650,6 +650,8 @@ var Ground = React.createClass({
 
 		let app = this.props.defVal.applicant == null ? {} : this.props.defVal.applicant;
 		let ins = this.props.defVal.insurant == null ? {} : this.props.defVal.insurant;
+        let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
+        let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
 		return (
 			<div className="common">
 				<div className="title">投保人信息</div>
@@ -670,12 +672,8 @@ var Ground = React.createClass({
 				<div className="title">保险计划（{env.pack.name}）</div>
 				<div className="form">
 					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.form} onRefresh={this.refreshPremium}/>
+					<div style={{paddingTop:"10px"}}>{r1}{r2}</div>
 				</div>
-				{ this.state.rules == null ? null :
-					<div className="form">
-						{ this.state.rules.map(r => (<div className="error" key={r}>{r}</div>)) }
-					</div>
-				}
                 { !env.formOpt.beneficiary.display ? null : <div className="title">身故受益人</div> }
                 { !env.formOpt.beneficiary.display ? null :
 					<div className="form">
