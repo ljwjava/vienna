@@ -1,5 +1,6 @@
 package lerrain.service.proposal;
 
+import lerrain.service.common.ServiceTools;
 import lerrain.tool.Cache;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class ProposalService
 {
 	@Autowired
 	ProposalDao proposalDao;
+
+	@Autowired
+	ServiceTools tools;
 
 	List<Object> covers = new ArrayList<>();
 
@@ -50,7 +54,7 @@ public class ProposalService
 		}
 
 		Proposal np = newProposal(newApplicant, old.getOwner(), old.getPlatformId());
-		np.setId(Common.nextId("proposal"));
+		np.setId(tools.nextId("proposal"));
 		np.setName(old.getName());
 		np.setRemark(old.getRemark());
 		np.setCover(old.getCover());
@@ -73,7 +77,7 @@ public class ProposalService
 
 		Proposal proposal = new Proposal();
 		proposal.setApplicant(applicant);
-		proposal.setId(Common.nextId("proposal"));
+		proposal.setId(tools.nextId("proposal"));
 		proposal.setOwner(userId);
 		proposal.setPlatformId(platformId);
 
@@ -82,7 +86,7 @@ public class ProposalService
 		return proposal;
 	}
 
-	public Proposal reload(String id)
+	public Proposal reload(Long id)
 	{
 		Proposal proposal;
 
@@ -95,7 +99,7 @@ public class ProposalService
 		return proposal;
 	}
 	
-	public Proposal getProposal(String id)
+	public Proposal getProposal(Long id)
 	{
 		Proposal proposal = cache.get(id);
 
@@ -108,7 +112,7 @@ public class ProposalService
 		return proposal;
 	}
 
-	public void setFavourite(String proposalId, boolean fav)
+	public void setFavourite(Long proposalId, boolean fav)
 	{
 		proposalDao.setFavourite(proposalId, fav);
 	}
@@ -116,7 +120,7 @@ public class ProposalService
 	private Map<String, Object> standardCustomer()
 	{
 		JSONObject applicant = new JSONObject();
-		applicant.put("id", Common.nextId());
+		applicant.put("id", tools.nextId("customer"));
 		applicant.put("birthday", Common.dateOf("1990-01-01"));
 		applicant.put("gender", "M");
 
@@ -133,7 +137,7 @@ public class ProposalService
 		return proposalDao.count(search, platformId, owner);
 	}
 
-	public void delete(String proposalId)
+	public void delete(Long proposalId)
 	{
 		proposalDao.delete(proposalId);
 	}
@@ -148,12 +152,12 @@ public class ProposalService
 		proposalDao.updateSupply(p);
 	}
 
-	public List<Object[]> listBless(String owner, Long platformId)
+	public List<Object[]> listBless(Long owner, Long platformId)
 	{
 		return proposalDao.listBless(owner, platformId);
 	}
 
-	public void saveBless(Long blessId, String text, String owner, Long platformId)
+	public void saveBless(Long blessId, String text, Long owner, Long platformId)
 	{
 		proposalDao.saveBless(blessId, text, owner, platformId);
 	}

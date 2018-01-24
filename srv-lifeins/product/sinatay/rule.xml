@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<rule>
+		<if condition = "APPLICANT.AGE lt 18" type="plan">
+			投保人要求18周岁或以上
+		</if>
+		<if condition = "INSURANT.DAY lt 28" type="plan">
+			被保人要求出生满30天。
+		</if>
+	</rule>
+</declare>

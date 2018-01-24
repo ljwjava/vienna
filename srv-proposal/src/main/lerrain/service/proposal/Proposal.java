@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Proposal
 {
-	String id;
+	Long id;
 	String name;
 	String remark;
 	String cover;
@@ -25,7 +25,7 @@ public class Proposal
 
 	Map<String, Object> applicant;
 	
-	List<String> planList = new ArrayList<>();
+	List<Long> planList = new ArrayList<>();
 
 	Map<String, Object> other = new HashMap<>();
 
@@ -54,7 +54,7 @@ public class Proposal
 		this.other = other;
 	}
 
-	public void setPlanList(List<String> planList)
+	public void setPlanList(List<Long> planList)
 	{
 		this.planList = planList;
 	}
@@ -129,12 +129,12 @@ public class Proposal
 		this.premium = premium;
 	}
 
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -159,7 +159,7 @@ public class Proposal
 		this.owner = owner;
 	}
 
-	public void addPlan(String planId)
+	public void addPlan(Long planId)
 	{
 		if (planList.indexOf(planId) < 0)
 			planList.add(planId);
@@ -180,7 +180,7 @@ public class Proposal
 		return other;
 	}
 
-	public List<String> getPlanList()
+	public List<Long> getPlanList()
 	{
 		return planList;
 	}

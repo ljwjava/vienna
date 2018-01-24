@@ -4,13 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
+import lerrain.service.env.EnvService;
+import lerrain.service.env.KeyValService;
+import lerrain.service.task.TaskService;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -19,19 +18,22 @@ import javax.annotation.PostConstruct;
 public class AthensService
 {
 	@Autowired
-	EnvService envSrv;
+    EnvService envSrv;
 
 	@Autowired
 	GatewayService gatewaySrv;
 
 	@Autowired
-	KeyValService kvSrv;
+    KeyValService kvSrv;
 
 	@Value("${env}")
 	String srvEnv;
 
 	@Autowired
 	ServiceMgr sv;
+
+	@Autowired
+	TaskService taskSrv;
 
 	@PostConstruct
 	public void reset()
@@ -54,6 +56,8 @@ public class AthensService
 
 		gatewaySrv.reset();
 		envSrv.reset();
+
+		taskSrv.reset();
 
 		kvSrv.restore();
 	}

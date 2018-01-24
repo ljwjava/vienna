@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
+import lerrain.service.env.EnvService;
 import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -256,6 +256,8 @@ public class GatewayController
 //        Log.debug(uri + " => " + t1);
 
         JSONObject param = getParam(req);
+        param.put("URI", uri);
+
         HttpSession session = req.getSession();
 
         JSONObject res = new JSONObject();
@@ -311,6 +313,8 @@ public class GatewayController
         uri = uri.substring(1 + gateDir.length());
 
         JSONObject param = getParam(req);
+        param.put("URI", uri);
+
         HttpSession session = req.getSession();
 
         return call(req.getServerName() + ":" + req.getServerPort(), uri, session, param).toString();

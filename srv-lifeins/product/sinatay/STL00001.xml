@@ -20,7 +20,11 @@
 				<item code="to_full" />
 			</insure>
 		</param>
-		
+
+		<init>
+			<item name="SALE_PROV" value="['11','32','33','13','41','35','37','21','23','31','42','36','44']"/>
+		</init>
+
 		<interest>
 			<!--<var name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY" />-->
 		</interest>
@@ -44,9 +48,6 @@
 			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
 				保额最低为10000元，且必须为1000元的整数倍。
 			</if>
-			<if condition="AMOUNT*1.5 > 450000">
-				累计癌症风险保额须≤45万元
-			</if>
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不得大于保障期间
 			</if>
@@ -62,16 +63,18 @@
 			<if condition="AGE >= 18 and RELATIVE != null and RELATIVE != 'self' and RELATIVE != 'coupon' and RELATIVE != 'lineal'">
 				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
 			</if>
+			<!--
 			<if condition="OCCUPATION_CODE == null" level="alert">
-				请选择职业
+				未确定职业，0类职业可能无法投保
 			</if>
 			<if condition="var occRank = try(DS.OCC_RANK[0][0],null); OCCUPATION_CODE != null and (occRank == null or occRank ~= 0)">
 				职业不符合投保要求
 			</if>
+			-->
 			<if condition="ZONE == null" level="alert">
-				请选择地区
+				未确定地区，该产品销售限以下地区：浙江、江苏、北京、河北、福建、河南、山东、黑龙江、辽宁、上海、湖北、江西、广东
 			</if>
-			<if condition="ZONE != null and try(DS.ZONE_LEVEL[0][0],null) == null">
+			<if condition="ZONE != null and find(SALE_PROV, str(ZONE,0,2)) == null">
 				该地区暂不销售
 			</if>
 		</rule>

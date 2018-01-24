@@ -32,9 +32,9 @@ public class ExtraController
 	@ResponseBody
 	public JSONObject favourite(@RequestBody JSONObject p)
 	{
-		String proposalId = p.getString("proposalId");
+		Long proposalId = p.getLong("proposalId");
 
-		if (Common.isEmpty(proposalId))
+		if (proposalId == null)
 			throw new RuntimeException("缺少proposalId");
 
 		boolean b = Common.boolOf(p.get("favourite"), false);
@@ -50,7 +50,7 @@ public class ExtraController
 	@ResponseBody
 	public JSONObject listBless(@RequestBody JSONObject p)
 	{
-		String owner = p.getString("owner");
+		Long owner = p.getLong("owner");
 		Long platformId = p.getLong("platformId");
 
 		JSONArray c = new JSONArray();
@@ -74,7 +74,7 @@ public class ExtraController
 	@ResponseBody
 	public JSONObject saveBless(@RequestBody JSONObject p)
 	{
-		String owner = p.getString("owner");
+		Long owner = p.getLong("owner");
 		Long platformId = p.getLong("platformId");
 		Long blessId = p.getLong("blessId");
 		String text = p.getString("text");
@@ -104,7 +104,7 @@ public class ExtraController
 	@ResponseBody
 	public JSONObject listAdv(@RequestBody JSONObject p)
 	{
-		String owner = p.getString("owner");
+		Long owner = p.getLong("owner");
 		Long platformId = p.getLong("platformId");
 
 		JSONArray c = new JSONArray();

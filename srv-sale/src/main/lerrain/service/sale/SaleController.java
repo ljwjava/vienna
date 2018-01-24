@@ -26,9 +26,6 @@ public class SaleController
     SaleService saleSrv;
 
     @Autowired
-    CmsService cmsSrv;
-
-    @Autowired
     ServiceMgr serviceMgr;
 
     @Value("${env}")
@@ -51,7 +48,6 @@ public class SaleController
         Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
 
         saleSrv.reset();
-        cmsSrv.reset();
 
         return "success";
     }
@@ -170,32 +166,6 @@ public class SaleController
                 json.put("with", Lifeins.translate(packIns, content));
 
                 return serviceMgr.req("lifeins", "perform.json", json);
-            }
-        }
-        else if ("cms".equals(opt))
-        {
-            Long platformId = content.getLong("platformId");
-            String group = content.getString("group");
-            Long packId = content.getLong("packId");
-            String payFreq = content.getString("payFreq");
-            String payPeriod = content.getString("payPeriod");
-
-            List<CmsDefine> list = cmsSrv.getCommissionRate(platformId, group, packId, payFreq, payPeriod);
-
-            if (list != null)
-            {
-                r = new JSONArray();
-                for (CmsDefine c : list)
-                {
-                    Map m = new HashMap();
-                    m.put("self", c.getSelfRate());
-                    m.put("parent", c.getParentRate());
-                    m.put("unit", c.getUnit());
-                    m.put("freeze", c.getFreeze());
-                    m.put("memo", c.getMemo());
-
-                    ((JSONArray)r).add(m);
-                }
             }
         }
 

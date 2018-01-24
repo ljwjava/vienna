@@ -244,7 +244,7 @@ public class ScriptService
 			{
 				rs = RuleUtil.check(c);
 				if (rs != null) for (Rule rule : rs)
-					rules.add(c.getProduct().getAbbrName() + "：" + rule.getDesc().trim());
+					rules.add("[" + c.getProduct().getAbbrName() + "] " + rule.getDesc().trim());
 			}
 			catch (Exception e)
 			{
@@ -281,9 +281,9 @@ public class ScriptService
 				if (rs != null) for (Rule rule : rs)
 				{
 					if (rule.getLevel() == Rule.LEVEL_FAIL)
-						rules1.add(c.getProduct().getAbbrName() + "：" + rule.getDesc().trim());
+						rules1.add("[" + c.getProduct().getAbbrName() + "] " + rule.getDesc().trim());
 					else if (rule.getLevel() == Rule.LEVEL_ALERT)
-						rules2.add(c.getProduct().getAbbrName() + "：" + rule.getDesc().trim());
+						rules2.add("[" + c.getProduct().getAbbrName() + "] " + rule.getDesc().trim());
 				}
 			}
 			catch (Exception e)

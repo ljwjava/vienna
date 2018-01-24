@@ -3,7 +3,7 @@
     <product
             id="FBL00007"
             corporation_id="fubon"
-            code="ULTB"
+            code="ULT"
             name="多富利變額壽險"
             name_abbr="多富利"
             unit="10000"
@@ -36,7 +36,15 @@
 
         <attachment>
             <coverage filter="coverage" parser="coverage">
-                <paragraph title="滿期金(祝壽金)">
+                <paragraph title="身故保險金">
+                    <item>被保險人於本契約有效期間內身故者，本公司按保險金額給付身故保險金，本契約效力即行終止。</item>
+                </paragraph>
+                <paragraph title="完全殘廢保險金">
+                    <item>被保險人於本契約有效期間內致成附表四「完全殘廢程度表」所列之完全殘廢等級之一，並經完全殘廢診斷確定者，本公司按保險金額給付完全殘廢保險金，本契約效力即行終止。</item>
+                    <item>如被保險人於未滿十五足歲前，致成完全殘廢者，本公司改以「保單帳戶價值」給付「完全殘廢保險金」，不適用前項之約定。</item>
+                    <item>被保險人同時有兩項以上完全殘廢時，本公司僅給付一項完全殘廢保險金。</item>
+                </paragraph>
+                <paragraph title="祝壽保險金">
                     <item>本契約有效期間內，被保險人保險年齡屆滿一百一十歲仍生存者，本公司以當日為基準日，依附表三「評價時點一覽表」贖回評價時點所約定的淨值資產評價日之投資標的價值計算本契約保單帳戶價值給付「祝壽保險金」後，本契約之效力即行終止。</item>
                 </paragraph>
             </coverage>

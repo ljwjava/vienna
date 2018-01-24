@@ -27,7 +27,7 @@ public class ProposalTool
 		r.put("owner", proposal.getOwner());
 		
 		JSONArray list = new JSONArray();
-		for (String planId : proposal.getPlanList())
+		for (Long planId : proposal.getPlanList())
 			list.add(planId);
 		
 		r.put("detail", list);

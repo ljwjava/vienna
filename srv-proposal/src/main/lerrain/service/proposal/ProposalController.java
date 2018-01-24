@@ -31,20 +31,6 @@ public class ProposalController
 
 		fill(proposal, p);
 
-//		JSONArray insurants = p.getJSONArray("insurants");
-//		if (insurants != null) for (int i = 0; i < insurants.size(); i++)
-//		{
-//			String planId = createPlan(proposal.getApplicant(), insurants.getJSONObject(i));
-//			if (planId != null)
-//				proposal.addPlan(planId);
-//		}
-//		else if (p.containsKey("insurant"))
-//		{
-//			String planId = createPlan(proposal.getApplicant(), p.getJSONObject("insurant"));
-//			if (planId != null)
-//				proposal.addPlan(planId);
-//		}
-
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
 		res.put("content", proposalTool.jsonOf(proposal));
@@ -92,7 +78,7 @@ public class ProposalController
 			proposal.getPlanList().clear();
 			JSONArray list = p.getJSONArray("detail");
 			for (int i=0;i<list.size();i++)
-				proposal.addPlan(list.getString(i));
+				proposal.addPlan(list.getLong(i));
 		}
 
 		if (p.containsKey("removePlan"))
@@ -106,7 +92,7 @@ public class ProposalController
 		{
 			JSONArray list = p.getJSONArray("addPlan");
 			for (int i=0;i<list.size();i++)
-				proposal.addPlan(list.getString(i));
+				proposal.addPlan(list.getLong(i));
 		}
 	}
 
@@ -147,30 +133,6 @@ public class ProposalController
 
 		return res;
 	}
-
-//	@RequestMapping("/copy.json")
-//	@ResponseBody
-//	public JSONObject copy(@RequestBody JSONObject p)
-//	{
-//		Proposal proposal = getProposal(p);
-//		Proposal newPro = ps.copy(proposal);
-//
-//		JSONObject req = new JSONObject();
-//		for (String planId : proposal.getPlanList())
-//		{
-//			req.put("planId", planId);
-//			JSONObject r = serviceMgr.req("lifeins", "export_keys.json", req);
-//			r = serviceMgr.req("lifeins", "create.json", r.getJSONObject("content"));
-//
-//			newPro.addPlan(r.getJSONObject("content").getString("planId"));
-//		}
-//
-//		JSONObject res = new JSONObject();
-//		res.put("result", "success");
-//		res.put("content", proposalTool.jsonOf(proposal));
-//
-//		return res;
-//	}
 
 	@RequestMapping("/supply.json")
 	@ResponseBody
@@ -227,12 +189,12 @@ public class ProposalController
 	@CrossOrigin
 	public JSONObject delete(@RequestBody JSONObject p)
 	{
-		String proposalId = p.getString("proposalId");
+		Long proposalId = p.getLong("proposalId");
 
-		if (Common.isEmpty(proposalId))
+		if (proposalId == null)
 			throw new RuntimeException("缺少proposalId");
 
-		ps.delete(p.getString("proposalId"));
+		ps.delete(proposalId);
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
@@ -254,7 +216,7 @@ public class ProposalController
 			req.put("applicant", applicant);
 			
 			proposal.setApplicant(applicant);
-			for (String planId : proposal.getPlanList())
+			for (Long planId : proposal.getPlanList())
 			{
 				req.put("planId", planId);
 				serviceMgr.req("lifeins", "plan/customer.json", req);
@@ -278,7 +240,7 @@ public class ProposalController
 		JSONObject insurant = p.getJSONObject("insurant");
 		if (insurant != null)
 		{
-			for (String planId : proposal.getPlanList())
+			for (Long planId : proposal.getPlanList())
 			{
 				if (planId.equals(p.get("planId")))
 				{
@@ -299,41 +261,6 @@ public class ProposalController
 		return res;
 	}
 	
-//	@RequestMapping("/create_plan.json")
-//	@ResponseBody
-//	@CrossOrigin
-//	public JSONObject createPlan(@RequestBody JSONObject p)
-//	{
-//		Proposal proposal = getProposal(p);
-//
-//		JSONArray insurants = p.getJSONArray("insurants");
-//		for (int i = 0; i < insurants.size(); i++)
-//		{
-//			String planId = createPlan(proposal.getApplicant(), insurants.getJSONObject(i));
-//			if (planId != null)
-//				proposal.addPlan(planId);
-//		}
-//
-//		JSONObject res = new JSONObject();
-//		res.put("result", "success");
-//		res.put("content", proposalTool.jsonOf(proposal));
-//
-//		return res;
-//	}
-//
-//	private String createPlan(Object applicant, Object insurant)
-//	{
-//		JSONObject req = new JSONObject();
-//		req.put("applicant", applicant);
-//		req.put("insurant", insurant);
-//
-//		JSONObject rsp = serviceMgr.req("lifeins", "plan/create.json", req);
-//		if ("success".equals(rsp.get("result")))
-//			return rsp.getJSONObject("content").getString("planId");
-//
-//		return null;
-//	}
-	
 	@RequestMapping("/view.json")
 	@ResponseBody
 	@CrossOrigin
@@ -351,9 +278,9 @@ public class ProposalController
 	@CrossOrigin
 	public JSONObject load(@RequestBody JSONObject p)
 	{
-		String proposalId = p.getString("proposalId");
+		Long proposalId = p.getLong("proposalId");
 
-		if (Common.isEmpty(proposalId))
+		if (proposalId == null)
 			throw new RuntimeException("缺少proposalId");
 
 		Proposal proposal = ps.reload(proposalId);
@@ -383,51 +310,9 @@ public class ProposalController
 		JSONArray[] fee = new JSONArray[size];
 
 		int i = 0, l = 0;
-		for (String planId : proposal.getPlanList())
+		for (Long planId : proposal.getPlanList())
 		{
 			req.put("planId", planId);
-
-//			JSONObject r = serviceMgr.req("lifeins", "plan/fee.json", req);
-//			if ("success".equals(r.get("result")))
-//			{
-//				JSONArray prds = r.getJSONArray("content");
-//				if (prds != null)
-//				{
-//					JSONArray ja = new JSONArray();
-//					for (int j = 0; j < prds.size(); j++)
-//					{
-//						JSONObject prd = prds.getJSONObject(j);
-//
-//						JSONObject ppp = new JSONObject();
-//						Long platformId = c.getLong("platformId");
-//						Long envId = c.getLong("envId");
-//						String product = c.getString("product");
-//						String group = c.getString("group");
-//						ppp.put("platformId", p.getLong("platformId"));
-//
-//						ppp.put("product", prd.getString("productId"));
-//						ppp.put("payFreq", prd.getString("payFreq"));
-//						ppp.put("payPeriod", prd.getString("payPeriod"));
-//					}
-//				}
-//
-//				if (c != null)
-//				{
-//					prm[i] = c.getJSONArray("premium");
-//					fee[i] = c.getJSONArray("commission");
-//
-//					if (prm[i] != null && l < prm[i].size())
-//						l = prm[i].size();
-//					if (fee[i] != null && l < fee[i].size())
-//						l = prm[i].size();
-//
-//					JSONObject plan = new JSONObject();
-//					plan.put("planId", planId);
-//					plan.put("premium", prm[i]);
-//					plan.put("commission", fee[i]);
-//					detail.add(plan);
-//				}
-//			}
 
 			JSONObject r = serviceMgr.req("lifeins", "plan/fee.json", req);
 
@@ -480,9 +365,9 @@ public class ProposalController
 
 	private Proposal getProposal(JSONObject p)
 	{
-		String proposalId = p.getString("proposalId");
+		Long proposalId = p.getLong("proposalId");
 		
-		if (Common.isEmpty(proposalId))
+		if (proposalId == null)
 			throw new RuntimeException("缺少proposalId");
 		
 		return ps.getProposal(proposalId);
@@ -498,7 +383,7 @@ public class ProposalController
 		JSONObject req = new JSONObject();
 
 		JSONArray jsa = new JSONArray();
-		for (String planId : proposal.getPlanList())
+		for (Long planId : proposal.getPlanList())
 		{
 			req.put("planId", planId);
 

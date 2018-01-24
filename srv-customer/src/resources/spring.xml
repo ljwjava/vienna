@@ -41,4 +41,6 @@
 			<ref bean="dataSource" />
 		</property>
 	</bean>
+
+	<bean class="lerrain.service.common.ServiceMgr"/>
 </beans>

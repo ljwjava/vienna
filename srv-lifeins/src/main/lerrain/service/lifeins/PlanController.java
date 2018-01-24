@@ -100,7 +100,7 @@ public class PlanController
     @ResponseBody
     public JSONObject customer(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
@@ -125,7 +125,7 @@ public class PlanController
     @ResponseBody
     public JSONObject view(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
@@ -143,7 +143,7 @@ public class PlanController
     @ResponseBody
     public JSONObject edit(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
@@ -176,7 +176,7 @@ public class PlanController
     @ResponseBody
     public JSONObject exportSave(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
@@ -213,7 +213,7 @@ public class PlanController
     @ResponseBody
     public JSONObject removeProduct(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
@@ -268,7 +268,7 @@ public class PlanController
     @ResponseBody
     public JSONObject listProduct(@RequestBody JSONObject p)
     {
-        String productId = (String) p.get("productId");
+        String productId = p.getString("productId");
         int parentIndex = Common.intOf(p.get("parentIndex"), -1);
 
         JSONArray products = new JSONArray();
@@ -306,7 +306,7 @@ public class PlanController
             Insurance insurance;
             if (parentIndex >= 0)
             {
-                String planId = (String) p.get("planId");
+                String planId = p.getString("planId");
                 if (Common.isEmpty(planId))
                     throw new RuntimeException("缺少planId");
 
@@ -356,12 +356,12 @@ public class PlanController
     @ResponseBody
     public JSONObject viewProduct(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
-        String productId = (String) p.get("productId");
+        String productId = p.getString("productId");
         int productIndex = Common.intOf(p.get("index"), -1);
 
         Insurance ins;
@@ -522,10 +522,10 @@ public class PlanController
     @ResponseBody
     public JSONObject setProduct(@RequestBody JSONObject p)
     {
-        String productId = (String) p.get("productId");
+        String productId = p.getString("productId");
         int parentIndex = Common.intOf(p.get("parentIndex"), -1);
         int productIndex = Common.intOf(p.get("index"), -1);
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
@@ -627,7 +627,7 @@ public class PlanController
     @ResponseBody
     public JSONObject fee(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
         JSONObject rate = p.getJSONObject("rate");
 
         if (Common.isEmpty(planId))
@@ -646,7 +646,7 @@ public class PlanController
     @ResponseBody
     public JSONObject mergeQuest(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
@@ -664,7 +664,7 @@ public class PlanController
     @ResponseBody
     public JSONObject rebuild(@RequestBody JSONObject q)
     {
-        String planId = (String) q.get("planId");
+        String planId = q.getString("planId");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");

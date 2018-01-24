@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceMgr;
+import lerrain.service.common.ServiceTools;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +23,9 @@ public class ProposalDao
 {
 	@Autowired
 	ServiceMgr serviceMgr;
+
+	@Autowired
+	ServiceTools tools;
 
 	@Autowired
 	JdbcTemplate jdbc;
@@ -56,8 +60,6 @@ public class ProposalDao
 		StringBuffer sql = new StringBuffer("select * from t_proposal where platform_id = ? and creator = ? and valid is null");
 		if (search != null && !"".equals(search))
 			sql.append(" and proposal_name like '%" + search + "%' ");
-//		if (!Common.isEmpty(customerId))
-//			sql.append(" and applicant_id = '" + customerId + "' ");
 		sql.append(" order by favourite desc, update_time desc");
 		sql.append(" limit " + from + ", " + number);
 		
@@ -67,7 +69,7 @@ public class ProposalDao
 			public Proposal mapRow(ResultSet m, int arg1) throws SQLException 
 			{
 				Proposal p = new Proposal();
-				p.setId(m.getString("proposal_id"));
+				p.setId(m.getLong("proposal_id"));
 				p.setName(m.getString("proposal_name"));
 				p.setRemark(m.getString("remark"));
 				p.setCover(m.getString("cover"));
@@ -88,7 +90,7 @@ public class ProposalDao
 		});
 	}
 
-	public void setFavourite(String proposalId, boolean fav)
+	public void setFavourite(Long proposalId, boolean fav)
 	{
 		String sql = "update t_proposal set favourite = ? where proposal_id = ?";
 		jdbc.update(sql, fav ? "Y" : null, proposalId);
@@ -101,13 +103,13 @@ public class ProposalDao
 		
 		Date now = new Date();
 		
-		String proposalId = c.getId();
+		Long proposalId = c.getId();
 		String applicant = JSON.toJSONString(c.getApplicant());
 		String other = c.getOther() == null ? null : JSON.toJSONString(c.getOther());
 
 		boolean isNew = true;
 		
-		if (!Common.isEmpty(proposalId))
+		if (proposalId != null)
 		{
 			String sql1 = "select count(*) from t_proposal where proposal_id = ?";
 			int num = jdbc.queryForObject(sql1, new Object[] {proposalId}, Integer.class);
@@ -115,7 +117,7 @@ public class ProposalDao
 		}
 		else
 		{
-			proposalId = Common.nextId("proposal");
+			proposalId = tools.nextId("proposal");
 			c.setId(proposalId);
 		}
 
@@ -125,7 +127,7 @@ public class ProposalDao
 		JSONArray plans = new JSONArray();
 
 		JSONObject req = new JSONObject();
-		for (String planId : c.getPlanList())
+		for (Long planId : c.getPlanList())
 		{
 			req.put("planId", planId);
 
@@ -167,7 +169,7 @@ public class ProposalDao
 		jdbc.update(sql, c.getName(), c.getBless(), other, c.getRemark(), c.getInsureTime(), c.getCover(), tag, c.getOwner(), new Date(), c.getId());
 	}
 	
-	public boolean delete(String proposalId)
+	public boolean delete(Long proposalId)
 	{
 		String sql = "update t_proposal set valid = 'N', update_time = ? where proposal_id = ?";
 		jdbc.update(sql, new Date(), proposalId);
@@ -175,7 +177,7 @@ public class ProposalDao
 		return true;
 	}
 	
-	public Proposal load(String proposalId)
+	public Proposal load(Long proposalId)
 	{
 		return jdbc.queryForObject("select a.* from t_proposal a where a.proposal_id = ?", new Object[] {proposalId}, new RowMapper<Proposal>()
 		{
@@ -183,7 +185,7 @@ public class ProposalDao
 			public Proposal mapRow(ResultSet rs, int arg1) throws SQLException 
 			{
 				Proposal p = new Proposal();
-				p.setId(rs.getString("proposal_id"));
+				p.setId(rs.getLong("proposal_id"));
 				p.setApplicant(JSON.parseObject(rs.getString("applicant")));
 				p.setName(rs.getString("proposal_name"));
 				p.setRemark(rs.getString("remark"));
@@ -210,7 +212,7 @@ public class ProposalDao
 					JSONObject plan = list.getJSONObject(i);
 					serviceMgr.req("lifeins", "plan/create.json", plan);
 
-					p.addPlan(plan.getString("planId"));
+					p.addPlan(plan.getLong("planId"));
 				}
 
 				return p;
@@ -218,7 +220,7 @@ public class ProposalDao
 		});
 	}
 
-	public List<Object[]> listBless(String owner, Long platformId)
+	public List<Object[]> listBless(Long owner, Long platformId)
 	{
 		return jdbc.query("select a.* from t_proposal_bless a where a.owner = ? and a.valid is null and a.platform_id = ? order by a.update_time desc", new Object[]{owner, platformId}, new RowMapper<Object[]>()
 		{
@@ -230,7 +232,7 @@ public class ProposalDao
 		});
 	}
 
-	public void saveBless(Long blessId, String text, String owner, Long platformId)
+	public void saveBless(Long blessId, String text, Long owner, Long platformId)
 	{
 		if (blessId == null)
 		{

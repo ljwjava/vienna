@@ -5,3 +5,6 @@ datasource:
   url: jdbc:mysql://101.37.72.72:5306/vie_biz_test
   username: iyb
   password: Abcd2017
+
+service:
+  athens: http://localhost:7666

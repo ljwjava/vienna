@@ -1,14 +1,9 @@
 package lerrain.service.sale.manage;
 
-import lerrain.service.sale.CmsDao;
-import lerrain.service.sale.CmsDefine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ManageService
