@@ -42,8 +42,8 @@
 		</attachment>
 
 		<rule>
-			<if condition="DAY lt 28 or AGE > 55" type="customer">
-				投保年龄须为出生满28天~55周岁
+			<if condition="DAY lt 28 or AGE > 50" type="customer">
+				投保年龄须为出生满28天~50周岁
 			</if>
 			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
 				保额最低为10000元，且必须为1000元的整数倍。
@@ -55,13 +55,13 @@
 				被保险人年龄为出生28天-17周岁，投保人须为被保险人父母
 			</if>
 			<if condition="AGE >= 18 and RELATIVE == null" level="alert">
-				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
+				被保险人年龄为18-50周岁，投保人须为被保险人本人、配偶、子女
 			</if>
 			<if condition="AGE lt 18 and RELATIVE != null and RELATIVE != 'lineal'">
 				被保险人年龄为出生28天-17周岁，投保人须为被保险人父母
 			</if>
 			<if condition="AGE >= 18 and RELATIVE != null and RELATIVE != 'self' and RELATIVE != 'coupon' and RELATIVE != 'lineal'">
-				被保险人年龄为18-55周岁，投保人须为被保险人本人、配偶、子女
+				被保险人年龄为18-50周岁，投保人须为被保险人本人、配偶、子女
 			</if>
 			<!--
 			<if condition="OCCUPATION_CODE == null" level="alert">
