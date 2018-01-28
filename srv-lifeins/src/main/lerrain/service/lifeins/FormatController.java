@@ -23,7 +23,7 @@ public class FormatController
     @ResponseBody
     public JSONObject format(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
@@ -52,12 +52,12 @@ public class FormatController
     @ResponseBody
     public JSONObject findShow(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
         Plan plan = ls.getPlan(planId);
-        String type = (String) p.get("type");
+        String type = p.getString("type");
         String[] format = null;
 
         if ("table".equals(type))
@@ -115,7 +115,7 @@ public class FormatController
     @ResponseBody
     public JSONObject show(@RequestBody JSONObject p)
     {
-        String planId = (String) p.get("planId");
+        String planId = p.getString("planId");
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");
 
@@ -127,7 +127,7 @@ public class FormatController
         JSONObject res = new JSONObject();
         res.put("result", "success");
 
-        String type = (String) p.get("type");
+        String type = p.getString("type");
         if ("table".equals(type))
         {
             boolean fold = Common.boolOf(p.get("fold"), false);

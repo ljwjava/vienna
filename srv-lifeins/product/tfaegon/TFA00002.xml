@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="TFA00002" corporation_id="tfaegon" code="2140202" name="附加（B款）投保人豁免保费重大疾病" name_abbr="附加投保人豁免B" unit="1" amount="PARENT.PREMIUM" input="none"
+	<product id="TFA00002" corporation_id="tfaegon" code="TCIR20" name="附加（B款）投保人豁免保费重大疾病" name_abbr="附加投保人豁免B" unit="1" amount="PARENT.PREMIUM" input="none" premium="round(DS.RATE[0][0]*QUANTITY)"
 		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<data>
@@ -13,6 +13,7 @@
 
 		<param>
 			<pay>
+
 				<item code="exempt" />
 			</pay>
 			<insure>

@@ -6,7 +6,7 @@
             code="IWM"
             name="月月優利利率變動型增額還本終身保險"
             name_abbr="月月優利"
-            unit="100"
+            unit="10000"
             currency="twd"
             type_code="life"
             sequence="1000"
@@ -14,15 +14,13 @@
             sale_end_date=""
             last_modify_date="2017-01-01">
 
-        <!--<data>-->
-            <!--<item parser="dds" value="FBL00006" />-->
-        <!--</data>-->
+        <data>
+            <item parser="dds" value="FBL00006" />
+        </data>
 
         <param>
             <pay>
-                <item code="term_10"/>
-                <item code="term_15"/>
-                <item code="term_20"/>
+                <item code="term_2"/>
             </pay>
             <insure>
                 <item code="full_110"/>

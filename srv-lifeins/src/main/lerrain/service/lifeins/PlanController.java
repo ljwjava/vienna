@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.*;
@@ -54,6 +55,8 @@ public class PlanController
 
     @Value("${env}")
     String srvEnv;
+
+    List numFactors = JSON.parseArray("['PREMIUM','AMOUNT','QUANTITY']");
 
     @PostConstruct
     @RequestMapping({"/reset"})
@@ -595,21 +598,15 @@ public class PlanController
             }
             else if (p != null)
             {
-                String str = "PAY,INSURE,SIM";
-                String num = "PREMIUM,AMOUNT,QUANTITY";
-
-                for (String s : str.split(","))
+                for (Map.Entry<String, Object> e : p.entrySet())
                 {
-                    Object val = p.get(s);
-                    if (val != null)
-                        c.setValue(s, val);
-                }
-
-                for (String s : num.split(","))
-                {
-                    BigDecimal val = p.getBigDecimal(s);
-                    if (val != null)
-                        c.setValue(s, val);
+                    if (e.getValue() != null)
+                    {
+                        if (numFactors.indexOf(e.getKey()) >= 0)
+                            c.setValue(e.getKey(), Common.decimalOf(e.getValue()));
+                        else
+                            c.setValue(e.getKey(), e.getValue());
+                    }
                 }
             }
         }
@@ -734,21 +731,15 @@ public class PlanController
                 }
                 else if (p != null)
                 {
-                    String str = "PAY,INSURE,SIM";
-                    String num = "PREMIUM,AMOUNT,QUANTITY";
-
-                    for (String s : str.split(","))
+                    for (Map.Entry<String, Object> e : p.entrySet())
                     {
-                        Object val = p.get(s);
-                        if (val != null)
-                            c.setValue(s, val);
-                    }
-
-                    for (String s : num.split(","))
-                    {
-                        BigDecimal val = p.getBigDecimal(s);
-                        if (val != null)
-                            c.setValue(s, val);
+                        if (e.getValue() != null)
+                        {
+                            if (numFactors.indexOf(e.getKey()) >= 0)
+                                c.setValue(e.getKey(), Common.decimalOf(e.getValue()));
+                            else
+                                c.setValue(e.getKey(), e.getValue());
+                        }
                     }
                 }
             }

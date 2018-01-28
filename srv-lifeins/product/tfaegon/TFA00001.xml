@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="TFA00001" corporation_id="tfaegon" code="5301" name="康健一生终身重大疾病保险" name_abbr="多倍保" unit="1000"
+	<product id="TFA00001" corporation_id="tfaegon" code="TCIB05" name="康健一生终身重大疾病保险" name_abbr="多倍保" unit="1000"
 		type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
 
 		<data>
