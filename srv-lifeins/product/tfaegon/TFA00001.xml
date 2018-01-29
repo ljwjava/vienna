@@ -24,6 +24,11 @@
 			<product id="TFA00002"/>
 		</rider>
 
+		<init>
+			<item name="SALE_PROV" value="['11','12','13','31','44','32','42','37','51','35']"/>
+			<item name="A_CITY" value="['1101','1102','1201','1202','1301','3101','3102','4401','4403','3201','3202','3205','4201','3701','3702','5101','3501','3502']"/>
+		</init>
+
 		<interest>
 			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY" />
 		</interest>
@@ -59,6 +64,58 @@
 		</attachment>
 
 		<rule>
+			<if condition="PAY_PERIOD lt 10 and AGE > 60" type="customer">
+				投保年龄须为出生满30天~60周岁
+			</if>
+			<if condition="AMOUNT lt 100000 or AMOUNT % 10000 > 0">
+				保额最低为100000元，且必须为10000元的整数倍。
+			</if>
+			<if condition="PAY_PERIOD == 10 and AGE > 55">
+				选择10年交时，投保年龄为30天~55周岁
+			</if>
+			<if condition="PAY_PERIOD > 10 and AGE > 50">
+				选择15/20年交时，投保年龄为30天~50周岁
+			</if>
+			<if condition="ZONE == null and AGE lt 18 and AMOUNT > 200000 and AMOUNT le 500000" level="alert">
+				未成年人，A类地区最高50万，其他地区20万
+			</if>
+			<if condition="AGE lt 18 and AMOUNT > 500000">
+				未成年人，保额最高50万
+			</if>
+			<if condition="ZONE == null and AGE >= 18 and AGE le 40 and AMOUNT > 300000 and AMOUNT le 500000" level="alert">
+				18~40周岁，A类地区保额最高50万，其他地区30万
+			</if>
+			<if condition="AGE >= 18 and AGE le 40 and AMOUNT > 500000">
+				18~40周岁，保额最高50万
+			</if>
+			<if condition="AGE >= 41 and AGE le 45 and AMOUNT > 200000">
+				41~45周岁，保额最高20万
+			</if>
+			<if condition="AGE >= 46 and AGE le 50 and AMOUNT > 150000">
+				46~50周岁，保额最高15万
+			</if>
+			<if condition="AGE >= 51 and AGE le 55 and AMOUNT > 50000">
+				51~55周岁，保额最高5万
+			</if>
+			<if condition="ZONE == null" level="alert">
+				未确定地区，该产品销售限以下地区：北京、上海、天津、广东、江苏、湖北、河北、山东、四川、福建
+			</if>
+			<if condition="ZONE != null and find(SALE_PROV, str(ZONE,0,2)) == null">
+				该地区暂不销售
+			</if>
+			<if>
+				if (ZONE == null)
+					return null;
+				var bcity = find(A_CITY, str(ZONE,0,4)) == null;
+				if (bcity) {
+					if (AGE lt 18 and AMOUNT > 200000 and AMOUNT le 500000) {
+						return '普通地区未成年人最高保额为20万';
+					} else if (AGE >= 18 and AGE le 40 and AMOUNT > 300000 and AMOUNT le 500000) {
+						return '普通地区18~40岁最高保额为30万';
+					}
+				}
+				return null;
+			</if>
 		</rule>
 	</product>
 </declare>

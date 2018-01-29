@@ -6,9 +6,7 @@ import Tabs from '../common/widget.tabs.jsx';
 import Form from '../common/widget.form2.jsx';
 import Switcher from '../common/widget.switcher.jsx';
 import Selecter from '../common/widget.selecter.jsx';
-// import City from '../common/widget.city.jsx';
 import DateEditor from '../common/widget.date.jsx';
-// import Occupation from '../common/widget.occupation.jsx';
 import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Summary from './summary.jsx';
@@ -57,15 +55,15 @@ var Ware = React.createClass({
 		else if (env.packType == 3)
             nextUrl = "vac_apply.mobile";
 
-		if (nextUrl != null){
+		if (nextUrl != null) {
 			if(plus.indexOf("packId=") >= 0){
                 document.location.href = nextUrl + "?" + (plus.replace(/(packId=)([^&]*)/gi, "packId=" + env.packId));
-			}else{
+			} else {
                 document.location.href = nextUrl + "?packId=" + env.packId + plus;
 			}
-		}
-		else
-			ToastIt("error");
+		} else {
+            ToastIt("error");
+        }
     },
     getInitialState() {
     	let r = {quest:false, alertQuest:false, vendor:{}};
@@ -114,7 +112,7 @@ var Ware = React.createClass({
             });
         });
 	},
-    getPlanFactors() {
+    /* getPlanFactors() {
     	let factors = {packId: this.state.detail.target};
     	let self = this.refs.plan;
     	self.props.fields.map(v => {
@@ -123,7 +121,7 @@ var Ware = React.createClass({
     		}
     	});
     	return factors;
-    },
+    }, */
     refreshPremium() {
 		let factors = this.refs.plan.val();
 		factors.packId = this.state.detail.target;
@@ -138,6 +136,7 @@ var Ware = React.createClass({
 		}else{
         	factors.OCCUPATION_L = null;
 		}
+		env.factors = factors;
 		common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
 			var form = r.form == null ? this.state.form : r.form;
 			if (r.factors != null) form.map(function(e) {
@@ -156,13 +155,17 @@ var Ware = React.createClass({
 	},
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
+			var appExempt = env.factors.APP_EXEMPT;
 			return (
 				<div className="common">
 					<div className="title">健康及财务告知</div>
 					<div className="text">
-						{/*{ env.docs.quests.map(v => <p className="html" dangerouslySetInnerHTML={{__html:v}}></p>) }*/}
 						<Summary content={env.docs.quests}/>
 					</div>
+					{ appExempt == "Y" ? <div className="text">
+						投保人告知
+						<Summary content={env.docs.applicantQuests}/>
+					</div> : null}
 					<div className="console">
 						<div className="tab">
 							<div className="row">

@@ -42,7 +42,7 @@ public class IYunBao extends HashMap<String, Object>
     private JSONObject request(String url, String publicKey, String privateKey, String serviceName, JSON req) throws Exception
     {
         String bizContent = req.toJSONString();
-        Log.debug("service << " + bizContent);
+//        Log.debug("service << " + bizContent);
 
         byte[] encodedData = CipherUtil.encryptByPublicKey(bizContent.getBytes(), publicKey);
         bizContent = Common.encodeToString(encodedData);
@@ -52,14 +52,14 @@ public class IYunBao extends HashMap<String, Object>
         paramObj.put("bizContent", bizContent);
 
         String res = Network.request(url, paramObj.toJSONString());
-        Log.debug("service >> " + res);
+//        Log.debug("service >> " + res);
         String obj = JSONObject.parseObject(res).getString("bizContent");
 
         byte[] resData = decodeHex(obj.toCharArray());
         byte[] decodedData = CipherUtil.decryptByPrivateKey(resData, privateKey);
         String outputStr = new String(decodedData, "utf-8");
 
-        Log.debug("service >> " + outputStr);
+//        Log.debug("service >> " + outputStr);
 
         JSONObject resObj = JSONObject.parseObject(outputStr);
 

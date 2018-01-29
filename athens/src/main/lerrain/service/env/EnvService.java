@@ -6,6 +6,7 @@ import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,7 +19,8 @@ public class EnvService
 
     List<Environment> environments;
 
-    Map<Object, Environment> env1, env2;
+    Map<Long, Environment> env1;
+    Map<String, Environment> env2;
 
     @Autowired NextId nextId;
     @Autowired Request request;
@@ -33,6 +35,11 @@ public class EnvService
     Function timediff;
     Function reversalStr;
     Function log, err;
+
+    @Value("${scope}")
+    String scope;
+
+    List<Long> envs = new ArrayList();
 
     public EnvService(){
         time2long = new Function() {
@@ -164,6 +171,51 @@ public class EnvService
             env1.put(c.getId(), c);
             env2.put(c.getCode(), c);
         }
+
+        for (String str : scope.split(","))
+        {
+            if (str.endsWith("++"))
+            {
+                Environment env = env2.get(str.substring(0, str.length() - 2));
+                if (env != null) for (Environment c : environments)
+                {
+                    Environment e = c;
+
+                    do
+                    {
+                        if (env.getId().equals(e.getId()))
+                        {
+                            if (envs.indexOf(c.getId()) < 0)
+                                envs.add(c.getId());
+
+                            break;
+                        }
+
+                        e = env1.get(e.getParentId());
+                    }
+                    while (e != null);
+                }
+            }
+            else if (str.endsWith("+"))
+            {
+                Environment env = env2.get(str.substring(0, str.length() - 2));
+                if (env != null) for (Environment c : environments)
+                {
+                    if (env.getId().equals(c.getId()) || env.getId().equals(c.getParentId()))
+                    {
+                        if (envs.indexOf(c.getId()) < 0)
+                            envs.add(c.getId());
+                    }
+                }
+            }
+            else
+            {
+                Environment env = env2.get(str);
+
+                if (env != null)
+                    envs.add(env.getId());
+            }
+        }
     }
 
     public List<Environment> list()
@@ -174,6 +226,11 @@ public class EnvService
     public Environment getEnv(Long envId)
     {
         return env1.get(envId);
+    }
+
+    public boolean isValid(Long envId)
+    {
+        return envs.indexOf(envId) >= 0;
     }
 
     public Environment getEnv(String envCode)
@@ -200,6 +257,3 @@ public class EnvService
         return r;
     }
 }
-
-
-

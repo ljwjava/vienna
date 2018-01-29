@@ -127,7 +127,7 @@ public class ProposalDao
 		JSONArray plans = new JSONArray();
 
 		JSONObject req = new JSONObject();
-		for (Long planId : c.getPlanList())
+		for (String planId : c.getPlanList())
 		{
 			req.put("planId", planId);
 
@@ -212,7 +212,7 @@ public class ProposalDao
 					JSONObject plan = list.getJSONObject(i);
 					serviceMgr.req("lifeins", "plan/create.json", plan);
 
-					p.addPlan(plan.getLong("planId"));
+					p.addPlan(plan.getString("planId"));
 				}
 
 				return p;

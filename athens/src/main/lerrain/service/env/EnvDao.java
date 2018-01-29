@@ -68,6 +68,8 @@ public class EnvDao
                 c.setCreateTime(m.getTimestamp("create_time"));
                 c.setUpdateTime(m.getTimestamp("update_time"));
 
+                c.setInit(Script.scriptOf(m.getString("init")));
+
                 map.put(c.getId().toString(), c);
                 map.put(c.getCode(), c);
 
@@ -205,6 +207,9 @@ public class EnvDao
             }
 
         });
+
+        if (p.getInit() != null)
+            p.getInit().run(p.getStack());
     }
 
     public static class InnerFunction implements Function

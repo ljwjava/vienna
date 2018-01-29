@@ -1,6 +1,7 @@
 package lerrain.service.biz;
 
 import lerrain.service.common.Log;
+import lerrain.service.env.Environment;
 import lerrain.tool.script.Script;
 
 import java.util.Map;
@@ -23,7 +24,6 @@ public class Gateway
     public static final int FORWARD_REDIRECT_REMOTE = 3;
 
     Long id;
-    Long envId;
 
     int type;
     int support;
@@ -35,6 +35,8 @@ public class Gateway
     String uri;
     String uriX;
     String forwardTo;
+
+    Environment env;
 
     Map with;
 
@@ -61,16 +63,6 @@ public class Gateway
     public boolean isSupport(int support)
     {
         return (type & support) > 0;
-    }
-
-    public Long getEnvId()
-    {
-        return envId;
-    }
-
-    public void setEnvId(Long envId)
-    {
-        this.envId = envId;
     }
 
     public boolean isLogin()
@@ -111,6 +103,16 @@ public class Gateway
     public void setType(int type)
     {
         this.type = type;
+    }
+
+    public Environment getEnv()
+    {
+        return env;
+    }
+
+    public void setEnv(Environment env)
+    {
+        this.env = env;
     }
 
     public String getUri()

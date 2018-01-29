@@ -78,7 +78,7 @@ public class ProposalController
 			proposal.getPlanList().clear();
 			JSONArray list = p.getJSONArray("detail");
 			for (int i=0;i<list.size();i++)
-				proposal.addPlan(list.getLong(i));
+				proposal.addPlan(list.getString(i));
 		}
 
 		if (p.containsKey("removePlan"))
@@ -92,7 +92,7 @@ public class ProposalController
 		{
 			JSONArray list = p.getJSONArray("addPlan");
 			for (int i=0;i<list.size();i++)
-				proposal.addPlan(list.getLong(i));
+				proposal.addPlan(list.getString(i));
 		}
 	}
 
@@ -216,7 +216,7 @@ public class ProposalController
 			req.put("applicant", applicant);
 			
 			proposal.setApplicant(applicant);
-			for (Long planId : proposal.getPlanList())
+			for (String planId : proposal.getPlanList())
 			{
 				req.put("planId", planId);
 				serviceMgr.req("lifeins", "plan/customer.json", req);
@@ -240,9 +240,9 @@ public class ProposalController
 		JSONObject insurant = p.getJSONObject("insurant");
 		if (insurant != null)
 		{
-			for (Long planId : proposal.getPlanList())
+			for (String planId : proposal.getPlanList())
 			{
-				if (planId.equals(p.get("planId")))
+				if (planId.equals(p.getString("planId")))
 				{
 					JSONObject req = new JSONObject();
 					req.put("planId", planId);
@@ -310,7 +310,7 @@ public class ProposalController
 		JSONArray[] fee = new JSONArray[size];
 
 		int i = 0, l = 0;
-		for (Long planId : proposal.getPlanList())
+		for (String planId : proposal.getPlanList())
 		{
 			req.put("planId", planId);
 
@@ -383,7 +383,7 @@ public class ProposalController
 		JSONObject req = new JSONObject();
 
 		JSONArray jsa = new JSONArray();
-		for (Long planId : proposal.getPlanList())
+		for (String planId : proposal.getPlanList())
 		{
 			req.put("planId", planId);
 

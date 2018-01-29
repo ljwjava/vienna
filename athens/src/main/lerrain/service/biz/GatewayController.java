@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
-import lerrain.service.env.EnvService;
 import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
@@ -32,9 +31,6 @@ public class GatewayController
     GatewayService gatewaySrv;
 
     @Autowired
-    EnvService envSrv;
-
-    @Autowired
     ServiceMgr sv;
 
     @Value("${gatedir}")
@@ -49,7 +45,7 @@ public class GatewayController
         if (gateway == null)
             return null;
 
-        Stack root = envSrv.getEnv(gateway.getEnvId()).getStack();
+        Stack root = gateway.getEnv().getStack();
 
         if (gateway.isLogin())
         {

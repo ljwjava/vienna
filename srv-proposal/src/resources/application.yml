@@ -2,12 +2,12 @@ server:
   port: 7776
 
 datasource:
-#  url: jdbc:mysql://10.253.102.74:3306/vie_biz_test
-#  username: iyb
-#  password: Abcd2017
-  url: jdbc:mysql://www.lerrain.com:3307/vie_biz
-  username: root
-  password: ftp123
+  url: jdbc:mysql://10.253.102.74:3306/vie_biz_test
+  username: iyb
+  password: Abcd2017
+#  url: jdbc:mysql://www.lerrain.com:3307/vie_biz
+#  username: root
+#  password: ftp123
 
 service:
   lifeins: http://localhost:7777

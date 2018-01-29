@@ -25,7 +25,7 @@ public class Proposal
 
 	Map<String, Object> applicant;
 	
-	List<Long> planList = new ArrayList<>();
+	List<String> planList = new ArrayList<>();
 
 	Map<String, Object> other = new HashMap<>();
 
@@ -54,7 +54,7 @@ public class Proposal
 		this.other = other;
 	}
 
-	public void setPlanList(List<Long> planList)
+	public void setPlanList(List<String> planList)
 	{
 		this.planList = planList;
 	}
@@ -159,7 +159,7 @@ public class Proposal
 		this.owner = owner;
 	}
 
-	public void addPlan(Long planId)
+	public void addPlan(String planId)
 	{
 		if (planList.indexOf(planId) < 0)
 			planList.add(planId);
@@ -180,7 +180,7 @@ public class Proposal
 		return other;
 	}
 
-	public List<Long> getPlanList()
+	public List<String> getPlanList()
 	{
 		return planList;
 	}

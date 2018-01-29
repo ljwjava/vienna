@@ -54,10 +54,10 @@ public class AthensService
 
 		JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
 
-		gatewaySrv.reset();
 		envSrv.reset();
+		gatewaySrv.reset(envSrv);
 
-		taskSrv.reset();
+		taskSrv.reset(envSrv);
 
 		kvSrv.restore();
 	}

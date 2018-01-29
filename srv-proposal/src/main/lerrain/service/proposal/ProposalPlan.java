@@ -2,7 +2,7 @@ package lerrain.service.proposal;
 
 public class ProposalPlan
 {
-	Long planId;
+	String planId;
 	
 //	JSONObject insurant;
 	
@@ -12,12 +12,12 @@ public class ProposalPlan
 //		this.insurant = insurant;
 //	}
 
-	public Long getPlanId()
+	public String getPlanId()
 	{
 		return planId;
 	}
 
-	public void setPlanId(Long planId)
+	public void setPlanId(String planId)
 	{
 		this.planId = planId;
 	}

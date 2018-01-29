@@ -1,6 +1,7 @@
 package lerrain.service.biz;
 
 import lerrain.service.common.Log;
+import lerrain.service.env.EnvService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,9 @@ public class GatewayService
 
     Map<String, List<Gateway>> map;
 
-    public void reset()
+    public void reset(EnvService envSrv)
     {
-        map = gatewayDao.loadAllGateway();
+        map = gatewayDao.loadAllGateway(envSrv);
     }
 
     public Gateway getGateway(Long gatewayId)

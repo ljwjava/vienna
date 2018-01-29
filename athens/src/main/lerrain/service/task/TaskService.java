@@ -15,31 +15,16 @@ import java.util.List;
 public class TaskService
 {
     @Autowired
-    EnvService envSrv;
-
-    @Autowired
     TaskQueue taskQueue;
 
     @Autowired
     TaskDao taskDao;
 
-    @Value("${task}")
-    String task;
-
     List<Task> list;
 
-    public void reset()
+    public void reset(EnvService envSrv)
     {
-        if (!Common.isEmpty(task))
-        {
-            String[] envsStr = task.split(",");
-
-            List<Long> envs  = new ArrayList<>();
-            for (String es : envsStr)
-                envs.add(Long.valueOf(es));
-
-            list = taskDao.loadAllTask(envSrv, envs);
-        }
+        list = taskDao.loadAllTask(envSrv);
     }
 
     @Scheduled(cron = "0 0 23 * * ?")

@@ -1,6 +1,7 @@
 package lerrain.service.biz;
 
 import lerrain.service.common.Log;
+import lerrain.service.env.EnvService;
 import lerrain.tool.Common;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,11 @@ public class GatewayDao
     @Autowired
     JdbcTemplate jdbc;
 
-    public Map<String, List<Gateway>> loadAllGateway()
+    public Map<String, List<Gateway>> loadAllGateway(final EnvService envSrv)
     {
         final Map<String, List<Gateway>> m = new HashMap<>();
 
-        String sql = "select * from t_gateway where valid is null order by seq desc";
-
-        jdbc.query(sql, new RowCallbackHandler()
+        jdbc.query("select * from t_gateway where valid is null order by seq desc", new RowCallbackHandler()
         {
             @Override
             public void processRow(ResultSet rs) throws SQLException
@@ -41,6 +40,9 @@ public class GatewayDao
                 String script = rs.getString("script");
                 int forward = rs.getInt("forward");
                 String forwardTo = rs.getString("forward_to");
+
+                if (!envSrv.isValid(envId))
+                    return;
 
                 boolean needLogin = "Y".equalsIgnoreCase(rs.getString("login"));
                 boolean supportGet = !"N".equalsIgnoreCase(rs.getString("support_get"));
@@ -64,7 +66,7 @@ public class GatewayDao
                 gw.setUri(uri);
                 gw.setForward(forward);
                 gw.setForwardTo(forwardTo);
-                gw.setEnvId(envId);
+                gw.setEnv(envSrv.getEnv(envId));
 
                 try
                 {

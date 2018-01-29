@@ -1,5 +1,6 @@
 package lerrain.service.env;
 
+import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Stack;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ public class Environment
     String[] refer;
 
     Stack stack;
+    Formula init;
 
     Date createTime;
     Date updateTime;
@@ -101,6 +103,16 @@ public class Environment
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public Formula getInit()
+    {
+        return init;
+    }
+
+    public void setInit(Formula init)
+    {
+        this.init = init;
     }
 
     public void putVar(String fe, Object f)

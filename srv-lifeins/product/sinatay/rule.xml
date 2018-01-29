@@ -5,10 +5,10 @@
 			投保人要求18周岁或以上
 		</if>
 		<if condition = "INSURANT.DAY lt 28" type="plan">
-			被保人要求出生满30天。
+			被保人要求出生满28天
 		</if>
 		<if condition = "try(PREMIUM lt 0, true)" type="product">
-			无法获取保费
+			该选项下无费率，请修改年龄、交费期间等
 		</if>
 		<if condition="PAY_PERIOD > INSURE_PERIOD" type="product">
 			交费期间不得大于保障期间

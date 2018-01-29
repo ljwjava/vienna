@@ -3,6 +3,7 @@ package lerrain.service.proposal;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceMgr;
+import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class ProposalTool
 	{
 		JSONObject r = new JSONObject();
 
-		r.put("proposalId", proposal.getId());
+		r.put("proposalId", Common.trimStringOf(proposal.getId()));
 		r.put("name", proposal.getName());
 		r.put("applicant", proposal.getApplicant());
 		r.put("cover", proposal.getCover());
@@ -27,8 +28,9 @@ public class ProposalTool
 		r.put("owner", proposal.getOwner());
 		
 		JSONArray list = new JSONArray();
-		for (Long planId : proposal.getPlanList())
-			list.add(planId);
+		for (String planId : proposal.getPlanList())
+			if (planId != null)
+				list.add(planId.toString());
 		
 		r.put("detail", list);
 

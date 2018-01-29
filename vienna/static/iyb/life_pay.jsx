@@ -16,7 +16,11 @@ import Photo from '../common/widget.photo.jsx';
 import ToastIt from '../common/widget.toast.jsx';
 
 env.dict = {
-    relation: {},
+    relation: {
+    	"self": "本人",
+        "coupon": "配偶",
+        "lineal": "父母/子女"
+	},
 	bank: []
 };
 
@@ -48,8 +52,11 @@ var Ground = React.createClass({
 	},
 	componentWillMount() {
         common.req("dict/view.json", {company: env.company, name: "bank,relation", version: "new"}, r => {
-            env.dict.bank = r.bank;
-            env.dict.relation = {};
+        	if (typeof r.bank == "object") {
+                env.dict.bank = r.bank[env.order.detail.applicant.city.code.substr(0, 2)];
+			} else {
+                env.dict.bank = r.bank;
+            }
             for (var l in r.relation) {
                 env.dict.relation[l.code] = l.text;
             }
@@ -172,14 +179,10 @@ var Ground = React.createClass({
 				</div>
 				<div className="view">
 					<div><span>{env.order.productName}</span></div>
-					{
-						env.order.detail.packDesc.map(v => {
-							return (<div><span>　{v.name}</span>{v.text}</div>);
-						})
-					}
-					{
-						env.order.detail.factors.effectiveTime == null ? null : <div><span>　保单生效日</span>{env.order.detail.factors.effectiveTime}</div>
-					}
+					{ env.order.detail.packDesc.map(v => {
+						return (<div><span>　{v.name}</span>{v.text}</div>);
+					})}
+					{ env.order.detail.factors.effectiveTime == null ? null : <div><span>　保单生效日</span>{env.order.detail.factors.effectiveTime}</div> }
 				</div>
 				<div className="view">
 					<div><span>受益人</span></div>
@@ -188,16 +191,13 @@ var Ground = React.createClass({
 						env.order.detail.beneficiaryDeath.map(v => {
 							return (
 								<div>
-									(第{v.order}顺位)
 									<span>　姓名</span>{v.name} [{env.dict.relation[v.relation]}]
 									<br/>
-									<span>　　　　　 {v.certName}</span>{v.certNo}
-                                    { v.certValidateBegin == null ? null : <br/>}
-                                    { v.certValidateBegin == null ? null : <span>　　　　　 证件有效起期{v.certValidateBegin}</span>}
+									<span>　{v.certName}</span>{v.certNo}
+                                    { v.certValidateBegin == null ? null : [<br/>, <span> 证件有效起期{v.certValidateBegin}</span>]}
+									{ v.certValidate == null ? null : [<br/>, <span> 证件有效止期{v.certValidate.certLong ? '长期' : v.certValidate.certExpire}</span>]}
 									<br/>
-									<span>　　　　　 证件有效止期</span>{v.certValidate.certLong ? '长期' : v.certValidate.certExpire}
-									<br/>
-									<span>　　　　　 受益比例</span>{v.scale}%
+									<span>　受益比例</span>{v.scale}% (第{v.order}顺位)
 								</div>
 							);
 						})

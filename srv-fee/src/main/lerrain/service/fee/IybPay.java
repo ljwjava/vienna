@@ -68,7 +68,7 @@ public class IybPay
 		{
 	        byte[] encodedData = CipherUtil.encryptByPublicKey(bizContent.getBytes(), publicKey);
 	        bizContent = CipherUtil.encodeToString(encodedData);
-	
+
 			JSONObject req = new JSONObject(); 
 			req.put("appKey", "app"); 
 			req.put("bizContent", bizContent); 

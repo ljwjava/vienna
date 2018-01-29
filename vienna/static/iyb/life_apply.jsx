@@ -1,6 +1,5 @@
 "use strict";
 
-// import React, { Component, PropTypes } from 'react'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Inputer from '../common/widget.inputer.jsx';
@@ -15,6 +14,7 @@ import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Form from '../common/widget.form2.jsx';
 import ToastIt from '../common/widget.toast.jsx';
+import Summary from './summary.jsx';
 
 env.company = 'iyb';
 env.def = {
@@ -39,6 +39,7 @@ env.def = {
     beneficiary: {
     	display: true,
         custom: true,
+		order: false,
         cert: [["1","身份证"]],
         certValidateBegin: false,
         certValidate: true,
@@ -88,6 +89,8 @@ class Beneficiary extends Form {
         v.push({name:'性别', code:"gender", type:"switch", options:[["M","男"],["F","女"]]});
 		v.push({name:'出生日期', code:"birthday", type:"date", req:"yes", desc:"请选择出生日期"});
         v.push({name:"受益比例", code:"scale", type:"select", options:[["10","10%"],["20","20%"],["30","30%"],["40","40%"],["50","50%"],["60","60%"],["70","70%"],["80","80%"],["90","90%"],["100","100%"]]});
+        if (env.formOpt.beneficiary.order)
+        	v.push({name:'受益次序', code:"order", type:"switch", options:[["1","1"],["2","2"],["3","3"]]});
 		let form = this.buildForm(v);
 		form.push(['', (<span className="blockSel" onClick={this.removeSelf.bind(this)}>－ 删除</span>)]);
 		return form;
@@ -230,13 +233,19 @@ class PlanForm extends Form {
             if (v.var == "EFFECTIVE_DAYS" || v.var == "EFFECTIVE_DATE" || v.var == "EFFECTIVE_STR")
                 effDays = true;
 			if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0)) {
-				return {
+                return {
 					name: v.label,
 					code: v.name,
 					type: v.widget,
 					refresh: "yes",
 					options: v.detail,
-					value: v.value
+					value: v.value,
+					onChange: v.name != "APP_EXEMPT" ? null : (comp, code) => {
+                        if (code == "Y") {
+                        	this.props.parent.popQuest();
+						}
+						this.onRefresh(comp);
+                    }
 				};
 			}
 		});
@@ -256,6 +265,7 @@ var Ground = React.createClass({
 		for (let i=0;i<d;i++)
 			dd.push(i);
 		return {
+            appQuest: false,
 			insurant: false,
 			premium: -1,
 			benefitLiveType: common.ifNull(this.props.defVal.beneficiaryLiveType, "insurant"),
@@ -351,7 +361,7 @@ var Ground = React.createClass({
                 factors["OCCUPATION_C"] = this.refs.more.refs.occupation.val().code;
             }
 		}
-    	return factors;
+        return factors;
     },
 	getPlanDesc() {
 		let desc = {};
@@ -485,7 +495,8 @@ var Ground = React.createClass({
 				b1 = c.verifyAll() && b1;
 				let r = c.val();
 				r.certName = c.refs.certType.text();
-				r.order = 1;	// 固定第一顺位
+				if (!env.formOpt.beneficiary.order)
+					r.order = 1;	// 固定第一顺位
 				if (vv["l" + r.order] == null) vv["l" + r.order] = 0;
 				vv["l" + r.order] += Number(r.scale);
 				return r;
@@ -498,7 +509,8 @@ var Ground = React.createClass({
 				let c = this.refs["d"+i];
 				b1 = c.verifyAll() && b1;
 				let r = c.val();
-                r.order = 1;	// 固定第一顺位
+                if (!env.formOpt.beneficiary.order)
+                	r.order = 1;	// 固定第一顺位
 				r.certName = c.refs.certType.text();
 				if (vv["d" + r.order] == null) vv["d" + r.order] = 0;
  				vv["d" + r.order] += Number(r.scale);
@@ -522,7 +534,7 @@ var Ground = React.createClass({
             ToastIt("请检查投保规则");
 			return;
 		}
-		if (typeof this.state.premium != "number") {
+		if ((typeof this.state.premium != "number") || !this.state.premium || this.state.premium <= 0) {
             ToastIt("请确认保费已正确计算");
 			return;
 		}
@@ -606,11 +618,58 @@ var Ground = React.createClass({
             });
 		});
 	},
+	popQuest() {
+		this.setState({appQuest: true, alertQuest: false});
+	},
+    alertQuest() {
+        this.setState({appQuest: true, alertQuest: true});
+    },
+    closeQuest() {
+        this.setState({appQuest: false, alertQuest: false});
+    },
+	back() {
+        history.back(-1);
+	},
 	render() {
 		// 若没有机构信息，则不进行渲染
         if(!env.vendor){
             return null;
         }
+
+        var pop = !this.state.appQuest ? null :
+			<div className="notice">
+                { !this.state.alertQuest ?
+					<div className="content" style={{textAlign: "left"}}>
+						<div className="title">投保人健康及财务告知</div>
+						<div className="text">
+							<Summary content={env.pack.extra.applicantQuests}/>
+						</div>
+						<div className="console">
+							<div className="tab">
+								<div className="row">
+									<div className="col left" onClick={this.alertQuest}>是</div>
+									<div className="col right" onClick={this.closeQuest}>全否，继续投保</div>
+								</div>
+							</div>
+						</div>
+					</div> :
+					<div className="content">
+						<br/>
+						很抱歉，被保险人的健康状况不满足该保险的投保规定<br/>
+						如有疑问，请联系{env.vendor.name}客服<br/>
+						<br/>
+						<a href={"tel:"+env.pack.extra.telephone}>{env.pack.extra.telephone}</a>
+						<div className="console">
+							<div className="tab">
+								<div className="row">
+									<div className="col left" onClick={this.popQuest}>选错啦</div>
+									<div className="col right" onClick={this.back}>返回试算页</div>
+								</div>
+							</div>
+						</div>
+					</div>
+                }
+			</div>;
 
 		let b1, b2;
 		if (this.state.benefitLiveType == "other") {
@@ -700,6 +759,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 				</div>
+				{pop}
 			</div>
 		);
 	}

@@ -1,6 +1,7 @@
 package lerrain.service.task;
 
 import lerrain.service.env.EnvService;
+import lerrain.service.env.Environment;
 import lerrain.tool.script.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +18,7 @@ public class TaskDao
     @Autowired
     JdbcTemplate jdbc;
 
-    public List<Task> loadAllTask(final EnvService envSrv, final List<Long> envs)
+    public List<Task> loadAllTask(final EnvService envSrv)
     {
         return jdbc.query("select * from t_task where valid is null order by sequence", new RowMapper<Task>()
         {
@@ -28,7 +29,7 @@ public class TaskDao
                 String script = m.getString("script");
                 String invoke = m.getString("invoke");
 
-                if (envs.indexOf(envId) < 0)
+                if (!envSrv.isValid(envId))
                     return null;
 
                 Task task = new Task();

@@ -1,6 +1,6 @@
 env: dev
 
-task:
+scope: iyb++,core++,data,user
 
 server:
   port: 7666

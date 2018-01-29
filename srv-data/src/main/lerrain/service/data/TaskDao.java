@@ -1,54 +1,40 @@
 package lerrain.service.data;
 
-import lerrain.service.common.Log;
+import lerrain.service.env.EnvService;
 import lerrain.tool.script.Script;
-import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class TaskDao
 {
-    @Autowired JdbcTemplate jdbc;
+    @Autowired
+    JdbcTemplate jdbc;
 
-    public Map<Long, Task> loadAllTask()
+    public List<Task> loadAllTask(final EnvService envSrv)
     {
-        final Map<Long, Task> map = new HashMap<>();
-
-        jdbc.query("select * from t_task order by env_id", new RowCallbackHandler()
+        return jdbc.query("select * from t_task where valid is null order by sequence", new RowMapper<Task>()
         {
             @Override
-            public void processRow(ResultSet rs) throws SQLException
+            public Task mapRow(ResultSet m, int rowNum) throws SQLException
             {
+                Long envId = m.getLong("env_id");
+                String script = m.getString("script");
+                String invoke = m.getString("invoke");
+
                 Task task = new Task();
-                task.setId(rs.getLong("id"));
-                task.setEnvId(rs.getLong("env_id"));
-                task.setCode(rs.getString("code"));
-                task.setInvoke(rs.getString("invoke"));
+                task.setStack(envSrv.getEnv(envId).getStack());
+                task.setScript(Script.scriptOf(script));
+                task.setInvoke(invoke);
 
-                try
-                {
-                    task.setScript(Script.scriptOf(rs.getString("script")));
-                }
-                catch (Exception e)
-                {
-                    Log.error(task.getCode() + " load fail");
-                    e.printStackTrace();
-                }
-
-                map.put(task.getId(), task);
+                return task;
             }
         });
-
-        return map;
     }
 }
