@@ -8,6 +8,7 @@ import lerrain.tool.formula.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,11 @@ public class Lifeins implements Function
 
         Map app = new HashMap();
         app.put("GENDER", vals.get("A_GENDER"));
-        app.put("BIRTHDAY", Common.dateOf(vals.get("A_BIRTHDAY")));
+
+        Date birthday = Common.dateOf(vals.get("A_BIRTHDAY"));
+        if (birthday == null)
+            birthday = Common.dateOf("1990-01-01");
+        app.put("BIRTHDAY", birthday);
 
         r.put("applicant", app);
         r.put("RELATIVE", vals.get("RELATIVE"));

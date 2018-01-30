@@ -155,17 +155,13 @@ var Ware = React.createClass({
 	},
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
-			var appExempt = env.factors.APP_EXEMPT;
+			var appExempt = env.factors.A_EXEMPT;
 			return (
 				<div className="common">
-					<div className="title">健康及财务告知</div>
-					<div className="text">
+					<div className="title">健康及财务告知（{ appExempt == "Y" ? "投保人及被保险人" :"被保险人"}）</div>
+					<div className="text" style={{overflow:"auto"}}>
 						<Summary content={env.docs.quests}/>
 					</div>
-					{ appExempt == "Y" ? <div className="text">
-						投保人告知
-						<Summary content={env.docs.applicantQuests}/>
-					</div> : null}
 					<div className="console">
 						<div className="tab">
 							<div className="row">
@@ -178,7 +174,7 @@ var Ware = React.createClass({
 						<div className="notice">
 							<div className="content">
 								<br/>
-								很抱歉，被保险人的健康状况不满足该保险的投保规定<br/>
+								很抱歉，{ appExempt == "Y" ? "投保人或被保险人" :"被保险人"}的健康状况不满足该保险的投保规定<br/>
 								如有疑问，请联系{this.state.vendor.name}客服<br/>
 								<br/>
 								<a href={"tel:"+env.docs.telephone}>{env.docs.telephone}</a>
