@@ -66,7 +66,7 @@ var Ware = React.createClass({
         }
     },
     getInitialState() {
-    	let r = {quest:false, alertQuest:false, vendor:{}};
+    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false};
     	let v = this.props.detail;
     	if (v != null && v.detail != null && v.detail.length > 1) {
             r.packs = [];
@@ -76,8 +76,35 @@ var Ware = React.createClass({
     	}
     	return r;
     },
+    componentWillMount(){
+        /** GPO 埋点 **/
+        if(!common.param("accountId") || !this.props.detail.code) return;
+		common.req("util/env_conf.json", {}, r => {
+            if(!!r.gpo && !!r.gpo.stat) {
+                try{common.post(r.gpo.stat + "action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
+			}
+		}, r => {
+		});
+	},
+    /** 初始化顶层活动banner  **/
+    initTopActivityBanner(accountId, productId, productCode){
+        try{
+        	if(!accountId || !productId) return;
+
+            common.req("gpo/npo/temp.json", {activity:'product', event:'activity_banner', account: accountId, productId: productId, productCode: productCode},
+                r => {
+					$(this.refs.top_activity_banner).html(r.h).show();
+					if(r.t == "fixed"){
+						$(this.refs.top_banner).css('margin-top',$(this.refs.top_activity_banner).find("div:first-child").css('height'));
+					}
+                }, function(r){console.log(r);});
+        }catch(e){
+            console.log(e);
+        }
+	},
     componentDidMount() {
 		this.changePlan(0);
+		this.initTopActivityBanner(common.param("accountId"), this.props.detail.code, null);
     },
 	changePlan(i) {
         let v = this.props.detail;
@@ -202,7 +229,8 @@ var Ware = React.createClass({
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
 		return (
 			<div className="common">
-				<div>
+				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none"}}></div>
+				<div ref="top_banner" style={{marginTop: this.state.bannerTop || 0}}>
 					<div style={{position: "relative"}}>
 						<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
 						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", paddingBottom:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
