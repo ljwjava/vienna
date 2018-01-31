@@ -280,6 +280,39 @@ env.sharePrd = function() {
     iHealthBridge.doAction("share", JSON.stringify(shareObj));
 };
 
+var timer;
+env.shareApp = function(){
+    // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
+    if (window.iHealthBridge) {
+        try{
+            window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
+        }catch(e){}
+        if(timer) {clearTimeout(timer);}
+        return;
+    }
+    timer = setTimeout(function(){
+        env.shareApp();
+	}, 200);
+};
+
+var readyShare = function(){
+    var UA = window.navigator.userAgent.toLowerCase();
+    var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
+
+    if (isInApp) {
+        env.frame = "iyb";
+        window.IYB.setTitle(document.title);
+        env.shareApp();
+    } else {
+        window.wxReady({
+            title: env.ware.name,
+            desc: env.ware.remark,
+            imgUrl: env.ware.logo,
+            link: window.location.href
+        }, null);
+    }
+};
+
 $(document).ready( function() {
 	common.req("sale/view.json", {wareId:common.param("wareId")}, function (r) {
 		env.ware = r;
@@ -287,25 +320,10 @@ $(document).ready( function() {
 			<Ware detail={r}/>, document.getElementById("content")
 		);
 
-		document.title = r.name;
-		if ("undefined" != typeof iHealthBridge) {
-			env.frame = "iyb";
-			// window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
-            try{
-                window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
-                window.IYB.setTitle(r.name);
-                try{
-                    document.title = r.name;
-                }catch(e){}
-			}catch(e){}
-		} else {
-            window.wxReady({
-                title: env.ware.name,
-                desc: env.ware.remark,
-                imgUrl: env.ware.logo,
-                link: window.location.href
-            }, null);
-		}
+        try{
+            document.title = r.name;
+        }catch(e){}
+        readyShare();
 	});
 
 });
