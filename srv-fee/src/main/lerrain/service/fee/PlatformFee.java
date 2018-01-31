@@ -6,6 +6,7 @@ import lerrain.service.fee.function.IYunBao;
 import lerrain.service.fee.function.JsonOf;
 import lerrain.service.fee.function.Store;
 import lerrain.tool.formula.Formula;
+import lerrain.tool.formula.Value;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -75,8 +76,7 @@ public class PlatformFee
                 Stack stack = new Stack(stacks.get(fee.getPlatformId()));
                 stack.declare("self", fee);
 
-                feeAction.pay.run(stack);
-                return true;
+                return Value.booleanOf(feeAction.pay, stack);
             }
         }
 
