@@ -1,6 +1,7 @@
 package lerrain.service.fee.function;
 
 import com.alibaba.fastjson.JSON;
+import lerrain.service.common.Log;
 import lerrain.service.fee.Fee;
 import lerrain.service.fee.IybPay;
 import lerrain.service.fee.IybPushMsg;
@@ -33,8 +34,10 @@ public class IYunBao extends HashMap<String, Object>
                 {
                     Fee fee = (Fee)objects[0];
 
-                    if (fee.getDraweeType() != 2 || fee.getDrawee() != 1 || fee.getPayeeType() != 1)
+                    if (fee.getPayeeType() != 1){
+                        Log.error("只能付款给个人代理人[payeeType == 1]");
                         return JSON.parseObject("{isSuccess: false}");
+                    }
 
                     Long iybPolicyId = null;
                     Long productId = null;
@@ -54,8 +57,10 @@ public class IYunBao extends HashMap<String, Object>
                         premium = Common.toDouble(map.get("premium"));
                     }
 
-                    if (premium > 0 && fee.getAmount() > premium)
+                    if (premium > 0 && fee.getAmount() > premium) {
+                        Log.error("发放佣金["+fee.getAmount()+"]应小于保费["+premium+"]");
                         return JSON.parseObject("{isSuccess: false}");
+                    }
 
                     return iybPay.pay(fee.getPayee(), fee.getType(), fee.getAmount(), productName, fee.getFreeze(), fee.getMemo(), iybPolicyId, fee.getBizNo(), fromUserId, productId, premium);
                 }
