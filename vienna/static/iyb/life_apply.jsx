@@ -37,6 +37,7 @@ env.def = {
         relation: [["1","本人"]]
     },
     beneficiary: {
+    	max: 3,
     	display: true,
         custom: true,
 		order: false,
@@ -240,7 +241,7 @@ class PlanForm extends Form {
 					refresh: "yes",
 					options: v.detail,
 					value: v.value,
-					onChange: v.name != "APP_EXEMPT" ? null : (comp, code) => {
+					onChange: v.name != "A_EXEMPT" ? null : (comp, code) => {
                         if (code == "Y") {
                         	this.props.parent.popQuest();
 						}
@@ -409,7 +410,7 @@ var Ground = React.createClass({
 		this.setState({benefitLiveType:code});
 	},
 	addBeneficiaryDeath() {
-		if (this.state.benefitDeath.length >= 3) return;
+		if (this.state.benefitDeath.length >= env.formOpt.beneficiary.max) return;
 		this.state.benefitDeath.push(this.state.benefitDeathNum);
 		this.setState({benefitDeathNum:this.state.benefitDeathNum + 1});
 	},
@@ -639,10 +640,10 @@ var Ground = React.createClass({
         var pop = !this.state.appQuest ? null :
 			<div className="notice">
                 { !this.state.alertQuest ?
-					<div className="content" style={{textAlign: "left"}}>
+					<div className="content" style={{textAlign: "left", overflow:"auto", maxHeight:"100%"}}>
 						<div className="title">投保人健康及财务告知</div>
-						<div className="text">
-							<Summary content={env.pack.extra.applicantQuests}/>
+						<div className="text" style={{}}>
+							<Summary content={env.pack.extra.quests}/>
 						</div>
 						<div className="console">
 							<div className="tab">
@@ -701,7 +702,7 @@ var Ground = React.createClass({
 				<div className="tab">
 					<div className="row">
 						<div className="col line left">增加受益人</div>
-						<div className="col line right" onClick={this.addBeneficiaryDeath}><span className={this.state.benefitDeath.length>=3?"block":"blockSel"}>＋ 增加</span></div>
+						<div className="col line right" onClick={this.addBeneficiaryDeath}><span className={this.state.benefitDeath.length>=env.formOpt.beneficiary.max?"block":"blockSel"}>＋ 增加</span></div>
 					</div>
 				</div>
 			));

@@ -37,6 +37,15 @@
 		</attachment>
 
 		<rule>
+			<if condition="APPLICANT == INSURANT">
+				投保人豁免不能给本人投保
+			</if>
+			<if condition="AGE > 60 and PAY_PERIOD >= 2 and PAY_PERIOD le 10">
+				投保人豁免，2-10年交，投保人年龄不能大于60周岁
+			</if>
+			<if condition="AGE > 70 - PAY_PERIOD and PAY_PERIOD >= 11 and PAY_PERIOD le 19">
+				投保人豁免，11-19年交，投保人缴费期满时不能大于70周岁
+			</if>
 		</rule>
 	</product>
 </declare>
