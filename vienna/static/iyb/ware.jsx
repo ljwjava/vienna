@@ -93,6 +93,7 @@ var Ware = React.createClass({
 
             common.req("gpo/npo/temp.json", {activity:'product', event:'activity_banner', account: accountId, productId: productId, productCode: productCode},
                 r => {
+                    if(!r) return;
 					$(this.refs.top_activity_banner).html(r.h).show();
 					if(r.t == "fixed"){
 						$(this.refs.top_banner).css('margin-top',$(this.refs.top_activity_banner).find("div:first-child").css('height'));
