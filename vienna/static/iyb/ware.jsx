@@ -80,8 +80,8 @@ var Ware = React.createClass({
         /** GPO 埋点 **/
         if(!common.param("accountId") || !this.props.detail.code) return;
 		common.req("util/env_conf.json", {}, r => {
-            if(!!r && !!r.gpo && !!r.gpo.stat) {
-                try{common.post(r.gpo.stat + "action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
+            if(!!r && !!r.url && !!r.url.gpo) {
+                try{common.post(r.url.gpo + "stat/action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
 			}
 		}, r => {
 		});
