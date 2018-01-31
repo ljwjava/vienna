@@ -66,7 +66,7 @@ var Ware = React.createClass({
         }
     },
     getInitialState() {
-    	let r = {quest:false, alertQuest:false, vendor:{}};
+    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false};
     	let v = this.props.detail;
     	if (v != null && v.detail != null && v.detail.length > 1) {
             r.packs = [];
@@ -76,8 +76,36 @@ var Ware = React.createClass({
     	}
     	return r;
     },
+    componentWillMount(){
+        /** GPO 埋点 **/
+        if(!common.param("accountId") || !this.props.detail.code) return;
+		common.req("util/env_conf.json", {}, r => {
+            if(!!r && !!r.url && !!r.url.gpo) {
+                try{common.post(r.url.gpo + "stat/action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
+			}
+		}, r => {
+		});
+	},
+    /** 初始化顶层活动banner  **/
+    initTopActivityBanner(accountId, productId, productCode){
+        try{
+        	if(!accountId || !productId) return;
+
+            common.req("gpo/npo/temp.json", {activity:'product', event:'activity_banner', account: accountId, productId: productId, productCode: productCode},
+                r => {
+                    if(!r) return;
+					$(this.refs.top_activity_banner).html(r.h).show();
+					if(r.t == "fixed"){
+						$(this.refs.top_banner).css('margin-top',$(this.refs.top_activity_banner).find("div:first-child").css('height'));
+					}
+                }, function(r){console.log(r);});
+        }catch(e){
+            console.log(e);
+        }
+	},
     componentDidMount() {
 		this.changePlan(0);
+		this.initTopActivityBanner(common.param("accountId"), this.props.detail.code, null);
     },
 	changePlan(i) {
         let v = this.props.detail;
@@ -198,7 +226,8 @@ var Ware = React.createClass({
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
 		return (
 			<div className="common">
-				<div>
+				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none"}}></div>
+				<div ref="top_banner" style={{marginTop: this.state.bannerTop || 0}}>
 					<div style={{position: "relative"}}>
 						<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
 						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", paddingBottom:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
@@ -251,6 +280,39 @@ env.sharePrd = function() {
     iHealthBridge.doAction("share", JSON.stringify(shareObj));
 };
 
+var timer;
+env.shareApp = function(){
+    // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
+    if (window.iHealthBridge) {
+        try{
+            window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
+        }catch(e){}
+        if(timer) {clearTimeout(timer);}
+        return;
+    }
+    timer = setTimeout(function(){
+        env.shareApp();
+	}, 200);
+};
+
+var readyShare = function(){
+    var UA = window.navigator.userAgent.toLowerCase();
+    var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
+
+    if (isInApp) {
+        env.frame = "iyb";
+        window.IYB.setTitle(document.title);
+        env.shareApp();
+    } else {
+        window.wxReady({
+            title: env.ware.name,
+            desc: env.ware.remark,
+            imgUrl: env.ware.logo,
+            link: window.location.href
+        }, null);
+    }
+};
+
 $(document).ready( function() {
 	common.req("sale/view.json", {wareId:common.param("wareId")}, function (r) {
 		env.ware = r;
@@ -258,25 +320,10 @@ $(document).ready( function() {
 			<Ware detail={r}/>, document.getElementById("content")
 		);
 
-		document.title = r.name;
-		if ("undefined" != typeof iHealthBridge) {
-			env.frame = "iyb";
-			// window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
-            try{
-                window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
-                window.IYB.setTitle(r.name);
-                try{
-                    document.title = r.name;
-                }catch(e){}
-			}catch(e){}
-		} else {
-            window.wxReady({
-                title: env.ware.name,
-                desc: env.ware.remark,
-                imgUrl: env.ware.logo,
-                link: window.location.href
-            }, null);
-		}
+        try{
+            document.title = r.name;
+        }catch(e){}
+        readyShare();
 	});
 
 });
