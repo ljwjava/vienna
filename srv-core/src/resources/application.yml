@@ -1,0 +1,7 @@
+server:
+  port: 7772
+
+datasource:
+  url: jdbc:mysql://www.lerrain.com:3307/arctic
+  username: root
+  password: ftp123

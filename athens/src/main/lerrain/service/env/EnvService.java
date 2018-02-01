@@ -159,6 +159,7 @@ public class EnvService
         stack.put("urlParam", new UrlParam());
         stack.put("Encrypt", new Encrypt());
         stack.put("TimeFX", new TimeFX());
+        stack.put("FileFX", new FileFX());
         stack.put("IYunBao", new IYunBao());
 
         environments = envDao.loadAllEnv(stack);

@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0.2</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
@@ -53,11 +53,11 @@
             <artifactId>druid</artifactId>  
             <version>1.0.23</version>  
         </dependency>
-     	<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-feign</artifactId>
-            <version>1.2.5.RELEASE</version>  
-        </dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.8</version>
+		</dependency>
 	</dependencies>
 
 	<build>
