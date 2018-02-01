@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
+import lerrain.tool.Disk;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +13,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -35,6 +37,9 @@ public class GatewayController
 
     @Value("${gatedir}")
     String gateDir;
+
+    @Value("${path.temp}")
+    String tempDir;
 
     private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
@@ -316,5 +321,44 @@ public class GatewayController
         return call(req.getServerName() + ":" + req.getServerPort(), uri, session, param).toString();
     }
 
+    @RequestMapping("/${gatedir}**/*.file")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject file(HttpServletRequest req, @RequestParam("file") List<MultipartFile> files)
+    {
+        Map map = new HashMap();
+
+        for (MultipartFile file : files)
+        {
+            File ff = new File(tempDir + file.getOriginalFilename() + "." + System.currentTimeMillis());
+
+            try (InputStream is = file.getInputStream())
+            {
+                Disk.saveToDisk(is, ff);
+                map.put(ff.getAbsolutePath(), file.getOriginalFilename());
+
+                Log.info("upload => " + ff);
+            }
+            catch (Exception e)
+            {
+                Log.error(e);
+            }
+        }
+
+        String uri = req.getRequestURI();
+        uri = uri.substring(1 + gateDir.length());
+
+        JSONObject param = new JSONObject();
+        param.put("URI", uri);
+        param.put("files", map);
+
+        HttpSession session = req.getSession();
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
+
+        return res;
+    }
 }
 

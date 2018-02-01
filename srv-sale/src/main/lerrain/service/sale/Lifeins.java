@@ -48,6 +48,11 @@ public class Lifeins implements Function
         r.put("applicant", app);
         r.put("RELATIVE", vals.get("RELATIVE"));
 
+        Map ins = new HashMap();
+        ins.put("OCCUPATION_C", vals.get("OCCUPATION_C"));
+        ins.put("OCCUPATION_L", vals.get("OCCUPATION_L"));
+        r.put("insurant", ins);
+
         if (packIns.getInputForm() != null) for (InputField field : packIns.getInputForm())
         {
             if (field.getScope() != null) for (String scope : field.getScope())

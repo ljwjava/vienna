@@ -37,6 +37,7 @@ service:
   image: http://localhost:7771
 
 path:
-  root: ./static/
+  temp: x:/temp/1/
 
 gatedir:
+

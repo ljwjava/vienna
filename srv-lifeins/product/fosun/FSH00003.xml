@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
 	<product
-		id="FSH00002"
+		id="FSH00003"
 		corporation_id="fosun"
 		code="110025"
-		name="康乐e生重大疾病保险（B款）"
+		name="附加康乐一生轻症疾病保险"
 		name_abbr="康乐e生重疾"
 		unit="1000"
 		type_code="thunder"
@@ -15,7 +15,7 @@
 		last_modify_date="2017-01-01">
 
 		<data>
-			<item parser="dds" value="FSH00002" />
+			<item parser="dds" value="FSH00003" />
 		</data>
 
 		<param>
@@ -52,6 +52,19 @@
 		</duty>
 
 		<attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
+				<item name="MILD">AMOUNT*0.9</item>
+				<item name="MILD_EXEMPT">1</item>
+			</fgraph>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<bar name="保费" color="#00AA00">PremiumYear(I)</bar>
+					<line name="累计保费" color="#0000FF">PremiumSum(I)</line>
+					<line name="现金价值" color="#0000FF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
 		</attachment>
 
 		<rule>
