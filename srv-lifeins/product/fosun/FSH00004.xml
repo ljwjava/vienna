@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="FSH00004" corporation_id="fosun" code="TCIR20" name="附加康乐一生投保人豁免重大疾病保险" name_abbr="附加康乐一生豁免" unit="1" amount="PARENT.PREMIUM" input="none" premium="round(DS.RATE[0][0]*QUANTITY)"
+	<product id="FSH00004" corporation_id="fosun" code="TCIR20" name="附加康乐一生投保人豁免重大疾病保险" name_abbr="附加康乐一生豁免" unit="1000" amount="PARENT.PREMIUM" input="none"
 		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<data>
@@ -9,11 +9,11 @@
 
 		<init>
 			<item name="AGE" value="APPLICANT.AGE"/>
+			<item name="GENDER_CODE" value="APPLICANT.GENDER"/>
 		</init>
 
 		<param>
 			<pay>
-
 				<item code="exempt" />
 			</pay>
 			<insure>

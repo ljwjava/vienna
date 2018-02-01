@@ -9,6 +9,7 @@
 
 		<init>
 			<item name="AGE" value="APPLICANT.AGE"/>
+			<item name="GENDER_CODE" value="APPLICANT.GENDER"/>
 		</init>
 
 		<param>
