@@ -53,7 +53,8 @@ var Ground = React.createClass({
 	componentWillMount() {
         common.req("dict/view.json", {company: env.company, name: "bank,relation", version: "new"}, r => {
         	// console.log(Array.isArray(r.bank));
-        	if (typeof r.bank === 'object' && isNaN(r.bank.length)) {
+        	// if (typeof r.bank === 'object' && isNaN(r.bank.length)) {
+        	if (r.bank != null && !Array.isArray(r.bank)) {
                 env.dict.bank = r.bank[env.order.detail.applicant.city.code.substr(0, 2)];
 			} else {
                 env.dict.bank = r.bank;
