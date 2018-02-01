@@ -52,11 +52,14 @@ var Ground = React.createClass({
 	},
 	componentWillMount() {
         common.req("dict/view.json", {company: env.company, name: "bank,relation", version: "new"}, r => {
-        	if (typeof r.bank == "object") {
-                env.dict.bank = r.bank[env.order.detail.applicant.city.code.substr(0, 2)];
-			} else {
-                env.dict.bank = r.bank;
-            }
+        	// if (typeof r.bank === 'object' && isNaN(r.bank.length)) {
+			if(r.bank != null){
+                if (!Array.isArray(r.bank)) {
+                    env.dict.bank = r.bank[env.order.detail.applicant.city.code.substr(0, 2)];
+                } else {
+                    env.dict.bank = r.bank;
+                }
+			}
             for (var l in r.relation) {
                 env.dict.relation[l.code] = l.text;
             }
