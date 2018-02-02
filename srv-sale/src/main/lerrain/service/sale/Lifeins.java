@@ -36,17 +36,15 @@ public class Lifeins implements Function
     public static Map translate(PackIns packIns, Map vals)
     {
         Map r = new HashMap();
+        r.put("RELATIVE", vals.get("RELATIVE"));
 
         Map app = new HashMap();
         app.put("GENDER", vals.get("A_GENDER"));
-
         Date birthday = Common.dateOf(vals.get("A_BIRTHDAY"));
         if (birthday == null)
             birthday = Common.dateOf("1990-01-01");
         app.put("BIRTHDAY", birthday);
-
         r.put("applicant", app);
-        r.put("RELATIVE", vals.get("RELATIVE"));
 
         Map ins = new HashMap();
         ins.put("OCCUPATION_C", vals.get("OCCUPATION_C"));

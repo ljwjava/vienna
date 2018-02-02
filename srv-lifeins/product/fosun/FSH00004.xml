@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="TFA00002" corporation_id="tfaegon" code="TCIR20" name="附加（B款）投保人豁免保费重大疾病" name_abbr="附加投保人豁免B" unit="1" amount="PARENT.PREMIUM" input="none" premium="round(DS.RATE[0][0]*QUANTITY)"
+	<product id="FSH00004" corporation_id="fosun" code="TCIR20" name="附加康乐一生投保人豁免重大疾病保险" name_abbr="附加康乐一生豁免" unit="1000" amount="PARENT.PREMIUM" input="none"
 		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<data>
-			<item parser="dds" value="TFA00002" />
+			<item parser="dds" value="FSH00004" />
 		</data>
 
 		<init>
@@ -14,7 +14,6 @@
 
 		<param>
 			<pay>
-
 				<item code="exempt" />
 			</pay>
 			<insure>
@@ -40,12 +39,6 @@
 		<rule>
 			<if condition="APPLICANT == INSURANT">
 				投保人豁免不能给本人投保
-			</if>
-			<if condition="AGE > 60 and PAY_PERIOD >= 2 and PAY_PERIOD le 10">
-				投保人豁免，2-10年交，投保人年龄不能大于60周岁
-			</if>
-			<if condition="AGE > 70 - PAY_PERIOD and PAY_PERIOD >= 11 and PAY_PERIOD le 19">
-				投保人豁免，11-19年交，投保人缴费期满时不能大于70周岁
 			</if>
 		</rule>
 	</product>

@@ -51,6 +51,10 @@
 			<item name="110323" code="110251" premium="PREMIUM">AMOUNT</item>
 		</duty>
 
+		<rider>
+			<product id="FSH00004"/>
+		</rider>
+
 		<attachment>
 			<fgraph filter="fgraph" parser="fgraph">
 				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
