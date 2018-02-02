@@ -4,8 +4,8 @@
 		id="FSH00001"
 		corporation_id="fosun"
 		code="110025"
-		name="康乐e生重大疾病保险（C款）"
-		name_abbr="康乐e生重疾"
+		name="康乐一生重大疾病保险（C款升级款）"
+		name_abbr="康乐一生"
 		unit="1000"
 		type_code="thunder"
 		sequence="1000"
@@ -48,7 +48,7 @@
 		</interest>
 
 		<duty>
-			<item name="110323" code="110251" premium="PREMIUM">AMOUNT</item>
+			<item name="康乐一生重大疾病保险（C款升级款）" code="110251" premium="PREMIUM">AMOUNT</item>
 		</duty>
 
 		<rider>

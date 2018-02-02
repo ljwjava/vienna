@@ -3,8 +3,8 @@
 	<product
 		id="FSH00003"
 		corporation_id="fosun"
-		code="110025"
-		name="附加康乐一生轻症疾病保险"
+		code="120012"
+		name="附加康乐一生轻症疾病保险（升级款）"
 		name_abbr="附加康乐一生轻症"
 		unit="1000"
 		type_code="mild"
@@ -29,9 +29,9 @@
 			</insure>
 		</param>
 
-		<init>
-			<item name="OTHER">return {PLAN_CODE: "JH11002401", PRODUCT_CODE: "110024"}</item>
-		</init>
+		<duty>
+			<item name="附加康乐一生轻症疾病保险（升级款）" code="120121" premium="PREMIUM">AMOUNT</item>
+		</duty>
 
 		<interest>
 			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>

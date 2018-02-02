@@ -35,6 +35,7 @@ service:
   commission: http://localhost:7769
   fee: http://localhost:7768
   image: http://localhost:7771
+  core: http://localhost:7676
 
 path:
   temp: x:/temp/1/

@@ -61,7 +61,7 @@ var Main = React.createClass({
 						<ul className="nav navbar-nav">
 						</ul>
 						<ul className="nav navbar-nav navbar-right">
-							<li><a onClick={env.create}>上传保单</a></li>
+							<li id="upload"><a onClick={env.create}>上传保单</a></li>
 						</ul>
 					</div>
 					<PolicyList env={env}/>
@@ -73,4 +73,41 @@ var Main = React.createClass({
 
 $(document).ready( function() {
     ReactDOM.render(<Main orgId={env.orgId}/>, document.getElementById("content"));
+
+    $(document).on({
+        dragleave:function(e){    //拖离
+            e.preventDefault();
+        },
+        drop:function(e){  //拖后放
+            e.preventDefault();
+        },
+        dragenter:function(e){    //拖进
+            e.preventDefault();
+        },
+        dragover:function(e){    //拖来拖去
+            e.preventDefault();
+        }
+    });
+
+    var box = document.getElementById('upload'); //拖拽区域
+    box.addEventListener("drop", function(e){
+        e.preventDefault();
+        var fileList = e.dataTransfer.files;
+        if(fileList.length == 0)
+            return false;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", common.url("policy/upload.file"), true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.onreadystatechange = function() {};
+
+        var fd = new FormData();
+        fd.append("index", env.index);
+        fd.append("path", env.dir);
+        for (var i=0;i<fileList.length;i++)
+            fd.append("file", fileList[i]);
+        xhr.send(fd);
+
+        console.log(xhr.response);
+    }, false);
 });

@@ -27,4 +27,9 @@ public class Policy
     {
         return Common.toLong(get(key));
     }
+
+    public void put(String k, Object v)
+    {
+        val.put(k, v);
+    }
 }

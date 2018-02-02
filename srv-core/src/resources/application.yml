@@ -1,5 +1,5 @@
 server:
-  port: 7772
+  port: 7676
 
 datasource:
   url: jdbc:mysql://www.lerrain.com:3307/arctic

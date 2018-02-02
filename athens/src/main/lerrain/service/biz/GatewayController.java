@@ -326,6 +326,8 @@ public class GatewayController
     @CrossOrigin
     public JSONObject file(HttpServletRequest req, @RequestParam("file") List<MultipartFile> files)
     {
+        new File(tempDir).mkdirs();
+
         Map map = new HashMap();
 
         for (MultipartFile file : files)

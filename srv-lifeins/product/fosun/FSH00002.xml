@@ -3,9 +3,9 @@
 	<product
 		id="FSH00002"
 		corporation_id="fosun"
-		code="110025"
-		name="康乐e生重大疾病保险（B款）"
-		name_abbr="康乐e生重疾"
+		code="110032"
+		name="康乐一生重大疾病保险(B款升级款)"
+		name_abbr="康乐一生"
 		unit="1000"
 		type_code="thunder"
 		sequence="1000"
@@ -40,7 +40,7 @@
 		</input>
 
 		<init>
-			<item name="OTHER">return {PLAN_CODE: "JH11002401", PRODUCT_CODE: "110024"}</item>
+			<item name="OTHER">return {PLAN_CODE: "JH11002501", PRODUCT_CODE: "110025"}</item>
 		</init>
 
 		<interest>
@@ -48,7 +48,7 @@
 		</interest>
 
 		<duty>
-			<item name="110323" code="110251" premium="PREMIUM">AMOUNT</item>
+			<item name="康乐e生重大疾病保险（B款升级款）" code="110321" premium="PREMIUM">AMOUNT</item>
 		</duty>
 
 		<rider>
