@@ -10,6 +10,7 @@ import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -160,5 +161,46 @@ public class FeeDao
 		});
 
 		return platformFee;
+	}
+
+	public List<Map<String, Object>> loadFeeDefine(Long platformId, Long productId)
+	{
+		String sql = "select * from t_fee_define where valid is null and product_id = ? and platform_id = ? order by begin, end, agency_id, `group`, pay_freq, pay_period";
+
+		return jdbc.queryForList(sql, new RowMapper<Map<String, Object>>()
+		{
+			@Override
+			public Map<String, Object> mapRow(ResultSet rs, int j) throws SQLException
+			{
+				Map<String, Object> m = new HashMap();
+
+				int num = rs.getMetaData().getColumnCount();
+				for (int i = 1; i <= num; i++)
+				{
+					String key = rs.getMetaData().getColumnLabel(i);
+					Object val = rs.getObject(i);
+
+					int pos = key.indexOf("_");
+					while (pos >= 0)
+					{
+						try
+						{
+							key = key.substring(0, pos) + key.substring(pos + 1, pos + 2).toUpperCase() + key.substring(pos + 2);
+						}
+						catch (Exception e)
+						{
+							break;
+						}
+
+						pos = key.indexOf("_");
+					}
+
+					m.put(key, val);
+				}
+
+				return m;
+			}
+
+		}, productId, platformId);
 	}
 }

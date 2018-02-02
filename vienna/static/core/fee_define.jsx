@@ -4,88 +4,94 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import List from '../common/component.list.jsx';
 
-var env = {
-	orgId: 1,
-    search: null,
-    from: 0,
-    number: 20
-}
-
-var VendorTree = React.createClass({
+var PackTree = React.createClass({
     getInitialState() {
-        return {orgs: []};
+        return {packs: []};
     },
 	componentDidMount() {
-        common.req("org/view_org.json", {orgId: this.props.orgId}, r => {
-            this.setState({orgs: [r]});
-        });
-	},
-    findChildren(org) {
-    	if (org.children != null) {
-            org.children = null;
-            this.forceUpdate();
-        } else common.req("org/list_org.json", {orgId: org.id}, r => {
-            org.children = r;
-            this.forceUpdate();
-        });
-	},
-    setMemberList(orgId) {
-        this.props.parent.setState({orgId: orgId}, () => {
-            this.props.parent.refs.list.refresh();
-		});
-    },
-	buildOrg(orgs) {
-        return orgs.map(org => {
-            var children = org.children == null ? null : this.buildOrg(org.children);
-            var icon = <img src={org.children == null ? "../images/folder.png" : "../images/folder-open.png"} style={{width:"24px", height:"24px"}} onClick={this.findChildren.bind(this, org)}/>;
-            return <div key={org.id}>
-				<div>{icon} <a onClick={this.setMemberList.bind(this, org.id)}>{org.name}</a></div>
-				<div style={{paddingLeft: "12px"}}>{children}</div>
-			</div>;
+        common.req("sale/list_pack.json", {}, r => {
+            this.setState({packs: r});
         });
 	},
     render() {
-    	return <div>{this.buildOrg(this.state.orgs)}</div>;
+        var r = this.state.packs.map(v => {
+            return <div onClick={this.props.parent.show.bind(this, v.packId)}>{v.name}</div>
+        });
+    	return <div>{r}</div>;
 	}
 });
 
-class MemberList extends List {
-    upload() {
-        document.location.href = "upload.web";
+var FeeDetail = React.createClass({
+    render() {
+        var r = this.props.fee.map(v => {
+            return <input style={{width:"50px"}}>{v}%</input>
+        });
+        return <div>{r}</div>;
     }
-    open(id) {
-        document.location.href = "policy.web?policyId=" + id;
-    }
-    refresh() {
-        common.req("org/list_member.json", {orgId: this.props.orgId, from: env.from, number: env.number}, r => {
+}
+
+class FeeDefList extends List {
+    refresh(packId) {
+        common.req("sale/list_feedef.json", {productId: packId}, r => {
             this.setState({content:r});
         });
     }
     buildTableTitle() {
-        return (
+        return [
 			<tr>
-				<th><div>组员</div></th>
-				<th><div>手机</div></th>
-				<th style={{width:"200px"}}>{this.buildPageComponent()}</th>
-			</tr>
-        );
+                <th rowSpan="2"><div>中介</div></th>
+				<th rowSpan="2"><div>匹配条件</div></th>
+				<th colSpan="5"><div>佣金（平台→本人）</div></th>
+                <th colSpan="5"><div>佣金（平台→上线）</div></th>
+                <th colSpan="5"><div>保险公司→中介（渠道费用）</div></th>
+                <th colSpan="5"><div>平台→本人（奖金）</div></th>
+                <th colSpan="5"><div>中介→平台（奖金）</div></th>
+				<th rowSpan="2" style={{width:"200px"}}>{this.buildPageComponent()}</th>
+			</tr>,
+            <tr>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+            </tr>
+        ];
     }
     buildTableLine(v) {
         return (
 			<tr key={v.id}>
-				<td><img src="../images/user.png" style={{width:"24px", height:"24px"}}/> {v.name}</td>
-				<td>{v.mobile}</td>
-				<td>
-					<a onClick={this.open.bind(this, v.id)}>编辑</a>
-				</td>
+                <td>{v.agency}</td>
+                <td>{v.group}／交{v.pay_period}年／保至{v.insure}岁</td>
+				<td></td>
+                <td></td>
 			</tr>
         );
     }
 }
 
 var Main = React.createClass({
-    getInitialState() {
-        return {orgId: env.orgId};
+    show(packId) {
+        this.refs.list.refresh(packId);
     },
     render() {
         return <div className="form-horizontal">
@@ -96,7 +102,7 @@ var Main = React.createClass({
 				</div>
 				<div className="col-sm-9">
 					<br/>
-					<MemberList ref="list" env={env} orgId={this.state.orgId}/>
+					<FeeDefList ref="list"/>
 				</div>
 			</div>
 		</div>;

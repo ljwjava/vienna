@@ -19,12 +19,10 @@ public class FeeService
 
 	PlatformFee platformFee;
 
-//	Map<String, List<FeeDefine>> feeBase;
 	FeeGrp feeGrp;
 
 	public void reset()
 	{
-//		feeBase = feeDao.loadFeeDefine();
 		feeGrp = feeDao.loadFeeDefine();
 
 		platformFee = feeDao.loadPlatformScript();
@@ -58,28 +56,14 @@ public class FeeService
 		return r;
 	}
 
-//	public List<FeeDefine> getFeeRate(Long platformId, Long agencyId, String group, String product, String payFreq, String payPeriod)
-//	{
-//		List<FeeDefine> list = feeBase.get(platformId + "/" + agencyId + "/" + group + "/" + product + "/" + payFreq + "/" + payPeriod);
-//
-//		if (list == null)
-//			return null;
-//
-//		Date now = new Date();
-//		List<FeeDefine> r = new ArrayList<>();
-//
-//		for (FeeDefine pc : list)
-//		{
-//			if (pc.match(now))
-//				r.add(pc);
-//		}
-//
-//		return r;
-//	}
-
 	public List<FeeDefine> getFeeRate(Long platformId, Long agencyId, String group, String product, Object[] vals)
 	{
 		return feeGrp.find(platformId + "/" + agencyId + "/" + group + "/" + product, vals, new Date());
+	}
+
+	public List<Map<String, Object>> loadFeeDefine(Long platformId, Long productId)
+	{
+		return feeDao.loadFeeDefine(platformId, productId);
 	}
 
 	public void store(Fee commission)

@@ -93,4 +93,18 @@ public class FeeController
 
         return res;
     }
+
+    @RequestMapping("/list_feedef.json")
+    @ResponseBody
+    public JSONObject listFeeDef(@RequestBody JSONObject c)
+    {
+        Long platformId = c.getLong("platformId");
+        Long productId = c.getLong("productId");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", cs.loadFeeDefine(platformId, productId));
+
+        return res;
+    }
 }
