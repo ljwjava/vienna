@@ -23,21 +23,14 @@ public class UserService
 
 		User user = userDao.load(userId);
 
-		userDao.updateLoginTime(loginName, new Date());
+		userDao.updateLoginTime(userId, new Date());
 
 		return user;
 	}
 	
-	public boolean verifyPassword(String userId, String password)
+	public boolean verifyPassword(Long userId, String password)
 	{
-		try
-		{
-			return userDao.verify(userId, password) != null;
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
+		return userDao.verify(userId, password) == 1;
 	}
 
 	public User getUser(Long userId)
@@ -55,17 +48,17 @@ public class UserService
 		return userDao.findUserId(loginName);
 	}
 
-	public void updateStatus(String[] usersId, int status)
+	public void updateStatus(Long[] usersId, int status)
 	{
 		userDao.updateStatus(usersId, status);
 	}
 	
-	public void updatePassword(String[] usersId, String password)
+	public void updatePassword(Long[] usersId, String password)
 	{
 		userDao.updatePassword(usersId, password);
 	}
 
-	public void updatePassword(String usersId, String password)
+	public void updatePassword(Long usersId, String password)
 	{
 		userDao.updatePassword(usersId, password);
 	}

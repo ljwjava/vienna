@@ -1,6 +1,6 @@
 env: dev
 
-scope: iyb++,core++,data,user
+scope: iyb++,btbx++,data,user
 
 server:
   port: 7666
@@ -35,7 +35,7 @@ service:
   commission: http://localhost:7769
   fee: http://localhost:7768
   image: http://localhost:7771
-  core: http://localhost:7676
+  policy: http://localhost:7676
 
 path:
   temp: x:/temp/1/

@@ -167,7 +167,7 @@ public class FeeDao
 	{
 		String sql = "select * from t_fee_define where valid is null and product_id = ? and platform_id = ? order by begin, end, agency_id, `group`, pay_freq, pay_period";
 
-		return jdbc.queryForList(sql, new RowMapper<Map<String, Object>>()
+		return jdbc.query(sql, new RowMapper<Map<String, Object>>()
 		{
 			@Override
 			public Map<String, Object> mapRow(ResultSet rs, int j) throws SQLException
@@ -197,6 +197,12 @@ public class FeeDao
 
 					m.put(key, val);
 				}
+
+				m.put("f1", valOf((String)m.get("f1")));
+				m.put("f2", valOf((String)m.get("f2")));
+				m.put("f3", valOf((String)m.get("f3")));
+				m.put("f4", valOf((String)m.get("f4")));
+				m.put("f5", valOf((String)m.get("f5")));
 
 				return m;
 			}

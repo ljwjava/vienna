@@ -154,4 +154,33 @@ public class UserController
 
         return res;
     }
+
+    @RequestMapping({ "/verify_password.json" })
+    @ResponseBody
+    public JSONObject verifyPassword(@RequestBody JSONObject json)
+    {
+        Long userId = json.getLong("userId");
+        String pwd = json.getString("password");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", userSrv.verifyPassword(userId, pwd));
+
+        return res;
+    }
+
+    @RequestMapping({ "/set_password.json" })
+    @ResponseBody
+    public JSONObject setPassword(@RequestBody JSONObject json)
+    {
+        Long userId = json.getLong("userId");
+        String pwd = json.getString("password");
+
+        userSrv.updatePassword(userId, pwd);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
 }

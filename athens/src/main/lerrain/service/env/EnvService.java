@@ -29,6 +29,7 @@ public class EnvService
     @Autowired Sql sql;
     @Autowired Fold fold;
     @Autowired Unfold unfold;
+    @Autowired Dict dict;
 
     Function time2long;
     Function today;
@@ -146,6 +147,7 @@ public class EnvService
         stack.put("post", post);
         stack.put("Sql", sql);
         stack.put("service", service);
+        stack.put("dict", dict);
         stack.put("jsonMap", new JsonMap());
         stack.put("jsonList", new JsonList());
         stack.put("jsonOf", new JsonOf());
@@ -160,6 +162,7 @@ public class EnvService
         stack.put("Encrypt", new Encrypt());
         stack.put("TimeFX", new TimeFX());
         stack.put("FileFX", new FileFX());
+        stack.put("ToolFX", new ToolFX());
         stack.put("IYunBao", new IYunBao());
 
         environments = envDao.loadAllEnv(stack);

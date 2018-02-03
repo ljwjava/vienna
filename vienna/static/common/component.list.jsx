@@ -18,20 +18,25 @@ var List = React.createClass({
 			env.from = env.from - env.number;
 		this.refresh();
 	},
-	buildPageComponent() {
-		let page = [];
-		let env = this.props.env;
-		env.total = this.state.content.total;
-		for (var i=0;i<env.total/env.number;i++) {
-			page.push(<li key={i} onClick={this.page.bind(this, i)} style={{textAlign:"center", color:"#000"}}>第 {i + 1} 页</li>);
+    buildPageAppend() {
+        let env = this.props.env;
+        env.total = this.state.content.total;
+		let cur = env.from / env.number;
+        let page = [];
+		for (var i = cur - 4; i <= cur + 4; i++) {
+			if (i >= 0 && i < env.total / env.number)
+				page.push(<span key={i} onClick={this.page.bind(this, i)}>{i + 1}</span>);
 		}
-		return (
-			<div className="dropdown">
-				<a data-toggle="dropdown" href="#">{env.from / env.number + 1} ▼</a>
-				<ul className="dropdown-menu">{page}</ul>
+        return (
+			<div style={{textAlign:"center"}}>
+				<div style={{marginTop:"16px"}}>
+					<a onClick={this.page.bind(this, cur - 1)}>上一页</a>
+					&nbsp;&nbsp;{page}&nbsp;&nbsp;
+					<a onClick={this.page.bind(this, cur + 1)}>下一页</a>
+				</div>
 			</div>
-		);
-	},
+        );
+    },
 	render() {
 		return (
 			<div className="listC">
@@ -39,6 +44,7 @@ var List = React.createClass({
 					<thead>{ this.buildTableTitle() }</thead>
 					<tbody>{ this.state.content.list.map(v => this.buildTableLine(v)) }</tbody>
 				</table>
+				{this.buildPageAppend()}
 			</div>
 		);
 	}

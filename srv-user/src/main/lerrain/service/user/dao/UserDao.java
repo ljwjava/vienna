@@ -109,30 +109,45 @@ public class UserDao
 		
 		return userId;
 	}
+
+	public int verify(Long userId, String password)
+	{
+		String sql = "select count(*) from t_user a where a.valid is null and a.user_id = ? and a.password = ?";
+
+		try
+		{
+			int num = jdbc.queryForObject(sql, Integer.class, userId, Common.md5Of(password));
+			return num == 1 ? 1 : 0;
+		}
+		catch (Exception e)
+		{
+			return -1;
+		}
+	}
 	
-	public void updatePassword(String userId, String password)
+	public void updatePassword(Long userId, String password)
 	{
 		String sql = "update t_user set password = ? where user_id = ?";
 		jdbc.update(sql, Common.md5Of(password), userId);
 	}
 
-	public void updateLoginTime(String userId, Date time)
+	public void updateLoginTime(Long userId, Date time)
 	{
 		String sql = "update t_user set login_time = ? where user_id = ?";
 		jdbc.update(sql, new Object[] {time, userId});
 	}
 	
-	public void updateStatus(String[] usersId, int status)
+	public void updateStatus(Long[] usersId, int status)
 	{
 		String sql = "update t_user set status = ? where user_id = ?";
-		for (String userId : usersId)
+		for (Long userId : usersId)
 			jdbc.update(sql, new Object[] {status, userId});
 	}
 	
-	public void updatePassword(String[] usersId, String password)
+	public void updatePassword(Long[] usersId, String password)
 	{
 		String sql = "update t_user set password = ? where user_id = ?";
-		for (String userId : usersId)
+		for (Long userId : usersId)
 			jdbc.update(sql, new Object[] {Common.md5Of(password), userId}, null);
 	}
 

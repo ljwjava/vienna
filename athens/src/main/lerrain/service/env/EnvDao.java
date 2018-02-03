@@ -156,6 +156,8 @@ public class EnvDao
                         val = Script.scriptOf(valstr).run(p.getStack());
                     else if (type == 7)
                         val = "Y".equalsIgnoreCase(valstr);
+                    else if (type == 8)
+                        val = jdbc.queryForList(valstr);
 
                     Log.debug("loading env's const... " + consName);
                     p.putVar(consName, val);
