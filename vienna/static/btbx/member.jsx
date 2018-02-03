@@ -67,7 +67,7 @@ class MemberList extends List {
                 <th><div>Email</div></th>
                 <th><div>入职时间</div></th>
                 <th><div>状态</div></th>
-				<th style={{width:"200px"}}>{this.buildPageComponent()}</th>
+				<th></th>
 			</tr>
         );
     }
@@ -95,11 +95,11 @@ var Main = React.createClass({
     render() {
         return <div className="form-horizontal">
 			<div className="form-group">
-				<div className="col-sm-3">
+				<div className="col-sm-2">
 					<br/>
 					<OrgTree orgId={env.orgId} parent={this}/>
 				</div>
-				<div className="col-sm-9">
+				<div className="col-sm-10">
 					<br/>
 					<MemberList ref="list" env={env} orgId={this.state.orgId}/>
 				</div>
