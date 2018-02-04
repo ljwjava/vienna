@@ -11,7 +11,7 @@ $(document).ready( function() {
         var str = "";
         r.forEach(v => {
             str += '<li class="dropdown">';
-            str += '<a data-toggle="dropdown" href="#">' + v.name + '</a>';
+            str += '<a data-toggle="dropdown" href="#">' + v.name + '&nbsp;∨</a>';
             str += '<ul class="dropdown-menu">';
             v.item.forEach(i => {
                 str += '<li><a onclick="document.location.href = common.link(\'' + i.link + '\');">' + i.name + '</a></li>';

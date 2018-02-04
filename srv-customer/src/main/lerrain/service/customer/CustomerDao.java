@@ -2,6 +2,7 @@ package lerrain.service.customer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.ServiceTools;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,26 +20,29 @@ public class CustomerDao
 {
 	@Autowired
 	JdbcTemplate jdbc;
+
+	@Autowired
+	ServiceTools tools;
 	
-	public List<Map> list(String search, int from, int number, final Long platformId, final String owner)
+	public List<Customer> list(String search, int from, int number, final Long platformId, final Long owner)
 	{
-		StringBuffer sql = new StringBuffer("select customer_id,name,gender,birthday,city,mobile,type,owner,platform_id,create_time,update_time, null as detail from t_customer where platform_id = ? and owner = ? and valid is null");
+		StringBuffer sql = new StringBuffer("select id,name,gender,birthday,city,mobile,email,type,cert_no,cert_type,owner,platform_id,create_time,update_time, null as detail from t_customer where platform_id = ? and owner = ? and valid is null");
 		
 		if (!Common.isEmpty(search))
 			sql.append(" and name like '%" + search + "%' ");
 		sql.append(" order by update_time desc limit " + from + ", " + number);
 		
-		return jdbc.query(sql.toString(), new Object[] {platformId, owner}, new RowMapper<Map>()
+		return jdbc.query(sql.toString(), new Object[] {platformId, owner}, new RowMapper<Customer>()
 		{
 			@Override
-			public Map mapRow(ResultSet rs, int arg1) throws SQLException
+			public Customer mapRow(ResultSet rs, int arg1) throws SQLException
 			{
 				return customerOf(rs);
 			}
 		});
 	}
 
-	public int count(String search, Long platformId, String owner)
+	public int count(String search, Long platformId, Long owner)
 	{
 		StringBuffer sql = new StringBuffer("select count(*) from t_customer where platform_id = ? and owner = ? and valid is null");
 
@@ -48,52 +52,42 @@ public class CustomerDao
 		return jdbc.queryForObject(sql.toString(), Integer.class, platformId, owner);
 	}
 	
-	public boolean delete(String customerId)
+	public boolean delete(Long customerId)
 	{
-		String sql = "update t_customer set valid = 'N', update_time = ? where customer_id = ?";
+		String sql = "update t_customer set valid = 'N', update_time = ? where id = ?";
 		jdbc.update(sql, new Date(), customerId);
 		
 		return true;
 	}
 	
-	public JSONObject load(String customerId)
+	public Customer load(Long customerId)
 	{
-		StringBuffer sql = new StringBuffer("select customer_id,name,gender,birthday,city,mobile,type,owner,platform_id,create_time,update_time,detail from t_customer where customer_id = ?");
-		return jdbc.queryForObject(sql.toString(), new Object[]{customerId}, new RowMapper<JSONObject>()
+		return jdbc.queryForObject("select * from t_customer where id = ?", new Object[] { customerId }, new RowMapper<Customer>()
 		{
 			@Override
-			public JSONObject mapRow(ResultSet rs, int arg1) throws SQLException
+			public Customer mapRow(ResultSet rs, int arg1) throws SQLException
 			{
 				return customerOf(rs);
 			}
 		});
 	}
 
-	public String save(JSONObject c)
+	public Long save(Customer c)
 	{
 		Date now = new Date();
 
 		boolean isNew = true;
-		String customerId = c.getString("customerId");
-		String owner = c.getString("owner");
-
-		if (Common.isEmpty(customerId))
+		if (c.getId() == null)
 		{
-			customerId = Common.nextId("customer");
+			c.setId(tools.nextId("customer"));
 		}
 		else
 		{
-			JSONObject map = load(customerId);
-			if (map != null)
+			Customer c1 = load(c.getId());
+			if (c1 != null)
 			{
-				int type1 = Common.intOf(map.get("type"), 1);
-				int type2 = Common.intOf(c.get("type"), 1);
-
-				if (type1 > type2)
+				if (c1.getType() > c.getType())
 					throw new RuntimeException("准客户不能覆盖真客户");
-
-				map.putAll(c);
-				c = map;
 
 				isNew = false;
 			}
@@ -101,38 +95,40 @@ public class CustomerDao
 		
 		if (isNew)
 		{
-			Long platformId = Common.toLong(c.get("platformId"));
-			if (owner == null || platformId == null)
+			if (c.getOwner() == null || c.getPlatformId() == null)
 				throw new RuntimeException("no owner or no platformId");
 
-			String sql = "insert into t_customer (customer_id, name, gender, birthday, city, mobile, type, detail, platform_id, owner, creator, updater, create_time, update_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			jdbc.update(sql, customerId, c.get("name"), c.get("gender"), c.get("birthday"), c.get("city"), c.get("mobile"), c.get("type"), JSON.toJSON(c).toString(), platformId, owner, owner, owner, now, now);
+			String sql = "insert into t_customer (id, name, gender, birthday, cert_no, cert_type, city, mobile, email, type, detail, platform_id, owner, creator, updater, create_time, update_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			jdbc.update(sql, c.getId(), c.getName(), c.getGender(), c.getBirthday(), c.getCertNo(), c.getCertType(), c.get("city"), c.get("mobile"), c.get("email"), c.get("type"), JSON.toJSONString(c.getDetail()), c.getPlatformId(), c.getOwner(), c.getOwner(), c.getOwner(), now, now);
 		}
 		else
 		{
-			String sql = "update t_customer set name=?, gender=?, birthday=?, city=?, mobile=?, type=?, detail=?, updater=?, update_time=? where customer_id=?";
-			jdbc.update(sql, c.get("name"), c.get("gender"), c.get("birthday"), c.get("city"), c.get("mobile"), c.get("type"), JSON.toJSON(c).toString(), owner, now);
+			String sql = "update t_customer set name=?, gender=?, birthday=?, cert_no=?, cert_type=?, city=?, mobile=?, email=?, type=?, detail=?, updater=?, update_time=? where id=?";
+			jdbc.update(sql, c.getName(), c.getGender(), c.getBirthday(), c.getCertNo(), c.getCertType(), c.get("city"), c.get("mobile"), c.get("email"), c.get("type"), JSON.toJSONString(c.getDetail()), c.getOwner(), now, c.getId());
 		}
 
-		return customerId;
+		return c.getId();
 	}
 	
-	public JSONObject customerOf(ResultSet m) throws SQLException
+	public Customer customerOf(ResultSet m) throws SQLException
 	{
-		String str = m.getString("detail");
-		JSONObject c = Common.isEmpty(str) ? new JSONObject() : JSON.parseObject(str);
+		Customer c = new Customer();
+		c.setId(m.getLong("id"));
+		c.setName(m.getString("name"));
+		c.setGender(m.getString("gender"));
+		c.setBirthday(m.getDate("birthday"));
+		c.setType(Common.intOf(m.getString("type"), 0));
+		c.setCertType(Common.intOf(m.getString("cert_type"), 0));
+		c.setCertNo(m.getString("cert_no"));
+		c.setPlatformId(m.getLong("platform_id"));
+		c.setOwner(m.getLong("owner"));
 
-		c.put("customerId", m.getString("customer_id"));
-		c.put("name", m.getString("name"));
-		c.put("birthday", m.getDate("birthday"));
-		c.put("gender", m.getString("gender"));
-		c.put("city", m.getString("city"));
-		c.put("mobile", m.getString("mobile"));
-		c.put("type", Common.intOf(m.getString("type"), 1));
-		c.put("platformId", m.getLong("platform_id"));
-		c.put("owner", m.getString("owner"));
-		c.put("createTime", m.getDate("create_time"));
-		c.put("updateTime", m.getDate("update_time"));
+		String str = m.getString("detail");
+		JSONObject detail = str == null ? new JSONObject() : JSON.parseObject(str);
+		detail.put("city", m.getString("city"));
+		detail.put("email", m.getString("email"));
+		detail.put("mobile", m.getString("mobile"));
+		c.setDetail(detail);
 
 		return c;
 	}

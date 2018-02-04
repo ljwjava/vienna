@@ -96,8 +96,10 @@ public class PolicyUploadService
                 }
 
                 PolicyReady pr = new PolicyReady(m);
-                String res = pr.verify();
+                if (pr.getPolicyNo() == null || pr.getPolicyNo().startsWith("TESTXD00") || pr.getEndorseNo() != null || pr.getEndorseNo().startsWith("TESTBQ00"))
+                    continue;
 
+                String res = pr.verify();
                 if (res != null)
                     err.add("上传错误：" + res + " - " + JSON.toJSON(row));
                 else

@@ -13,32 +13,32 @@ public class CustomerService
 	@Autowired
 	CustomerDao customerDao;
 
-	public int count(String search, Long platformId, String owner)
+	public int count(String search, Long platformId, Long owner)
 	{
 		return customerDao.count(search, platformId, owner);
 	}
 
-	public List<Map> list(String search, Long platformId, String owner)
+	public List<Customer> list(String search, Long platformId, Long owner)
 	{
 		return list(search, 0, -1, platformId, owner);
 	}
 	
-	public List<Map> list(String search, int from, int number, Long platformId, String owner)
+	public List<Customer> list(String search, int from, int number, Long platformId, Long owner)
 	{
 		return customerDao.list(search, from, number < 0 ? 999 : number, platformId, owner);
 	}
 	
-	public Map get(String customerId)
+	public Customer get(Long customerId)
 	{
 		return customerDao.load(customerId);
 	}
 	
-	public String save(JSONObject c)
+	public Long save(Customer c)
 	{
 		return customerDao.save(c);
 	}
 	
-	public boolean delete(String customerId)
+	public boolean delete(Long customerId)
 	{
 		return customerDao.delete(customerId);
 	}

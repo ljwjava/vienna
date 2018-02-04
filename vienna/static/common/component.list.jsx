@@ -23,16 +23,16 @@ var List = React.createClass({
         env.total = this.state.content.total;
 		let cur = env.from / env.number;
         let page = [];
+        page.push(<button key="back" type="button" className="btn btn-default" onClick={this.page.bind(this, cur - 1)}>&larr;</button>);
 		for (var i = cur - 4; i <= cur + 4; i++) {
 			if (i >= 0 && i < env.total / env.number)
-				page.push(<span key={i} onClick={this.page.bind(this, i)}>{i + 1}</span>);
+				page.push(<button key={i} type="button" className="btn btn-default" onClick={this.page.bind(this, i)}>{i + 1}</button>);
 		}
+        page.push(<button key="next" type="button" className="btn btn-default" onClick={this.page.bind(this, cur + 1)}>&rarr;</button>);
         return (
 			<div style={{textAlign:"center"}}>
-				<div style={{marginTop:"16px"}}>
-					<a onClick={this.page.bind(this, cur - 1)}>上一页</a>
-					&nbsp;&nbsp;{page}&nbsp;&nbsp;
-					<a onClick={this.page.bind(this, cur + 1)}>下一页</a>
+				<div className="btn-group" role="group" style={{marginTop:"16px"}}>
+					{page}
 				</div>
 			</div>
         );

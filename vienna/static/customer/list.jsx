@@ -8,6 +8,12 @@ var env = {
 	search: null,
 	from: 0,
 	number: 16,
+	dict: {
+		gender: {
+			"M": "男",
+			"F": "女"
+		}
+	},
 	create: function() {
         document.location.href = "edit.web";
 	}
@@ -30,28 +36,30 @@ class CustomerList extends List {
 	buildTableTitle() {
 		return (
 			<tr>
-				<th width="5%"></th>
-				<th width="20%">姓名</th>
-				<th width="20%">生日</th>
-				<th width="20%">性别</th>
-				<th width="20%">修改时间</th>
-				<th width="15%"></th>
+				<th><div>姓名</div></th>
+				<th><div>性别</div></th>
+				<th><div>生日</div></th>
+				<th><div>证件</div></th>
+				<th><div>手机</div></th>
+				<th><div>电子邮件</div></th>
+				<th>操作</th>
 			</tr>
 		);
 	}
 	buildTableLine(v) {
-		let date = new Date(v.updateTime);
 		return (
-			<tr key={v.customerId}>
-				<td></td>
+			<tr key={v.id}>
 				<td>{v.name}</td>
+				<td>{env.dict.gender[v.gender]}</td>
 				<td>{v.birthday}</td>
-				<td>{v.gender}</td>
-				<td>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
+				<td>{v.certNo}</td>
+				<td>{v.mobile}</td>
+				<td>{v.email}</td>
 				<td>
-					<a onClick={this.open.bind(this, v.customerId)}>编辑</a>
-					&nbsp;&nbsp;
-					<a onClick={this.delete.bind(this, v.customerId)}>删除</a>
+					<div className="btn-group" role="group">
+						<button type="button" className="btn btn-default" onClick={this.open.bind(this, v.id)}>编辑</button>
+						<button type="button" className="btn btn-danger">删除</button>
+					</div>
 				</td>
 			</tr>
 		);
@@ -65,12 +73,21 @@ var Main = React.createClass({
 				<div className="col-sm-12">
 					<div className="container-fluid">
 						<ul className="nav navbar-nav">
-							<li style={{verticalAlign:"middle"}}>
-								<input type="text" className="form-control"/>
+							<li>
+								<form className="navbar-form navbar-left" role="search">
+									<div className="form-group">
+										<input type="text" className="form-control" placeholder=""/>
+									</div>
+									<button type="submit" className="btn btn-success">搜索</button>
+								</form>
 							</li>
 						</ul>
 						<ul className="nav navbar-nav navbar-right">
-							<li><a onClick={env.create}>新增客户</a></li>
+							<li>
+								<div className="navbar-nav-console">
+									<button className="btn btn-default">新增客户</button>
+								</div>
+							</li>
 						</ul>
 					</div>
 					<CustomerList env={env}/>

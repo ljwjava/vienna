@@ -42,7 +42,7 @@ class ProposalList extends List {
 				<th style={{width: "40%"}}><div>建议书名称</div></th>
 				<th><div>修改时间</div></th>
 				<th><div>保费</div></th>
-				<th style={{width:"200px"}}>{this.buildPageComponent()}</th>
+				<th></th>
 			</tr>
 		);
 	}
