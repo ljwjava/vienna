@@ -639,11 +639,11 @@ var Ground = React.createClass({
 
         var pop = !this.state.appQuest ? null :
 			<div className="notice">
-                { !this.state.alertQuest ?
+				{ !this.state.alertQuest ?
 					<div className="content" style={{textAlign: "left", overflow:"auto", maxHeight:"100%"}}>
 						<div className="title">投保人健康及财务告知</div>
 						<div className="text" style={{}}>
-							<Summary content={env.pack.extra.quests}/>
+							<Summary content={env.pack.extra.applicantQuests != null ? env.pack.extra.applicantQuests : env.pack.extra.quests}/>
 						</div>
 						<div className="console">
 							<div className="tab">

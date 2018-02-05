@@ -50,16 +50,16 @@ var Ground = React.createClass({
 	getInitialState() {
 		return {isSubmit: false, dict:false};
 	},
-	componentWillMount() {
+	refresh() {
         common.req("dict/view.json", {company: env.company, name: "bank,relation", version: "new"}, r => {
-        	// if (typeof r.bank === 'object' && isNaN(r.bank.length)) {
-			if(r.bank != null){
+            // if (typeof r.bank === 'object' && isNaN(r.bank.length)) {
+            if(r.bank != null){
                 if (!Array.isArray(r.bank)) {
                     env.dict.bank = r.bank[env.order.detail.applicant.city.code.substr(0, 2)];
                 } else {
                     env.dict.bank = r.bank;
                 }
-			}
+            }
             for (var l in r.relation) {
                 env.dict.relation[l.code] = l.text;
             }
@@ -67,6 +67,9 @@ var Ground = React.createClass({
         }, f => {
             ToastIt("字典数据加载失败");
         });
+	},
+	componentDidMount() {
+		this.refresh();
     },
 	submit() {
 		if (this.refs.pay != null && !this.refs.pay.verifyAll()) {
@@ -81,6 +84,11 @@ var Ground = React.createClass({
 		if (this.refs.pay) {
             env.order.extra.pay = this.refs.pay.val();
             env.order.extra.pay.bankText = this.refs.pay.refs.bank.text();
+            if (env.order.extra.pay.bank == null || env.order.extra.pay.bank == "") {
+            	this.refresh();
+                ToastIt("请选择银行");
+                return;
+			}
 		}
 		if (this.refs.photos) {
             env.order.extra.photos = this.refs.photos.val();
