@@ -44,6 +44,9 @@
 			<if condition="APPLICANT == INSURANT">
 				投保人豁免不能给本人投保
 			</if>
+			<if condition="AGE > 50" type="customer">
+				投保人年龄不能大于50周岁
+			</if>
 		</rule>
 	</product>
 </declare>
