@@ -42,21 +42,22 @@
 		</rider>
 
 		<interest>
-			<item name="SUV" param="A1" formula="A1>=4?AMOUNT:0"/>
+			<item name="SUV" param="A1" formula="A1>4?AMOUNT:0"/>
+			<item name="SUV_S" param="A1" formula="A1>0?IT.SUV_S(A1-1)+IT.SUV(A1):0"/>
 			<item name="F80" param="A1" formula="AGE+A1+1==80?PREMIUM*PAY_PERIOD:0"/>
 			<item name="DRAW" param="A1" formula="IT.SUV(A1)+IT.F80(A1)"/>
 
-			<item name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY"/>
-			<item name="AMT" param="A1" formula="max(IT.CSV(A1),PremiumSum(A1))"/>
+			<item name="CSV" param="A1" formula="A1==0?0:DS.CSV[A1-1][0]*QUANTITY"/>
+			<item name="AMT" param="A1" formula="max(IT.CSV(A1)+IT.SUV(A1),PremiumSum(A1))"/>
 			<item name="SUV_T" param="A1" formula="IT.CSV(A1)"/>
-			<item name="DIE_T" param="A1" formula="IT.AMT(A1)"/>
+			<item name="DIE_T" param="A1" formula="IT.AMT(A1)+IT.SUV_S(A1-1)"/>
 		</interest>
 
 		<attachment>
 			<benefit_table filter="table" parser="table">
 				<table>
 					<row type="title">
-						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'保单年度初'</blank>
 						<blank row="1">'年龄'</blank>
 						<blank row="1">'年交保险费'</blank>
 						<blank row="1">'累计保险费'</blank>
@@ -70,7 +71,7 @@
 					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
 						<row>
 							<blank style="##0">I+1</blank>
-							<blank style="##0">AGE+I+1</blank>
+							<blank style="##0">AGE+I</blank>
 							<blank align="right" style="########0.00">PremiumYear(I)</blank>
 							<blank align="right" style="########0.00">PremiumSum(I)</blank>
 							<blank align="right" style="########0.00">IT.AMT(I)</blank>

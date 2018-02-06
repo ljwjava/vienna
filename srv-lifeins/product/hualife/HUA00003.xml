@@ -13,7 +13,7 @@
 		sequence="1000"
 		input="premium"
 		quantity="PREMIUM/UNIT"
-		amount="QUANTITY*DS.RATE[0][0]"
+		amount="QUANTITY*DS.RATE[AGE][0]"
 		sale_begin_date="2015-01-01"
 		sale_end_date=""
 		last_modify_date="2017-01-01">
@@ -40,12 +40,17 @@
 		</param>
 
 		<init>
+			<item name="DRAW_AGE">'75'</item>
 		</init>
 
 		<interest>
-			<item name="DRAW" param="A1">AGE+A1>=DRAW_AGE_VALUE?AMOUNT:0</item>
-			<item name="CV" param="A1" formula="DS.CSV[A1][0]*AMOUNT/UNIT"/>
-			<!--<item name="AMT" param="A1" formula="max(IT.CSV(A1),PremiumSum(A1))"/>-->
+			<item name="PRM" param="A1">(A1==0?PREMIUM:0)+(PARENT.IT.SUV(A1))</item>
+			<item name="PRM_S" param="A1">(A1==0?0:IT.PRM_S(A1-1))+IT.PRM(A1)</item>
+			<item name="AMT" param="A1">A1+AGE>DRAW_AGE_VALUE-5?0:IT.PRM(A1)/UNIT*DS.RATE[AGE+A1][0]</item>
+			<item name="AMT_S" param="A1">(A1==0?0:IT.AMT_S(A1-1))+IT.AMT(A1)</item>
+
+			<item name="DRAW" param="A1">AGE+A1>=DRAW_AGE_VALUE?IT.AMT_S(A1):0</item>
+			<item name="CV" param="A1" formula="A1==0?0:DS.CSV[A1-1][0]*IT.AMT_S(A1-1)/UNIT"/>
 			<item name="SUV_T" param="A1" formula="IT.CV(A1)"/>
 			<item name="DIE_T" param="A1" formula="max(IT.CV(A1),PremiumSum(A1))"/>
 		</interest>
@@ -58,6 +63,7 @@
 						<blank row="1">'年龄'</blank>
 						<blank row="1">'年交保险费'</blank>
 						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'加保保额'</blank>
 						<blank row="1">'领取'</blank>
 						<blank row="1">'生存总利益'</blank>
 						<blank row="1">'身故总利益'</blank>
@@ -66,9 +72,10 @@
 					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
 						<row>
 							<blank style="##0">I+1</blank>
-							<blank style="##0">AGE+I+1</blank>
-							<blank align="right" style="########0.00">PremiumYear(I)</blank>
-							<blank align="right" style="########0.00">PremiumSum(I)</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0.00">IT.PRM(I)</blank>
+							<blank align="right" style="########0.00">IT.PRM_S(I)</blank>
+							<blank align="right" style="########0.00">IT.AMT(I)</blank>
 							<blank align="right" style="########0.00">IT.DRAW(I)</blank>
 							<blank align="right" style="########0.00">IT.SUV_T(I)</blank>
 							<blank align="right" style="########0.00">IT.DIE_T(I)</blank>

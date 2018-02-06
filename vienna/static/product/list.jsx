@@ -10,12 +10,48 @@ var env = {
     number: 20,
 }
 
+var TypeTree = React.createClass({
+    getInitialState() {
+        return {tree: []};
+    },
+    componentDidMount() {
+        common.req("btbx/product/type.json", {}, r => {
+            this.setState({tree: r});
+            r.map(v => {
+                this.findChildren(v);
+            });
+        });
+    },
+    findChildren(tp) {
+        if (tp.children != null) {
+            tp.children = null;
+            this.forceUpdate();
+        } else common.req("btbx/product/type.json", {typeId: tp.id}, r => {
+            tp.children = r;
+            this.forceUpdate();
+        });
+    },
+    build(tree) {
+        return tree.map(tp => {
+            var children = tp.children == null ? null : this.build(tp.children);
+            var icon = <img src={tp.children == null ? "../images/folder.png" : "../images/folder-open.png"} style={{width:"24px", height:"24px"}} onClick={this.findChildren.bind(this, tp)}/>;
+            return <div key={tp.id}>
+                <div>{icon} <a onClick={this.props.parent.refs.list.refresh.bind(this.props.parent.refs.list, tp.id)}>{tp.name}</a></div>
+                <div style={{paddingLeft: "12px"}}>{children}</div>
+            </div>;
+        })
+    },
+    render() {
+        return <div>{ this.build(this.state.tree) }</div>;
+    }
+});
+
 class ProductList extends List {
     open(id) {
         document.location.href = "product.web?productId=" + id;
     }
-    refresh() {
-        common.req("product/list.json", {search: env.search, from: env.from, number: env.number}, r => {
+    refresh(typeId) {
+        common.req("btbx/product/list.json", {typeId: typeId, search: env.search, from: env.from, number: env.number}, r => {
             this.setState({content:r});
         });
     }
@@ -27,7 +63,7 @@ class ProductList extends List {
                 <th><div>产品名称</div></th>
 				<th><div>所属公司</div></th>
                 <th><div>状态</div></th>
-				<th style={{width:"200px"}}>{this.buildPageComponent()}</th>
+				<th></th>
 			</tr>
         );
     }
@@ -52,9 +88,13 @@ var Main = React.createClass({
     render() {
         return <div className="form-horizontal">
 			<div className="form-group">
-				<div className="col-sm-12">
+                <div className="col-sm-2">
+                    <br/>
+                    <TypeTree parent={this}/>
+                </div>
+                <div className="col-sm-10">
 					<br/>
-					<ProductList env={env}/>
+					<ProductList ref="list" env={env}/>
 				</div>
 			</div>
 		</div>;
@@ -62,5 +102,5 @@ var Main = React.createClass({
 });
 
 $(document).ready( function() {
-    ReactDOM.render(<Main orgId={env.orgId}/>, document.getElementById("content"));
+    ReactDOM.render(<Main/>, document.getElementById("content"));
 });

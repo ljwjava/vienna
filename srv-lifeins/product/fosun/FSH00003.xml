@@ -10,10 +10,11 @@
 		type_code="mild"
 		is_main="no"
 		is_rider="yes"
+		amount="PARENT.AMOUNT/5"
+		input="none"
 		sequence="1000"
 		sale_begin_date="2018-01-01"
 		sale_end_date=""
-		input="amount"
 		last_modify_date="2018-01-01">
 
 		<data>
