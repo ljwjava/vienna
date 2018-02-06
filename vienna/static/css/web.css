@@ -8,7 +8,7 @@ body {
 }
 
 .navbar-nav {
-    font-size: 12pt;
+  font-size: 12pt;
 }
 
 .main {
@@ -27,31 +27,6 @@ body {
   display: none;
   margin: -200px -150px;
   border:#000 2pt solid;
-}
-
-.tabcard
-{
-  padding: 0;
-  display: flex;
-  list-style: none;
-  text-align: center;
-  margin: 1px 0 1px 0;
-  background-color: #FFF;
-  line-height: 40px;
-  height: 40px;
-}
-
-.tabcard li
-{
-  flex: 1;
-  display: list-item;
-  text-align: center;
-}
-
-.active
-{
-  color: #2db7f5;
-  border-bottom: 3px solid #2db7f5;
 }
 
 table {

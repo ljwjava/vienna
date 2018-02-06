@@ -27,7 +27,7 @@ class PolicyList extends List {
         });
     }
     refresh() {
-        common.req("policy/list.json", env, r => {
+        common.req("btbx/policy/list.json", env, r => {
             this.setState({content:r});
         });
     }
@@ -66,7 +66,12 @@ class PolicyList extends List {
                 <td style={{textAlign:"right"}}>{v.fee}</td>
 				<td style={{textAlign:"right"}}>{v.cms}</td>
                 <td>{v.owner}</td>
-				<td><a onClick={this.open.bind(this, v.id)}>查看</a></td>
+				<td>
+                    <div className="btn-group" role="group">
+                        <button type="button" className="btn btn-default" onClick={this.open.bind(this, v.id)}>编辑</button>
+                        <button type="button" className="btn btn-danger">删除</button>
+                    </div>
+                </td>
 			</tr>
         );
     }
@@ -117,7 +122,7 @@ $(document).ready( function() {
             return false;
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", common.url("policy/upload.file"), true);
+        xhr.open("post", common.url("btbx/policy/upload.file"), true);
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xhr.onreadystatechange = function() {};
 

@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import List from '../common/component.list.jsx';
 
 var env = {
-	orgId: 1,
+	orgId: 10000,
     search: null,
     from: 0,
     number: 20
@@ -16,15 +16,16 @@ var OrgTree = React.createClass({
         return {orgs: []};
     },
 	componentDidMount() {
-        common.req("org/view_org.json", {orgId: this.props.orgId}, r => {
+        common.req("btbx/org/view_org.json", {orgId: this.props.orgId}, r => {
             this.setState({orgs: [r]});
+            this.findChildren(r);
         });
 	},
     findChildren(org) {
     	if (org.children != null) {
             org.children = null;
             this.forceUpdate();
-        } else common.req("org/list_org.json", {orgId: org.id}, r => {
+        } else common.req("btbx/org/list_org.json", {orgId: org.id}, r => {
             org.children = r;
             this.forceUpdate();
         });
@@ -50,14 +51,11 @@ var OrgTree = React.createClass({
 });
 
 class MemberList extends List {
-    upload() {
-        document.location.href = "upload.web";
-    }
     open(id) {
-        document.location.href = "policy.web?policyId=" + id;
+        document.location.href = "member.web?memberId=" + id;
     }
     refresh() {
-        common.req("org/list_member.json", {orgId: this.props.orgId, from: env.from, number: env.number}, r => {
+        common.req("btbx/org/list_member.json", {orgId: this.props.orgId, from: env.from, number: env.number}, r => {
             this.setState({content:r});
         });
     }
@@ -66,15 +64,22 @@ class MemberList extends List {
 			<tr>
 				<th><div>组员</div></th>
 				<th><div>手机</div></th>
-				<th style={{width:"200px"}}>{this.buildPageComponent()}</th>
+                <th><div>Email</div></th>
+                <th><div>入职时间</div></th>
+                <th><div>状态</div></th>
+				<th></th>
 			</tr>
         );
     }
     buildTableLine(v) {
+        let joinTime = v.joinTime == null ? null : new Date(v.joinTime).format("yyyy-MM-dd");
         return (
 			<tr key={v.id}>
 				<td><img src="../images/user.png" style={{width:"24px", height:"24px"}}/> {v.name}</td>
 				<td>{v.mobile}</td>
+                <td>{v.email}</td>
+                <td>{joinTime}</td>
+                <td>{v.status}</td>
 				<td>
 					<a onClick={this.open.bind(this, v.id)}>编辑</a>
 				</td>
@@ -90,11 +95,11 @@ var Main = React.createClass({
     render() {
         return <div className="form-horizontal">
 			<div className="form-group">
-				<div className="col-sm-3">
+				<div className="col-sm-2">
 					<br/>
 					<OrgTree orgId={env.orgId} parent={this}/>
 				</div>
-				<div className="col-sm-9">
+				<div className="col-sm-10">
 					<br/>
 					<MemberList ref="list" env={env} orgId={this.state.orgId}/>
 				</div>
