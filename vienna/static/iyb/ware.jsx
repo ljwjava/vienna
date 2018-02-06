@@ -188,11 +188,12 @@ var Ware = React.createClass({
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
 			var appExempt = env.factors.A_EXEMPT;
+			var quests = env.docs.applicantQuests != null && appExempt == "Y" ? env.docs.applicantQuests : env.docs.quests;
 			return (
 				<div className="common">
 					<div className="title">健康及财务告知（{ appExempt == "Y" ? "投保人及被保险人" :"被保险人"}）</div>
 					<div className="text" style={{overflow:"auto"}}>
-						<Summary content={env.docs.quests}/>
+						<Summary content={quests}/>
 					</div>
 					<div className="console">
 						<div className="tab">
