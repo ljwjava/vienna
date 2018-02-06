@@ -117,6 +117,7 @@ var Ware = React.createClass({
             env.packType = s.type;
             env.vendor = s.vendor;
             env.company = s.vendor.code;
+            env.kefuUrl = s.extra.kefuUrl;
             r.form = s.form;
             r.vendor = s.vendor;
             r.company = s.vendor.code;
@@ -180,6 +181,9 @@ var Ware = React.createClass({
     },
 	openPoster() {
 		document.location.href = "iyunbao://poster?code=" + env.pack.wareCode;
+	},
+    openKF() {
+		document.location.href = env.kefuUrl;
 	},
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
@@ -258,7 +262,8 @@ var Ware = React.createClass({
 				<div className="console">
 					<div className="tab">
 						<div className="row">
-							{env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
+                            {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
+                            {env.frame == "iyb" && !!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
 							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
 							<div className="col right" onClick={(!!env.docs && !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>去投保</div>
 						</div>
