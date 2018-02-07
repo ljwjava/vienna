@@ -37,6 +37,9 @@ public class Lifeins implements Function
     {
         Map r = new HashMap();
         r.put("RELATIVE", vals.get("RELATIVE"));
+        r.put("EFFECTIVE_DATE", vals.get("EFFECTIVE_DATE"));
+        if(vals.get("EFFECTIVE_DAYS") != null)
+            r.put("EFFECTIVE_DAYS", vals.get("EFFECTIVE_DAYS"));
 
         Map app = new HashMap();
         app.put("GENDER", vals.get("A_GENDER"));

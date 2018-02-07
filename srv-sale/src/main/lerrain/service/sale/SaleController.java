@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,19 @@ public class SaleController
     @ResponseBody
     public JSONObject view(@RequestBody JSONObject json)
     {
-        Ware c = json.containsKey("wareId") ? saleSrv.getWare(json.getLong("wareId")) : saleSrv.getWare(json.getString("wareCode"));
+        List<Long> pis = null;
+        if(json.containsKey("packIds") && !Common.isEmpty(json.getString("packIds"))) {
+            pis = new ArrayList<Long>();
+            String pisStr = json.getString("packIds");
+
+            String[] pisArr = pisStr.split(",");
+            for (String piId : pisArr) {
+                if(!Common.isEmpty(piId))
+                    pis.add(Long.parseLong(piId));
+            }
+        }
+
+        Ware c = json.containsKey("wareId") ? saleSrv.getWare(json.getLong("wareId"), pis) : saleSrv.getWare(json.getString("wareCode"), pis);
 
         JSONObject r = new JSONObject();
         r.put("id", c.getId());

@@ -43,6 +43,11 @@ public class PackIns
     Map<String, Object> vendor;
     Map<String, Object> formOpt;
 
+    public PackIns clone() {
+        // TODO: 待处理
+        return this;
+    }
+
     public int getType()
     {
         return type;

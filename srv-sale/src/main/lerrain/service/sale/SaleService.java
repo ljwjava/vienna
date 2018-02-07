@@ -6,15 +6,9 @@ import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SaleService
@@ -63,14 +57,53 @@ public class SaleService
         }
     }
 
+    private Ware filterPack(Ware w, List<Long> packIds){
+        if(w != null){
+            if(packIds != null && packIds.size() > 0){
+                List<PackIns> rpis = null;
+                List<PackIns> pis = w.getDetail();
+                if(pis != null) {
+                    for(PackIns pi : pis) {
+                        if(packIds.contains(pi.getId())){
+                            if(rpis == null) rpis = new ArrayList<PackIns>();
+                            rpis.add(pi);
+                        }
+                    }
+                }
+                w.setDetail(rpis);
+            }
+        }
+        return w;
+    }
+
     public Ware getWare(Long id)
     {
         return map.get(id);
+    }
+    public Ware getWare(Long id, List<Long> packIds)
+    {
+        Ware w = getWare(id);
+        if(w != null){
+            w = w.clone();
+            w = filterPack(w, packIds);
+        }
+
+        return w;
     }
 
     public Ware getWare(String code)
     {
         return map.get(code);
+    }
+    public Ware getWare(String code, List<Long> packIds)
+    {
+        Ware w = getWare(code);
+        if(w != null){
+            w = w.clone();
+            w = filterPack(w, packIds);
+        }
+
+        return w;
     }
 
     public Map getVendor(Long vendorId)

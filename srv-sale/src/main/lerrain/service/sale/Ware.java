@@ -1,5 +1,6 @@
 package lerrain.service.sale;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,33 @@ public class Ware
     String[] banner;
 
     List<PackIns> detail;
+
+    public Ware clone() {
+        Ware w = new Ware();
+
+        w.setId(id);
+        w.setVendorId(vendorId);
+        w.setCode(code);
+        w.setName(name);
+        w.setAbbrName(abbrName);
+        w.setRemark(remark);
+        w.setLogo(logo);
+        w.setPrice(price);
+        if(banner != null){
+            w.setBanner(banner.clone());
+        }
+
+        List<PackIns> dl = null;
+        if(detail != null && detail.size() > 0){
+            for (PackIns pi : detail) {
+                if(dl == null) dl = new ArrayList<PackIns>();
+                dl.add(pi);
+            }
+        }
+        w.setDetail(dl);
+
+        return w;
+    }
 
 //    int type;
 
