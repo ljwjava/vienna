@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="FSH00004" corporation_id="fosun" code="120011" name="附加康乐一生投保人豁免重大疾病保险（升级款）" name_abbr="附加康乐一生豁免" unit="1000" amount="PARENT.PREMIUM" input="none"
+	<product id="FSH00004" corporation_id="fosun" code="120011" name="附加康乐一生投保人豁免重大疾病保险（升级款）" name_abbr="附加康乐一生豁免" unit="1000" amount="PARENT.PREMIUM+try(PARENT.RIDER('FSH00003').PREMIUM,0)" input="none"
 		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<data>
