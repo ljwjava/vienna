@@ -10,7 +10,7 @@
 		type_code="mild"
 		is_main="no"
 		is_rider="yes"
-		amount="PARENT.AMOUNT/5"
+		amount="PARENT.AMOUNT*0.3"
 		input="none"
 		sequence="1000"
 		sale_begin_date="2018-01-01"

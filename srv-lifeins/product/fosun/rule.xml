@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<rule>
+		<if condition = "APPLICANT.AGE lt 18" type="plan">
+			投保人要求18周岁或以上
+		</if>
+		<if condition = "INSURANT.DAY lt 30" type="plan">
+			被保人要求出生满30天。
+		</if>
+		<if condition = "try(PREMIUM lt 0, true)" type="product">
+			无法获取保费
+		</if>
+		<if condition="PAY_PERIOD > INSURE_PERIOD" type="product">
+			交费期间不得大于保障期间
+		</if>
+	</rule>
+</declare>
