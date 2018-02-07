@@ -79,12 +79,12 @@ var Ware = React.createClass({
     componentWillMount(){
         /** GPO 埋点 **/
         if(!common.param("accountId") || !this.props.detail.code) return;
-		common.req("util/env_conf.json", {}, r => {
-            if(!!r && !!r.url && !!r.url.gpo) {
-                try{common.post(r.url.gpo + "stat/action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
+		common.reqSync("util/env_conf.json", {}, r => {
+            if(!!r && !!r.url) {
+                env.url = r.url;
 			}
-		}, r => {
-		});
+		}, r => {});
+        try{common.post(env.url.gpo + "stat/action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
 	},
     /** 初始化顶层活动banner  **/
     initTopActivityBanner(accountId, productId, productCode){
@@ -275,7 +275,7 @@ var Ware = React.createClass({
 	}
 });
 
-env.sharePrd = function() {
+env.getShareObj = function(){
     var shareObj = {
         title: env.ware.name,
         desc: env.ware.remark,
@@ -283,6 +283,37 @@ env.sharePrd = function() {
         imgUrl: env.ware.logo,
         link: window.location.href
     };
+
+    if(!env.url){
+        common.reqSync("util/env_conf.json", {}, r => {
+            if(!!r && !!r.url) {
+                env.url = r.url;
+            }
+        }, r => {});
+	}
+
+	if(!!env.url && !!env.url.club && !env.newShareUrl){
+        $.ajax({url:env.url.club + "open/v2/reception/link/newShareLink", type:"POST", data:JSON.stringify({originalLink: shareObj.link, pageCode: 'cp', pageId: env.ware.code, pageTitle: shareObj.title, accountId: common.param("accountId"), pageIcon: shareObj.imgUrl}), async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8',
+			success: (r)=> {
+            if (r.isSuccess+"" == "true") {
+                if(!!r.result.shareLink){
+                	env.newShareUrl = r.result.shareLink;
+                    shareObj.link = env.newShareUrl;
+				}
+            } else {
+                ToastIt(r.errorMsg);
+            }
+        }, fail: (r) => {
+        	ToastIt("访问服务器失败");
+        }, dataType:"json"});
+	}else{
+        shareObj.link = env.newShareUrl;
+	}
+    return shareObj;
+};
+
+env.sharePrd = function() {
+    var shareObj = env.getShareObj();
     iHealthBridge.doAction("share", JSON.stringify(shareObj));
 };
 
@@ -310,12 +341,7 @@ var readyShare = function(){
         window.IYB.setTitle(document.title);
         env.shareApp();
     } else {
-        window.wxReady({
-            title: env.ware.name,
-            desc: env.ware.remark,
-            imgUrl: env.ware.logo,
-            link: window.location.href
-        }, null);
+        window.wxReady(env.getShareObj(), null);
     }
 };
 
