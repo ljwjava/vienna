@@ -346,7 +346,7 @@ var readyShare = function(){
 };
 
 $(document).ready( function() {
-	common.req("sale/view.json", {wareId:common.param("wareId")}, function (r) {
+	common.req("sale/view.json", {wareId:common.param("wareId"), packIds: common.param("packIds")}, function (r) {
 		env.ware = r;
 		ReactDOM.render(
 			<Ware detail={r}/>, document.getElementById("content")
