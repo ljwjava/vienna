@@ -61,7 +61,7 @@ var Ground = React.createClass({
                 }
             }
             for (var l in r.relation) {
-                env.dict.relation[l.code] = l.text;
+                env.dict.relation[r.relation[l].code] = r.relation[l].text;
             }
             this.setState({dict:true});
         }, f => {
