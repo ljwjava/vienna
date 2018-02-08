@@ -16,7 +16,7 @@ var IdCard = React.createClass({
 				alert = "此项为必填项";
 			else
 				alert = null;
-		} else if(certType == "1"){
+		} else if (this.props.isIdCert && this.props.isIdCert(certType)) {
 			alert = IdentityCodeValid(val);
 		}
 

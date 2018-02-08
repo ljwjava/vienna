@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="FSH00004" corporation_id="fosun" code="120011" name="附加康乐一生投保人豁免重大疾病保险（升级款）" name_abbr="附加康乐一生豁免" unit="1000" amount="PARENT.PREMIUM+try(PARENT.RIDER('FSH00003').PREMIUM,0)" input="none"
+	<product id="STL00002" corporation_id="sinatay" code="TCIR20" name="附加（B款）投保人豁免保费重大疾病" name_abbr="附加投保人豁免B" unit="1" amount="PARENT.PREMIUM" input="none" premium="DS.RATE[0][0]*QUANTITY"
 		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<data>
-			<item parser="dds" value="FSH00004" />
+			<item parser="dds" value="STL00002" />
 		</data>
 
 		<init>
@@ -14,16 +14,13 @@
 
 		<param>
 			<pay>
+
 				<item code="exempt" />
 			</pay>
 			<insure>
-				<item code="parent" />
+				<item code="exempt" />
 			</insure>
 		</param>
-
-		<duty>
-			<item name="附加康乐一生投保人豁免重大疾病保险（升级款）" code="120111" premium="PREMIUM">AMOUNT</item>
-		</duty>
 
 		<attachment>
 			<coverage filter="coverage" parser="coverage">
@@ -44,8 +41,11 @@
 			<if condition="APPLICANT == INSURANT">
 				投保人豁免不能给本人投保
 			</if>
-			<if condition="AGE > 50" type="customer">
-				投保人年龄不能大于50周岁
+			<if condition="AGE > 60 and PAY_PERIOD >= 2 and PAY_PERIOD le 10">
+				投保人豁免，2-10年交，投保人年龄应在18至60周岁之间
+			</if>
+			<if condition="AGE > 50 and PARENT.PAY_PERIOD == 15">
+				投保人豁免，缴费期间为15年，投保人年龄应在18至50周岁之间
 			</if>
 		</rule>
 	</product>

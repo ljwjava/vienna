@@ -54,6 +54,10 @@ env.parseDict = function(dict) {
 	return dict.map(v => [v.code, v.text]);
 };
 
+env.isIdCert = function(certType) {
+	return env.formOpt.certTypeId == certType;
+};
+
 env.checkCustomer = function(f) {
 	let r = {};
 	if ((f.certType == env.formOpt.certTypeId) && (f.certNo != null && f.certNo.length == 18)) {
@@ -80,8 +84,8 @@ class Beneficiary extends Form {
 		let v = [
             {name:"是被保险人的", code:"relation", type:"select", options:env.formOpt.beneficiary.relation, showAddit: false},
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.beneficiary.cert},
-			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
+			{name:'证件类型', code:"certType", type:"select", refresh:"yes", certTypeId:env.certTypeId, options:env.formOpt.beneficiary.cert},
+			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this), isIdCert:env.isIdCert}
 		];
 		if (env.formOpt.beneficiary.certValidateBegin)
             v.push({name:'证件有效起期', code:"certValidateBegin", type:"date", req:"yes"});
@@ -115,7 +119,7 @@ class ApplicantForm extends Form {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.applicant.cert},
-			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
+			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this), isIdCert:env.isIdCert}
 		];
         if (env.formOpt.applicant.certValidateBegin)
             v.push({name:'证件有效起期', code:"certValidateBegin", type:"date", req:"yes"});
@@ -144,8 +148,8 @@ class InsurantForm extends Form {
 	form() {
 		let v = [
 			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
-			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.insurant.cert},
-			{name:'证件号码', code:"certNo", type:"idcard", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this)}
+			{name:'证件类型', code:"certType", type:"select", refresh:"yes", certTypeId:env.certTypeId, options:env.formOpt.insurant.cert},
+			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this), isIdCert:env.isIdCert}
 		];
         if (env.formOpt.insurant.certValidateBegin)
             v.push({name:'证件有效起期', code:"certValidateBegin", type:"date", req:"yes"});
@@ -373,8 +377,8 @@ var Ground = React.createClass({
 				let c = self.refs[v.name];
 				r.push({
 					name: v.label,
-					val: v.widget == 'static' || v.widget == 'label' ? v.value : c.val(),
-					text: v.widget == 'static' || v.widget == 'label' ? v.value : (c.text ? c.text() : c.val())
+					val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : c.val(),
+					text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (c.text ? c.text() : c.val())
 				});
 			}
 		});

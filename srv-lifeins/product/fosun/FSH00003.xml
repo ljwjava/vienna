@@ -10,7 +10,7 @@
 		type_code="mild"
 		is_main="no"
 		is_rider="yes"
-		amount="PARENT.AMOUNT*0.3"
+		amount="PARENT.AMOUNT*0.2"
 		input="none"
 		sequence="1000"
 		sale_begin_date="2018-01-01"
@@ -37,10 +37,6 @@
 		<interest>
 			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
 		</interest>
-
-		<duty>
-			<item name="110323" code="110251" premium="PREMIUM">AMOUNT</item>
-		</duty>
 
 		<attachment>
 		</attachment>

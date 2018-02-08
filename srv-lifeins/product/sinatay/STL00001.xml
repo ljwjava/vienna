@@ -45,6 +45,9 @@
 			<if condition="DAY lt 28 or AGE > 55" type="customer">
 				投保年龄须为出生满28天~55周岁
 			</if>
+			<if condition="PAY_PERIOD + AGE > 70">
+				交费期满时，不能超过70岁
+			</if>
 			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
 				保额最低为10000元，且必须为1000元的整数倍。
 			</if>

@@ -41,7 +41,8 @@
 		</input>
 
 		<init>
-			<item name="OTHER">return {PLAN_CODE: "JH11002501", PRODUCT_CODE: "110025"}</item>
+			<item name="OTHER">return {PLAN_CODE: "JH1100321", PRODUCT_CODE: "110032"}</item>
+			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
 		</init>
 
 		<interest>
@@ -67,7 +68,7 @@
 			<if condition="OCCUPATION_CODE == null" level="alert">
 				未确定职业，部分职业可能投保失败
 			</if>
-			<if condition="OCCUPATION_CODE != null and DS.OCC_RANK[0][0] > 4">
+			<if condition="OCCUPATION_CODE != null and (DS.OCC_RANK[0][0] > 4 || DS.OCC_RANK[0][0] == 0)">
 				该职业暂时无法投保
 			</if>
 			<if condition="AGE + PAY_PERIOD >= 70">
