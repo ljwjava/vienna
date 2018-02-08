@@ -47,14 +47,26 @@ public class IYunBao extends HashMap<String, Object>
                     String productName = "";
 
                     Map map = fee.getExtra();
-                    if (map != null && (fee.getType() == 1 || fee.getType() == 2))
+                    if (map != null)    // (fee.getType() == 1 || fee.getType() == 2)
                     {
-                        productName = Common.trimStringOf(map.get("productName"));
-                        iybPolicyId = Common.toLong(map.get("iybPolicyId"));
-                        parentUserId = Common.toLong(map.get("parentUserId"));
-                        fromUserId = Common.toLong(map.get("fromUserId"));
-                        productId = Common.toLong(map.get("productId"));
-                        premium = Common.toDouble(map.get("premium"));
+                        if(!Common.isEmpty(map.get("productName"))) {
+                            productName = Common.trimStringOf(map.get("productName"));
+                        }
+                        if(!Common.isEmpty(map.get("iybPolicyId"))) {
+                            iybPolicyId = Common.toLong(map.get("iybPolicyId"));
+                        }
+                        if(!Common.isEmpty(map.get("parentUserId"))) {
+                            parentUserId = Common.toLong(map.get("parentUserId"));
+                        }
+                        if(!Common.isEmpty(map.get("fromUserId"))) {
+                            fromUserId = Common.toLong(map.get("fromUserId"));
+                        }
+                        if(!Common.isEmpty(map.get("productId"))) {
+                            productId = Common.toLong(map.get("productId"));
+                        }
+                        if(!Common.isEmpty(map.get("premium"))) {
+                            premium = Common.toDouble(map.get("premium"));
+                        }
                     }
 
                     if (premium > 0 && fee.getAmount() > premium) {
