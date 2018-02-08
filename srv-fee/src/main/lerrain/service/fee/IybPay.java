@@ -34,17 +34,23 @@ public class IybPay
 		content.put("messageTitle", messageTitle);
 		content.put("commType", "D");	// 默认直佣
 
+		if(bizId != null && bizId > 0){
+			content.put("bizId", bizId);	// 保单ID
+		}
+		if(productId != null && productId > 0){
+			content.put("productId", productId);	// 保单对应产品
+		}
+		if(premium > 0){
+			content.put("premium", (new BigDecimal(premium)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString());	// 保单对应保费
+		}
+
 		// 直佣/间佣 需关联保单号、产品等信息
 		if(type == 2 || type == 1){
-			if(bizId != null && bizId > 0){
-				content.put("bizId", bizId);	// 保单ID
-			}else{
+			if(bizId == null || bizId <= 0){	// 保单ID
 				System.out.println("佣金发送失败，佣金需提供保单ID[policyId]");
 				return null;
 			}
-			if(productId != null && productId > 0){
-				content.put("productId", productId);	// 保单对应产品
-			}else{
+			if(productId == null || productId <= 0){	// 保单对应产品
 				System.out.println("佣金发送失败，佣金需提供产品ID[productId]");
 				return null;
 			}
