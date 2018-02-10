@@ -10,11 +10,30 @@ public class PolicyBase
 {
     Map<String, Object> val;
 
-    List<PolicyEndorse> endorse;
+    List<PolicyEndorse> list;
 
     public PolicyBase(Map<String, Object> val)
     {
         this.val = val;
+    }
+
+    public void setEndorse(List<Map<String, Object>> el)
+    {
+        if (list == null || list.isEmpty())
+            return;
+
+        for (Map<String, Object> val : el)
+            list.add(new PolicyEndorse(this, val));
+    }
+
+    public List<PolicyEndorse> getEndorse()
+    {
+        return list;
+    }
+
+    public Date getDate(String key)
+    {
+        return Common.dateOf(get(key));
     }
 
     public Object get(String key)
@@ -42,16 +61,6 @@ public class PolicyBase
         return Common.toDouble(get(key));
     }
 
-    public List<PolicyEndorse> getEndorse()
-    {
-        return endorse;
-    }
-
-    public void setEndorse(List<PolicyEndorse> endorse)
-    {
-        this.endorse = endorse;
-    }
-
     public String getPolicyNo()
     {
         return this.getString("policy_no");
@@ -67,17 +76,8 @@ public class PolicyBase
         return this.getLong("id");
     }
 
-    /**
-     * 批单时才有
-     * @return
-     */
-    public String getEndorseNo()
+    public Date getUpdateTime()
     {
-        return this.getString("endorse_no");
-    }
-
-    public Date getRegisterTime()
-    {
-        return Common.dateOf(this.get("register_time"));
+        return this.getDate("update_time");
     }
 }

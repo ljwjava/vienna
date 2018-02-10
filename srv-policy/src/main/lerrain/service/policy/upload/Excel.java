@@ -17,7 +17,7 @@ public class Excel
     public static String[][] TITLE = new String[][] {
             {"*险种类别", "biz_type"},
             {"*操作", "operate"},
-            {"*业务员", "owner"},
+            {"*业务员", "agent_name"},
             {"*保单号", "policy_no"},
             {"批改单号", "endorse_no"},
             {"批改时间", "endorse_time", "time"},
@@ -25,9 +25,9 @@ public class Excel
             {"*险种", "ins_type"},
             {"*被保险人", "applicant_name"},
             {"车牌号", "vehicle_plate_no"},
-            {"*投保时间", "apply_time", "time"},
+            {"*投保时间", "insure_time", "time"},
             {"保险起期", "effective_time", "time"},
-            {"保险止期", "end_time", "time"},
+            {"保险止期", "finish_time", "time"},
             {"*保费", "premium", "number"},
             {"*代理费率", "fee_rate", "number"},
             {"代理费", "fee", "number"},
@@ -53,20 +53,51 @@ public class Excel
         MAPPING.put("operate", "*");
         MAPPING.put("endorse_no", "*");
         MAPPING.put("endorse_time", "*");
+        MAPPING.put("ins_type", "type");
+        MAPPING.put("biz_type", "*");
+        MAPPING.put("fee_rate", "*");
+        MAPPING.put("fee", "*");
+        MAPPING.put("cms_rate", "*");
+        MAPPING.put("cms", "*");
+        MAPPING.put("source", "*");
+        MAPPING.put("project_name", "*");
+        MAPPING.put("happen", "*");
+        MAPPING.put("claim", "*");
+        MAPPING.put("amount", "*");
+        MAPPING.put("register_time", "*");
+        MAPPING.put("bonus", "*");
+        MAPPING.put("agent_name", "*");
 
-        ENDORSE.put("company_name", "*");
+        ENDORSE.put("company_name", "company_id");
         ENDORSE.put("operate", "*");
-        ENDORSE.put("bonus", "*");
+        ENDORSE.put("ins_type", "type");
+        ENDORSE.put("biz_type", "*");
+        ENDORSE.put("fee_rate", "*");
+        ENDORSE.put("fee", "*");
+        ENDORSE.put("cms_rate", "*");
+        ENDORSE.put("cms", "*");
         ENDORSE.put("source", "*");
         ENDORSE.put("project_name", "*");
-        ENDORSE.put("apply_time", "*");
-        ENDORSE.put("vehicle_plate_no", "*");
-        ENDORSE.put("policy_no", "*");
-        ENDORSE.put("ins_type", "*");
-        ENDORSE.put("biz_type", "*");
+        ENDORSE.put("happen", "*");
+        ENDORSE.put("claim", "*");
+        ENDORSE.put("amount", "*");
+        ENDORSE.put("register_time", "*");
+        ENDORSE.put("bonus", "*");
+        ENDORSE.put("agent_name", "*");
+
+//        ENDORSE.put("company_name", "*");
+//        ENDORSE.put("operate", "*");
+//        ENDORSE.put("bonus", "*");
+//        ENDORSE.put("source", "*");
+//        ENDORSE.put("project_name", "*");
+//        ENDORSE.put("apply_time", "*");
+//        ENDORSE.put("vehicle_plate_no", "*");
+//        ENDORSE.put("policy_no", "*");
+//        ENDORSE.put("ins_type", "*");
+//        ENDORSE.put("biz_type", "*");
 
         DICT.put("biz_type", JSON.parseObject("{'车险':'1'}"));
-        DICT.put("ins_type", JSON.parseObject("{'交强险':'1', '商业险':'2'}"));
+        DICT.put("ins_type", JSON.parseObject("{'交强险':'1001', '商业险':'1002'}"));
         DICT.put("operate", JSON.parseObject("{'新单':'1', '批改':'2', '退保':'3'}"));
         DICT.put("company_name", JSON.parseObject("{'人保财险':'18', '平安财险':'9', '大地财险':'28', '国寿财险':'29', '太平洋财险':'30', '信达财险':'31', '长安财险':'32', '中华联合':'33'}"));
     }

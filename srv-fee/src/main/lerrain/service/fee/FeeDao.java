@@ -37,6 +37,21 @@ public class FeeDao
 		return c.getId();
 	}
 
+	public List<Fee> loadFee(Long platformId, Long productId, String bizNo)
+	{
+		List<Fee> r = null;
+
+		List<Map<String, Object>> list = jdbc.queryForList("select * from t_fee where platform_id = ? and biz_no = ?", platformId, bizNo);
+		if (list != null)
+		{
+			r = new ArrayList<>();
+			for (Map<String, Object> map : list)
+				r.add(Fee.feeOf(map));
+		}
+
+		return r;
+	}
+
 	public List<Fee> loadFeeReady()
 	{
 		List<Fee> r = null;

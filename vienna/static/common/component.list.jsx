@@ -22,11 +22,12 @@ var List = React.createClass({
         let env = this.props.env;
         env.total = this.state.content.total;
 		let cur = env.from / env.number;
+		let p1 = 4, p2 = 4;
         let page = [];
         page.push(<button key="back" type="button" className="btn btn-default" onClick={this.page.bind(this, cur - 1)}>&larr;</button>);
-		for (var i = cur - 4; i <= cur + 4; i++) {
+		for (var i = cur - p1; i <= cur + p2; i++) {
 			if (i >= 0 && i < env.total / env.number)
-				page.push(<button key={i} type="button" className="btn btn-default" onClick={this.page.bind(this, i)}>{i + 1}</button>);
+				page.push(<button key={i} type="button" className={"btn btn-" + (i == cur ? "primary" : "default")} onClick={this.page.bind(this, i)}>{i + 1}</button>);
 		}
         page.push(<button key="next" type="button" className="btn btn-default" onClick={this.page.bind(this, cur + 1)}>&rarr;</button>);
         return (

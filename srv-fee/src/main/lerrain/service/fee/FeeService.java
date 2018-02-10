@@ -108,4 +108,9 @@ public class FeeService
 			for (Fee fee : list)
 				pay(fee);
 	}
+
+	public List<Fee> getFee(Long platformId, Long productId, String bizNo)
+	{
+		return feeDao.loadFee(platformId, productId, bizNo);
+	}
 }

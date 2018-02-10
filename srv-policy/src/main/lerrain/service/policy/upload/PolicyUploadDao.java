@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public class PolicyDao
+public class PolicyUploadDao
 {
     @Autowired
     JdbcTemplate jdbc;
@@ -86,7 +86,15 @@ public class PolicyDao
         try
         {
             Map m = jdbc.queryForMap("select * from t_policy where policy_no = ? and company_id = ? and valid is null", policyNo, companyId);
-            return new PolicyBase(m);
+            PolicyBase pb = new PolicyBase(m);
+
+            if (pb != null)
+            {
+                List<Map<String, Object>> l = jdbc.queryForList("select * from t_policy_endorse where policy_no = ? and company_id = ? and valid is null", policyNo, companyId);
+                pb.setEndorse(l);
+            }
+
+            return pb;
         }
         catch (IncorrectResultSizeDataAccessException e1)
         {
@@ -119,7 +127,7 @@ public class PolicyDao
                 list.add("system");
                 list.add("system");
 
-                String s1 = "creator, create_time, updater, update_time", s2 = "?, now(), ?, now()";
+                String s1 = "platform_id, creator, create_time, updater, update_time", s2 = "6, ?, now(), ?, now()";
                 for (String[] t : Excel.TITLE)
                 {
                     String col = Excel.MAPPING.get(t[1]);
@@ -131,7 +139,7 @@ public class PolicyDao
                     s1 += ", " + col;
                     s2 += ", ?";
 
-                    list.add(pr.val.get(col));
+                    list.add(pr.get(col));
                 }
 
                 jdbc.update(String.format("insert into t_policy(%s) values(%s)", s1, s2), list.toArray());
@@ -141,7 +149,7 @@ public class PolicyDao
                 List<Object> list = new ArrayList<>();
                 list.add("system");
 
-                String s1 = "updater = ?, update_time = now()";
+                String s1 = "platform_id = 6, updater = ?, update_time = now()";
                 for (String[] t : Excel.TITLE)
                 {
                     String col = Excel.MAPPING.get(t[1]);
@@ -149,7 +157,7 @@ public class PolicyDao
                         continue;
                     if (col == null)
                         col = t[1];
-                    Object v = pr.val.get(col);
+                    Object v = pr.get(col);
                     if (v == null)
                         continue;
 
@@ -159,7 +167,6 @@ public class PolicyDao
                 }
 
                 list.add(pr.policy.getId());
-
                 jdbc.update(String.format("update t_policy set %s where id = ?", s1), list.toArray());
             }
         }
@@ -171,7 +178,7 @@ public class PolicyDao
                 list.add("system");
                 list.add("system");
 
-                String s1 = "creator, create_time, updater, update_time", s2 = "?, now(), ?, now()";
+                String s1 = "platform_id, creator, create_time, updater, update_time", s2 = "6, ?, now(), ?, now()";
                 for (String[] t : Excel.TITLE)
                 {
                     String col = Excel.MAPPING.get(t[1]);
@@ -183,7 +190,7 @@ public class PolicyDao
                     s1 += ", " + col;
                     s2 += ", ?";
 
-                    list.add(pr.val.get(col));
+                    list.add(pr.get(col));
                 }
 
                 jdbc.update(String.format("insert into t_policy(%s) values(%s)", s1, s2), list.toArray());
@@ -194,28 +201,24 @@ public class PolicyDao
             if (pr.policy == null)
                 throw new RuntimeException("该批改单找不到可以挂靠的保单");
 
-            Map m = null;
-            try
+            PolicyEndorse endorse = null;
+            for (PolicyEndorse pe : pr.policy.getEndorse())
             {
-                m = jdbc.queryForMap("select * from t_policy_endorse where policy_id = ? and endorse_no = ? and valid is null", pr.policy.getId(), pr.getEndorseNo());
-            }
-            catch (IncorrectResultSizeDataAccessException e1)
-            {
-                if (e1.getActualSize() > 1)
-                    throw new RuntimeException("有重复的批改单");
-            }
-            catch (Exception e)
-            {
+                if (pe.getEndorseNo().equals(pr.getEndorseNo()))
+                {
+                    endorse = pe;
+                    break;
+                }
             }
 
-            if (m == null)
+            if (endorse == null)
             {
                 List<Object> list = new ArrayList<>();
                 list.add(pr.policy.getId());
                 list.add("system");
                 list.add("system");
 
-                String s1 = "policy_id, creator, create_time, updater, update_time", s2 = "?, ?, now(), ?, now()";
+                String s1 = "platform_id, policy_id, creator, create_time, updater, update_time", s2 = "6, ?, ?, now(), ?, now()";
                 for (String[] t : Excel.TITLE)
                 {
                     String col = Excel.ENDORSE.get(t[1]);
@@ -227,7 +230,7 @@ public class PolicyDao
                     s1 += ", " + col;
                     s2 += ", ?";
 
-                    list.add(pr.val.get(col));
+                    list.add(pr.get(col));
                 }
 
                 jdbc.update(String.format("insert into t_policy_endorse(%s) values(%s)", s1, s2), list.toArray());
@@ -237,7 +240,7 @@ public class PolicyDao
                 List<Object> list = new ArrayList<>();
                 list.add("system");
 
-                String s1 = "updater = ?, update_time = now()";
+                String s1 = "platform_id = 6, updater = ?, update_time = now()";
                 for (String[] t : Excel.TITLE)
                 {
                     String col = Excel.ENDORSE.get(t[1]);
@@ -245,7 +248,7 @@ public class PolicyDao
                         continue;
                     if (col == null)
                         col = t[1];
-                    Object v = pr.val.get(col);
+                    Object v = pr.get(col);
                     if (v == null)
                         continue;
 
@@ -254,8 +257,7 @@ public class PolicyDao
                     list.add(v);
                 }
 
-                list.add(m.get("id"));
-
+                list.add(endorse.getId());
                 jdbc.update(String.format("update t_policy_endorse set %s where id = ?", s1), list.toArray());
             }
         }

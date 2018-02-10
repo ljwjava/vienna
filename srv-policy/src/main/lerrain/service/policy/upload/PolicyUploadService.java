@@ -17,7 +17,7 @@ import java.util.Map;
 public class PolicyUploadService
 {
     @Autowired
-    PolicyDao policyDao;
+    PolicyUploadDao policyUploadDao;
 
     public String upload(Long userId, List<Object[]> tab)
     {
@@ -96,7 +96,7 @@ public class PolicyUploadService
                 }
 
                 PolicyReady pr = new PolicyReady(m);
-                if (pr.getPolicyNo() == null || pr.getPolicyNo().startsWith("TESTXD00") || pr.getEndorseNo() != null || pr.getEndorseNo().startsWith("TESTBQ00"))
+                if (pr.getPolicyNo() == null || pr.getPolicyNo().startsWith("TESTXD00") || (pr.getEndorseNo() != null && pr.getEndorseNo().startsWith("TESTBQ00")))
                     continue;
 
                 String res = pr.verify();
@@ -107,6 +107,7 @@ public class PolicyUploadService
             }
             catch (Exception e)
             {
+                e.printStackTrace();
                 err.add("上传错误：" + e.toString() + " - " + JSON.toJSON(row));
             }
         }
@@ -114,7 +115,7 @@ public class PolicyUploadService
         if (!err.isEmpty())
             throw new RuntimeException(JSON.toJSONString(err));
 
-        return policyDao.upload(list);
+        return policyUploadDao.upload(list);
     }
 
     private String t(Object v)
@@ -131,7 +132,7 @@ public class PolicyUploadService
         int err = 0;
         int idx = 0;
 
-        List<PolicyReady> list = policyDao.loadBatch(batchUUID);
+        List<PolicyReady> list = policyUploadDao.loadBatch(batchUUID);
         for (PolicyReady pr : list)
         {
             idx++;
@@ -143,10 +144,10 @@ public class PolicyUploadService
                 String policyNo = pr.getString("policy_no");
                 Long companyId = pr.getLong("company_id");
 
-                PolicyBase policy = policyDao.find(policyNo, companyId);
+                PolicyBase policy = policyUploadDao.find(policyNo, companyId);
                 if (pr.compare(policy))
                 {
-                    if (policyDao.savePolicy(pr))
+                    if (policyUploadDao.savePolicy(pr))
                         pr.result = 1;
                     else
                         throw new RuntimeException("保存失败");
@@ -168,7 +169,7 @@ public class PolicyUploadService
                 pr.memo = e.getMessage();
             }
 
-            policyDao.setResult(pr);
+            policyUploadDao.setResult(pr);
         }
 
         return err;

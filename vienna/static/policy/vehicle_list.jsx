@@ -51,20 +51,21 @@ class PolicyList extends List {
         );
     }
     buildTableLine(v) {
-        let date = new Date(v.applyTime);
+        let date = new Date(v.insureTime);
+        if (!v.fee) v.fee = {};
         return (
 			<tr key={v.id}>
                 <td>{env.company[v.companyId]}</td>
-                <td>{env.bizType[v.bizType]}</td>
-				<td>{env.insType[v.insType]}</td>
+                <td>{env.bizType[Math.round(v.type/1000)]}</td>
+				<td>{env.insType[v.type]}</td>
                 <td>{v.productName}</td>
                 <td>{v.policyNo}</td>
 				<td>{v.applicantName}</td>
                 <td>{v.vehiclePlateNo}</td>
 				<td>{date.format("yyyy-MM-dd")}</td>
 				<td style={{textAlign:"right"}}>{v.premium}</td>
-                <td style={{textAlign:"right"}}>{v.fee}</td>
-				<td style={{textAlign:"right"}}>{v.cms}</td>
+                <td style={{textAlign:"right"}}>{v.fee.fee}</td>
+				<td style={{textAlign:"right"}}>{v.fee.cms}</td>
                 <td>{v.owner}</td>
 				<td>
                     <div className="btn-group" role="group">

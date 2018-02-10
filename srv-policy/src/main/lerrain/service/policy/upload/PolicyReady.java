@@ -22,6 +22,20 @@ public class PolicyReady extends PolicyBase
         super(val);
     }
 
+    /**
+     * 批单时才有
+     * @return
+     */
+    public String getEndorseNo()
+    {
+        return this.getString("endorse_no");
+    }
+
+    public Date getRegisterTime()
+    {
+        return this.getDate("register_time");
+    }
+
     public String verify()
     {
         String policyNo = getString("policy_no");
@@ -127,14 +141,16 @@ public class PolicyReady extends PolicyBase
 
             if (endorse > 0)
             {
+                String endorseNo = this.getEndorseNo();
+
                 List<PolicyEndorse> ls = policy.getEndorse();
-                if (ls != null) for (PolicyBase p : ls)
+                if (ls != null) for (PolicyEndorse p : ls)
                 {
-                    if (p.getEndorseNo().equals(p.getEndorseNo()))
+                    if (endorseNo.equals(p.getEndorseNo()))
                     {
                         //以登记时间、导入时间判断是否需要覆盖
                         Date d2 = this.getRegisterTime();
-                        Date d1 = p.getRegisterTime();
+                        Date d1 = p.getUpdateTime();
 
                         if ((d1 == null && d2 == null) || (d1 == null && d2 != null) || (d1 != null && d2 != null && (d1.equals(d2) || d1.before(d2))))
                         {
@@ -158,7 +174,7 @@ public class PolicyReady extends PolicyBase
             {
                 //以登记时间、导入时间判断是否需要覆盖
                 Date d2 = this.getRegisterTime();
-                Date d1 = policy.getRegisterTime();
+                Date d1 = policy.getUpdateTime();
 
                 if ((d1 == null && d2 == null) || (d1 == null && d2 != null) || (d1 != null && d2 != null && (d1.equals(d2) || d1.before(d2))))
                 {

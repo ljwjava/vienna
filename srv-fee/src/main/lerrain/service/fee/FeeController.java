@@ -107,4 +107,19 @@ public class FeeController
 
         return res;
     }
+
+    @RequestMapping("/fee.json")
+    @ResponseBody
+    public JSONObject fee(@RequestBody JSONObject c)
+    {
+        Long platformId = c.getLong("platformId");
+        Long productId = c.getLong("productId");
+        String bizNo = c.getString("bizNo");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", cs.getFee(platformId, productId, bizNo));
+
+        return res;
+    }
 }
