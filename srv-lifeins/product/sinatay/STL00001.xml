@@ -46,7 +46,13 @@
 				投保年龄须为出生满28天~55周岁
 			</if>
 			<if condition="PAY_PERIOD + AGE > 70">
-				交费期满时，不能超过70岁
+				交费期满时，被保险人不能超过70岁
+			</if>
+			<if condition="PAY_PERIOD == 10 and AGE > 50">
+				交费期10年时，被保险人不能超过50岁
+			</if>
+			<if condition="PAY_PERIOD >= 20 and AGE > 40">
+				交费期20/30年时，被保险人不能超过40岁
 			</if>
 			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
 				保额最低为10000元，且必须为1000元的整数倍。

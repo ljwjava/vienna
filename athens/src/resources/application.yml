@@ -1,6 +1,6 @@
 env: dev
 
-scope: iyb++,btbx++,data,user
+scope: iyb++,btbx++,data++,user
 
 server:
   port: 7666

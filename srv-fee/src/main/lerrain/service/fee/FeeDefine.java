@@ -26,6 +26,56 @@ public class FeeDefine
         this.unit = unit;
     }
 
+    public Object getF1()
+    {
+        return f1;
+    }
+
+    public void setF1(Object f1)
+    {
+        this.f1 = f1;
+    }
+
+    public Object getF2()
+    {
+        return f2;
+    }
+
+    public void setF2(Object f2)
+    {
+        this.f2 = f2;
+    }
+
+    public Object getF3()
+    {
+        return f3;
+    }
+
+    public void setF3(Object f3)
+    {
+        this.f3 = f3;
+    }
+
+    public Object getF4()
+    {
+        return f4;
+    }
+
+    public void setF4(Object f4)
+    {
+        this.f4 = f4;
+    }
+
+    public Object getF5()
+    {
+        return f5;
+    }
+
+    public void setF5(Object f5)
+    {
+        this.f5 = f5;
+    }
+
     public int getFreeze()
     {
         return freeze;

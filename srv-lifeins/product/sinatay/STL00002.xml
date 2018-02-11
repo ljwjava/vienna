@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="STL00002" corporation_id="sinatay" code="TCIR20" name="附加（B款）投保人豁免保费重大疾病" name_abbr="附加投保人豁免B" unit="1" amount="PARENT.PREMIUM" input="none" premium="DS.RATE[0][0]*QUANTITY"
+	<product id="STL00002" corporation_id="sinatay" code="33F00030" name="附加（B款）投保人豁免保费重大疾病" name_abbr="附加投保人豁免B" unit="1000" amount="PARENT.PREMIUM" input="none" premium="DS.RATE[0][0]*QUANTITY"
 		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<data>
@@ -14,25 +14,23 @@
 
 		<param>
 			<pay>
-
 				<item code="exempt" />
 			</pay>
 			<insure>
-				<item code="exempt" />
+				<item code="parent" />
 			</insure>
 		</param>
 
 		<attachment>
 			<coverage filter="coverage" parser="coverage">
-				<paragraph title="身故豁免保险费">
-					<item>若被保险人于等待期内因疾病导致身故，我们将向您无息返还本附加合同累计已交纳的保险费，本附加合同效力终止。</item>
-					<item>若被保险人因意外伤害或于等待期后因疾病导致身故，则我们自被保险人身故的下一个保险费约定支付日开始，豁免主合同及其附加合同后续应交纳的各期保险费至交费期限届满为止。</item>
+				<paragraph title="重大疾病豁免保险费">
+					<item>被保险人因意外伤害或于等待期后因疾病被专科医生初次确诊本附加合同所列的重大疾病(不论一种或多种)，我们自重大疾病确诊之日起的下一个保险费约定支付日开始，豁免主合同及其项下保险期间大于1年的附加合同以后 各期应交保险费，本附加合同终止。</item>
 				</paragraph>
-				<paragraph title="重大疾病或轻症疾病豁免保险费">
-				 	<item>若被保险人于等待期内发病或被确诊患有本附加合同约定的重大疾病或轻症疾病，我们将向您无息返还本附加合同累计已交纳的保险费，本附加合同效力终止。</item>
-				 	<item>若被保险人因意外伤害或于等待期后首次发病并经我们指定或认可的医院（见释义）的专科医生（见释义）确诊首次患有本附加合同约定的重大疾病或轻症疾病，则我们自被保险人被确诊首次患有本附加合同约定的重大疾病或轻症疾病的下一个保险费约定支付日开始，豁免主合同及其附加合同后续应交纳的各期保险费至交费期限届满为止。</item>
-					<item>在豁免保险费期间，我们不接受主合同及其附加合同的基本保险金额以及交费方式的变更。</item>
-					<item>本附加合同不豁免保险期间不超过一年的附加合同（含保险期间不超过一年但提供保证续保的附加合同）的保险费。</item>
+				<paragraph title="轻症疾病豁免保险费">
+					<item>被保险人因意外伤害或于等待期后因疾病被专科医生初次确诊本附加合同所列的轻症疾病(不论一种或多种)，我们自轻症疾病确诊之日起的下一个保险费约定支付日开始，豁免主合同及其项下保险期间大于1年的附加合同以后 各期应交保险费，本附加合同终止。</item>
+				</paragraph>
+				<paragraph title="身故或全残豁免保险费">
+					<item>被保险人因意外伤害或于等待期后因疾病导致身故或全残的，我们自被保险人身故或全残之日起的下一个保险费约定支付日开始，豁免主合同及其项下保险期间大于1年的附加合同以后各期应交保险费，本附加合同终止。</item>
 				</paragraph>
 			</coverage>
 		</attachment>
@@ -40,12 +38,6 @@
 		<rule>
 			<if condition="APPLICANT == INSURANT">
 				投保人豁免不能给本人投保
-			</if>
-			<if condition="AGE > 60 and PAY_PERIOD >= 2 and PAY_PERIOD le 10">
-				投保人豁免，2-10年交，投保人年龄应在18至60周岁之间
-			</if>
-			<if condition="AGE > 50 and PARENT.PAY_PERIOD == 15">
-				投保人豁免，缴费期间为15年，投保人年龄应在18至50周岁之间
 			</if>
 		</rule>
 	</product>
