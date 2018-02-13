@@ -7,22 +7,23 @@ import List from '../common/component.list.jsx';
 var env = {
     search: null,
     from: 0,
-    number: 20
+    number: 16,
+	companyType: {
+    	"1": "保险公司",
+        "2": "中介",
+        "3": "平台"
+	}
 }
 
 class MainList extends List {
     open(id) {
-        document.location.href = "channel/company.web?companyId=" + id;
+        document.location.href = "contracts.web?companyId=" + id;
     }
     componentDidMount() {
     	super.componentDidMount();
-        common.req("dict/view.json", {name: "companyType"}, r => {
-            env.companyType = r.companyType;
-            this.setState({});
-        });
 	}
     refresh() {
-        common.req("btbx/company/list.json", env, r => {
+        common.req("btbx/channel/list.json", env, r => {
             this.setState({content:r});
         });
     }

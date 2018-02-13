@@ -15,6 +15,10 @@ body {
   padding: 20px;
 }
 
+.has-margin {
+    margin: 5px 0 5px 0;
+}
+
 .popup {
   position: absolute;
   text-align: center;

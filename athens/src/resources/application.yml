@@ -36,6 +36,7 @@ service:
   fee: http://localhost:7768
   image: http://localhost:7771
   policy: http://localhost:7676
+  channel: http://localhost:7675
 
 path:
   temp: x:/temp/1/
