@@ -14,6 +14,7 @@ env.test = [{
 	begin: "2018-01-01",
 	end: "2019-01-01",
 	clauses: [{
+		id: 10001,
 		name: "和谐附加豁免保费轻症疾病保险",
 		list: [{
             pay: "5",
@@ -73,6 +74,10 @@ env.contractOf = function(l) {
 				</thead>
 				<tbody>
 					{list}
+					<tr>
+						<td colSpan="4"></td>
+						<td><span className="glyphicon glyphicon-plus"></span></td>
+					</tr>
 				</tbody>
 			</table>;
         });
@@ -125,12 +130,32 @@ var Main = React.createClass({
         let companyId = common.param("companyId");
         this.setState({contract: env.test});
     },
+	back() {
+		document.location.href = "list.web";
+	},
 	render() {
 		return (
 			<div>
-				<br/>
-				{ env.contractOf(this.state.contract) }
-				<button className="btn btn-primary btn-lg"><span className="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新的合约</button>
+				<div className="col-sm-12">
+					<ul className="nav navbar-nav">
+						<li><a onClick={this.back}><span className="glyphicon glyphicon-menu-left"></span>&nbsp;&nbsp;返回列表</a></li>
+					</ul>
+					<ul className="container-fluid nav navbar-nav navbar-right">
+					</ul>
+				</div>
+				<div className="col-sm-12">
+					{ env.contractOf(this.state.contract) }
+				</div>
+				<div className="col-sm-12">
+					<div className="nav navbar-nav">
+						<button className="btn btn-success btn-lg"><span className="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;确定</button>
+						&nbsp;&nbsp;&nbsp;
+						<button className="btn btn-danger btn-lg"><span className="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;取消</button>
+					</div>
+					<div className="container-fluid navbar-right">
+						<button className="btn btn-default btn-lg"><span className="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新的合约</button>
+					</div>
+				</div>
 			</div>
 		);
 	}
