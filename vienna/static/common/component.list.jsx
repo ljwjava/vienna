@@ -40,13 +40,11 @@ var List = React.createClass({
     },
 	render() {
 		return (
-			<div className="listC">
-				<table>
-					<thead>{ this.buildTableTitle() }</thead>
-					<tbody>{ this.state.content.list.map(v => this.buildTableLine(v)) }</tbody>
-				</table>
-				{this.buildPageAppend()}
-			</div>
+			<table className="table table-bordered">
+				<thead className="thead-light">{ this.buildTableTitle() }</thead>
+				<tbody>{ this.state.content.list.map(v => this.buildTableLine(v)) }</tbody>
+				<caption>{ this.buildPageAppend() }</caption>
+			</table>
 		);
 	}
 });

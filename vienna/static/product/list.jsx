@@ -7,7 +7,7 @@ import List from '../common/component.list.jsx';
 var env = {
     search: null,
     from: 0,
-    number: 20,
+    number: 10,
 }
 
 var TypeTree = React.createClass({
@@ -86,18 +86,16 @@ class ProductList extends List {
 
 var Main = React.createClass({
     render() {
-        return <div className="form-horizontal">
-			<div className="form-group">
+        return (
+            <div className="form-row">
                 <div className="col-sm-2">
-                    <br/>
                     <TypeTree parent={this}/>
                 </div>
                 <div className="col-sm-10">
-					<br/>
-					<ProductList ref="list" env={env}/>
-				</div>
-			</div>
-		</div>;
+                    <ProductList ref="list" env={env}/>
+                </div>
+            </div>
+        );
     }
 });
 

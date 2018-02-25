@@ -41,29 +41,19 @@ env.contractOf = function(l) {
 					<td>{x.pay}</td>
 					<td>{strOf(x.insure, "*")}</td>
 					<td width="50%">
-						<div className="has-success has-feedback">
-							<div className="has-success has-feedback col-sm-2">
-								<input type="text" className="form-control" defaultValue={0}/>
-							</div>
-							<div className="has-success has-feedback col-sm-2">
-								<input type="text" className="form-control" defaultValue={0}/>
-							</div>
-							<div className="has-success has-feedback col-sm-2">
-								<input type="text" className="form-control" defaultValue={0}/>
-							</div>
-							<div className="has-success has-feedback col-sm-2">
-								<input type="text" className="form-control" defaultValue={0}/>
-							</div>
-							<div className="has-success has-feedback col-sm-2">
-								<input type="text" className="form-control" defaultValue={0}/>
-							</div>
+						<div className="form-inline">
+							<input type="text" className="form-control col-2 mr-2" defaultValue={0}/>
+							<input type="text" className="form-control col-2 mr-2" defaultValue={0}/>
+							<input type="text" className="form-control col-2 mr-2" defaultValue={0}/>
+							<input type="text" className="form-control col-2 mr-2" defaultValue={0}/>
+							<input type="text" className="form-control col-2" defaultValue={0}/>
 						</div>
 					</td>
 					<td><span className="glyphicon glyphicon-remove"></span></td>
 				</tr>;
 			});
-			return <table>
-				<thead>
+			return <table className="table table-bordered">
+				<thead className="thead-light">
 					<tr>
 						<th><div>条款</div></th>
 						<th><div>交费</div></th>
@@ -81,42 +71,42 @@ env.contractOf = function(l) {
 				</tbody>
 			</table>;
         });
-        return <div className="panel panel-primary">
-			<div className="panel-heading">
-				<h3 className="panel-title">合约（{v.begin} &rarr; {v.end}）</h3>
-			</div>
-			<div className="panel-body">
-				<div className="form-group has-success has-feedback">
-					<div className="col-sm-4">
-						<label className="control-label col-sm-3">名称</label>
-						<div className="col-sm-9">
+        return <div className="card border-info mb-3">
+			<div className="card-header text-white bg-info">合约</div>
+			<div className="card-body text-secondary">
+				<div>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>名称</label>
 							<input type="text" className="form-control" defaultValue={v.name}/>
 						</div>
-					</div>
-					<div className="col-sm-4">
-						<label className="control-label col-sm-3">起始时间</label>
-						<div className="col-sm-9">
-							<input type="text" className="form-control" defaultValue={v.begin}/>
+						<div className="col-md-4 mb-3">
+							<label>甲方（付款方）</label>
+							<input type="text" className="form-control" defaultValue={v.partyA}/>
+						</div>
+						<div className="col-md-4 mb-3">
+							<label>乙方（收款方）</label>
+							<input type="text" className="form-control" defaultValue={v.partyB}/>
 						</div>
 					</div>
-					<div className="col-sm-4">
-						<label className="control-label col-sm-3">结束时间</label>
-						<div className="col-sm-9">
-							<input type="text" className="form-control" defaultValue={v.end}/>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>名称</label>
+							<input type="text" className="form-control" defaultValue={v.name}/>
+						</div>
+						<div className="col-md-4 mb-3">
+							<label>起始时间</label>
+							<input type="text" className="form-control is-valid" defaultValue={v.begin}/>
+						</div>
+						<div className="col-md-4 mb-3">
+							<label>结束时间</label>
+							<input type="text" className="form-control is-valid" defaultValue={v.end}/>
 						</div>
 					</div>
 				</div>
-				<br/><br/>
 				<div className="panel panel-primary">
-					<div className="panel-heading">
-						<h3 className="panel-title">文档附件（拖拽至此上传）</h3>
-					</div>
-					<div className="panel-body">
-					</div>
 				</div>
-				<div className="listC">
-					{fee}
-				</div>
+				{fee}
 			</div>
 		</div>
     });
@@ -135,26 +125,12 @@ var Main = React.createClass({
 	},
 	render() {
 		return (
-			<div>
-				<div className="col-sm-12">
-					<ul className="nav navbar-nav">
-						<li><a onClick={this.back}><span className="glyphicon glyphicon-menu-left"></span>&nbsp;&nbsp;返回列表</a></li>
-					</ul>
-					<ul className="container-fluid nav navbar-nav navbar-right">
-					</ul>
-				</div>
-				<div className="col-sm-12">
-					{ env.contractOf(this.state.contract) }
-				</div>
-				<div className="col-sm-12">
-					<div className="nav navbar-nav">
-						<button className="btn btn-success btn-lg"><span className="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;确定</button>
-						&nbsp;&nbsp;&nbsp;
-						<button className="btn btn-danger btn-lg"><span className="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;取消</button>
-					</div>
-					<div className="container-fluid navbar-right">
-						<button className="btn btn-default btn-lg"><span className="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新的合约</button>
-					</div>
+			<div className="mt-3">
+				{ env.contractOf(this.state.contract) }
+				<div className="form-inline">
+					<button className="btn btn-info mr-auto">新的合约</button>
+					<button className="btn btn-success mr-2">全部保存</button>
+ 					<button className="btn btn-danger">取消</button>
 				</div>
 			</div>
 		);

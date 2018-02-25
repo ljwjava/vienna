@@ -3,7 +3,7 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	// return "http://www.lerrain.com:7666/" + url;
+	return "http://localhost:7666/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {

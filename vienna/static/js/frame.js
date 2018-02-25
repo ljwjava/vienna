@@ -10,15 +10,15 @@ $(document).ready( function() {
     common.req("user/info.json", null, function(r) {
         var str = "";
         r.forEach(v => {
-            str += '<li class="dropdown">';
-            str += '<a data-toggle="dropdown" href="#">' + v.name + '&nbsp;∨</a>';
-            str += '<ul class="dropdown-menu">';
+            str += '<li class="nav-item dropdown">';
+            str += '<a class="nav-link dropdown-toggle" id="menu'+v.code+'" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">' + v.name + '</a>';
+            str += '<div class="dropdown-menu" aria-labelledby="menu'+v.code+'">';
             v.item.forEach(i => {
-                str += '<li><a onclick="document.location.href = common.link(\'' + i.link + '\');">' + i.name + '</a></li>';
+                str += '<a class="dropdown-item" onclick="document.location.href = common.link(\'' + i.link + '\');">' + i.name + '</a>';
             });
-            str += '</ul></li>';
+            str += '</div></li>';
         });
-        $("#menu").html('<ul class="nav navbar-nav">' + str + '</ul>');
+        $("#menu").html('<ul class="navbar-nav mr-auto">' + str + '</ul>');
     }, function(r) {
         console.log(r);
     });
