@@ -34,6 +34,17 @@
 
 		<init>
 			<item name="R03">RIDER('HUA00003')</item>
+			<item name="R04">RIDER('HUA00004')</item>
+			<item name="SAVE_TO">"R04"</item>
+			<item name="SAVE_BOL">
+				if ((R03 != null and R04 != null and SAVE_TO == "R03") or (R03 != null and R04 == null)) {
+					return 3;
+				} else if ((R03 != null and R04 != null and SAVE_TO == "R04") or (R03 == null and R04 != null)) {
+					return 4;
+				} else {
+					return 0;
+				}
+			</item>
 		</init>
 
 		<rider>
@@ -54,8 +65,25 @@
 			<item name="SUV_T" param="A1" formula="IT.CSV(A1)+IT.SUV_S(A1)"/>
 			<item name="DIE_T" param="A1" formula="IT.AMT(A1)+IT.SUV_S(A1-1)"/>
 
-			<item name="X_SUV" param="A1" formula="R03 != null and A1+AGE le R03.DRAW_AGE_VALUE-5 ? 0 : IT.SUV(A1)"/>
-			<item name="X_SUV_S" param="A1" formula="(A1>0?IT.X_SUV_S(A1-1):0)+IT.X_SUV(A1)+IT.F80(A1)"/>
+			<item name="SAVE03" param="A1">
+				if (SAVE_BOL == 3) {
+					return A1+AGE le R03.DRAW_AGE_VALUE-5 ? IT.DRAW(A1) : 0;
+				} else {
+					return 0;
+				}
+			</item>
+			<item name="SAVE04" param="A1">
+				if (SAVE_BOL == 3 and R04 != null) {
+					return A1+AGE > R03.DRAW_AGE_VALUE-5 ? IT.DRAW(A1) : 0;
+				} else if (SAVE_BOL == 4) {
+					return IT.DRAW(A1);
+				} else {
+					return 0;
+				}
+			</item>
+
+			<item name="X_SUV" param="A1" formula="IT.DRAW(A1)-IT.SAVE03(A1)-IT.SAVE04(A1)"/>
+			<item name="X_SUV_S" param="A1" formula="(A1>0?IT.X_SUV_S(A1-1):0)+IT.X_SUV(A1)"/>
 			<item name="X_SUV_T" param="A1" formula="IT.CSV(A1)+IT.X_SUV_S(A1)"/>
 			<item name="X_DIE_T" param="A1" formula="IT.AMT(A1)+IT.X_SUV_S(A1)-IT.X_SUV(A1)"/>
 		</interest>
@@ -71,11 +99,9 @@
 						<blank row="1">'身故保险金'</blank>
 						<blank row="1">'生存金'</blank>
 						<blank row="1">'祝寿金'</blank>
-						<blank row="1">'生存总利益'</blank>
-						<blank row="1">'身故总利益'</blank>
 						<blank row="1">'现金价值'</blank>
 					</row>
-					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
 						<row>
 							<blank style="##0">I</blank>
 							<blank style="##0">AGE+I</blank>
@@ -84,9 +110,11 @@
 							<blank align="right" style="########0.00">IT.AMT(I)</blank>
 							<blank align="right" style="########0.00">IT.SUV(I)</blank>
 							<blank align="right" style="########0.00">IT.F80(I)</blank>
-							<blank align="right" style="########0.00">IT.SUV_T(I)</blank>
-							<blank align="right" style="########0.00">IT.DIE_T(I)</blank>
 							<blank align="right" style="########0.00">IT.CSV(I)</blank>
+							<blank align="right" style="########0.00">IT.X_SUV(I)</blank>
+							<blank align="right" style="########0.00">IT.X_SUV_S(I)</blank>
+							<blank align="right" style="########0.00">IT.X_SUV_T(I)</blank>
+							<blank align="right" style="########0.00">IT.X_DIE_T(I)</blank>
 						</row>
 					</loop>
 				</table>
