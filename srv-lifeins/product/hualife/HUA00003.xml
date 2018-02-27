@@ -44,15 +44,19 @@
 		</init>
 
 		<interest>
-			<item name="PRM" param="A1">(A1==0?PREMIUM:0)+(PARENT.IT.SUV(A1))</item>
+			<item name="PRM_P" param="A1">A1+AGE>DRAW_AGE_VALUE-5?0:PARENT.IT.SUV(A1)</item>
+			<item name="PRM" param="A1">(A1==0?PREMIUM:0)+IT.PRM_P(A1)</item>
 			<item name="PRM_S" param="A1">(A1==0?0:IT.PRM_S(A1-1))+IT.PRM(A1)</item>
 			<item name="AMT" param="A1">A1+AGE>DRAW_AGE_VALUE-5?0:IT.PRM(A1)/UNIT*DS.RATE[AGE+A1][0]</item>
 			<item name="AMT_S" param="A1">(A1==0?0:IT.AMT_S(A1-1))+IT.AMT(A1)</item>
 
 			<item name="DRAW" param="A1">AGE+A1>=DRAW_AGE_VALUE?IT.AMT_S(A1):0</item>
+			<item name="DRAW_S" param="A1">(A1>0?IT.DRAW_S(A1-1):0)+IT.DRAW(A1)</item>
 			<item name="CV" param="A1" formula="A1==0?0:DS.CSV[A1-1][0]*IT.AMT_S(A1-1)/UNIT"/>
-			<item name="SUV_T" param="A1" formula="IT.CV(A1)"/>
-			<item name="DIE_T" param="A1" formula="max(IT.CV(A1),PremiumSum(A1))"/>
+			<item name="FAMT" param="A1" formula="max(IT.CV(A1)+IT.DRAW(A1),IT.PRM_S(A1)-IT.DRAW_S(A1))"/>
+
+			<item name="X_SUV_T" param="A1" formula="IT.CV(A1)+IT.DRAW_S(A1)"/>
+			<item name="X_DIE_T" param="A1" formula="IT.FAMT(A1)-IT.PRM_P(A1)+IT.DRAW_S(A1)-IT.DRAW(A1)"/>
 		</interest>
 
 		<attachment>
@@ -65,20 +69,18 @@
 						<blank row="1">'累计保险费'</blank>
 						<blank row="1">'加保保额'</blank>
 						<blank row="1">'领取'</blank>
-						<blank row="1">'生存总利益'</blank>
-						<blank row="1">'身故总利益'</blank>
+						<blank row="1">'身故金'</blank>
 						<blank row="1">'现金价值'</blank>
 					</row>
 					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
 						<row>
-							<blank style="##0">I+1</blank>
+							<blank style="##0">I</blank>
 							<blank style="##0">AGE+I</blank>
 							<blank align="right" style="########0.00">IT.PRM(I)</blank>
 							<blank align="right" style="########0.00">IT.PRM_S(I)</blank>
 							<blank align="right" style="########0.00">IT.AMT(I)</blank>
 							<blank align="right" style="########0.00">IT.DRAW(I)</blank>
-							<blank align="right" style="########0.00">IT.SUV_T(I)</blank>
-							<blank align="right" style="########0.00">IT.DIE_T(I)</blank>
+							<blank align="right" style="########0.00">IT.FAMT(I)</blank>
 							<blank align="right" style="########0.00">IT.CV(I)</blank>
 						</row>
 					</loop>

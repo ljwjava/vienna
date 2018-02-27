@@ -32,8 +32,8 @@
 		</init>
 
 		<interest>
-			<item name="SUV_T" param="A1,A2">IT.ACT(A1,A2)</item>
-			<item name="DIE_T" param="A1,A2">IT.ACT(A1,A2)</item>
+			<item name="X_SUV_T" param="A1,A2">IT.ACT(A1,A2)</item>
+			<item name="X_DIE_T" param="A1,A2">IT.ACT(A1,A2)</item>
 			<item name="CASH" param="A1">
 				var x = 0;
 				for (var P : PLAN.PRODUCTS) {

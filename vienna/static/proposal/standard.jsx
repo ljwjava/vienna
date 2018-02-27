@@ -389,14 +389,14 @@ var Main = React.createClass({
             });
         } else if (x == "8") {
             common.req("proposal/plan/format.json", {planId: this.props.planId, style: "benefit"}, r => {
-                this.setState({mode:x, show:r.benefit, type:"benefit"});
+                this.setState({mode:x, show:r.benefit, type:"benefit2"});
             });
 		} else {
 			this.setState({mode:x, show:null, type:"text"});
 		}
 	},
 	render() {
-		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"],["7","费用"],["8","转发JSON"]];
+		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"],["7","费用"],["8","合并图"]];
 		var barList = bar.map(r => {
 			return (<li key={r[0]} className={this.state.mode == r[0] ? "active" : null}><a onClick={this.doEvent.bind(this, r[0])}>{r[1]}</a></li>);
 		});
@@ -502,6 +502,9 @@ var Show = React.createClass({
 		};
 		chart.setOption(option);
     },
+    drawTable(cc) {
+		this.setState({content: cc, type: "benefit2"});
+    },
 	showLiability(i) {
 		common.req("proposal/plan/show.json", {planId: this.props.plan.planId, type: "liability", index:i}, r => {
 			this.setState({select:i, content:r, type:"liability"});
@@ -549,9 +552,9 @@ var Show = React.createClass({
 							});
 							return (<tr style={{textAlign:"right"}}>{row}</tr>);
 						});
-						return (<table><thead>{head}</thead><tbody>{body}</tbody></table>);
+						return (<table className="table table-bordered"><thead className="thead-light">{head}</thead><tbody>{body}</tbody></table>);
 					});
-					r.push(<div className="listA">{tables}</div>);
+					r.push(<div>{tables}</div>);
 				}
 			}
 		} else if (this.props.type == "chart") {
@@ -568,6 +571,28 @@ var Show = React.createClass({
 				</div>
 			</nav>];
 			r.push(<div><div id="chart"></div></div>);
+        } else if (this.props.type == "benefit2") {
+            r = [<nav className="navbar navbar-default" style={{marginTop:"10px"}}>
+				<div className="container-fluid">
+					<div className="collapse navbar-collapse">
+						<ul className="nav navbar-nav">{this.props.content.map(v => <li><a onClick={this.drawTable.bind(this, v)}>{v.name}</a></li>)}</ul>
+					</div>
+				</div>
+			</nav>];
+            if (this.state.content != null && this.state.type == this.props.type) {
+                let v = this.state.content;
+				let head = v.title.map(t4 => <th>{t4}</th>);
+				let s = v.value[0].length;
+				let x = [];
+				for (let i=0;i<s;i++) {
+                    let y = [<td>{i}</td>, <td>{v.axis[i]}</td>];
+                    for (let j=0;j<v.value.length;j++) {
+                    	y.push(<td style={{textAlign:"right"}}>{Number(v.value[j][i]).toFixed(2)}</td>);
+                    }
+                    x.push(<tr>{y}</tr>);
+				}
+				r.push(<table className="table table-bordered"><thead className="thead-light"><tr><td>保单年度</td><td>年龄</td>{head}</tr></thead><tbody>{x}</tbody></table>);
+            }
 		} else if (this.props.type == "preview") {
 			r = <div id="preview" style={{backgroundColor:"#AAA", paddingTop:"10px", paddingBottom:"10px"}}></div>;
 		} else if (this.props.type == "liability") {
