@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-@Controller
 public class FeeController
 {
     @Autowired

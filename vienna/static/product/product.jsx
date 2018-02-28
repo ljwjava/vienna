@@ -48,6 +48,17 @@ env.baseOf = function(v) {
                             </select>
                         </div>
                     </div>
+                    <div className="form-row">
+                        <div className="col-md-4 mb-3">
+                            <label>第二代理人奖励比例</label>
+                            <div className="input-group">
+                                <input type="text" className="form-control" defaultValue="2"/>
+                                <div className="input-group-append">
+                                    <span className="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,14 +75,39 @@ env.feeOf = function(prd) {
             <td>{strOf(x.insure, "*")}</td>
             <td width="50%">
                 <div className="form-inline">
-                    <input type="text" className="form-control col-2 mr-2" defaultValue={x.val[0]}/>
-                    <input type="text" className="form-control col-2 mr-2" defaultValue={x.val[1]}/>
-                    <input type="text" className="form-control col-2 mr-2" defaultValue={x.val[2]}/>
-                    <input type="text" className="form-control col-2 mr-2" defaultValue={x.val[3]}/>
-                    <input type="text" className="form-control col-2" defaultValue={x.val[4]}/>
+                    <div className="input-group col-2 mr-2">
+                        <input type="text" className="form-control" defaultValue={x.val[0]}/>
+                        <div className="input-group-append">
+                            <span className="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div className="input-group col-2 mr-2">
+                        <input type="text" className="form-control" defaultValue={x.val[1]}/>
+                        <div className="input-group-append">
+                            <span className="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div className="input-group col-2 mr-2">
+                        <input type="text" className="form-control" defaultValue={x.val[2]}/>
+                        <div className="input-group-append">
+                            <span className="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div className="input-group col-2 mr-2">
+                        <input type="text" className="form-control" defaultValue={x.val[3]}/>
+                        <div className="input-group-append">
+                            <span className="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div className="input-group col-2">
+                        <input type="text" className="form-control" defaultValue={x.val[4]}/>
+                        <div className="input-group-append">
+                            <span className="input-group-text">%</span>
+                        </div>
+                    </div>
                 </div>
             </td>
-            <td><span className="glyphicon glyphicon-remove"></span></td>
+            <td><img src="../images/svg/x.svg" style={{width:"20px", height:"20px"}}/></td>
         </tr>;
     });
     return (
@@ -81,8 +117,8 @@ env.feeOf = function(prd) {
                 <th><div>条款</div></th>
                 <th><div>交费</div></th>
                 <th><div>保障</div></th>
-                <th><div>代理人收入（%）</div></th>
-                <th>操作</th>
+                <th><div>代理人收入</div></th>
+                <th><img src="../images/svg/plus.svg" style={{width:"20px", height:"20px"}}/></th>
             </tr>
             </thead>
             <tbody>
@@ -114,7 +150,7 @@ var Main = React.createClass({
                 { env.feeOf(this.state.product) }
                 <div className="form-inline">
                     <button className="btn btn-success mr-2">全部保存</button>
-                    <button className="btn btn-danger">取消</button>
+                    <button className="btn btn-danger" onClick={this.back}>取消</button>
                 </div>
             </div>
         );
@@ -125,6 +161,6 @@ $(document).ready( function() {
     ReactDOM.render(
         <Main/>, document.getElementById("content")
     );
-    $("#brand").html("&lArr;&nbsp;&nbsp;返回");
-    $("#brand").click(() => document.location.href = "list.web");
+    //$("#brand").html("<img src=\"../images/svg/chevron-left.svg\" style=\"width:20px; height:20px; color:#FFF;\"/>&nbsp;返回");
+    //$("#brand").click(() => document.location.href = "list.web");
 });

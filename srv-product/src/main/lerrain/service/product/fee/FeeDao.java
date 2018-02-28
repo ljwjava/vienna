@@ -76,7 +76,7 @@ public class FeeDao
 
 	public FeeGrp loadFeeDefine()
 	{
-//		final Map<String, List<FeeDefine>> m = new HashMap<>();
+//		final Map<String, List<FeeRate>> m = new HashMap<>();
 		final FeeGrp feeGrp = new FeeGrp();
 
 		String sql = "select * from t_fee_define where valid is null order by platform_id, agency_id, `group`, product_id, pay_freq, pay_period, begin, end";
@@ -96,10 +96,10 @@ public class FeeDao
 				String insure = rs.getString("insure");
 
 //				String key = platformId + "/" + agencyId + "/" + group + "/" + productId + "/" + payFreq + "/" + payPeriod;
-//				List<FeeDefine> list = m.get(key);
+//				List<FeeRate> list = m.get(key);
 //				if (list == null)
 //				{
-//					list = new ArrayList<FeeDefine>();
+//					list = new ArrayList<FeeRate>();
 //					m.put(key, list);
 //				}
 
