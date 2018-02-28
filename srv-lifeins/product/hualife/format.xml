@@ -4,28 +4,28 @@
 		<benefit filter="benefit" parser="benefit">
 			<table name="3.00% 演示利率" var="I">
 				<item name="现金价值">IT.CSV(I)</item>
-				<item name="身故金">IT.AMT(I)</item>
+				<item name="身故金">IT.X_AMT_D(I)</item>
 				<item name="账户价值">IT.ACT(I,0)</item>
 				<item name="生存总利益">IT.X_SUV_T(I,0)</item>
 				<item name="身故总利益">IT.X_DIE_T(I,0)</item>
 			</table>
 			<table name="4.50% 演示利率" var="I">
 				<item name="现金价值">IT.CSV(I)</item>
-				<item name="身故金">IT.AMT(I)</item>
+				<item name="身故金">IT.X_AMT_D(I)</item>
 				<item name="账户价值">IT.ACT(I,1)</item>
 				<item name="生存总利益">IT.X_SUV_T(I,1)</item>
 				<item name="身故总利益">IT.X_DIE_T(I,1)</item>
 			</table>
 			<table name="6.00% 演示利率" var="I">
 				<item name="现金价值">IT.CSV(I)</item>
-				<item name="身故金">IT.AMT(I)</item>
+				<item name="身故金">IT.X_AMT_D(I)</item>
 				<item name="账户价值">IT.ACT(I,2)</item>
 				<item name="生存总利益">IT.X_SUV_T(I,2)</item>
 				<item name="身故总利益">IT.X_DIE_T(I,2)</item>
 			</table>
 			<table name="5.00% 演示利率" var="I">
 				<item name="现金价值">IT.CSV(I)</item>
-				<item name="身故金">IT.AMT(I)</item>
+				<item name="身故金">IT.X_AMT_D(I)</item>
 				<item name="账户价值">IT.ACT(I,3)</item>
 				<item name="生存总利益">IT.X_SUV_T(I,3)</item>
 				<item name="身故总利益">IT.X_DIE_T(I,3)</item>

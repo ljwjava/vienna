@@ -60,7 +60,7 @@
 			<item name="DRAW" param="A1" formula="IT.SUV(A1)+IT.F80(A1)"/>
 
 			<item name="CSV" param="A1" formula="A1==0?0:DS.CSV[A1-1][0]*QUANTITY"/>
-			<item name="AMT" param="A1" formula="max(IT.CSV(A1)+IT.SUV(A1),PremiumSum(A1))"/>
+			<item name="AMT" param="A1" formula="max(IT.CSV(A1)+IT.DRAW(A1),PremiumSum(A1))"/>
 
 			<item name="SUV_T" param="A1" formula="IT.CSV(A1)+IT.SUV_S(A1)"/>
 			<item name="DIE_T" param="A1" formula="IT.AMT(A1)+IT.SUV_S(A1-1)"/>
@@ -82,6 +82,7 @@
 				}
 			</item>
 
+			<item name="X_AMT_D" param="A1" formula="IT.AMT(A1)"/>
 			<item name="X_SUV" param="A1" formula="IT.DRAW(A1)-IT.SAVE03(A1)-IT.SAVE04(A1)"/>
 			<item name="X_SUV_S" param="A1" formula="(A1>0?IT.X_SUV_S(A1-1):0)+IT.X_SUV(A1)"/>
 			<item name="X_SUV_T" param="A1" formula="IT.CSV(A1)+IT.X_SUV_S(A1)"/>
