@@ -156,6 +156,24 @@ public class OrderController
         return res;
     }
 
+    @RequestMapping("/reload.json")
+    @ResponseBody
+    public JSONObject reload(@RequestBody JSONObject p)
+    {
+        Long orderId = p.getLong("orderId");
+
+        if (Common.isEmpty(orderId))
+            throw new RuntimeException("缺少orderId");
+
+        Order order = orderSrv.reloadOrder(orderId);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", order);
+
+        return res;
+    }
+
     @RequestMapping("/replace.json")
     @ResponseBody
     public JSONObject replace(@RequestBody JSONObject p)

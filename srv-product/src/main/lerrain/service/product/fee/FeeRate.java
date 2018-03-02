@@ -1,14 +1,21 @@
 package lerrain.service.product.fee;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by lerrain on 2017/9/9.
  */
-public class FeeDefine
+public class FeeRate
 {
+    Long platformId;
+    Long agencyId;
+    Long productId;
+
+    String group;
+
+    Map factors;
+
     Object f1, f2, f3, f4, f5;
 
     Date begin, end;
@@ -18,12 +25,74 @@ public class FeeDefine
 
     String memo;
 
-    public FeeDefine(Date begin, Date end, int freeze, int unit)
+    public Long getPlatformId()
+    {
+        return platformId;
+    }
+
+    public void setPlatformId(Long platformId)
+    {
+        this.platformId = platformId;
+    }
+
+    public Long getAgencyId()
+    {
+        return agencyId;
+    }
+
+    public void setAgencyId(Long agencyId)
+    {
+        this.agencyId = agencyId;
+    }
+
+    public Long getProductId()
+    {
+        return productId;
+    }
+
+    public void setProductId(Long productId)
+    {
+        this.productId = productId;
+    }
+
+    public String getGroup()
+    {
+        return group;
+    }
+
+    public void setGroup(String group)
+    {
+        this.group = group;
+    }
+
+    public Map getFactors()
+    {
+        return factors;
+    }
+
+    public void setFactors(Map factors)
+    {
+        this.factors = factors;
+    }
+
+    public Date getBegin()
+    {
+        return begin;
+    }
+
+    public void setBegin(Date begin)
     {
         this.begin = begin;
+    }
+
+    public Date getEnd()
+    {
+        return end;
+    }
+
+    public void setEnd(Date end)
+    {
         this.end = end;
-        this.freeze = freeze;
-        this.unit = unit;
     }
 
     public Object getF1()

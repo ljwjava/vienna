@@ -146,21 +146,23 @@ var Customer = React.createClass({
 		});
 	},
 	render() {
-		let ages = this.ages.map(v => (<li key={v}><a onClick={this.setAge.bind(this, v)}>{v}</a></li>));
+		let ages = this.ages.map(v => (<li className="dropdown-item" key={v}><a onClick={this.setAge.bind(this, v)}>{v}</a></li>));
 		return (
-			<div className="collapse navbar-collapse mr-4">
-				<div><a href="#" style={{color:"#AAA"}}>{this.props.show}</a></div>
-				<div className="ml-2 btn-group mr-2">
-					<button className={this.props.val.gender=="M"?"btn btn-success":"btn border btn-light"} onClick={this.setGender.bind(this, "M")}>男</button>
-					<button className={this.props.val.gender=="F"?"btn btn-success":"btn border btn-light"} onClick={this.setGender.bind(this, "F")}>女</button>
-				</div>
-				<div className="dropdown mr-2">
-					<button className="btn btn-primary dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{this.props.val.age}周岁</button>
-					<ul className="dropdown-menu">{ages}</ul>
-				</div>
-				<div>
-					<div onClick={this.addAge.bind(this, 1)} style={{lineHeight:"26px"}}>▲</div>
-					<div onClick={this.addAge.bind(this, -1)} style={{lineHeight:"26px"}}>▼</div>
+			<div>
+				<div className="collapse navbar-collapse mr-4">
+					<div><a href="#" style={{color:"#AAA"}}>{this.props.show}</a></div>
+					<div className="ml-2 btn-group mr-2">
+						<button className={this.props.val.gender=="M"?"btn btn-success":"btn border btn-light"} onClick={this.setGender.bind(this, "M")}>男</button>
+						<button className={this.props.val.gender=="F"?"btn btn-success":"btn border btn-light"} onClick={this.setGender.bind(this, "F")}>女</button>
+					</div>
+					<div className="dropdown mr-2">
+						<button className="btn btn-primary dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{this.props.val.age}周岁</button>
+						<ul className="dropdown-menu">{ages}</ul>
+					</div>
+					<div>
+						<div onClick={this.addAge.bind(this, 1)} style={{lineHeight:"26px"}}>▲</div>
+						<div onClick={this.addAge.bind(this, -1)} style={{lineHeight:"26px"}}>▼</div>
+					</div>
 				</div>
 			</div>
 		);

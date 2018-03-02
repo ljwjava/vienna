@@ -13,12 +13,7 @@ public class Fee
 {
     Long id;
     Long platformId;
-
-    int draweeType;
-    Long drawee;
-
-    int payeeType;
-    Long payee;
+    Long drawer;
 
     double amount;
     boolean auto; //是否自动支付
@@ -186,44 +181,14 @@ public class Fee
         this.status = status;
     }
 
-    public int getDraweeType()
+    public Long getDrawer()
     {
-        return draweeType;
+        return drawer;
     }
 
-    public void setDraweeType(int draweeType)
+    public void setDrawer(Long drawer)
     {
-        this.draweeType = draweeType;
-    }
-
-    public Long getDrawee()
-    {
-        return drawee;
-    }
-
-    public void setDrawee(Long drawee)
-    {
-        this.drawee = drawee;
-    }
-
-    public int getPayeeType()
-    {
-        return payeeType;
-    }
-
-    public void setPayeeType(int payeeType)
-    {
-        this.payeeType = payeeType;
-    }
-
-    public Long getPayee()
-    {
-        return payee;
-    }
-
-    public void setPayee(Long payee)
-    {
-        this.payee = payee;
+        this.drawer = drawer;
     }
 
     public static Fee feeOf(Map c)
@@ -235,11 +200,7 @@ public class Fee
 
         r.id = Common.toLong(c.get("id")); //
         r.platformId = Common.toLong(c.get("platform_id"));
-
-        r.draweeType = Common.intOf(c.get("drawee_type"), 0);
-        r.drawee = Common.toLong(c.get("drawee"));
-        r.payeeType = Common.intOf(c.get("payee_type"), 0);
-        r.payee = Common.toLong(c.get("payee"));
+        r.drawer = Common.toLong(c.get("drawer"));
 
         r.productId = Common.trimStringOf(c.get("product_id"));
         r.bizNo = Common.trimStringOf(c.get("biz_no"));

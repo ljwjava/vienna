@@ -48,7 +48,7 @@
 			<item name="PRM_P" param="A1">try(PARENT.IT.SAVE03(A1),0)</item>
 			<item name="PRM" param="A1">(A1==0?PREMIUM:0)+IT.PRM_P(A1)</item>
 			<item name="PRM_S" param="A1">(A1==0?0:IT.PRM_S(A1-1))+IT.PRM(A1)</item>
-			<item name="AMT" param="A1">A1+AGE>DRAW_AGE_VALUE-5?0:IT.PRM(A1)/UNIT*DS.RATE[AGE+A1][0]</item>
+			<item name="AMT" param="A1">round(A1+AGE>DRAW_AGE_VALUE-5?0:IT.PRM(A1)/UNIT*DS.RATE[AGE+A1][0])</item>
 			<item name="AMT_S" param="A1">(A1==0?0:IT.AMT_S(A1-1))+IT.AMT(A1)</item>
 
 			<item name="DRAW" param="A1">AGE+A1>=DRAW_AGE_VALUE?IT.AMT_S(A1):0</item>
@@ -62,7 +62,7 @@
 			<item name="X_SUV_S" param="A1" formula="(A1>0?IT.X_SUV_S(A1-1):0)+IT.X_SUV(A1)"/>
 
 			<item name="X_SUV_T" param="A1" formula="IT.CV(A1)+IT.X_SUV_S(A1)"/>
-			<item name="X_DIE_T" param="A1" formula="IT.FAMT(A1)-IT.PRM_P(A1)+IT.X_SUV_S(A1)-IT.X_SUV(A1)"/>
+			<item name="X_DIE_T" param="A1" formula="IT.FAMT(A1) + (A1 + AGE le DRAW_AGE_VALUE - 5 ? 0 : IT.X_SUV_S(A1)-IT.X_SUV(A1)-IT.PRM_P(A1))"/>
 		</interest>
 
 		<attachment>
