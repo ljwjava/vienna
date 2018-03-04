@@ -3,10 +3,8 @@ package lerrain.service.channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class ChannelService
@@ -36,10 +34,39 @@ public class ChannelService
 
     public void bill(Long platformId, Long vendorId, Long agencyId, String productId, Map factors, String bizNo, double premium, Date time)
     {
-//        Long vendorId = channelDao.getVendor(productId);
+        Map<String, Double> map = new HashMap<>();
 
-        for (FeeDefine fd : getFeeDefine(platformId, agencyId, productId, factors, time))
-            channelDao.bill(bizNo, vendorId, premium, fd, time);
+        for (FeeDefine c : getFeeDefine(platformId, agencyId, productId, factors, time))
+        {
+            for (int i = 0; i < c.getFeeRate().length; i++)
+            {
+                BigDecimal fr = c.getFeeRate()[i];
+                if (fr != null)
+                {
+                    double amt = 0;
+                    if (c.getUnit() == 1)
+                        amt = Math.round(premium * fr.doubleValue() * 100) / 100.0f;
+                    else if (c.getUnit() == 2)
+                        amt = fr.doubleValue();
+                    else if (c.getUnit() == 3)
+                        amt = Math.round(premium * fr.doubleValue()) / 100.0f;
+                    else if (c.getUnit() == 4)
+                    {
+                        Double val = map.get(c.getPayer() + "/" + i);
+                        if (val != null)
+                            amt = Math.round(val * fr.doubleValue()) / 100.0f;
+                    }
+
+                    if (amt > 0)
+                    {
+                        channelDao.bill(c, bizNo, vendorId, amt, 1, time);
+
+                        Double val = map.get(c.getDrawer() + "/" + i);
+                        map.put(c.getDrawer() + "/" + i, val == null ? amt : val + amt);
+                    }
+                }
+            }
+        }
     }
 
     public List listBill(Long platformId, Long vendorId, String bizNo)
@@ -53,7 +80,7 @@ public class ChannelService
 
         for (FeeDefine fd : channelDao.loadChannelFeeDefine(platformId, agencyId, productId, factors))
         {
-            if (fd.match(time))
+            if (fd.getFeeRate() != null && fd.match(time))
                 r.add(fd);
         }
 

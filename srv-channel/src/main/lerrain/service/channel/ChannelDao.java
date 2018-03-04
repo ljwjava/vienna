@@ -133,6 +133,8 @@ public class ChannelDao
         if (insure != null)
             sql.append(" and (insure is null or insure = '" + insure + "')");
 
+        sql.append(" order by sequence desc");
+
         return jdbc.query(sql.toString(), new Object[] {platformId, agencyId, agencyId, productId}, new RowMapper<FeeDefine>()
         {
             @Override
@@ -171,25 +173,10 @@ public class ChannelDao
 //        }
 //    }
 
-    public void bill(String bizNo, Long vendorId, double premium, FeeDefine c, Date time)
+    public void bill(FeeDefine c, String bizNo, Long vendorId, double amt, int unit, Date time)
     {
-        for (BigDecimal fr : c.getFeeRate())
-        {
-            if (fr != null)
-            {
-                double amt = 0;
-                if (c.getUnit() == 1)
-                    amt = premium * fr.doubleValue();
-                else if (c.getUnit() == 2)
-                    amt = fr.doubleValue();
-                else if (c.getUnit() == 3)
-                    amt = premium * fr.doubleValue() / 100;
-
-                if (amt > 0)
-                    jdbc.update("insert into t_channel_fee(platform_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?)",
-                        c.getPlatformId(), bizNo, c.getProductId(), vendorId, amt, 1, time, 0, c.getPayer(), c.getDrawer(), null, time);
-            }
-        }
+        jdbc.update("insert into t_channel_fee(platform_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?)",
+                c.getPlatformId(), bizNo, c.getProductId(), vendorId, amt, unit, time, 0, c.getPayer(), c.getDrawer(), null, time);
     }
 
     public List listBill(Long platformId, Long vendorId, String bizNo)
@@ -200,6 +187,12 @@ public class ChannelDao
             public Object mapRow(ResultSet rs, int j) throws SQLException
             {
                 Map m = new HashMap();
+                m.put("amount", rs.getDouble("amount"));
+                m.put("estimate", rs.getDate("estimate"));
+                m.put("payTime", rs.getDate("pay"));
+                m.put("status", rs.getInt("status"));
+                m.put("payer", rs.getLong("payer"));
+                m.put("drawer", rs.getLong("drawer"));
 
                 return m;
             }

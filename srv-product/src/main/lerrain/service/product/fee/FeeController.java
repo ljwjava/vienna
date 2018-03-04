@@ -107,7 +107,7 @@ public class FeeController
         return res;
     }
 
-    @RequestMapping("/fee/list_fee.json")
+    @RequestMapping("/fee/list_bill.json")
     @ResponseBody
     public JSONObject listBill(@RequestBody JSONObject c)
     {

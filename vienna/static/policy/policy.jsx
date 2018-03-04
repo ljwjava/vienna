@@ -4,8 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 var env = {
-    company: {
-    },
+    company: {},
 	dict: {
 		feeType: {
 			"1": "推广费",
@@ -13,7 +12,7 @@ var env = {
 			"3": "活动奖励"
 		},
 		feeStatus: {
-			"0": "未处理",
+			"0": "未结算",
 			"1": "已发放",
 			"9": "发放失败"
 		},
@@ -236,27 +235,12 @@ var FeeList = React.createClass({
 				<td>{estimateDate}</td>
 				<td>{env.dict.feeStatus[v.status]}</td>
 				<td>{payTime}</td>
-				<td>{v.payer} &rarr; {v.drawer}</td>
+				<td>{payer} &rarr; {drawer}</td>
 			</tr>
         );
     },
     render() {
         return (<div>
-			<table className="table table-bordered mt-3">
-				<thead className="thead-light">
-					<tr>
-						<th>费用类型</th>
-						<th>金额（元）</th>
-						<th>预计发放时间</th>
-						<th>是否自动发放</th>
-						<th>发放状态</th>
-						<th>实际发放时间</th>
-						<th>冻结天数</th>
-						<th>费用流向</th>
-					</tr>
-				</thead>
-				<tbody>{ this.state.list1 == null ? null : this.state.list1.map(v => this.agentOf(v)) }</tbody>
-			</table>
 			<table className="table table-bordered mt-3">
 				<thead className="thead-light">
 				<tr>
@@ -268,6 +252,21 @@ var FeeList = React.createClass({
 				</tr>
 				</thead>
 				<tbody>{ this.state.list2 == null ? null : this.state.list2.map(v => this.channelOf(v)) }</tbody>
+			</table>
+			<table className="table table-bordered mt-3">
+				<thead className="thead-light">
+				<tr>
+					<th>费用类型</th>
+					<th>金额（元）</th>
+					<th>预计发放时间</th>
+					<th>是否自动发放</th>
+					<th>发放状态</th>
+					<th>实际发放时间</th>
+					<th>冻结天数</th>
+					<th>费用流向</th>
+				</tr>
+				</thead>
+				<tbody>{ this.state.list1 == null ? null : this.state.list1.map(v => this.agentOf(v)) }</tbody>
 			</table>
 		</div>);
     }
@@ -282,10 +281,10 @@ var Main = React.createClass({
     },
     componentDidMount() {
         let policyId = common.param("policyId");
-        common.req("btbx/policy/view.json", {policyId:policyId}, r => {
+        common.req("btbx/policy/view.json", {policyId: policyId}, r => {
             this.setState({policy: r, endorse: r.endorse});
-            common.req("dict/view.json", {company: "btbx", name: "company"}, q => {
-                q.company.map(v => { env.company[v.id] = v })
+            common.req("btbx/channel/company.json", {}, r1 => {
+                if (r1 != null) env.company = r1;
                 common.req("dict/view.json", {company: env.company[r.companyId].code, name: "relation,cert"}, s => {
                     s.relation.map(v => { env.dict.relation[v.code] = v.text });
                     s.cert.map(v => { env.dict.certType[v[0]] = v[1] });
