@@ -6,6 +6,8 @@ import List from '../common/component.list.jsx';
 
 var env = {
     company: {},
+    bizType: {},
+    insType: {},
     search: null,
     from: 0,
     number: 20
@@ -17,12 +19,8 @@ class PolicyList extends List {
     }
     componentDidMount() {
         super.componentDidMount();
-        common.req("dict/view.json", {company: "btbx", name: "company,bizType,insType"}, r => {
-            if (r.company != null) r.company.map(v => {
-                env.company[v.id] = v.name;
-            })
-            env.bizType = r.bizType;
-            env.insType = r.insType;
+        common.req("btbx/channel/company.json", {}, r => {
+            if (r != null) env.company = r;
             this.setState({});
         });
     }

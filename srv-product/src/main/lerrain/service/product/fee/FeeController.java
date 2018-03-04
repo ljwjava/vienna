@@ -2,6 +2,7 @@ package lerrain.service.product.fee;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +17,9 @@ public class FeeController
     @Autowired
     FeeService cs;
 
-    @RequestMapping("/pay.json")
+    @RequestMapping("/fee/retry.json")
     @ResponseBody
-    public JSONObject pay(@RequestBody JSONArray ids)
+    public JSONObject retry(@RequestBody JSONArray ids)
     {
         List<Long> idlist = new ArrayList<Long>();
         for (int i = 0; i < ids.size(); i++)
@@ -31,15 +32,16 @@ public class FeeController
         return res;
     }
 
-    @RequestMapping("/pay_all.json")
+    @RequestMapping("/fee/pay.json")
     @ResponseBody
-    public JSONObject payAll(@RequestBody JSONObject c)
+    public JSONObject pay(@RequestBody JSONObject c)
     {
         Long platformId = c.getLong("platformId");
-        Long productId = c.getLong("productId");
+        //Long productId = c.getLong("productId");
+        Long vendorId = c.getLong("vendorId");
         String bizNo = c.getString("bizNo");
 
-        int fail = cs.payAll(platformId, productId, bizNo);
+        int fail = cs.payAll(platformId, vendorId, bizNo);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -49,11 +51,40 @@ public class FeeController
     }
 
 
-    @RequestMapping("/charge.json")
+    @RequestMapping("/fee/bill.json")
     @ResponseBody
-    public JSONObject charge(@RequestBody JSONArray list)
+    public JSONObject bill(@RequestBody JSONArray list)
     {
-        cs.charge(list);
+        //这里要加判断，一张保单只允许bill一次
+
+        List<Fee> bills = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++)
+        {
+            JSONObject c = list.getJSONObject(i);
+
+            Fee r = new Fee();
+            r.id = Common.toLong(c.get("id")); //
+            r.platformId = Common.toLong(c.get("platformId"));
+            r.drawer = Common.toLong(c.get("drawer"));
+            r.productId = Common.trimStringOf(c.get("productId"));
+            r.vendorId = Common.toLong(c.get("vendorId"));
+            r.bizNo = Common.trimStringOf(c.get("bizNo"));
+            r.memo = Common.trimStringOf(c.get("memo"));
+            r.extra = c.getJSONObject("extra");
+            r.amount = Common.doubleOf(c.get("amount"), 0);
+            r.auto = Common.boolOf(c.get("auto"), false);
+            r.estimate = Common.dateOf(c.get("estimate"));
+            r.type = Common.intOf(c.get("type"), 0);
+            r.unit = Common.intOf(c.get("unit"), 1);
+            r.freeze = Common.intOf(c.get("freeze"), 0);
+            r.status = Common.intOf(c.get("status"), 9); //
+            r.payTime = null;
+            r.createTime = new Date();
+
+            bills.add(r);
+        }
+
+        cs.bill(bills);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -61,7 +92,7 @@ public class FeeController
         return res;
     }
 
-    @RequestMapping("/list_fee.json")
+    @RequestMapping("/fee/list_rate.json")
     @ResponseBody
     public JSONObject listFeeDef(@RequestBody JSONObject c)
     {
@@ -71,17 +102,34 @@ public class FeeController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", cs.listFeeRate(platformId, agencyId, productId));
+        res.put("content", cs.listFeeDefine(platformId, agencyId, productId));
 
         return res;
     }
 
-    @RequestMapping("/fee.json")
+    @RequestMapping("/fee/list_fee.json")
+    @ResponseBody
+    public JSONObject listBill(@RequestBody JSONObject c)
+    {
+        Long platformId = c.getLong("platformId");
+//        Long productId = c.getLong("productId");
+        Long vendorId = c.getLong("vendorId");
+        String bizNo = c.getString("bizNo");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", cs.listFee(platformId, vendorId, bizNo));
+
+        return res;
+    }
+
+    @RequestMapping("/fee/rate.json")
     @ResponseBody
     public JSONObject fee(@RequestBody JSONObject c)
     {
         Long platformId = c.getLong("platformId");
         Long productId = c.getLong("productId");
+        //Long vendorId = c.getLong("vendorId");
         Long agencyId = c.getLong("agencyId");
 
         String group = c.getString("group");
@@ -93,7 +141,7 @@ public class FeeController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", cs.getFeeRate(platformId, agencyId, productId, group, factors, time));
+        res.put("content", cs.getFeeDefine(platformId, agencyId, productId, group, factors, time));
 
         return res;
     }

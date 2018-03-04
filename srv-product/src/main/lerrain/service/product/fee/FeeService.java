@@ -1,6 +1,8 @@
 package lerrain.service.product.fee;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +25,17 @@ public class FeeService
 	@Autowired
 	IybPushMsg iyPush;
 
-	public List<FeeRate> listFeeRate(Long platformId, Long agencyId, Long productId)
+	public List<FeeDefine> listFeeDefine(Long platformId, Long agencyId, Long productId)
 	{
 		return feeDao.listFeeRate(platformId, agencyId, productId);
 	}
 
-	public List<FeeRate> getFeeRate(Long platformId, Long agencyId, Long productId, String group, Map factors, Date time)
+	public List<FeeDefine> getFeeDefine(Long platformId, Long agencyId, Long productId, String group, Map factors, Date time)
 	{
-		List<FeeRate> r = new ArrayList<>();
+		List<FeeDefine> r = new ArrayList<>();
 
-		List<FeeRate> list = feeDao.listFeeRate(platformId, agencyId, productId, group, factors);
-		for (FeeRate fd : list)
+		List<FeeDefine> list = feeDao.listFeeRate(platformId, agencyId, productId, group, factors);
+		for (FeeDefine fd : list)
 		{
 			if (fd.match(time))
 				r.add(fd);
@@ -42,20 +44,22 @@ public class FeeService
 		return r;
 	}
 
-	public void charge(JSONArray list)
+	public void bill(List<Fee> list)
 	{
-		for (int i = 0; i < list.size(); i++)
-		{
-			Fee fee = Fee.feeOf(list.getJSONObject(i));
-			feeDao.prepare(fee);
-		}
+		for (Fee r : list)
+			feeDao.prepare(r);
 	}
 
-	public int payAll(Long platformId, Long productId, String bizNo)
+	public List<Fee> listFee(Long platformId, Long vendorId, String bizNo)
+	{
+		return feeDao.listFee(platformId, vendorId, bizNo);
+	}
+
+	public int payAll(Long platformId, Long vendorId, String bizNo)
 	{
 		int r = 0;
 
-		List<Fee> list = feeDao.loadFeeReady(platformId, productId, bizNo);
+		List<Fee> list = feeDao.loadFeeReady(platformId, vendorId, bizNo);
 		for (Fee fee : list)
 		{
 			if (!pay(fee))

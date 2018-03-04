@@ -3,14 +3,12 @@ package lerrain.service.policy;
 import com.alibaba.fastjson.JSON;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
 
 @Repository
 public class PolicyDao
@@ -74,7 +72,7 @@ public class PolicyDao
         p.setCompanyId(rs.getLong("company_id"));
         p.setAgencyId(rs.getLong("agency_id"));
         p.setOrgId(rs.getLong("org_id"));
-        p.setBrokerId(rs.getLong("broker_id"));
+        p.setAgentId(rs.getLong("agent_id"));
 
         //
         p.setApplicantName(rs.getString("applicant_name"));

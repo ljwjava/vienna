@@ -6,7 +6,9 @@ import lerrain.service.common.Log;
 import lerrain.service.common.ServiceTools;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -45,14 +47,14 @@ public class FeeDao
 		return new Object[] {Common.doubleOf(str, 0)};
 	}
 
-	public List<FeeRate> listFeeRate(Long platformId, Long agencyId, Long productId)
+	public List<FeeDefine> listFeeRate(Long platformId, Long agencyId, Long productId)
 	{
-		String sql = "select * from t_fee_define where valid is null and product_id = ? and platform_id = ? order by begin, end, agency_id, `group`, pay_freq, pay_period";
+		String sql = "select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ? order by begin, end, agency_id, `group`, pay_freq, pay_period";
 
-		return jdbc.query(sql, new RowMapper<FeeRate>()
+		return jdbc.query(sql, new RowMapper<FeeDefine>()
 		{
 			@Override
-			public FeeRate mapRow(ResultSet rs, int j) throws SQLException
+			public FeeDefine mapRow(ResultSet rs, int j) throws SQLException
 			{
 				return feeRateOf(rs);
 			}
@@ -60,29 +62,23 @@ public class FeeDao
 		}, productId, platformId);
 	}
 
-	public List<FeeRate> listFeeRate(Long platformId, Long agencyId, Long productId, String group, Map rs)
+	public List<FeeDefine> listFeeRate(Long platformId, Long agencyId, Long productId, String group, Map rs)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("select * from t_fee_define where valid is null and product_id = ? and platform_id = ? and agency_id = ? and `group` = ?");
+		sql.append("select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ? and agency_id = ? and `group` = ?");
 
-		String payFreq = "year";
-		String payPeriod = Common.trimStringOf(rs.get("payPeriod"));
+		String pay = Common.trimStringOf(rs.get("pay"));
 		String insure = Common.trimStringOf(rs.get("insure"));
 
-		if (payFreq != null)
-			sql.append(" and (pay_freq is null or pay_freq = '" + payFreq + "')");
-		if (payPeriod != null)
-			sql.append(" and (pay_period is null or pay_period = '" + payPeriod + "')");
+		if (pay != null)
+			sql.append(" and (pay is null or pay = '" + pay + "')");
 		if (insure != null)
 			sql.append(" and (insure is null or insure = '" + insure + "')");
 
-		Log.debug(sql.toString());
-		Log.debug("%d, %d, %d, %s", platformId, agencyId, productId, group);
-
-		return jdbc.query(sql.toString(), new RowMapper<FeeRate>()
+		return jdbc.query(sql.toString(), new RowMapper<FeeDefine>()
 		{
 			@Override
-			public FeeRate mapRow(ResultSet rs, int j) throws SQLException
+			public FeeDefine mapRow(ResultSet rs, int j) throws SQLException
 			{
 				return feeRateOf(rs);
 			}
@@ -90,15 +86,14 @@ public class FeeDao
 		}, productId, platformId, agencyId, group);
 	}
 
-	private FeeRate feeRateOf(ResultSet rs) throws SQLException
+	private FeeDefine feeRateOf(ResultSet rs) throws SQLException
 	{
 		Long platformId = rs.getLong("platform_id");
 		Long productId = rs.getLong("product_id");
 		Long agencyId = rs.getLong("agency_id");
 		String group = rs.getString("group");
 
-		String payFreq = rs.getString("pay_freq");
-		String payPeriod = rs.getString("pay_period");
+		String pay = rs.getString("pay");
 		String insure = rs.getString("insure");
 
 		int freeze = Common.intOf(rs.getObject("freeze"), 0);
@@ -107,7 +102,7 @@ public class FeeDao
 		Date begin = rs.getDate("begin");
 		Date end = rs.getDate("end");
 
-		FeeRate pc = new FeeRate();
+		FeeDefine pc = new FeeDefine();
 		pc.platformId = platformId;
 		pc.productId = productId;
 		pc.agencyId = agencyId;
@@ -116,15 +111,12 @@ public class FeeDao
 		pc.end = end;
 		pc.freeze = freeze;
 		pc.unit = unit;
-		pc.f1 = valOf(rs.getString("f1"));
-		pc.f2 = valOf(rs.getString("f2"));
-		pc.f3 = valOf(rs.getString("f3"));
-		pc.f4 = valOf(rs.getString("f4"));
-		pc.f5 = valOf(rs.getString("f5"));
+		pc.saleFee = valOf(rs.getString("sale_fee"));
+		pc.saleBonus = valOf(rs.getString("sale_bonus"));
+		pc.upperBonus = valOf(rs.getString("upper_bonus"));
 
 		Map m = new JSONObject();
-		m.put("payFreq", payFreq);
-		m.put("payPeriod", payPeriod);
+		m.put("payPeriod", pay);
 		m.put("insure", insure);
 		pc.setFactors(m);
 
@@ -135,38 +127,85 @@ public class FeeDao
 	{
 		c.setId(tools.nextId("fee"));
 
-		jdbc.update("insert into t_fee(id, biz_no, product_id, amount, type, unit, estimate, freeze, pay, status, platform_id, payee, auto, memo, extra, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-				c.getId(), c.getBizNo(), c.getProductId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getDrawer(), c.isAuto() ? "Y" : "N", c.getMemo(), JSON.toJSONString(c.getExtra()), c.getCreateTime());
+		jdbc.update("insert into t_product_fee(id, biz_no, product_id, vendor_id, amount, type, unit, estimate, freeze, pay, status, platform_id, drawer, auto, memo, extra, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+				c.getId(), c.getBizNo(), c.getProductId(), c.getVendorId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getDrawer(), c.isAuto() ? "Y" : "N", c.getMemo(), JSON.toJSONString(c.getExtra()), c.getCreateTime());
 
 		return c.getId();
 	}
 
-	public List<Fee> loadFeeReady(Long platformId, Long productId, String bizNo)
+	public List<Fee> loadFeeReady(Long platformId, Long vendorId, String bizNo)
 	{
-		List<Fee> r = null;
-
-		List<Map<String, Object>> list = jdbc.queryForList("select * from t_fee where platform_id = ? and product_id = ? and biz_no = ? and auto = 'Y' and status = 0 and estimate <= ?", platformId, productId, bizNo, new Date());
-		if (list != null)
+		return jdbc.query("select * from t_product_fee where platform_id = ? and vendor_id = ? and biz_no = ? and auto = 'Y' and status = 0 and estimate <= ?", new RowMapper<Fee>()
 		{
-			r = new ArrayList<>();
-			for (Map<String, Object> map : list)
+			@Override
+			public Fee mapRow(ResultSet rs, int j) throws SQLException
 			{
-				map.put("drawer", map.get("payee"));
-				r.add(Fee.feeOf(map));
+				return feeOf(rs);
 			}
-		}
 
-		return r;
+		}, platformId, vendorId, bizNo, new Date());
 	}
 
 	public Fee loadFee(Long id)
 	{
-		return Fee.feeOf(jdbc.queryForMap("select * from t_fee where status in (0,9) and estimate <= now() and id = ?", id));
+		return jdbc.query("select * from t_product_fee where status in (0,9) and estimate <= now() and id = ?", new ResultSetExtractor<Fee>()
+		{
+			@Override
+			public Fee extractData(ResultSet rs) throws SQLException, DataAccessException
+			{
+				return feeOf(rs);
+			}
+		}, id);
+	}
+
+	public List<Fee> listFee(Long platformId, Long vendorId, String bizNo)
+	{
+		return jdbc.query("select * from t_product_fee where platform_id = ? and vendor_id = ? and biz_no = ?", new RowMapper<Fee>()
+		{
+			@Override
+			public Fee mapRow(ResultSet rs, int j) throws SQLException
+			{
+				return feeOf(rs);
+			}
+
+		}, platformId, vendorId, bizNo);
 	}
 
 	public void pay(Long id, int status, Date time)
 	{
-		jdbc.update("update t_fee set pay = ?, status = ? where id = ?", time, status, id);
+		jdbc.update("update t_product_fee set pay = ?, status = ? where id = ?", time, status, id);
 	}
 
+	public static Fee feeOf(ResultSet c) throws SQLException
+	{
+		if (c == null)
+			return null;
+
+		Fee r = new Fee();
+
+		r.id = c.getLong("id");
+		r.platformId = Common.toLong(c.getObject("platform_id"));
+		r.drawer = Common.toLong(c.getObject("drawer"));
+
+		r.productId = Common.trimStringOf(c.getObject("product_id"));
+		r.vendorId = Common.toLong(c.getObject("vendor_id"));
+		r.bizNo = Common.trimStringOf(c.getObject("biz_no"));
+		r.memo = Common.trimStringOf(c.getObject("memo"));
+
+		r.extra = JSON.parseObject(c.getString("extra"));
+
+		r.amount = Common.doubleOf(c.getObject("amount"), 0);
+		r.auto = Common.boolOf(c.getObject("auto"), false);
+		r.estimate = Common.dateOf(c.getObject("estimate"));
+		r.type = Common.intOf(c.getObject("type"), 0);
+		r.unit = Common.intOf(c.getObject("unit"), 1);
+		r.freeze = Common.intOf(c.getObject("freeze"), 0);
+
+		r.status = Common.intOf(c.getObject("status"), 9); //
+
+		r.payTime = Common.dateOf(c.getObject("pay")); //
+		r.createTime = Common.dateOf(c.getObject("create_time"), new Date());
+
+		return r;
+	}
 }

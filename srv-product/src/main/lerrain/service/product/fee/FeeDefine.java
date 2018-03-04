@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by lerrain on 2017/9/9.
  */
-public class FeeRate
+public class FeeDefine
 {
     Long platformId;
     Long agencyId;
@@ -16,7 +16,9 @@ public class FeeRate
 
     Map factors;
 
-    Object f1, f2, f3, f4, f5;
+    Object saleFee;
+    Object saleBonus;
+    Object upperBonus;
 
     Date begin, end;
 
@@ -95,56 +97,6 @@ public class FeeRate
         this.end = end;
     }
 
-    public Object getF1()
-    {
-        return f1;
-    }
-
-    public void setF1(Object f1)
-    {
-        this.f1 = f1;
-    }
-
-    public Object getF2()
-    {
-        return f2;
-    }
-
-    public void setF2(Object f2)
-    {
-        this.f2 = f2;
-    }
-
-    public Object getF3()
-    {
-        return f3;
-    }
-
-    public void setF3(Object f3)
-    {
-        this.f3 = f3;
-    }
-
-    public Object getF4()
-    {
-        return f4;
-    }
-
-    public void setF4(Object f4)
-    {
-        this.f4 = f4;
-    }
-
-    public Object getF5()
-    {
-        return f5;
-    }
-
-    public void setF5(Object f5)
-    {
-        this.f5 = f5;
-    }
-
     public int getFreeze()
     {
         return freeze;
@@ -173,6 +125,36 @@ public class FeeRate
     public void setMemo(String memo)
     {
         this.memo = memo;
+    }
+
+    public Object getSaleFee()
+    {
+        return saleFee;
+    }
+
+    public void setSaleFee(Object saleFee)
+    {
+        this.saleFee = saleFee;
+    }
+
+    public Object getSaleBonus()
+    {
+        return saleBonus;
+    }
+
+    public void setSaleBonus(Object saleBonus)
+    {
+        this.saleBonus = saleBonus;
+    }
+
+    public Object getUpperBonus()
+    {
+        return upperBonus;
+    }
+
+    public void setUpperBonus(Object upperBonus)
+    {
+        this.upperBonus = upperBonus;
     }
 
     public boolean match(Date now)

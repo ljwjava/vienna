@@ -3,11 +3,14 @@ package lerrain.service.channel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.ServiceTools;
+import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -15,8 +18,8 @@ import java.util.*;
 @Repository
 public class ChannelDao
 {
-    @Autowired
-    JdbcTemplate jdbc;
+    @Autowired JdbcTemplate jdbc;
+    @Autowired ServiceTools tools;
 
     public int count(String search, final Long platformId)
     {
@@ -84,7 +87,7 @@ public class ChannelDao
     {
         final Date now = new Date();
 
-        String sql = "select * from t_channel_product_fee where contract_id = ? order by product_id, insure, pay";
+        String sql = "select * from t_channel_fee_define where contract_id = ? order by product_id, insure, pay";
         return jdbc.queryForList(sql, new Object[] {contractId}, new RowMapper<Map>()
         {
             @Override
@@ -116,5 +119,91 @@ public class ChannelDao
                 return p;
             }
         });
+    }
+
+    public List<FeeDefine> loadChannelFeeDefine(final Long platformId, Long agencyId, final String productId, Map rs)
+    {
+        StringBuffer sql = new StringBuffer("select a.*, b.* from t_channel_fee_define a, t_channel_contract b where a.contract_id = b.id and b.platform_id = ? and (b.party_a = ? or b.party_b = ?) and (a.product_id = ? or a.product_id is null)");
+
+        String pay = Common.trimStringOf(rs.get("pay"));
+        String insure = Common.trimStringOf(rs.get("insure"));
+
+        if (pay != null)
+            sql.append(" and (pay is null or pay = '" + pay + "')");
+        if (insure != null)
+            sql.append(" and (insure is null or insure = '" + insure + "')");
+
+        return jdbc.query(sql.toString(), new Object[] {platformId, agencyId, agencyId, productId}, new RowMapper<FeeDefine>()
+        {
+            @Override
+            public FeeDefine mapRow(ResultSet m, int arg1) throws SQLException
+            {
+                FeeDefine p = new FeeDefine();
+                p.platformId = platformId;
+                p.productId = productId;
+                p.payer = m.getLong("party_a");
+                p.drawer = m.getLong("party_b");
+                p.begin = m.getDate("begin");
+                p.end = m.getDate("end");
+                p.feeRate = new BigDecimal[] {
+                    m.getBigDecimal("f1"),
+                    m.getBigDecimal("f2"),
+                    m.getBigDecimal("f3"),
+                    m.getBigDecimal("f4"),
+                    m.getBigDecimal("f5")
+                };
+                p.unit = m.getInt("unit");
+
+                return p;
+            }
+        });
+    }
+
+//    public Long getVendor(String productId)
+//    {
+//        try
+//        {
+//            return jdbc.queryForObject("select company_id from t_product where id = ?", Long.class, productId);
+//        }
+//        catch (Exception e)
+//        {
+//            return null;
+//        }
+//    }
+
+    public void bill(String bizNo, Long vendorId, double premium, FeeDefine c, Date time)
+    {
+        for (BigDecimal fr : c.getFeeRate())
+        {
+            if (fr != null)
+            {
+                double amt = 0;
+                if (c.getUnit() == 1)
+                    amt = premium * fr.doubleValue();
+                else if (c.getUnit() == 2)
+                    amt = fr.doubleValue();
+                else if (c.getUnit() == 3)
+                    amt = premium * fr.doubleValue() / 100;
+
+                if (amt > 0)
+                    jdbc.update("insert into t_channel_fee(platform_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?)",
+                        c.getPlatformId(), bizNo, c.getProductId(), vendorId, amt, 1, time, 0, c.getPayer(), c.getDrawer(), null, time);
+            }
+        }
+    }
+
+    public List listBill(Long platformId, Long vendorId, String bizNo)
+    {
+        return jdbc.query("select * from t_channel_fee where platform_id = ? and vendor_id = ? and biz_no = ?", new RowMapper()
+        {
+            @Override
+            public Object mapRow(ResultSet rs, int j) throws SQLException
+            {
+                Map m = new HashMap();
+
+                return m;
+            }
+
+        }, platformId, vendorId, bizNo);
     }
 }

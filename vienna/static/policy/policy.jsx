@@ -9,10 +9,8 @@ var env = {
 	dict: {
 		feeType: {
 			"1": "推广费",
-			"101": "续期推广费",
-            "2": "上线奖励",
-			"3": "代理费",
-			"4": "活动奖励"
+            "2": "关联奖励",
+			"3": "活动奖励"
 		},
 		feeStatus: {
 			"0": "未处理",
@@ -54,157 +52,123 @@ env.policyOf = function(v, m) {
 	var ins = v.target && v.target.insurant ? v.target.insurant : {};
 
 	var clauses = !v.detail || !v.detail.clauses ? null:
-		<div className="col-sm-12 listC">
-			<br/>
-			<table>
-				<thead>
-				<tr>
-					<th><div>条款</div></th>
-					<th><div>保险期间</div></th>
-					<th><div>保额/档次/份数</div></th>
-					<th><div>缴费期间</div></th>
-					<th>首年保费</th>
-				</tr>
-				</thead>
-				<tbody>
-				{
-					v.detail.clauses.map(v => {
-						return <tr key={v.id}>
-							<td>{v.name}</td>
-							<td>{v.insure}</td>
-							<td>{v.purchase}</td>
-							<td>{v.pay}</td>
-							<td>{v.premium}</td>
-						</tr>;
-					})
-				}
-				</tbody>
-			</table>
-		</div>
+		<table className="table table-bordered">
+			<thead className="thead-light">
+			<tr>
+				<th><div>条款</div></th>
+				<th><div>保险期间</div></th>
+				<th><div>保额/档次/份数</div></th>
+				<th><div>缴费期间</div></th>
+				<th>首年保费</th>
+			</tr>
+			</thead>
+			<tbody>{
+				v.detail.clauses.map(v => {
+					return <tr key={v.id}>
+						<td>{v.name}</td>
+						<td>{v.insure}</td>
+						<td>{v.purchase}</td>
+						<td>{v.pay}</td>
+						<td>{v.premium}</td>
+					</tr>;
+				})
+			}
+			</tbody>
+		</table>
 
 	return [
-		<div className="panel panel-primary">
-			<div className="panel-heading">
-				<h3 className="panel-title">{ m == 1 ? "批改保全（"+v.endorseTime+"）" : "保单信息" }</h3>
-			</div>
-			<div className="panel-body">
-				<div className="col-sm-12">
-					<div className="form-group has-success has-feedback col-sm-12">
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">出单平台</label>
-							<div className="col-sm-9">
-								<select className="form-control" defaultValue={ v.platformId}>>
-									{Object.keys(env.dict.platform).map(v => <option value={v}>{env.dict.platform[v]}</option>)}
-								</select>
-							</div>
+		<div className="card border-info mt-3">
+			<div className="card-header text-white bg-info">{ m == 1 ? "批改保全（"+v.endorseTime+"）" : "保单信息" }</div>
+			<div className="card-body text-secondary">
+				<div>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>出单平台</label>
+							<select className="form-control" defaultValue={ v.platformId}>>
+								{Object.keys(env.dict.platform).map(v => <option value={v}>{env.dict.platform[v]}</option>)}
+							</select>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">{ m == 1 ? "批单号" : "投保单号" }</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={ m == 1 ? v.endorseNo : v.applyNo }/>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>{ m == 1 ? "批单号" : "投保单号" }</label>
+							<input type="text" className="form-control" defaultValue={ m == 1 ? v.endorseNo : v.applyNo }/>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">保单号</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={v.policyNo}/>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>保单号</label>
+							<input type="text" className="form-control" defaultValue={v.policyNo}/>
 						</div>
 					</div>
-					<div className="form-group has-success has-feedback col-sm-12">
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">投保人</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={app.name}/>
-							</div>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>投保人</label>
+							<input type="text" className="form-control" defaultValue={app.name}/>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">投保人性别</label>
-							<div className="col-sm-9">
-								<select className="form-control" defaultValue={app.gender}>>
-									{Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
-								</select>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>投保人性别</label>
+							<select className="form-control" defaultValue={app.gender}>>
+								{Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
+							</select>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">投保人生日</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={app.birthday}/>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>投保人生日</label>
+							<input type="text" className="form-control" defaultValue={app.birthday}/>
 						</div>
 					</div>
-					<div className="form-group has-success has-feedback col-sm-12">
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">投保人证件</label>
-							<div className="col-sm-9">
-								<div className="input-group">
-									<input type="text" className="form-control" defaultValue={app.certNo}/>
-									<div className="input-group-btn">
-										<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[app.certType], "？")}</button>
-										<ul className="dropdown-menu">
-											{ Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
-										</ul>
-									</div>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>投保人证件</label>
+							<div className="input-group">
+								<input type="text" className="form-control" defaultValue={app.certNo}/>
+								<div className="input-group-append">
+									<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[app.certType], "？")}</button>
+									<ul className="dropdown-menu">
+										{ Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
+									</ul>
 								</div>
 							</div>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">投保人手机</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={app.mobile}/>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>投保人手机</label>
+							<input type="text" className="form-control" defaultValue={app.mobile}/>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">投保人</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={app.email}/>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>投保人</label>
+							<input type="text" className="form-control" defaultValue={app.email}/>
 						</div>
 					</div>
-					<div className="form-group has-success has-feedback col-sm-12">
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">被保险人</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={ins.name}/>
-							</div>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>被保险人</label>
+							<input type="text" className="form-control" defaultValue={ins.name}/>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">被保险人性别</label>
-							<div className="col-sm-9">
-								<select className="form-control" defaultValue={ins.gender}>
-									{Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
-								</select>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>被保险人性别</label>
+							<select className="form-control" defaultValue={ins.gender}>
+								{Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
+							</select>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">被保险人生日</label>
-							<div className="col-sm-9">
-								<input type="text" className="form-control" defaultValue={ins.birthday}/>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>被保险人生日</label>
+							<input type="text" className="form-control" defaultValue={ins.birthday}/>
 						</div>
 					</div>
-					<div className="form-group has-success has-feedback col-sm-12">
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3">被保险人证件</label>
-							<div className="col-sm-9">
-								<div className="input-group">
-									<input type="text" className="form-control" defaultValue={ins.certNo}/>
-									<div className="input-group-btn">
-										<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[ins.certType], "？")}</button>
-										<ul className="dropdown-menu">
-											{ Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
-										</ul>
-									</div>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>被保险人证件</label>
+							<div className="input-group">
+								<input type="text" className="form-control" defaultValue={ins.certNo}/>
+								<div className="input-group-append">
+									<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[ins.certType], "？")}</button>
+									<ul className="dropdown-menu">
+										{ Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
+									</ul>
 								</div>
 							</div>
 						</div>
-						<div className="col-sm-4">
-							<label className="control-label col-sm-3 col-sm-12">与投保人关系</label>
-							<div className="col-sm-9">
-								<select className="form-control" defaultValue={ins.relation}>
-									{ Object.keys(env.dict.relation).map(v => <option value={v}>{env.dict.relation[v]}</option>) }
-								</select>
-							</div>
+						<div className="col-md-4 mb-3">
+							<label>与投保人关系</label>
+							<select className="form-control" defaultValue={ins.relation}>
+								{ Object.keys(env.dict.relation).map(v => <option value={v}>{env.dict.relation[v]}</option>) }
+							</select>
 						</div>
 					</div>
 				</div>
@@ -216,11 +180,9 @@ env.policyOf = function(v, m) {
 
 env.endorseOf = function(v) {
 	return v == null ? null : (
-		<div className="panel panel-primary">
-			<div className="panel-heading">
-				<h3 className="panel-title">批改保全（{v.endorseTime}）</h3>
-			</div>
-			<div className="panel-body">
+		<div className="card border-info mb-3">
+			<div className="card-header text-white bg-info">批改保全（{v.endorseTime}）</div>
+			<div className="card-body text-secondary">
 				<form className="form-horizontal">
 					<div className="col-sm-11">
 						<div className="form-group has-success has-feedback">
@@ -244,14 +206,12 @@ var FeeList = React.createClass({
     },
     componentDidMount() {
     	if (this.props.req != null) common.req("btbx/policy/fee.json", this.props.req, r => {
-            this.setState({list:r});
+            this.setState({list1: r.agent, list2: r.channel});
         });
     },
-    buildTableLine(v) {
+    agentOf(v) {
         let estimateDate = v.estimate == null ? null : new Date(v.estimate).format("yyyy-MM-dd");
         let payTime = v.payTime == null ? null : new Date(v.payTime).format("yyyy-MM-dd hh:mm:ss");
-        let drawee = v.draweeType != 1 && env.company[v.drawee] ? env.company[v.drawee].name : v.drawee;
-        let payee = v.payeeType != 1 && env.company[v.payee] ? env.company[v.payee].name : v.payee;
         return (
 			<tr key={v.id}>
 				<td>{env.dict.feeType[v.type]}</td>
@@ -261,30 +221,55 @@ var FeeList = React.createClass({
 				<td>{env.dict.feeStatus[v.status]}</td>
 				<td>{payTime}</td>
 				<td>{v.freeze}</td>
-				<td>{drawee} &rarr; {payee}</td>
+				<td>平台 &rarr; 代理人{v.drawer}</td>
+			</tr>
+        );
+    },
+    channelOf(v) {
+        let estimateDate = v.estimate == null ? null : new Date(v.estimate).format("yyyy-MM-dd");
+        let payTime = v.payTime == null ? null : new Date(v.payTime).format("yyyy-MM-dd hh:mm:ss");
+        let payer = env.company[v.payer] ? env.company[v.payer].name : v.payer;
+        let drawer = env.company[v.drawer] ? env.company[v.drawer].name : v.drawer;
+        return (
+			<tr key={v.id}>
+				<td>{v.amount}</td>
+				<td>{estimateDate}</td>
+				<td>{env.dict.feeStatus[v.status]}</td>
+				<td>{payTime}</td>
+				<td>{v.payer} &rarr; {v.drawer}</td>
 			</tr>
         );
     },
     render() {
-        return (
-			<div className="listC">
-				<table>
-					<thead>
-						<tr>
-							<th><div>费用类型</div></th>
-							<th><div>金额（元）</div></th>
-							<th><div>预计发放时间</div></th>
-							<th><div>是否自动发放</div></th>
-							<th><div>发放状态</div></th>
-							<th><div>实际发放时间</div></th>
-							<th><div>冻结天数</div></th>
-							<th>费用流向</th>
-						</tr>
-					</thead>
-					<tbody>{ this.state.list == null ? null : this.state.list.map(v => this.buildTableLine(v)) }</tbody>
-				</table>
-			</div>
-        );
+        return (<div>
+			<table className="table table-bordered mt-3">
+				<thead className="thead-light">
+					<tr>
+						<th>费用类型</th>
+						<th>金额（元）</th>
+						<th>预计发放时间</th>
+						<th>是否自动发放</th>
+						<th>发放状态</th>
+						<th>实际发放时间</th>
+						<th>冻结天数</th>
+						<th>费用流向</th>
+					</tr>
+				</thead>
+				<tbody>{ this.state.list1 == null ? null : this.state.list1.map(v => this.agentOf(v)) }</tbody>
+			</table>
+			<table className="table table-bordered mt-3">
+				<thead className="thead-light">
+				<tr>
+					<th>金额（元）</th>
+					<th>预计结算时间</th>
+					<th>发放状态</th>
+					<th>实际结算时间</th>
+					<th>费用流向</th>
+				</tr>
+				</thead>
+				<tbody>{ this.state.list2 == null ? null : this.state.list2.map(v => this.channelOf(v)) }</tbody>
+			</table>
+		</div>);
     }
 });
 
@@ -312,10 +297,9 @@ var Main = React.createClass({
 	render() {
         let e = this.state.endorse;
         let c = e == null ? null : e.map(v => env.policyOf(v, 1));
-        let fee = this.state.policy == null ? null : {productId: this.state.policy.productId, bizNo: this.state.policy.policyNo, platformId: this.state.policy.platformId};
+        let fee = this.state.policy == null ? null : {vendorId: this.state.policy.companyId, bizNo: this.state.policy.policyNo, platformId: this.state.policy.platformId};
 		return (
 			<div>
-				<br/>
 				{ env.policyOf(this.state.policy) }
 				{ c }
 				<div className="col-sm-12 listC">

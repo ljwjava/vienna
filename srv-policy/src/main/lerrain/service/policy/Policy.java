@@ -29,7 +29,7 @@ public class Policy
     Long companyId;
     Long agencyId;
     Long orgId;
-    Long brokerId;
+    Long agentId;
 
     List<PolicyEndorse> endorse;
 
@@ -352,13 +352,13 @@ public class Policy
         this.orgId = orgId;
     }
 
-    public Long getBrokerId()
+    public Long getAgentId()
     {
-        return brokerId;
+        return agentId;
     }
 
-    public void setBrokerId(Long brokerId)
+    public void setAgentId(Long agentId)
     {
-        this.brokerId = brokerId;
+        this.agentId = agentId;
     }
 }

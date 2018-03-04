@@ -13,6 +13,7 @@ public class Fee
 {
     Long id;
     Long platformId;
+    Long vendorId;
     Long drawer;
 
     double amount;
@@ -191,39 +192,13 @@ public class Fee
         this.drawer = drawer;
     }
 
-    public static Fee feeOf(Map c)
+    public Long getVendorId()
     {
-        if (c == null)
-            return null;
+        return vendorId;
+    }
 
-        Fee r = new Fee();
-
-        r.id = Common.toLong(c.get("id")); //
-        r.platformId = Common.toLong(c.get("platform_id"));
-        r.drawer = Common.toLong(c.get("drawer"));
-
-        r.productId = Common.trimStringOf(c.get("product_id"));
-        r.bizNo = Common.trimStringOf(c.get("biz_no"));
-        r.memo = Common.trimStringOf(c.get("memo"));
-
-        Object extra = c.get("extra");
-        if (extra instanceof String)
-            r.extra = JSON.parseObject(extra.toString());
-        else
-            r.extra = (Map)JSON.toJSON(extra);
-
-        r.amount = Common.doubleOf(c.get("amount"), 0);
-        r.auto = Common.boolOf(c.get("auto"), false);
-        r.estimate = Common.dateOf(c.get("estimate"));
-        r.type = Common.intOf(c.get("type"), 0);
-        r.unit = Common.intOf(c.get("unit"), 1);
-        r.freeze = Common.intOf(c.get("freeze"), 0);
-
-        r.status = Common.intOf(c.get("status"), 9); //
-
-        r.payTime = Common.dateOf(c.get("pay")); //
-        r.createTime = Common.dateOf(c.get("create_time"), new Date()); //
-
-        return r;
+    public void setVendorId(Long vendorId)
+    {
+        this.vendorId = vendorId;
     }
 }

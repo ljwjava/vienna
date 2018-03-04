@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
+import java.util.Map;
+
 @Controller
 public class ChannelController
 {
@@ -50,7 +53,7 @@ public class ChannelController
 		return res;
 	}
 
-	@RequestMapping("/list_productfee.json")
+	@RequestMapping("/list_contract_rate.json")
 	@ResponseBody
 	public JSONObject listFee(@RequestBody JSONObject p)
 	{
@@ -80,10 +83,44 @@ public class ChannelController
 	 * @param p
 	 * @return
 	 */
-	public JSONObject bill(@RequestBody JSONArray list)
+	public JSONObject bill(@RequestBody JSONObject p)
 	{
+		Long platformId = p.getLong("platformId");
+		Long vendorId = p.getLong("vendorId");
+		Long agencyId = p.getLong("agencyId");
+		String bizNo = p.getString("bizNo");
+
+		Date time = new Date();
+
+		JSONArray list = p.getJSONArray("detail");
+		for (int i = 0; i < list.size(); i++)
+		{
+			JSONObject clause = list.getJSONObject(i);
+			String productId = clause.getString("productId");
+			double amount =clause.getDouble("amount");
+			Map factors = clause.getJSONObject("factors");
+
+			if (amount > 0)
+				channelSrv.bill(platformId, vendorId, agencyId, productId, factors, bizNo, amount, time);
+		}
+
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
+
+		return res;
+	}
+
+	@RequestMapping("/list_bill.json")
+	@ResponseBody
+	public JSONObject listBill(@RequestBody JSONObject c)
+	{
+		Long platformId = c.getLong("platformId");
+		Long vendorId = c.getLong("vendorId");
+		String bizNo = c.getString("bizNo");
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", channelSrv.listBill(platformId, vendorId, bizNo));
 
 		return res;
 	}
