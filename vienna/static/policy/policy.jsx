@@ -231,6 +231,7 @@ var FeeList = React.createClass({
         let drawer = env.company[v.drawer] ? env.company[v.drawer].name : v.drawer;
         return (
 			<tr key={v.id}>
+				<td>渠道费用</td>
 				<td>{v.amount}</td>
 				<td>{estimateDate}</td>
 				<td>{env.dict.feeStatus[v.status]}</td>
@@ -244,6 +245,7 @@ var FeeList = React.createClass({
 			<table className="table table-bordered mt-3">
 				<thead className="thead-light">
 				<tr>
+					<th>费用类型</th>
 					<th>金额（元）</th>
 					<th>预计结算时间</th>
 					<th>发放状态</th>
@@ -301,9 +303,7 @@ var Main = React.createClass({
 			<div>
 				{ env.policyOf(this.state.policy) }
 				{ c }
-				<div className="col-sm-12 listC">
-                    {fee == null ? null :  <FeeList req={fee}/>}
-				</div>
+				{fee == null ? null :  <FeeList req={fee}/>}
 			</div>
 		);
 	}

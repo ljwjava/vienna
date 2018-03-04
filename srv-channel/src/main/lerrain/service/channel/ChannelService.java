@@ -35,9 +35,13 @@ public class ChannelService
     public void bill(Long platformId, Long vendorId, Long agencyId, String productId, Map factors, String bizNo, double premium, Date time)
     {
         Map<String, Double> map = new HashMap<>();
+        Calendar calendar = Calendar.getInstance();
 
         for (FeeDefine c : getFeeDefine(platformId, agencyId, productId, factors, time))
         {
+            calendar.setTime(time);
+            int year = calendar.get(Calendar.YEAR);
+
             for (int i = 0; i < c.getFeeRate().length; i++)
             {
                 BigDecimal fr = c.getFeeRate()[i];
@@ -59,7 +63,8 @@ public class ChannelService
 
                     if (amt > 0)
                     {
-                        channelDao.bill(c, bizNo, vendorId, amt, 1, time);
+                        calendar.set(Calendar.YEAR, year + i);
+                        channelDao.bill(c, bizNo, vendorId, amt, 1, calendar.getTime());
 
                         Double val = map.get(c.getDrawer() + "/" + i);
                         map.put(c.getDrawer() + "/" + i, val == null ? amt : val + amt);
