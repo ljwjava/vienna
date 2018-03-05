@@ -101,15 +101,10 @@ public class PolicyDao
 
     public Long savePolicy(Policy p)
     {
-        String sql = "insert";
-
         if (p.getId() == null)
-        {
             p.setId(tools.nextId("policy"));
-            sql = "replace";
-        }
 
-        sql += " into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, company_id, agency_id, org_id, agent_id, pay_freq, pay_term, period" +
+        String sql = "replace into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, company_id, agency_id, org_id, agent_id, pay_freq, pay_term, period, " +
                 "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no) " +
                 "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -119,10 +114,10 @@ public class PolicyDao
                 p.getApplyNo(),
                 p.getPolicyNo(),
                 p.getType(),
-                Common.trimStringOf(p.getTarget().toJSONString()),
-                Common.trimStringOf(p.getDetail().toJSONString()),
-                Common.trimStringOf(p.getFee().toJSONString()),
-                Common.trimStringOf(p.getExtra().toJSONString()),
+                Common.trimStringOf(p.getTarget()),
+                Common.trimStringOf(p.getDetail()),
+                Common.trimStringOf(p.getFee()),
+                Common.trimStringOf(p.getExtra()),
                 p.getPremium(),
                 p.getInsureTime(),
                 p.getEffectiveTime(),

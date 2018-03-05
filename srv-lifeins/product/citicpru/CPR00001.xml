@@ -31,6 +31,11 @@
 			</insure>
 		</param>
 
+		<init>
+			<item name="A_CITY" value="['1101','1102','3101','3102','4401','4403']"/>
+			<item name="B_CITY" value="['1201','1202','5001','5002','5003']"/>
+		</init>
+
 		<interest>
 			<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
 		</interest>
@@ -73,6 +78,43 @@
 			</if>
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不能大于保障期间
+			</if>
+
+			<if condition="ZONE == null and AGE >= 18 and AGE le 45 and AMOUNT > 500000 and AMOUNT le 1000000" level="alert">
+				18~45周岁，北京、上海、广州、深圳最高100万，省会城市最高80万，其他地区最高50万
+			</if>
+			<if condition="ZONE == null and AGE >= 46 and AGE le 50 and AMOUNT > 300000 and AMOUNT le 600000" level="alert">
+				46~50周岁，北京、上海、广州、深圳最高60万，省会城市最高40万，其他地区最高30万
+			</if>
+			<if>
+				if (AGE >= 18 and AGE le 45 and AMOUNT > 1000000)
+					return "18~45周岁，保额最高100万";
+				if (AGE >= 46 and AGE le 50 and AMOUNT > 600000)
+					return "46~50周岁，保额最高60万";
+				if (ZONE == null)
+					return null;
+				var city = 3;
+				var code = str(ZONE, 0, 4);
+				if (find(A_CITY, code) == null) {
+					city = 1;
+				} else if (find(B_CITY, code) == null or str(ZONE, 2, 2) == "01") {
+					city = 2;
+				}
+				if (city == 1) {
+				} else if (city == 2) {
+					if (AGE >= 18 and AGE le 45 and AMOUNT > 800000) {
+						return '省会地区，18~45岁最高保额为80万';
+					} else if (AGE >= 46 and AGE le 50 and AMOUNT > 500000) {
+						return '省会地区，46~50岁最高保额为50万';
+					}
+				} else {
+					if (AGE >= 18 and AGE le 45 and AMOUNT > 500000) {
+						return '普通地区，18~45岁最高保额为50万';
+					} else if (AGE >= 46 and AGE le 50 and AMOUNT > 300000) {
+						return '普通地区，46~50岁最高保额为30万';
+					}
+				}
+				return null;
 			</if>
 		</rule>
 	</product>
