@@ -62,7 +62,7 @@
 			<if condition="AGE lt 18 or AGE > 50" type="customer">
 				投保年龄：18~50周岁
 			</if>
-			<if condition="AGE > 40 and PAY_VALUE != 30" type="customer">
+			<if condition="AGE > 40 and PAY_VALUE == 30" type="customer">
 				投保年龄：30年交最高投保年龄为40周岁
 			</if>
 			<if condition="AMOUNT lt 300000 or AMOUNT % 100000 > 0">
