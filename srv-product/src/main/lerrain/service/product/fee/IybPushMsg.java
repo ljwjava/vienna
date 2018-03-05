@@ -19,12 +19,10 @@ public class IybPushMsg
 
     private static final char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-	public String send(String accountId, String tabType, String msgType, String subTitle, String desc, String contentMsg, String imgUrl)
+	public String send(Long accountId, String tabType, String msgType, String subTitle, String desc, String contentMsg, String imgUrl)
 	{
-		if(StringUtils.isEmpty(accountId)){
-			System.out.println("推送消息失败，accountId不能为空");
-			return null;
-		}
+		if (accountId == null)
+			throw new RuntimeException("推送消息失败，accountId不能为空");
 		// 活动类型消息，必须要传所有数据
 		if("act".equals(tabType)){
 			if(StringUtils.isEmpty(imgUrl)){

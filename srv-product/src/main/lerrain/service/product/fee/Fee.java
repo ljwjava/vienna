@@ -13,12 +13,8 @@ public class Fee
 {
     Long id;
     Long platformId;
-
-    int draweeType;
-    Long drawee;
-
-    int payeeType;
-    Long payee;
+    Long vendorId;
+    Long drawer;
 
     double amount;
     boolean auto; //是否自动支付
@@ -186,83 +182,23 @@ public class Fee
         this.status = status;
     }
 
-    public int getDraweeType()
+    public Long getDrawer()
     {
-        return draweeType;
+        return drawer;
     }
 
-    public void setDraweeType(int draweeType)
+    public void setDrawer(Long drawer)
     {
-        this.draweeType = draweeType;
+        this.drawer = drawer;
     }
 
-    public Long getDrawee()
+    public Long getVendorId()
     {
-        return drawee;
+        return vendorId;
     }
 
-    public void setDrawee(Long drawee)
+    public void setVendorId(Long vendorId)
     {
-        this.drawee = drawee;
-    }
-
-    public int getPayeeType()
-    {
-        return payeeType;
-    }
-
-    public void setPayeeType(int payeeType)
-    {
-        this.payeeType = payeeType;
-    }
-
-    public Long getPayee()
-    {
-        return payee;
-    }
-
-    public void setPayee(Long payee)
-    {
-        this.payee = payee;
-    }
-
-    public static Fee feeOf(Map c)
-    {
-        if (c == null)
-            return null;
-
-        Fee r = new Fee();
-
-        r.id = Common.toLong(c.get("id")); //
-        r.platformId = Common.toLong(c.get("platform_id"));
-
-        r.draweeType = Common.intOf(c.get("drawee_type"), 0);
-        r.drawee = Common.toLong(c.get("drawee"));
-        r.payeeType = Common.intOf(c.get("payee_type"), 0);
-        r.payee = Common.toLong(c.get("payee"));
-
-        r.productId = Common.trimStringOf(c.get("product_id"));
-        r.bizNo = Common.trimStringOf(c.get("biz_no"));
-        r.memo = Common.trimStringOf(c.get("memo"));
-
-        Object extra = c.get("extra");
-        if (extra instanceof String)
-            r.extra = JSON.parseObject(extra.toString());
-        else
-            r.extra = (Map)JSON.toJSON(extra);
-
-        r.amount = Common.doubleOf(c.get("amount"), 0);
-        r.auto = Common.boolOf(c.get("auto"), false);
-        r.estimate = Common.dateOf(c.get("estimate"));
-        r.type = Common.intOf(c.get("type"), 0);
-        r.unit = Common.intOf(c.get("unit"), 1);
-        r.freeze = Common.intOf(c.get("freeze"), 0);
-
-        r.status = Common.intOf(c.get("status"), 9); //
-
-        r.payTime = Common.dateOf(c.get("pay")); //
-        r.createTime = Common.dateOf(c.get("create_time"), new Date()); //
-
-        return r;
+        this.vendorId = vendorId;
     }
 }

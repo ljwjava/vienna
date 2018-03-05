@@ -39,9 +39,10 @@ class ProposalList extends List {
 	buildTableTitle() {
 		return (
 			<tr>
-				<th style={{width: "40%"}}><div>建议书名称</div></th>
-				<th><div>修改时间</div></th>
-				<th><div>保费</div></th>
+				<th style={{width: "40%", textAlign:"center"}}><div>建议书名称</div></th>
+				<th style={{textAlign:"center"}}>主要险种</th>
+				<th style={{textAlign:"center"}}>修改时间</th>
+				<th style={{textAlign:"center"}}>保费</th>
 				<th></th>
 			</tr>
 		);
@@ -51,8 +52,9 @@ class ProposalList extends List {
 		return (
 			<tr key={v.id}>
 				<td><img src={v.tag == "single" ? "../images/user.png" : "../images/users.png"} style={{width:"24px", height:"24px"}}/> {v.name}</td>
+				<td></td>
 				<td style={{textAlign:"center"}}>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
-				<td style={{textAlign:"center"}}>{v.premium}</td>
+				<td style={{textAlign:"right"}}>{Number(v.premium).toFixed(2)}</td>
 				<td style={{textAlign:"center"}}>
 					<a onClick={this.copy.bind(this, v.id)} style={{marginRight:"10px"}}>复制</a>
 					<a onClick={this.open.bind(this, v.id)} style={{marginRight:"10px"}}>编辑</a>
@@ -63,17 +65,25 @@ class ProposalList extends List {
 	}
 }
 
+var Main = React.createClass({
+    render() {
+        return (
+			<div>
+				<nav className="navbar navbar-light justify-content-between">
+					<button className="btn btn-primary" onClick={env.create}>新建建议书</button>
+					<div className="form-inline">
+						<input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+						<button className="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+					</div>
+				</nav>
+				<ProposalList ref="list" env={env}/>
+			</div>
+		)
+    }
+});
+
 $(document).ready( function() {
 	ReactDOM.render(
-		<div>
-			<div className="container-fluid">
-				<ul className="nav navbar-nav">
-				</ul>
-				<ul className="nav navbar-nav navbar-right">
-					<li><a onClick={env.create}>新建建议书</a></li>
-				</ul>
-			</div>
-			<ProposalList ref="list" env={env}/>
-		</div>, document.getElementById("content")
+		<Main/>, document.getElementById("content")
 	);
 });

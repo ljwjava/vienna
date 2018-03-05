@@ -37,28 +37,28 @@ var Main = React.createClass({
 		return (
 			<div className="form-horizontal">
 				<br/>
-				<div className="form-group">
+				<div className="form-row mb-3">
 					<div className="col-sm-3">
 						<select className="form-control" ref="envList" onChange={this.setEnv}>{this.state.envList}</select>
 					</div>
 				</div>
-				<div className="form-group">
+				<div className="form-row">
 					<div className="col-sm-8">
-						<textarea ref="script" className="form-control" style={{height:"800px"}}></textarea>
+						<textarea ref="script" className="form-control" style={{height:"600px"}}></textarea>
 					</div>
 					<div className="col-sm-4">
-						<textarea ref="reqParams" className="form-control" style={{height:"800px"}}></textarea>
+						<textarea ref="reqParams" className="form-control" style={{height:"600px"}}></textarea>
 					</div>
 				</div>
-				<div className="form-group">
+				<div className="form-row mt-3">
 					<div className="col-sm-8">
 						<input type="button" className="btn btn-primary btn-lg" value="请求 >>>>" onClick={this.test}/>
 					</div>
 				</div>
-				<div className="form-group">
+				<div className="form-row">
 					<div className="col-sm-12"><pre id="result">{this.state.exception != null ? this.state.exception : JSON.stringify(this.state.result)}</pre></div>
 				</div>
-				<div className="form-group">
+				<div className="form-row">
 					<div className="col-sm-12"><pre id="console">{this.state.console}</pre></div>
 				</div>
 			</div>

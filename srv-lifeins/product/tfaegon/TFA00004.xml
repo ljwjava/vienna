@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="TFA00004" corporation_id="tfaegon" code="TCIR22" name="附加慧馨安少儿重大疾病保险" name_abbr="附加慧馨安" unit="1000" amount="PARENT.AMOUNT" input="none"
+		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
+
+		<data>
+			<item parser="dds" value="TFA00004" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>
+			<insure>
+				<item code="parent" />
+			</insure>
+		</param>
+
+		<attachment>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>

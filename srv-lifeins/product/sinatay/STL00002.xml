@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="STL00002" corporation_id="sinatay" code="33F00030" name="附加（B款）投保人豁免保费重大疾病" name_abbr="附加投保人豁免B" unit="1000" amount="PARENT.PREMIUM" input="none" premium="DS.RATE[0][0]*QUANTITY"
+	<product id="STL00002" corporation_id="sinatay" code="33F00030" name="信泰附加投保人豁免保险费费重大疾病保险" name_abbr="附加投保人豁免" unit="1000" amount="PARENT.PREMIUM" input="none" premium="DS.RATE[0][0]*QUANTITY"
 		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<data>

@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="TFA00003" corporation_id="tfaegon" code="TCEB15" name="慧馨安少儿两全保险" name_abbr="慧馨安" unit="1000"
+		type_code="life" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="TFA00003" />
+			<item parser="dds" value="OCCUPATION" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+			</pay>
+			<insure>
+				<item code="term_20" />
+				<item code="term_25" />
+				<item code="term_30" />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="TFA00004"/>
+			<product id="TFA00002"/>
+		</rider>
+
+		<init>
+			<item name="PREMIUM_EXEMPT" value="PREMIUM + try(RIDER('TFA00004').PREMIUM, 0)"/>
+			<item name="SALE_PROV" value="['11','12','13','31','44','32','42','37','51','35']"/>
+			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
+			<item name="A_CITY" value="['1101','1102','1201','1202','1301','3101','3102','4401','4403','3201','3202','3205','4201','3701','3702','5101','3501','3502']"/>
+		</init>
+
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY" />
+		</interest>
+
+		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故保险金">
+					<item>若被保险人于等待期内因疾病导致身故，我们将向您无息返还本合同累计已交纳的保险费，本合同效力终止。</item>
+					<item>若被保险人因意外伤害或于等待期后因疾病导致身故，且身故时未满十八周岁，我们将按累计已交纳的保险费向身故保险金受益人给付身故保险金，本合同效力终止。</item>
+					<item>若被保险人因意外伤害或于等待期后因疾病导致身故，且身故时年满十八周岁，我们将按被保险人身故时本合同的基本保险金额向身故保险金受益人给付身故保险金，本合同效力终止。</item>
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+					<item>本合同约定的重大疾病分为A、B、C、D四组，详细疾病分组信息请见重大疾病分组。</item>
+					<item>每组重大疾病保险金的给付次数以一次为限，给付后该组重大疾病的保险责任终止。本合同重大疾病保险金的累计给付次数以三次为限，当累计给付达到三次时，本合同效力终止。</item>
+				</paragraph>
+				<paragraph title="轻症疾病保险金">
+					<item>本合同约定的轻症疾病分为A、B、C三组，详细疾病分组信息请见轻症疾病分组。</item>
+					<item>每组轻症疾病保险金的给付次数以一次为限，给付后该组轻症疾病的保险责任终止。本合同轻症疾病保险金的累计给付次数以三次为限，当累计给付达到三次时，本项保险责任终止。</item>
+					<item>若被保险人同时符合本合同约定的重大疾病定义和轻症疾病定义的，我们仅承担给付重大疾病保险金的保险责任。</item>
+				</paragraph>
+				<paragraph title="重大疾病或轻症疾病豁免保险费">
+					<item>若被保险人符合首次重大疾病保险金或首次轻症疾病保险金的给付条件，则我们自被保险人被确诊首次患有本合同约定的重大疾病或轻症疾病的下一个保险费约定支付日开始，豁免本合同应交纳的各期保险费至交费期限届满为止。</item>
+					<item>被豁免的保险费视为已交纳，同时本合同继续有效。</item>
+					<item>在豁免保险费期间，我们不接受本合同基本保险金额以及交费方式的变更。</item>
+				</paragraph>
+			</coverage>
+
+			<benefit_chart filter="chart" parser="chart">
+			    <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 17" type="customer">
+				投保年龄须为出生满30天～17周岁
+			</if>
+			<if condition="AMOUNT % 10000 > 0">
+				保额必须为10000元的整数倍。
+			</if>
+			<if condition="AGE > 10 and AGE le 15 and PAY_PERIOD > 15">
+				年龄11-15周岁，交费期间需要为3～15年
+			</if>
+			<if condition="AGE > 15 and AGE le 17 and PAY_PERIOD > 10">
+				年龄16-17周岁，交费期间需要为3～10年
+			</if>
+			<if condition="AGE > 10 and AGE le 15 and INSURE_PERIOD > 25">
+				年龄11-15周岁，保障期间需要为20～25年
+			</if>
+			<if condition="AGE > 15 and AGE le 17 and INSURE_PERIOD > 20">
+				年龄16-17周岁，保障期间需要为20年
+			</if>
+			<if condition="PAY_PERIOD > INSURE_PERIOD - 10">
+				保险期间减缴费期间需>=10年
+			</if>
+			<if condition="APPLICANT.AGE + PAY_PERIOD > 70">
+				投保人年龄+缴费期限需≤70
+			</if>
+			<if condition="ZONE == null and AMOUNT > 200000 and AMOUNT le 400000" level="alert">
+				A类地区最高40万，其他地区最高20万
+			</if>
+			<if condition="AMOUNT > 400000">
+				保额最高40万
+			</if>
+			<if condition="ZONE == null" level="alert">
+				未确定地区，该产品销售限以下地区：北京、上海、天津、广东、江苏、湖北、河北、山东、四川、福建
+			</if>
+			<if condition="ZONE != null and find(SALE_PROV, str(ZONE,0,2)) == null">
+				该地区暂不销售
+			</if>
+			<if>
+				if (ZONE == null)
+					return null;
+				var bcity = find(A_CITY, str(ZONE,0,4)) == null;
+				if (bcity) {
+					if (AMOUNT > 200000 and AMOUNT le 400000) {
+						return '普通地区未成年人最高保额为20万';
+					}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

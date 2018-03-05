@@ -32,22 +32,23 @@
 		</init>
 
 		<interest>
-			<item name="SUV_T" param="A1,A2">IT.ACT(A1,A2)</item>
-			<item name="DIE_T" param="A1,A2">IT.ACT(A1,A2)</item>
 			<item name="CASH" param="A1">
 				var x = 0;
 				for (var P : PLAN.PRODUCTS) {
 					if (P.PARENT == THIS.PARENT or P == THIS.PARENT) {
-						x += try(P.IT.DRAW(A1),0);
+						x += try(P.IT.SAVE04(A1)*0.99,0);
 					}
 				}
 				return x;
 			</item>
 			<item name="ACT" param="A1,A2">
 				var x = A1 > 0 ? IT.ACT(A1-1,A2) : 0;
-				x += IT.CASH(A1);
-				return x*(1+(A2>=3?RATE:R[A2])/100);
+				x = x * (1+(A2>=3?RATE:R[A2])/100) + IT.CASH(A1);
+				return x;
 			</item>
+
+			<item name="X_SUV_T" param="A1,A2">IT.ACT(A1,A2)</item>
+			<item name="X_DIE_T" param="A1,A2">IT.ACT(A1,A2)-IT.CASH(A1)</item>
 		</interest>
 
 		<attachment>
@@ -65,10 +66,10 @@
 						<blank row="1">'6.0%'</blank>
 						<blank row="1">'5.0%'</blank>
 					</row>
-					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
 						<row>
-							<blank style="##0">I+1</blank>
-							<blank style="##0">AGE+I+1</blank>
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
 							<blank align="right" style="########0.00">IT.CASH(I)</blank>
 							<blank align="right" style="########0.00">IT.ACT(I,0)</blank>
 							<blank align="right" style="########0.00">IT.ACT(I,1)</blank>

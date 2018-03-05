@@ -55,6 +55,14 @@ public class OrderService
 		
 		return order;
 	}
+
+	public Order reloadOrder(Long orderId)
+	{
+		Order order = pd.load(orderId);
+		cache.put(order.getId(), order);
+
+		return order;
+	}
 	
 	public void saveOrder(Order p)
 	{
