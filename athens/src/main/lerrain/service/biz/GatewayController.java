@@ -317,7 +317,6 @@ public class GatewayController
         param.put("URI", uri);
 
         HttpSession session = req.getSession();
-
         return call(req.getServerName() + ":" + req.getServerPort(), uri, session, param).toString();
     }
 

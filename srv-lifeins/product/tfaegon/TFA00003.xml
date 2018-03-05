@@ -72,16 +72,28 @@
 
 		<rule>
 			<if condition="AGE > 17" type="customer">
-				投保年龄须为出生满30天~17周岁
+				投保年龄须为出生满30天～17周岁
 			</if>
 			<if condition="AMOUNT % 10000 > 0">
 				保额必须为10000元的整数倍。
 			</if>
-			<if condition="PAY_PERIOD == 20 and (AGE > 10 or INSURE_PERIOD lt 30)">
-				选择20年交时，投保年龄为30天~10周岁，保障期间需要为30年
+			<if condition="AGE > 10 and AGE le 15 and PAY_PERIOD > 15">
+				年龄11-15周岁，交费期间需要为3～15年
 			</if>
-			<if condition="PAY_PERIOD == 15 and (AGE > 15 or INSURE_PERIOD lt 25)">
-				选择15年交时，投保年龄为30天~15周岁，保障期间需要为25／30年
+			<if condition="AGE > 15 and AGE le 17 and PAY_PERIOD > 10">
+				年龄16-17周岁，交费期间需要为3～10年
+			</if>
+			<if condition="AGE > 10 and AGE le 15 and INSURE_PERIOD > 25">
+				年龄11-15周岁，保障期间需要为20～25年
+			</if>
+			<if condition="AGE > 15 and AGE le 17 and INSURE_PERIOD > 20">
+				年龄16-17周岁，保障期间需要为20年
+			</if>
+			<if condition="PAY_PERIOD > INSURE_PERIOD - 10">
+				保险期间减缴费期间需>=10年
+			</if>
+			<if condition="APPLICANT.AGE + PAY_PERIOD > 70">
+				投保人年龄+缴费期限需≤70
 			</if>
 			<if condition="ZONE == null and AMOUNT > 200000 and AMOUNT le 400000" level="alert">
 				A类地区最高40万，其他地区最高20万

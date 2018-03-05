@@ -26,7 +26,7 @@ public class Policy
     Date effectiveTime;
     Date finishTime;
 
-    Long companyId;
+    Long vendorId;
     Long agencyId;
     Long orgId;
     Long agentId;
@@ -48,9 +48,9 @@ public class Policy
     String vehicleFrameNo;
     String vehiclePlateNo;
 
-    int payFreq;
-    int payTerm;
-    int period;
+    Integer payFreq;
+    Integer payTerm;
+    Integer period;
 
     public String getApplicantName()
     {
@@ -162,32 +162,32 @@ public class Policy
         this.vehiclePlateNo = vehiclePlateNo;
     }
 
-    public int getPayFreq()
+    public Integer getPayFreq()
     {
         return payFreq;
     }
 
-    public void setPayFreq(int payFreq)
+    public void setPayFreq(Integer payFreq)
     {
         this.payFreq = payFreq;
     }
 
-    public int getPayTerm()
+    public Integer getPayTerm()
     {
         return payTerm;
     }
 
-    public void setPayTerm(int payTerm)
+    public void setPayTerm(Integer payTerm)
     {
         this.payTerm = payTerm;
     }
 
-    public int getPeriod()
+    public Integer getPeriod()
     {
         return period;
     }
 
-    public void setPeriod(int period)
+    public void setPeriod(Integer period)
     {
         this.period = period;
     }
@@ -322,14 +322,14 @@ public class Policy
         this.finishTime = finishTime;
     }
 
-    public Long getCompanyId()
+    public Long getVendorId()
     {
-        return companyId;
+        return vendorId;
     }
 
-    public void setCompanyId(Long companyId)
+    public void setVendorId(Long vendorId)
     {
-        this.companyId = companyId;
+        this.vendorId = vendorId;
     }
 
     public Long getAgencyId()
