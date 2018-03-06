@@ -75,13 +75,13 @@ public class OrderService
 		pd.update(p);
 	}
 
-	public List<Order> list(int type, int from, int number, Long platformId, Long owner)
+	public List<Order> list(int type, int from, int number, Long platformId, Integer productType, Long owner)
 	{
-		return pd.list(type, from, number, platformId, owner);
+		return pd.list(type, from, number, platformId, productType, owner);
 	}
 
-	public int count(int type, Long platformId, Long owner)
+	public int count(int type, Long platformId, Integer productType, Long owner)
 	{
-		return pd.count(type, platformId, owner);
+		return pd.count(type, platformId, productType, owner);
 	}
 }

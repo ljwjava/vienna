@@ -68,6 +68,8 @@ public class FeeController
             r.drawer = Common.toLong(c.get("drawer"));
             r.productId = Common.trimStringOf(c.get("productId"));
             r.vendorId = Common.toLong(c.get("vendorId"));
+            r.bizType = Common.intOf(c.get("bizType"), 0);
+            r.bizId = Common.toLong(c.get("bizId"));
             r.bizNo = Common.trimStringOf(c.get("bizNo"));
             r.memo = Common.trimStringOf(c.get("memo"));
             r.extra = c.getJSONObject("extra");
@@ -107,18 +109,29 @@ public class FeeController
         return res;
     }
 
-    @RequestMapping("/fee/list_bill.json")
+    @RequestMapping("/fee/find.json")
     @ResponseBody
-    public JSONObject listBill(@RequestBody JSONObject c)
+    public JSONObject find(@RequestBody JSONObject c)
     {
+        //条件组1
         Long platformId = c.getLong("platformId");
 //        Long productId = c.getLong("productId");
         Long vendorId = c.getLong("vendorId");
         String bizNo = c.getString("bizNo");
 
+        //条件组2
+        Integer bizType = c.getInteger("bizType");
+        Long bizId = c.getLong("bizId");
+
+        Object r = null;
+        if (bizType != null && bizId != null)
+            r = cs.findFee(bizType, bizId);
+        else if (platformId != null && vendorId != null && bizNo != null)
+            r = cs.findFee(platformId, vendorId, bizNo);
+
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", cs.listFee(platformId, vendorId, bizNo));
+        res.put("content", r);
 
         return res;
     }

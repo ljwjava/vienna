@@ -90,6 +90,9 @@ public class ChannelController
 		Long agencyId = p.getLong("agencyId");
 		String bizNo = p.getString("bizNo");
 
+		Integer bizType = p.getInteger("bizType");
+		Long bizId = p.getLong("bizId");
+
 		Date time = new Date();
 
 		JSONArray list = p.getJSONArray("detail");
@@ -101,7 +104,7 @@ public class ChannelController
 			Map factors = clause.getJSONObject("factors");
 
 			if (amount > 0)
-				channelSrv.bill(platformId, vendorId, agencyId, productId, factors, bizNo, amount, time);
+				channelSrv.bill(platformId, vendorId, agencyId, productId, factors, bizType, bizId, bizNo, amount, time);
 		}
 
 		JSONObject res = new JSONObject();
@@ -110,17 +113,28 @@ public class ChannelController
 		return res;
 	}
 
-	@RequestMapping("/list_bill.json")
+	@RequestMapping("/find_bill.json")
 	@ResponseBody
-	public JSONObject listBill(@RequestBody JSONObject c)
+	public JSONObject findBill(@RequestBody JSONObject c)
 	{
+		//条件组1
 		Long platformId = c.getLong("platformId");
 		Long vendorId = c.getLong("vendorId");
 		String bizNo = c.getString("bizNo");
 
+		//条件组2
+		Integer bizType = c.getInteger("bizType");
+		Long bizId = c.getLong("bizId");
+
+		Object r = null;
+		if (bizType != null && bizId != null)
+			r = channelSrv.findBill(bizType, bizId);
+		else if (platformId != null && vendorId != null && bizNo != null)
+			r = channelSrv.findBill(platformId, vendorId, bizNo);
+
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", channelSrv.listBill(platformId, vendorId, bizNo));
+		res.put("content", r);
 
 		return res;
 	}

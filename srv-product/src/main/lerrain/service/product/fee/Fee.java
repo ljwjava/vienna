@@ -16,6 +16,9 @@ public class Fee
     Long vendorId;
     Long drawer;
 
+    int bizType;
+    Long bizId;
+
     double amount;
     boolean auto; //是否自动支付
 
@@ -190,6 +193,26 @@ public class Fee
     public void setDrawer(Long drawer)
     {
         this.drawer = drawer;
+    }
+
+    public int getBizType()
+    {
+        return bizType;
+    }
+
+    public void setBizType(int bizType)
+    {
+        this.bizType = bizType;
+    }
+
+    public Long getBizId()
+    {
+        return bizId;
+    }
+
+    public void setBizId(Long bizId)
+    {
+        this.bizId = bizId;
     }
 
     public Long getVendorId()
