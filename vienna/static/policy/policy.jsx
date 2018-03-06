@@ -298,7 +298,7 @@ var Main = React.createClass({
 	render() {
         let e = this.state.endorse;
         let c = e == null ? null : e.map(v => env.policyOf(v, 1));
-        let fee = this.state.policy == null ? null : {vendorId: this.state.policy.companyId, bizNo: this.state.policy.policyNo, platformId: this.state.policy.platformId};
+        let fee = this.state.policy == null ? null : {bizType: 2, bizId: this.state.policy.id};
 		return (
 			<div>
 				{ env.policyOf(this.state.policy) }
