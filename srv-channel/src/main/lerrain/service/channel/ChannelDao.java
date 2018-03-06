@@ -173,7 +173,7 @@ public class ChannelDao
 //        }
 //    }
 
-    public void bill(FeeDefine c, Integer bizType, Long bizId, String bizNo, Long vendorId, double amt, int unit, Date time)
+    public void bill(FeeDefine c, Integer bizType, Long bizId, String bizNo, Long vendorId, BigDecimal amt, int unit, Date time)
     {
         jdbc.update("insert into t_channel_fee(platform_id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 c.getPlatformId(), bizType, bizId, bizNo, c.getProductId(), vendorId, amt, unit, time, 0, c.getPayer(), c.getDrawer(), null, time);
