@@ -3,7 +3,9 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	//return "http://www.lerrain.com:7666/" + url;
+	// return "http://www.lerrain.com:7666/" + url;
+	// return "http://dingl.51vip.biz:60004/" + url;
+	// return "http://dingl.tpddns.cn:60004/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {
@@ -290,14 +292,7 @@ common.initForm = function(url, params, method){
 	return f;
 };
 
-common.dateStr = function(t) {
-	if (t == null)
-		return null;
-    return new Date(t).format("yyyy-MM-dd");
-};
-
-common.timeStr = function(t) {
-    if (t == null)
-        return null;
-    return new Date(t).format("yyyy-MM-dd hh:mm:ss");
+common.isWeixin = function() {
+    var ua = window.navigator.userAgent.toLowerCase();
+    return ua.match(/MicroMessenger/i) == 'micromessenger';
 };
