@@ -100,6 +100,7 @@ var PaySwich = React.createClass({
 			return false;
 		}
 		var vv = this.state.payOptions[idx];
+		// console.log(idx, vv);
         let f = common.initForm(vv.nextUrl, vv.params, vv.method);
         f.submit();
 	},
@@ -257,6 +258,9 @@ var Ground = React.createClass({
 		if(cityCode == null || cityCode.length < 6){
 			return null;
 		}
+		if(env.company != "citicpru" || !(""+env.order.detail.applicant.city.code).startsWith("44")){
+		    return null;
+        }
         common.req("sale/dispute.json", {provinceId: cityCode.substr(0, 2) + "0000", cityId: cityCode.substr(0, 4) + "00"}, r => {
         	this.setState({disputeList: r});
         }, f => {
@@ -399,19 +403,19 @@ var Ground = React.createClass({
 												<td colSpan={2} style={{fontWeight: "bold"}}>{rdp.lnam01}</td>
 											</tr>
 											<tr>
-												<td>地址：</td>
+												<td style={{width: "45px"}}>地址：</td>
 												<td>{rdp.lnam02}</td>
 											</tr>
 											<tr>
-												<td>电话：</td>
+												<td style={{width: "45px"}}>电话：</td>
 												<td>{rdp.rmblphone}</td>
 											</tr>
 											<tr>
-												<td>区域：</td>
+												<td style={{width: "45px"}}>区域：</td>
 												<td>{rdp.sbusiorgid}</td>
 											</tr>
 											<tr>
-												<td>连接：</td>
+												<td style={{width: "45px"}}>连接：</td>
 												<td>{rdp.email}</td>
 											</tr>
 										</table>
