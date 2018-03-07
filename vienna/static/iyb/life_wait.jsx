@@ -354,15 +354,30 @@ var Ground = React.createClass({
 	},
 	componentDidMount() {
 		let orderId = common.param("orderId");
+		let orderNo = common.param("orderNo");
 		let orderId2 = common.load("iyb/orderId", 1800000);
 		// if (orderId == null || orderId == "" || orderId != orderId2) {
 		// 	ToastIt("已过期");
 		// } else {
 		// 	common.req("order/view.json", {orderId: orderId}, r => {
 		// 		env.order = r;
-				this.countDown(160);
+		// 		this.countDown(160);
 			// });
 		// }
+		if(!orderId && !!orderNo) {
+			if(orderNo.startsWith("IYB")) {
+                orderId = orderNo.replace("IYB","");
+			} else if (orderNo.startsWith("YBD")) {
+                orderId = orderNo.replace("YBD","");
+			}
+		}
+		if(!orderId) {
+            ToastIt("已过期");
+		}
+		console.log(orderId);
+		this.setState({orderId: orderId}, ()=>{
+            this.countDown(160);
+		});
 	},
 	finish(t, text) {
 		if (this.intervalId != null) {
@@ -420,7 +435,7 @@ var Ground = React.createClass({
                     clearInterval(this.intervalId);
                     this.finish(90, "请致电客服，确认投保结果");
                 } else if(asking % 5 == 0) {
-                    common.req("order/view.json", {orderId: common.param("orderId")}, r => {
+                    common.req("order/view.json", {orderId: this.state.orderId}, r => {
                         env.order = r;
                         if (r.status == 3) {
                             // r.extra = {iybOrderNo: 'IYB201710161408193477'};

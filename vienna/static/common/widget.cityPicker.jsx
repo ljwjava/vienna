@@ -8,8 +8,7 @@ var CityPicker = React.createClass({
 	getInitialState() {
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
-	    // console.log('init', v);
-		return {value: v.code, text: v.text, code: this.props.valType, city:[], proPickerVal:[]};
+		return {value: v.value||v.code, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[]};
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state
     componentWillMount() {
@@ -21,14 +20,14 @@ var CityPicker = React.createClass({
 	    if(!!this.props.company){
 	        company = this.props.company;
         }
-        common.req("dict/view.json", {company: company, name: this.state.code, version: "new"}, r => {
+        common.req("dict/view.json", {company: company, name: this.state.valType, version: "new"}, r => {
             let val = this.state.value;
             var proPickerVal = [];
             if(val != null && val != '') {
                 var cv1 = val.substr(0, 2) + "0000";
                 var cv2 = val.substr(0, 4) + "00";
-                for(var co1 in r[this.state.code]) {
-                    var v1 = r[this.state.code][co1];
+                for(var co1 in r[this.state.valType]) {
+                    var v1 = r[this.state.valType][co1];
                     if(cv1 == v1.value) {
                         proPickerVal.push(v1);
                         var cc1 = v1.children;
@@ -50,7 +49,7 @@ var CityPicker = React.createClass({
             }
             // console.log('compdid', this.state);
             this.setState({
-                city: r[this.state.code],
+                city: r[this.state.valType],
                 proPickerVal: proPickerVal
             });
         });
@@ -87,6 +86,7 @@ var CityPicker = React.createClass({
 	    // console.log('full', label, value);
 	    if(value == null || value.length < 6) return '';
 	    if(this.state.city == null || this.state.city.length <= 0 || value == null || value == "") return label;
+	    // console.log(label, value);
         var cv1 = value.substr(0, 2) + "0000";
         var cv2 = value.substr(0, 4) + "00";
         var cv3 = value;
@@ -95,6 +95,7 @@ var CityPicker = React.createClass({
         var desc3 = '';
 	    for(var co1 in this.state.city) {
             var v1 = this.state.city[co1];
+            // console.log("111", v1);
             if(cv1 == v1.value || cv2 == v1.value) {    // 处理跨级情况，如直接写XX市，不过一般不会有这种情况
                 desc1 = v1.label;
                 var cc1 = v1.children;
@@ -113,6 +114,7 @@ var CityPicker = React.createClass({
                 }
             }
         }
+        // console.log('000', desc1, desc2, desc3);
 	    return desc1 + (desc2 == "县" || desc2 == "市辖区" ? "" : desc2) + desc3;
     },
     /**

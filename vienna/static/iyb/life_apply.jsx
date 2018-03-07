@@ -23,8 +23,9 @@ env.def = {
         certValidateBegin: false,
         certValidate: true,
         city: true,
-        occupation: false,
-        address: true
+        address: true,
+		hasIncome: false,
+		income: [["gz","工资"],["jj","奖金"],["tz","投资"]]
     },
     insurant: {
         cert: [["1","身份证"]],
@@ -35,6 +36,8 @@ env.def = {
 		occupation: false,
 		weight: false,
 		height: false,
+        hasSmoke: false,
+		smoke: [["2","否"],["1","是"]],
         relation: [["1","本人"]]
     },
     beneficiary: {
@@ -84,7 +87,7 @@ class Beneficiary extends Form {
 	form() {
 		let v = [
             {name:"是被保险人的", code:"relation", type:"select", options:env.formOpt.beneficiary.relation, showAddit: false},
-			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
+			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*0-9]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"select", refresh:"yes", certTypeId:env.certTypeId, options:env.formOpt.beneficiary.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this), isIdCert:env.isIdCert}
 		];
@@ -118,7 +121,7 @@ class Beneficiary extends Form {
 class ApplicantForm extends Form {
 	form() {
 		let v = [
-			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
+			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*0-9]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"select", refresh:"yes", options:env.formOpt.applicant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this), isIdCert:env.isIdCert}
 		];
@@ -132,6 +135,10 @@ class ApplicantForm extends Form {
 			v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.applicant.address)
             v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入通讯地址"});
+        if (env.formOpt.applicant.hasIncome) {
+            v.push({name:'年收入(万元)', code:"income", type:"number", req:"yes", mistake:"只能输入数字", desc:"请输入年收入"});
+            v.push({name:'收入来源', code:"incomeSource", type:"switch", req:"yes", options:env.formOpt.applicant.income});
+        }
 		return this.buildForm(v);
 	}
 	verify(code, val) {
@@ -148,7 +155,7 @@ class ApplicantForm extends Form {
 class InsurantForm extends Form {
 	form() {
 		let v = [
-			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
+			{name:'姓名', code:"name", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*0-9]{2,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"请输入姓名"},
 			{name:'证件类型', code:"certType", type:"select", refresh:"yes", certTypeId:env.certTypeId, options:env.formOpt.insurant.cert},
 			{name:'证件号码', code:"certNo", type:"idcard", relation: "certType", refresh:"yes", req:"yes", succ:this.resetCertNo.bind(this), isIdCert:env.isIdCert}
 		];
@@ -184,6 +191,8 @@ class InsurantMore extends Form {
             v.push({name:'身高(厘米)', code:"height", type:"text", req:"yes", desc:"请填写身高"});
         if (env.formOpt.insurant.weight)
             v.push({name:'体重(公斤)', code:"weight", type:"text", req:"yes", desc:"请填写体重"});
+        if (env.formOpt.insurant.hasSmoke)
+            v.push({name:'是否吸烟', code:"smoke", type:"switch", refresh:"yes", options: env.formOpt.insurant.smoke});
 		return this.buildForm(v);
 	}
 }
@@ -366,6 +375,9 @@ var Ground = React.createClass({
                 factors["OCCUPATION_L"] = this.refs.more.refs.occupation.val().level;
                 factors["OCCUPATION_C"] = this.refs.more.refs.occupation.val().code;
             }
+            if (env.formOpt.insurant.hasSmoke) {
+            	factors["SMOKE"] = this.refs.more.refs.smoke.val();
+			}
 		}
         return factors;
     },
@@ -481,6 +493,7 @@ var Ground = React.createClass({
                 env.insurant.occupation = m.occupation;
                 env.insurant.height = m.height;
                 env.insurant.weight = m.weight;
+                env.insurant.smoke = m.smoke;
 			}
 		} else {
             env.insurant = env.applicant;
@@ -488,6 +501,7 @@ var Ground = React.createClass({
                 env.applicant.occupation = m.occupation;
                 env.applicant.height = m.height;
                 env.applicant.weight = m.weight;
+                env.applicant.smoke = m.smoke;
             }
 		}
 		//受益人
@@ -732,7 +746,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					{env.formOpt.insurant.occupation || env.formOpt.insurant.height || env.formOpt.insurant.weight ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
+					{env.formOpt.insurant.occupation || env.formOpt.insurant.height || env.formOpt.insurant.weight || env.formOpt.insurant.hasSmoke ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
 				<div className="title">保险计划（{env.pack.name}）</div>
 				<div className="form">
