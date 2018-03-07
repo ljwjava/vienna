@@ -348,7 +348,7 @@ var Ground = React.createClass({
 	},
 	back(step) {
 		common.req("order/restore.json", {orderId: env.order.id}, r => {
-			history.back(step);
+			history.go(4+step-history.length);
 			//document.location.href = "life_pay.mobile?orderId=" + env.order.id;
 		});
 	},
