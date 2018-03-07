@@ -23,6 +23,7 @@ env.def = {
         certValidateBegin: false,
         certValidate: true,
         city: true,
+        occupation: false,
         address: true
     },
     insurant: {

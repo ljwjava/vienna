@@ -188,13 +188,31 @@ var Ware = React.createClass({
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
 			var appExempt = env.factors.A_EXEMPT;
-			var quests = env.docs.applicantQuests != null && appExempt == "Y" ? env.docs.applicantQuests : env.docs.quests;
+			var questTitle = "被保险人";
+			var quests = env.docs.quests;
+			var questsPlus = null;
+			if (appExempt == "Y") {
+				if (env.docs.allQuests) {
+                    questTitle = "投保人及被保险人";
+                    quests = env.docs.allQuests;
+                } else if (env.docs.applicantQuests) {
+                    questsPlus = [
+						<div className="title">健康及财务告知（投保人）</div>,
+						<div className="text" style={{overflow:"auto"}}>
+							<Summary content={env.docs.applicantQuests}/>
+						</div>
+                    ];
+                } else {
+                    questTitle = "投保人及被保险人";
+				}
+			}
 			return (
 				<div className="common">
-					<div className="title">健康及财务告知（{ appExempt == "Y" ? "投保人及被保险人" :"被保险人"}）</div>
+					<div className="title">健康及财务告知（{questTitle}）</div>
 					<div className="text" style={{overflow:"auto"}}>
 						<Summary content={quests}/>
 					</div>
+					{questsPlus}
 					<div className="console">
 						<div className="tab">
 							<div className="row">
