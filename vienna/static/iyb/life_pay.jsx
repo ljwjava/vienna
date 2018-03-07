@@ -208,8 +208,26 @@ var Ground = React.createClass({
                     if(r.nextUrl != null && r.params != null){
                         var f = common.initForm(r.nextUrl, r.params, r.method);
                         f.submit();
-                    } else if (r.paySwich != null) {
-                        this.refs.paySwich.reSetOptions(r.paySwich);
+                    } else if (r.payList != null) {
+                        this.refs.paySwich.reSetOptions(r.payList);
+                    } else if (r.payWxOther != null) {
+                        if(common.isWeixin()){	// 微信浏览器直接跳转微信支付
+                        	var wxfp = r.payWxOther.wx;
+                            var f = common.initForm(wxfp.nextUrl, wxfp.params, wxfp.method);
+                            f.submit();
+						}else{	// 其他浏览器执行其他支付方式
+                            var othfp = r.payWxOther.other;
+                            if(othfp != null && othfp.length > 0) {
+                            	if(othfp.length == 1){
+                                    var f = common.initForm(othfp[0].nextUrl, othfp[0].params, othfp[0].method);
+                                    f.submit();
+								}else{
+                                    this.refs.paySwich.reSetOptions(othfp);
+								}
+							}else{
+                                ToastIt("当前浏览器无可用的支付方式，可尝试复制链接至微信内操作");
+							}
+						}
                     } else {
                         document.location.href = r.nextUrl;
 					}
