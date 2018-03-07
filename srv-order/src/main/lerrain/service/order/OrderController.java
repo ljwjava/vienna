@@ -83,6 +83,7 @@ public class OrderController
         Order order = orderSrv.getOrder(orderId);
         synchronized (order)
         {
+            order.setBizId(null);
             order.setBizNo(null);
             order.setBizMsg(null);
             order.setPay(1);
@@ -106,12 +107,14 @@ public class OrderController
         Long owner = p.getLong("owner");
         Long platformId = p.getLong("platformId");
 
+        Integer productType = p.getInteger("productType");
+
         int from = Common.intOf(p.get("from"), 0);
         int num = Common.intOf(p.get("num"), 10);
 
         JSONObject r = new JSONObject();
-        r.put("list", orderSrv.list(type, from, num, platformId, owner));
-        r.put("total", orderSrv.count(type, platformId, owner));
+        r.put("list", orderSrv.list(type, from, num, platformId, productType, owner));
+        r.put("total", orderSrv.count(type, platformId, productType, owner));
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -128,12 +131,14 @@ public class OrderController
         Long owner = p.getLong("owner");
         Long platformId = p.getLong("platformId");
 
+        Integer productType = p.getInteger("productType");
+
         int from = Common.intOf(p.get("from"), 0);
         int num = Common.intOf(p.get("num"), 10);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", orderSrv.list(type, from, num, platformId, owner));
+        res.put("content", orderSrv.list(type, from, num, platformId, productType, owner));
 
         return res;
     }
@@ -246,6 +251,8 @@ public class OrderController
         Order order = orderSrv.getOrder(orderId);
         synchronized (order)
         {
+            if (p.containsKey("bizId"))
+                order.setBizId(p.getLong("bizId"));
             if (p.containsKey("applyNo"))
                 order.setApplyNo(p.getString("applyNo"));
             if (p.containsKey("bizNo"))
@@ -288,6 +295,8 @@ public class OrderController
             order.setConsumer(p.getString("consumer"));
         if (p.containsKey("productType"))
             order.setProductType(p.getIntValue("productType"));
+        if (p.containsKey("bizId"))
+            order.setBizId(p.getLong("bizId"));
         if (p.containsKey("applyNo"))
             order.setApplyNo(p.getString("applyNo"));
         if (p.containsKey("bizNo"))

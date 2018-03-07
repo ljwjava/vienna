@@ -3,7 +3,7 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	//return "http://localhost:7666/" + url;
+	//return "http://www.lerrain.com:7666/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {
@@ -288,4 +288,16 @@ common.initForm = function(url, params, method){
 	}
 
 	return f;
+};
+
+common.dateStr = function(t) {
+	if (t == null)
+		return null;
+    return new Date(t).format("yyyy-MM-dd");
+};
+
+common.timeStr = function(t) {
+    if (t == null)
+        return null;
+    return new Date(t).format("yyyy-MM-dd hh:mm:ss");
 };

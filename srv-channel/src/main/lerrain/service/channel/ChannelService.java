@@ -32,7 +32,7 @@ public class ChannelService
         return channelDao.loadProductFee(contractId);
     }
 
-    public void bill(Long platformId, Long vendorId, Long agencyId, String productId, Map factors, String bizNo, double premium, Date time)
+    public void bill(Long platformId, Long vendorId, Long agencyId, String productId, Map factors, Integer bizType, Long bizId, String bizNo, double premium, Date time)
     {
         Map<String, Double> map = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
@@ -49,22 +49,22 @@ public class ChannelService
                 {
                     double amt = 0;
                     if (c.getUnit() == 1)
-                        amt = Math.round(premium * fr.doubleValue() * 100) / 100.0f;
+                        amt = premium * fr.doubleValue();
                     else if (c.getUnit() == 2)
                         amt = fr.doubleValue();
                     else if (c.getUnit() == 3)
-                        amt = Math.round(premium * fr.doubleValue()) / 100.0f;
+                        amt = premium * fr.doubleValue() / 100;
                     else if (c.getUnit() == 4)
                     {
                         Double val = map.get(c.getPayer() + "/" + i);
                         if (val != null)
-                            amt = Math.round(val * fr.doubleValue()) / 100.0f;
+                            amt = val * fr.doubleValue() / 100;
                     }
 
                     if (amt > 0)
                     {
                         calendar.set(Calendar.YEAR, year + i);
-                        channelDao.bill(c, bizNo, vendorId, amt, 1, calendar.getTime());
+                        channelDao.bill(c, bizType, bizId, bizNo, vendorId, BigDecimal.valueOf(amt).setScale(2, BigDecimal.ROUND_HALF_UP), 1, calendar.getTime());
 
                         Double val = map.get(c.getDrawer() + "/" + i);
                         map.put(c.getDrawer() + "/" + i, val == null ? amt : val + amt);
@@ -74,9 +74,14 @@ public class ChannelService
         }
     }
 
-    public List listBill(Long platformId, Long vendorId, String bizNo)
+    public List findBill(Long platformId, Long vendorId, String bizNo)
     {
-        return channelDao.listBill(platformId, vendorId, bizNo);
+        return channelDao.findBill(platformId, vendorId, bizNo);
+    }
+
+    public List findBill(int bizType, Long bizId)
+    {
+        return channelDao.findBill(bizType, bizId);
     }
 
     public List<FeeDefine> getFeeDefine(Long platformId, Long agencyId, String productId, Map factors, Date time)

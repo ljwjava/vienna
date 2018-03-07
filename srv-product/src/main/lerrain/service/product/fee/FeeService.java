@@ -1,8 +1,5 @@
 package lerrain.service.product.fee;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +47,14 @@ public class FeeService
 			feeDao.prepare(r);
 	}
 
-	public List<Fee> listFee(Long platformId, Long vendorId, String bizNo)
+	public List<Fee> findFee(Long platformId, Long vendorId, String bizNo)
 	{
-		return feeDao.listFee(platformId, vendorId, bizNo);
+		return feeDao.findFee(platformId, vendorId, bizNo);
+	}
+
+	public List<Fee> findFee(Integer bizType, Long bizId)
+	{
+		return feeDao.findFee(bizType, bizId);
 	}
 
 	public int payAll(Long platformId, Long vendorId, String bizNo)

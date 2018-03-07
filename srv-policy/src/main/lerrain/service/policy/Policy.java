@@ -14,6 +14,7 @@ public class Policy
     String policyNo;
 
     int type;
+    int period;
 
     JSONObject target;
     JSONObject detail;
@@ -28,9 +29,12 @@ public class Policy
 
     Long vendorId;
     Long agencyId;
-    Long orgId;
-    Long agentId;
 
+    Long owner;
+    Long ownerOrg;
+    Long ownerCompany;
+
+    List<PolicyClause> clauses;
     List<PolicyEndorse> endorse;
 
     //自动替代
@@ -47,10 +51,6 @@ public class Policy
 
     String vehicleFrameNo;
     String vehiclePlateNo;
-
-    Integer payFreq;
-    Integer payTerm;
-    Integer period;
 
     public String getApplicantName()
     {
@@ -82,6 +82,16 @@ public class Policy
         this.applicantMobile = applicantMobile;
     }
 
+    public List<PolicyClause> getClauses()
+    {
+        return clauses;
+    }
+
+    public void setClauses(List<PolicyClause> clauses)
+    {
+        this.clauses = clauses;
+    }
+
     public String getApplicantEmail()
     {
         return applicantEmail;
@@ -110,6 +120,16 @@ public class Policy
     public void setApplicantCertType(String applicantCertType)
     {
         this.applicantCertType = applicantCertType;
+    }
+
+    public int getPeriod()
+    {
+        return period;
+    }
+
+    public void setPeriod(int period)
+    {
+        this.period = period;
     }
 
     public String getInsurantName()
@@ -160,36 +180,6 @@ public class Policy
     public void setVehiclePlateNo(String vehiclePlateNo)
     {
         this.vehiclePlateNo = vehiclePlateNo;
-    }
-
-    public Integer getPayFreq()
-    {
-        return payFreq;
-    }
-
-    public void setPayFreq(Integer payFreq)
-    {
-        this.payFreq = payFreq;
-    }
-
-    public Integer getPayTerm()
-    {
-        return payTerm;
-    }
-
-    public void setPayTerm(Integer payTerm)
-    {
-        this.payTerm = payTerm;
-    }
-
-    public Integer getPeriod()
-    {
-        return period;
-    }
-
-    public void setPeriod(Integer period)
-    {
-        this.period = period;
     }
 
     public Long getId()
@@ -342,23 +332,33 @@ public class Policy
         this.agencyId = agencyId;
     }
 
-    public Long getOrgId()
+    public Long getOwner()
     {
-        return orgId;
+        return owner;
     }
 
-    public void setOrgId(Long orgId)
+    public void setOwner(Long owner)
     {
-        this.orgId = orgId;
+        this.owner = owner;
     }
 
-    public Long getAgentId()
+    public Long getOwnerOrg()
     {
-        return agentId;
+        return ownerOrg;
     }
 
-    public void setAgentId(Long agentId)
+    public void setOwnerOrg(Long ownerOrg)
     {
-        this.agentId = agentId;
+        this.ownerOrg = ownerOrg;
+    }
+
+    public Long getOwnerCompany()
+    {
+        return ownerCompany;
+    }
+
+    public void setOwnerCompany(Long ownerCompany)
+    {
+        this.ownerCompany = ownerCompany;
     }
 }

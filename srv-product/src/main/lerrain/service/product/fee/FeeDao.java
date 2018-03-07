@@ -127,8 +127,8 @@ public class FeeDao
 	{
 		c.setId(tools.nextId("fee"));
 
-		jdbc.update("insert into t_product_fee(id, biz_no, product_id, vendor_id, amount, type, unit, estimate, freeze, pay, status, platform_id, drawer, auto, memo, extra, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-				c.getId(), c.getBizNo(), c.getProductId(), c.getVendorId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getDrawer(), c.isAuto() ? "Y" : "N", c.getMemo(), JSON.toJSONString(c.getExtra()), c.getCreateTime());
+		jdbc.update("insert into t_product_fee(id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, type, unit, estimate, freeze, pay, status, platform_id, drawer, auto, memo, extra, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+				c.getId(), c.getBizType(), c.getBizId(), c.getBizNo(), c.getProductId(), c.getVendorId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getDrawer(), c.isAuto() ? "Y" : "N", c.getMemo(), JSON.toJSONString(c.getExtra()), c.getCreateTime());
 
 		return c.getId();
 	}
@@ -158,7 +158,7 @@ public class FeeDao
 		}, id);
 	}
 
-	public List<Fee> listFee(Long platformId, Long vendorId, String bizNo)
+	public List<Fee> findFee(Long platformId, Long vendorId, String bizNo)
 	{
 		return jdbc.query("select * from t_product_fee where platform_id = ? and vendor_id = ? and biz_no = ?", new RowMapper<Fee>()
 		{
@@ -169,6 +169,19 @@ public class FeeDao
 			}
 
 		}, platformId, vendorId, bizNo);
+	}
+
+	public List<Fee> findFee(Integer bizType, Long bizId)
+	{
+		return jdbc.query("select * from t_product_fee where biz_type = ? and biz_id = ?", new RowMapper<Fee>()
+		{
+			@Override
+			public Fee mapRow(ResultSet rs, int j) throws SQLException
+			{
+				return feeOf(rs);
+			}
+
+		}, bizType, bizId);
 	}
 
 	public void pay(Long id, int status, Date time)

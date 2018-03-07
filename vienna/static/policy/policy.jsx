@@ -5,52 +5,52 @@ import ReactDOM from 'react-dom';
 
 var env = {
     company: {},
-	dict: {
-		feeType: {
-			"1": "推广费",
+    dict: {
+        feeType: {
+            "1": "推广费",
             "2": "关联奖励",
-			"3": "活动奖励"
-		},
-		feeStatus: {
-			"0": "未结算",
-			"1": "已发放",
-			"9": "发放失败"
-		},
-		gender: {
-			"M": "男",
-			"F": "女"
-		},
-		certType: [
-		],
-		platform: {
-			"2": "VIENNA",
-			"3": "IYBAPP",
-			"4": "云中介",
+            "3": "活动奖励"
+        },
+        feeStatus: {
+            "0": "未结算",
+            "1": "已发放",
+            "9": "发放失败"
+        },
+        gender: {
+            "M": "男",
+            "F": "女"
+        },
+        certType: [
+        ],
+        platform: {
+            "2": "VIENNA",
+            "3": "IYBAPP",
+            "4": "云中介",
             "5": "Q云保",
-			"6": "保通线下"
-		},
-		relation: {
-			"self": "本人（iyb）",
-			"coupon": "配偶（iyb）",
-			"lineal": "父母子女（iyb）"
-		}
-	}
+            "6": "保通线下"
+        },
+        relation: {
+            "self": "本人（iyb）",
+            "coupon": "配偶（iyb）",
+            "lineal": "父母子女（iyb）"
+        }
+    }
 }
 
 env.strOf = function(s1, s2) {
-	if (s1 == null || s1 == "")
-		return s2;
-	return s1;
+    if (s1 == null || s1 == "")
+        return s2;
+    return s1;
 }
 
 env.policyOf = function(v, m) {
-	if (v == null)
-		return null;
+    if (v == null)
+        return null;
 
-	var app = v.target && v.target.applicant ? v.target.applicant : {};
-	var ins = v.target && v.target.insurant ? v.target.insurant : {};
+    var app = v.target && v.target.applicant ? v.target.applicant : {};
+    var ins = v.target && v.target.insurant ? v.target.insurant : {};
 
-	var clauses = !v.detail || !v.detail.clauses ? null:
+    var clauses = !v.detail || !v.detail.clauses ? null:
 		<table className="table table-bordered">
 			<thead className="thead-light">
 			<tr>
@@ -62,20 +62,20 @@ env.policyOf = function(v, m) {
 			</tr>
 			</thead>
 			<tbody>{
-				v.detail.clauses.map(v => {
-					return <tr key={v.id}>
+                v.detail.clauses.map(v => {
+                    return <tr key={v.id}>
 						<td>{v.name}</td>
 						<td>{v.insure}</td>
 						<td>{v.purchase}</td>
 						<td>{v.pay}</td>
 						<td>{v.premium}</td>
 					</tr>;
-				})
-			}
+                })
+            }
 			</tbody>
 		</table>
 
-	return [
+    return [
 		<div className="card border-info mt-3">
 			<div className="card-header text-white bg-info">{ m == 1 ? "批改保全（"+v.endorseTime+"）" : "保单信息" }</div>
 			<div className="card-body text-secondary">
@@ -84,7 +84,7 @@ env.policyOf = function(v, m) {
 						<div className="col-md-4 mb-3">
 							<label>出单平台</label>
 							<select className="form-control" defaultValue={ v.platformId}>>
-								{Object.keys(env.dict.platform).map(v => <option value={v}>{env.dict.platform[v]}</option>)}
+                                {Object.keys(env.dict.platform).map(v => <option value={v}>{env.dict.platform[v]}</option>)}
 							</select>
 						</div>
 						<div className="col-md-4 mb-3">
@@ -104,7 +104,7 @@ env.policyOf = function(v, m) {
 						<div className="col-md-4 mb-3">
 							<label>投保人性别</label>
 							<select className="form-control" defaultValue={app.gender}>>
-								{Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
+                                {Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
 							</select>
 						</div>
 						<div className="col-md-4 mb-3">
@@ -120,7 +120,7 @@ env.policyOf = function(v, m) {
 								<div className="input-group-append">
 									<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[app.certType], "？")}</button>
 									<ul className="dropdown-menu">
-										{ Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
+                                        { Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
 									</ul>
 								</div>
 							</div>
@@ -142,7 +142,7 @@ env.policyOf = function(v, m) {
 						<div className="col-md-4 mb-3">
 							<label>被保险人性别</label>
 							<select className="form-control" defaultValue={ins.gender}>
-								{Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
+                                {Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
 							</select>
 						</div>
 						<div className="col-md-4 mb-3">
@@ -158,7 +158,7 @@ env.policyOf = function(v, m) {
 								<div className="input-group-append">
 									<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[ins.certType], "？")}</button>
 									<ul className="dropdown-menu">
-										{ Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
+                                        { Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
 									</ul>
 								</div>
 							</div>
@@ -166,19 +166,19 @@ env.policyOf = function(v, m) {
 						<div className="col-md-4 mb-3">
 							<label>与投保人关系</label>
 							<select className="form-control" defaultValue={ins.relation}>
-								{ Object.keys(env.dict.relation).map(v => <option value={v}>{env.dict.relation[v]}</option>) }
+                                { Object.keys(env.dict.relation).map(v => <option value={v}>{env.dict.relation[v]}</option>) }
 							</select>
 						</div>
 					</div>
 				</div>
-				{ clauses }
+                { clauses }
 			</div>
 		</div>
-	];
+    ];
 };
 
 env.endorseOf = function(v) {
-	return v == null ? null : (
+    return v == null ? null : (
 		<div className="card border-info mb-3">
 			<div className="card-header text-white bg-info">批改保全（{v.endorseTime}）</div>
 			<div className="card-body text-secondary">
@@ -196,7 +196,7 @@ env.endorseOf = function(v) {
 				</form>
 			</div>
 		</div>
-	);
+    );
 };
 
 var FeeList = React.createClass({
@@ -204,7 +204,7 @@ var FeeList = React.createClass({
         return {};
     },
     componentDidMount() {
-    	if (this.props.req != null) common.req("btbx/policy/fee.json", this.props.req, r => {
+        if (this.props.req != null) common.req("btbx/policy/fee.json", this.props.req, r => {
             this.setState({list1: r.agent, list2: r.channel});
         });
     },
@@ -278,7 +278,7 @@ var Main = React.createClass({
     getInitialState() {
         return {};
     },
-	back() {
+    back() {
         document.location.href = "list.web";
     },
     componentDidMount() {
@@ -295,18 +295,18 @@ var Main = React.createClass({
             });
         });
     },
-	render() {
+    render() {
         let e = this.state.endorse;
         let c = e == null ? null : e.map(v => env.policyOf(v, 1));
-        let fee = this.state.policy == null ? null : {vendorId: this.state.policy.companyId, bizNo: this.state.policy.policyNo, platformId: this.state.policy.platformId};
-		return (
+        let fee = this.state.policy == null ? null : {bizType: 2, bizId: this.state.policy.id};
+        return (
 			<div>
-				{ env.policyOf(this.state.policy) }
-				{ c }
-				{fee == null ? null :  <FeeList req={fee}/>}
+                { env.policyOf(this.state.policy) }
+                { c }
+                {fee == null ? null :  <FeeList req={fee}/>}
 			</div>
-		);
-	}
+        );
+    }
 });
 
 $(document).ready( function() {

@@ -173,30 +173,48 @@ public class ChannelDao
 //        }
 //    }
 
-    public void bill(FeeDefine c, String bizNo, Long vendorId, double amt, int unit, Date time)
+    public void bill(FeeDefine c, Integer bizType, Long bizId, String bizNo, Long vendorId, BigDecimal amt, int unit, Date time)
     {
-        jdbc.update("insert into t_channel_fee(platform_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?)",
-                c.getPlatformId(), bizNo, c.getProductId(), vendorId, amt, unit, time, 0, c.getPayer(), c.getDrawer(), null, time);
+        jdbc.update("insert into t_channel_fee(platform_id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                c.getPlatformId(), bizType, bizId, bizNo, c.getProductId(), vendorId, amt, unit, time, 0, c.getPayer(), c.getDrawer(), null, time);
     }
 
-    public List listBill(Long platformId, Long vendorId, String bizNo)
+    public List findBill(Long platformId, Long vendorId, String bizNo)
     {
         return jdbc.query("select * from t_channel_fee where platform_id = ? and vendor_id = ? and biz_no = ?", new RowMapper()
         {
             @Override
             public Object mapRow(ResultSet rs, int j) throws SQLException
             {
-                Map m = new HashMap();
-                m.put("amount", rs.getDouble("amount"));
-                m.put("estimate", rs.getDate("estimate"));
-                m.put("payTime", rs.getDate("pay"));
-                m.put("status", rs.getInt("status"));
-                m.put("payer", rs.getLong("payer"));
-                m.put("drawer", rs.getLong("drawer"));
-
-                return m;
+                return billOf(rs);
             }
 
         }, platformId, vendorId, bizNo);
+    }
+
+    public List findBill(int bizType, Long bizId)
+    {
+        return jdbc.query("select * from t_channel_fee where biz_type = ? and biz_id = ?", new RowMapper()
+        {
+            @Override
+            public Object mapRow(ResultSet rs, int j) throws SQLException
+            {
+                return billOf(rs);
+            }
+
+        }, bizType, bizId);
+    }
+
+    private Map billOf(ResultSet rs) throws SQLException
+    {
+        Map m = new HashMap();
+        m.put("amount", rs.getDouble("amount"));
+        m.put("estimate", rs.getDate("estimate"));
+        m.put("payTime", rs.getDate("pay"));
+        m.put("status", rs.getInt("status"));
+        m.put("payer", rs.getLong("payer"));
+        m.put("drawer", rs.getLong("drawer"));
+
+        return m;
     }
 }
