@@ -13,6 +13,9 @@ public class Policy
     String applyNo;
     String policyNo;
 
+    String endorseNo;
+    Date endorseTime;
+
     int type;
     int period;
 
@@ -35,7 +38,6 @@ public class Policy
     Long ownerCompany;
 
     List<PolicyClause> clauses;
-    List<PolicyEndorse> endorse;
 
     //自动替代
 
@@ -55,16 +57,6 @@ public class Policy
     public String getApplicantName()
     {
         return applicantName;
-    }
-
-    public List<PolicyEndorse> getEndorse()
-    {
-        return endorse;
-    }
-
-    public void setEndorse(List<PolicyEndorse> endorse)
-    {
-        this.endorse = endorse;
     }
 
     public void setApplicantName(String applicantName)
@@ -120,6 +112,26 @@ public class Policy
     public void setApplicantCertType(String applicantCertType)
     {
         this.applicantCertType = applicantCertType;
+    }
+
+    public String getEndorseNo()
+    {
+        return endorseNo;
+    }
+
+    public void setEndorseNo(String endorseNo)
+    {
+        this.endorseNo = endorseNo;
+    }
+
+    public Date getEndorseTime()
+    {
+        return endorseTime;
+    }
+
+    public void setEndorseTime(Date endorseTime)
+    {
+        this.endorseTime = endorseTime;
     }
 
     public int getPeriod()
