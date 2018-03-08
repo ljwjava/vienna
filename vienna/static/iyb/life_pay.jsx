@@ -19,7 +19,7 @@ env.dict = {
     relation: {
     	"self": "本人",
         "coupon": "配偶",
-        "lineal": "父母/子女"
+        "lineal": "父子/母子/父女/母女"
 	},
 	bank: []
 };
