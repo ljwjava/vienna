@@ -24,6 +24,7 @@ env.def = {
         certValidate: true,
         city: true,
         address: true,
+        occupation: false,
 		hasIncome: false,
 		income: [["gz","工资"],["jj","奖金"],["tz","投资"]]
     },
@@ -131,6 +132,8 @@ class ApplicantForm extends Form {
             v.push({name:'证件有效止期', code:"certValidate", type:"certValidate", req:"yes"});
         v.push({name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]});
         v.push({name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"});
+        if (env.formOpt.applicant.occupation)
+            v.push({name:'职业', code:"occupation", type:"occupation", refresh:"yes", req:"yes", desc:"请选择职业"});
 		if (env.formOpt.applicant.city)
 			v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.applicant.address)
@@ -185,7 +188,7 @@ class InsurantForm extends Form {
 class InsurantMore extends Form {
 	form() {
 		let v = [];
-        if (env.formOpt.insurant.occupation)
+        if (env.insocc)
             v.push({name:'职业', code:"occupation", type:"occupation", refresh:"yes", req:"yes", desc:"请选择职业"});
         if (env.formOpt.insurant.height)
             v.push({name:'身高(厘米)', code:"height", type:"text", req:"yes", desc:"请填写身高"});
@@ -356,8 +359,6 @@ var Ground = React.createClass({
 				factors["ZONE"] = this.refs.insurant.refs.city.val().code;
             else if (env.formOpt.applicant.city)
                 factors["ZONE"] = this.refs.applicant.refs.city.val().code;
-			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
-			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
 			factors["RELATIVE"] = this.refs.relation.val();
 			if (env.formOpt.relationMapping != null)
                 factors["RELATIVE"] = env.formOpt.relationMapping[factors["RELATIVE"]];
@@ -366,19 +367,25 @@ var Ground = React.createClass({
 	    	factors["BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
             if (env.formOpt.applicant.city)
 				factors["ZONE"] = this.refs.applicant.refs.city.val().code;
-			factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
-			factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
 			factors["RELATIVE"] = "self";
 		}
 		if (this.refs.more) {
             if (env.formOpt.insurant.occupation) {
-                factors["OCCUPATION_L"] = this.refs.more.refs.occupation.val().level;
-                factors["OCCUPATION_C"] = this.refs.more.refs.occupation.val().code;
+            	let occ = this.refs.more.refs.occupation ? this.refs.more.refs.occupation.val() : this.refs.applicant.refs.occupation.val();
+                factors["OCCUPATION_L"] = occ.level;
+                factors["OCCUPATION_C"] = occ.code;
             }
             if (env.formOpt.insurant.hasSmoke) {
             	factors["SMOKE"] = this.refs.more.refs.smoke.val();
 			}
 		}
+        factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
+        factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
+        if (env.formOpt.applicant.occupation) {
+            let occ = this.refs.applicant.refs.occupation.val();
+            factors["A_OCCUPATION_L"] = occ.level;
+            factors["A_OCCUPATION_C"] = occ.code;
+        }
         return factors;
     },
 	getPlanDesc() {
@@ -498,7 +505,6 @@ var Ground = React.createClass({
 		} else {
             env.insurant = env.applicant;
             if (m != null) {
-                env.applicant.occupation = m.occupation;
                 env.applicant.height = m.height;
                 env.applicant.weight = m.weight;
                 env.applicant.smoke = m.smoke;
@@ -731,6 +737,7 @@ var Ground = React.createClass({
 		let ins = this.props.defVal.insurant == null ? {} : this.props.defVal.insurant;
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
+        env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
 		return (
 			<div className="common">
 				<div className="title">投保人信息</div>
@@ -746,7 +753,7 @@ var Ground = React.createClass({
 						</div>
 					</div>
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
-					{env.formOpt.insurant.occupation || env.formOpt.insurant.height || env.formOpt.insurant.weight || env.formOpt.insurant.hasSmoke ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
+					{env.insocc || env.formOpt.insurant.height || env.formOpt.insurant.weight || env.formOpt.insurant.hasSmoke ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
 				<div className="title">保险计划（{env.pack.name}）</div>
 				<div className="form">

@@ -16,11 +16,11 @@ public class PolicyClause
     Date effectiveTime;
     Date finishTime;
 
-    double premium;
-    String amount;
+    Double premium;
 
-    Integer payFreq;
-    Integer payTerm;
+    String pay;
+    String insure;
+    String amount;
 
     public Long getId()
     {
@@ -82,12 +82,12 @@ public class PolicyClause
         this.finishTime = finishTime;
     }
 
-    public double getPremium()
+    public Double getPremium()
     {
         return premium;
     }
 
-    public void setPremium(double premium)
+    public void setPremium(Double premium)
     {
         this.premium = premium;
     }
@@ -102,23 +102,23 @@ public class PolicyClause
         this.amount = amount;
     }
 
-    public Integer getPayFreq()
+    public String getInsure()
     {
-        return payFreq;
+        return insure;
     }
 
-    public void setPayFreq(Integer payFreq)
+    public void setInsure(String insure)
     {
-        this.payFreq = payFreq;
+        this.insure = insure;
     }
 
-    public Integer getPayTerm()
+    public String getPay()
     {
-        return payTerm;
+        return pay;
     }
 
-    public void setPayTerm(Integer payTerm)
+    public void setPay(String pay)
     {
-        this.payTerm = payTerm;
+        this.pay = pay;
     }
 }

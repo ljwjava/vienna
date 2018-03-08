@@ -287,7 +287,7 @@ var Main = React.createClass({
             this.setState({policy: r, endorse: r.endorse});
             common.req("btbx/channel/company.json", {}, r1 => {
                 if (r1 != null) env.company = r1;
-                common.req("dict/view.json", {company: env.company[r.companyId].code, name: "relation,cert"}, s => {
+                common.req("dict/view.json", {company: env.company[r.vendorId].code, name: "relation,cert"}, s => {
                     s.relation.map(v => { env.dict.relation[v.code] = v.text });
                     s.cert.map(v => { env.dict.certType[v[0]] = v[1] });
                     this.forceUpdate();

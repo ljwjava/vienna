@@ -47,7 +47,7 @@ class PolicyList extends List {
     buildTableLine(v) {
         return (
             <tr key={v.id}>
-                <td>{env.company[v.companyId].name}</td>
+                <td>{env.company[v.vendorId].name}</td>
                 <td>{v.productName}</td>
                 <td>{v.policyNo}</td>
                 <td>{v.applicantName}</td>
