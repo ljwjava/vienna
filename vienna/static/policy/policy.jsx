@@ -50,7 +50,7 @@ env.policyOf = function(v, m) {
     var app = v.target && v.target.applicant ? v.target.applicant : {};
     var ins = v.target && v.target.insurant ? v.target.insurant : {};
 
-    var clauses = !v.detail || !v.detail.clauses ? null:
+    var clauses = !v.clauses ? null:
 		<table className="table table-bordered">
 			<thead className="thead-light">
 			<tr>
@@ -62,9 +62,9 @@ env.policyOf = function(v, m) {
 			</tr>
 			</thead>
 			<tbody>{
-                v.detail.clauses.map(v => {
+                v.clauses.map(v => {
                     return <tr key={v.id}>
-						<td>{v.name}</td>
+						<td>{v.clauseName}</td>
 						<td>{v.insure}</td>
 						<td>{v.purchase}</td>
 						<td>{v.pay}</td>
@@ -177,28 +177,6 @@ env.policyOf = function(v, m) {
     ];
 };
 
-env.endorseOf = function(v) {
-    return v == null ? null : (
-		<div className="card border-info mb-3">
-			<div className="card-header text-white bg-info">批改保全（{v.endorseTime}）</div>
-			<div className="card-body text-secondary">
-				<form className="form-horizontal">
-					<div className="col-sm-11">
-						<div className="form-group has-success has-feedback">
-							<div className="col-sm-4">
-								<label className="control-label col-sm-3">批单号</label>
-								<div className="col-sm-9">
-									<input type="text" className="form-control" defaultValue={v.endorseNo}/>
-								</div>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-    );
-};
-
 var FeeList = React.createClass({
     getInitialState() {
         return {};
@@ -284,7 +262,7 @@ var Main = React.createClass({
     componentDidMount() {
         let policyId = common.param("policyId");
         common.req("btbx/policy/view.json", {policyId: policyId}, r => {
-            this.setState({policy: r, endorse: r.endorse});
+            this.setState({policy: r});
             common.req("btbx/channel/company.json", {}, r1 => {
                 if (r1 != null) env.company = r1;
                 common.req("dict/view.json", {company: env.company[r.vendorId].code, name: "relation,cert"}, s => {
@@ -296,13 +274,10 @@ var Main = React.createClass({
         });
     },
     render() {
-        let e = this.state.endorse;
-        let c = e == null ? null : e.map(v => env.policyOf(v, 1));
         let fee = this.state.policy == null ? null : {bizType: 2, bizId: this.state.policy.id};
         return (
 			<div>
                 { env.policyOf(this.state.policy) }
-                { c }
                 {fee == null ? null :  <FeeList req={fee}/>}
 			</div>
         );

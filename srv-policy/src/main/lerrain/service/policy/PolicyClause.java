@@ -20,7 +20,11 @@ public class PolicyClause
 
     String pay;
     String insure;
-    String amount;
+    String purchase;
+
+    Double quantity;
+    Double amount;
+    String rank;
 
     public Long getId()
     {
@@ -92,14 +96,44 @@ public class PolicyClause
         this.premium = premium;
     }
 
-    public String getAmount()
+    public String getPurchase()
+    {
+        return purchase;
+    }
+
+    public void setPurchase(String purchase)
+    {
+        this.purchase = purchase;
+    }
+
+    public Double getQuantity()
+    {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity)
+    {
+        this.quantity = quantity;
+    }
+
+    public Double getAmount()
     {
         return amount;
     }
 
-    public void setAmount(String amount)
+    public void setAmount(Double amount)
     {
         this.amount = amount;
+    }
+
+    public String getRank()
+    {
+        return rank;
+    }
+
+    public void setRank(String rank)
+    {
+        this.rank = rank;
     }
 
     public String getInsure()

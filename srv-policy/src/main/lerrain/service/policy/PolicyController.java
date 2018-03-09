@@ -75,7 +75,12 @@ public class PolicyController
     @ResponseBody
     public JSONObject newPolicy(@RequestBody JSONObject p)
     {
+        Log.info(p);
+
         Policy policy = policyOf(new Policy(), p);
+
+        if (Common.isEmpty(policy.getPolicyNo()) || policy.getVendorId() == null)
+            throw new RuntimeException("policy no is null or vendor is null");
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -121,7 +126,8 @@ public class PolicyController
         policy.setVehicleFrameNo(p.getString("vehicleFrameNo"));
         policy.setVehiclePlateNo(p.getString("vehiclePlateNo"));
 
-        JSONArray clauses = p.getJSONArray("clauses");
+        JSONObject detail = p.getJSONObject("detail");
+        JSONArray clauses = detail == null ? null : detail.getJSONArray("clauses");
         if (clauses != null)
         {
             policy.setClauses(new ArrayList<PolicyClause>());
@@ -138,7 +144,10 @@ public class PolicyController
                 pc.setPremium(c.getDouble("premium"));
                 pc.setPay(c.getString("pay"));
                 pc.setInsure(c.getString("insure"));
-                pc.setAmount(c.getString("amount"));
+                pc.setPurchase(c.getString("purchase"));
+                pc.setQuantity(c.getDouble("quantity"));
+                pc.setAmount(c.getDouble("amount"));
+                pc.setRank(c.getString("rank"));
 
                 policy.getClauses().add(pc);
             }
