@@ -112,4 +112,8 @@
     <corporation id="hualife" name="华夏人寿" extends="insurance">
         <item src="hualife/*.xml"/>
     </corporation>
+
+    <corporation id="tmlife" name="信美相互" extends="insurance">
+        <item src="tmlife/*.xml"/>
+    </corporation>
 </declare>

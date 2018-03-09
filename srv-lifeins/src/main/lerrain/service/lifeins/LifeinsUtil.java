@@ -397,8 +397,10 @@ public class LifeinsUtil
 
 		if ((purchase & Purchase.AMOUNT) > 0)
 			m.put("amount", amount);
-		else if ((purchase & Purchase.QUANTITY) > 0)
+		if ((purchase & Purchase.QUANTITY) > 0)
 			m.put("quantity", quantity);
+		if ((purchase & Purchase.RANK) > 0)
+			m.put("rank", c.getRank().getDesc());
 
 		m.put("purchase", c.getAmountDesc());
 		m.put("premium", premium < 0 ? null : premium);

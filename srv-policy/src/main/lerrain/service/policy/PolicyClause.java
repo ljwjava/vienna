@@ -16,11 +16,15 @@ public class PolicyClause
     Date effectiveTime;
     Date finishTime;
 
-    double premium;
-    String amount;
+    Double premium;
 
-    Integer payFreq;
-    Integer payTerm;
+    String pay;
+    String insure;
+    String purchase;
+
+    Double quantity;
+    Double amount;
+    String rank;
 
     public Long getId()
     {
@@ -82,43 +86,73 @@ public class PolicyClause
         this.finishTime = finishTime;
     }
 
-    public double getPremium()
+    public Double getPremium()
     {
         return premium;
     }
 
-    public void setPremium(double premium)
+    public void setPremium(Double premium)
     {
         this.premium = premium;
     }
 
-    public String getAmount()
+    public String getPurchase()
+    {
+        return purchase;
+    }
+
+    public void setPurchase(String purchase)
+    {
+        this.purchase = purchase;
+    }
+
+    public Double getQuantity()
+    {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity)
+    {
+        this.quantity = quantity;
+    }
+
+    public Double getAmount()
     {
         return amount;
     }
 
-    public void setAmount(String amount)
+    public void setAmount(Double amount)
     {
         this.amount = amount;
     }
 
-    public Integer getPayFreq()
+    public String getRank()
     {
-        return payFreq;
+        return rank;
     }
 
-    public void setPayFreq(Integer payFreq)
+    public void setRank(String rank)
     {
-        this.payFreq = payFreq;
+        this.rank = rank;
     }
 
-    public Integer getPayTerm()
+    public String getInsure()
     {
-        return payTerm;
+        return insure;
     }
 
-    public void setPayTerm(Integer payTerm)
+    public void setInsure(String insure)
     {
-        this.payTerm = payTerm;
+        this.insure = insure;
+    }
+
+    public String getPay()
+    {
+        return pay;
+    }
+
+    public void setPay(String pay)
+    {
+        this.pay = pay;
     }
 }

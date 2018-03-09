@@ -296,3 +296,15 @@ common.isWeixin = function() {
     var ua = window.navigator.userAgent.toLowerCase();
     return ua.match(/MicroMessenger/i) == 'micromessenger';
 };
+
+common.dateStr = function(t) {
+	if (t == null)
+		return null;
+    return new Date(t).format("yyyy-MM-dd");
+};
+
+common.timeStr = function(t) {
+    if (t == null)
+        return null;
+    return new Date(t).format("yyyy-MM-dd hh:mm:ss");
+};

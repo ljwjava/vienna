@@ -20,6 +20,12 @@ public class PolicyDao
     @Autowired
     ServiceTools tools;
 
+    public boolean isExists(Policy p)
+    {
+        int num = jdbc.queryForObject("select exists(select id from t_policy where policy_no = ? and vendor_id = ? and valid is null) from dual", Integer.class, p.getPolicyNo(), p.getVendorId());
+        return num > 0;
+    }
+
     public Policy loadPolicy(final Long policyId)
     {
         try
@@ -30,20 +36,47 @@ public class PolicyDao
                 public Policy mapRow(ResultSet rs, int rowNum) throws SQLException
                 {
                     Policy p = policyOf(new Policy(), rs);
-                    p.setEndorse(jdbc.query("select * from t_policy_endorse where policy_id = ? and valid is null order by create_time", new RowMapper<PolicyEndorse>()
+
+                    p.setClauses(jdbc.query("select * from t_policy_clause where policy_id = ? and valid is null order by id", new RowMapper<PolicyClause>()
                     {
 
                         @Override
-                        public PolicyEndorse mapRow(ResultSet rs, int rowNum) throws SQLException
+                        public PolicyClause mapRow(ResultSet rs, int rowNum) throws SQLException
                         {
-                            PolicyEndorse p = (PolicyEndorse)policyOf(new PolicyEndorse(), rs);
-                            p.setPolicyId(rs.getLong("policy_id"));
-                            p.setEndorseNo(rs.getString("endorse_no"));
-                            p.setEndorseTime(rs.getDate("endorse_time"));
+                            PolicyClause p = new PolicyClause();
+                            p.setId(rs.getLong("id"));
+                            p.setClauseId(rs.getString("clause_id"));
+                            p.setClauseCode(rs.getString("clause_code"));
+                            p.setClauseName(rs.getString("clause_name"));
+                            p.setEffectiveTime(rs.getDate("effective_time"));
+                            p.setFinishTime(rs.getDate("finish_time"));
+                            p.setPay(rs.getString("pay"));
+                            p.setInsure(rs.getString("insure"));
+                            p.setPurchase(rs.getString("purchase"));
+                            p.setPremium(Common.toDouble(rs.getObject("premium")));
+
+                            p.setQuantity(Common.toDouble(rs.getObject("quantity")));
+                            p.setAmount(Common.toDouble(rs.getObject("amount")));
+                            p.setRank(rs.getString("rank"));
 
                             return p;
                         }
                     }, policyId));
+
+//                    p.setEndorse(jdbc.query("select * from t_policy_endorse where policy_id = ? and valid is null order by create_time", new RowMapper<PolicyEndorse>()
+//                    {
+//
+//                        @Override
+//                        public PolicyEndorse mapRow(ResultSet rs, int rowNum) throws SQLException
+//                        {
+//                            PolicyEndorse p = (PolicyEndorse)policyOf(new PolicyEndorse(), rs);
+//                            p.setPolicyId(rs.getLong("policy_id"));
+//                            p.setEndorseNo(rs.getString("endorse_no"));
+//                            p.setEndorseTime(rs.getDate("endorse_time"));
+//
+//                            return p;
+//                        }
+//                    }, policyId));
 
                     return p;
                 }
@@ -64,6 +97,8 @@ public class PolicyDao
         p.setPlatformId(rs.getLong("platform_id"));
         p.setApplyNo(rs.getString("apply_no"));
         p.setPolicyNo(rs.getString("policy_no"));
+        p.setEndorseNo(rs.getString("endorse_no"));
+        p.setEndorseTime(rs.getDate("endorse_time"));
         p.setType(rs.getInt("type"));
         p.setTarget(JSON.parseObject(rs.getString("target")));
         p.setDetail(JSON.parseObject(rs.getString("detail")));
@@ -98,14 +133,13 @@ public class PolicyDao
         return p;
     }
 
-    public Long savePolicy(Policy p)
+    public Long newPolicy(Policy p)
     {
-        if (p.getId() == null)
-            p.setId(tools.nextId("policy"));
+        p.setId(tools.nextId("policy"));
 
-        String sql = "replace into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
-                "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
+                "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, create_time, creator, update_time, updater) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
 
         jdbc.update(sql,
                 p.getId(),
@@ -136,9 +170,58 @@ public class PolicyDao
                 p.getInsurantCertNo(),
                 p.getInsurantCertType(),
                 p.getVehicleFrameNo(),
-                p.getVehiclePlateNo()
+                p.getVehiclePlateNo(),
+                p.getOwner(),
+                p.getOwner()
         );
 
+        if (p.getClauses() != null)
+        {
+            String s1 = "insert into t_policy_clause(id, policy_id, clause_id, clause_code, clause_name, effective_time, finish_time, pay, insure, purchase, amount, quantity, rank, premium, create_time, creator, update_time, updater) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
+            for (PolicyClause pc : p.getClauses())
+                jdbc.update(s1, pc.getId(), p.getId(), pc.getClauseId(), pc.getClauseCode(), pc.getClauseName(), pc.getEffectiveTime(), pc.getFinishTime(), pc.getPay(), pc.getInsure(), pc.getPurchase(), pc.getAmount(), pc.getQuantity(), pc.getRank(), pc.getPremium(), p.getOwner(), p.getOwner());
+        }
+
         return p.getId();
+    }
+
+    public void update(Policy p)
+    {
+        String sql = "replace into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
+                "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, update_time, updater) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)";
+
+        jdbc.update(sql,
+                p.getId(),
+                p.getPlatformId(),
+                p.getApplyNo(),
+                p.getPolicyNo(),
+                p.getType(),
+                Common.trimStringOf(p.getTarget()),
+                Common.trimStringOf(p.getDetail()),
+                Common.trimStringOf(p.getFee()),
+                Common.trimStringOf(p.getExtra()),
+                p.getPremium(),
+                p.getInsureTime(),
+                p.getEffectiveTime(),
+                p.getFinishTime(),
+                p.getVendorId(),
+                p.getAgencyId(),
+                p.getOwnerCompany(),
+                p.getOwnerOrg(),
+                p.getOwner(),
+                p.getPeriod(),
+                p.getApplicantName(),
+                p.getApplicantMobile(),
+                p.getApplicantEmail(),
+                p.getApplicantCertNo(),
+                p.getApplicantCertType(),
+                p.getInsurantName(),
+                p.getInsurantCertNo(),
+                p.getInsurantCertType(),
+                p.getVehicleFrameNo(),
+                p.getVehiclePlateNo(),
+                p.getOwner()
+        );
     }
 }

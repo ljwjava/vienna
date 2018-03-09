@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 public class PolicyController
@@ -57,19 +55,42 @@ public class PolicyController
         return res;
     }
 
-    @RequestMapping("/save.json")
+    @RequestMapping("/update.json")
     @ResponseBody
-    public JSONObject save(@RequestBody JSONObject p)
+    public JSONObject update(@RequestBody JSONObject p)
     {
         Long policyId = p.getLong("policyId");
         Policy policy = policySrv.getPolicy(policyId);
+        policy = policyOf(policy, p);
 
-        if (policy == null)
-        {
-            policy = new Policy();
-            policy.setId(policyId);
-        }
+        policySrv.update(policy);
 
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/new.json")
+    @ResponseBody
+    public JSONObject newPolicy(@RequestBody JSONObject p)
+    {
+        Log.info(p);
+
+        Policy policy = policyOf(new Policy(), p);
+
+        if (Common.isEmpty(policy.getPolicyNo()) || policy.getVendorId() == null)
+            throw new RuntimeException("policy no is null or vendor is null");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", policySrv.newPolicy(policy));
+
+        return res;
+    }
+
+    private Policy policyOf(Policy policy, JSONObject p)
+    {
         policy.setType(p.getIntValue("type"));
         policy.setPlatformId(p.getLong("platformId"));
         policy.setApplyNo(p.getString("applyNo"));
@@ -105,7 +126,8 @@ public class PolicyController
         policy.setVehicleFrameNo(p.getString("vehicleFrameNo"));
         policy.setVehiclePlateNo(p.getString("vehiclePlateNo"));
 
-        JSONArray clauses = p.getJSONArray("clauses");
+        JSONObject detail = p.getJSONObject("detail");
+        JSONArray clauses = detail == null ? null : detail.getJSONArray("clauses");
         if (clauses != null)
         {
             policy.setClauses(new ArrayList<PolicyClause>());
@@ -120,17 +142,17 @@ public class PolicyController
                 pc.setEffectiveTime(c.getDate("effectiveTime"));
                 pc.setFinishTime(c.getDate("finishTime"));
                 pc.setPremium(c.getDouble("premium"));
-                pc.setPayFreq(c.getInteger("payFreq"));
-                pc.setPayTerm(c.getInteger("payTerm"));
+                pc.setPay(c.getString("pay"));
+                pc.setInsure(c.getString("insure"));
+                pc.setPurchase(c.getString("purchase"));
+                pc.setQuantity(c.getDouble("quantity"));
+                pc.setAmount(c.getDouble("amount"));
+                pc.setRank(c.getString("rank"));
 
                 policy.getClauses().add(pc);
             }
         }
 
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", policySrv.savePolicy(policy));
-
-        return res;
+        return policy;
     }
 }

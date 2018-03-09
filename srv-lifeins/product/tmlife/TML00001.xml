@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="TML00001"
+		corporation_id="tmlife"
+		code="IAMILTG09A"
+		name="爱我宝贝少儿白血病疾病保险"
+		name_abbr="爱我宝贝"
+		unit="10000"
+		type_code="thunder"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		input="amount"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="TML00001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+			</pay>
+			<insure>
+				<item code="to_25" />
+			</insure>
+		</param>
+
+		<rule>
+			<if condition="DAY lt 30 or AGE >= 18" type="customer">
+				被保险人年龄须为出生满30天~17周岁
+			</if>
+			<if condition="APPLICANT.AGE > 70" type="customer">
+				投保人年龄不能大于70周岁
+			</if>
+		</rule>
+	</product>
+</declare>
