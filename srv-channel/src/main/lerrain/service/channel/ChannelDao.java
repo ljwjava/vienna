@@ -54,16 +54,18 @@ public class ChannelDao
         });
     }
 
-    public List<ChannelContract> loadContract(Long platformId, Long partyA, Long partyB)
+    public List<ChannelContract> loadContract(Long companyId)
     {
-        String sql = "select * from t_channel_contract where platform_id = ?, party_a = ? and party_b = ? and valid is null order by update_time desc";
-        return jdbc.query(sql, new Object[] {platformId, partyA, partyB}, new RowMapper<ChannelContract>()
+        String sql = "select * from t_channel_contract where party_a = ? or party_b = ? and valid is null order by update_time desc";
+        return jdbc.query(sql, new Object[] {companyId, companyId}, new RowMapper<ChannelContract>()
         {
             @Override
             public ChannelContract mapRow(ResultSet m, int arg1) throws SQLException
             {
                 ChannelContract p = new ChannelContract();
                 p.setId(m.getLong("id"));
+                p.setPartyA(m.getLong("party_a"));
+                p.setPartyB(m.getLong("party_b"));
                 p.setName(m.getString("name"));
                 p.setBegin(m.getDate("begin"));
                 p.setEnd(m.getDate("end"));

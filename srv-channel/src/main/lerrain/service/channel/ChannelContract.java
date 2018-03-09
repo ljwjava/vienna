@@ -7,6 +7,7 @@ public class ChannelContract
 {
     Long id;
     Long channelId;
+    Long partyA, partyB;
 
     String name;
 
@@ -24,6 +25,26 @@ public class ChannelContract
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public Long getPartyA()
+    {
+        return partyA;
+    }
+
+    public void setPartyA(Long partyA)
+    {
+        this.partyA = partyA;
+    }
+
+    public Long getPartyB()
+    {
+        return partyB;
+    }
+
+    public void setPartyB(Long partyB)
+    {
+        this.partyB = partyB;
     }
 
     public Long getChannelId()

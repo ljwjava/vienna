@@ -1,0 +1,84 @@
+"use strict";
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import List from '../common/component.list.jsx';
+
+var listEnv = {
+    search: null,
+    from: 0,
+    number: 10,
+}
+
+var env = {
+	companyType: {
+    	"1": "保险公司",
+        "2": "中介",
+        "3": "平台"
+	}
+}
+
+class MainList extends List {
+    open(id) {
+        document.location.href = "contracts.web?companyId=" + id;
+    }
+    componentDidMount() {
+    	super.componentDidMount();
+	}
+    refresh() {
+        common.req("btbx/channel/list_contract.json", listEnv, r => {
+            this.setState({content:r});
+        });
+    }
+    buildTableTitle() {
+        return (
+			<tr>
+				<th>名称</th>
+				<th>类型</th>
+				<th>执照号码</th>
+				<th>所在地区</th>
+				<th>联系人</th>
+				<th>电话</th>
+				<th>电子邮件</th>
+				<th>操作</th>
+			</tr>
+        );
+    }
+    buildTableLine(v) {
+        return (
+			<tr key={v.id}>
+				<td>{v.name}</td>
+				<td>{env.companyType[v.type]}</td>
+				<td>{v.bizLicense}</td>
+				<td>{v.city}</td>
+				<td>{v.contact}</td>
+				<td>{v.telephone}</td>
+				<td>{v.email}</td>
+				<td>
+					<a href="#" onClick={this.open.bind(this, v.id)}>编辑</a>
+				</td>
+			</tr>
+        );
+    }
+}
+
+var Main = React.createClass({
+    render() {
+        return (
+        	<div>
+				<nav className="navbar navbar-light bg-white justify-content-between">
+					<button className="btn btn-primary">新增渠道</button>
+					<div className="form-inline">
+						<input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+						<button className="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+					</div>
+				</nav>
+				<MainList env={env}/>
+			</div>
+		);
+    }
+});
+
+$(document).ready( function() {
+    ReactDOM.render(<Main/>, document.getElementById("content"));
+});

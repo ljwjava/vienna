@@ -42,13 +42,11 @@ public class ChannelController
 	@ResponseBody
 	public JSONObject listContract(@RequestBody JSONObject p)
 	{
-		Long platformId = p.getLong("platformId");
-		Long partyA = p.getLong("partyA");
-		Long partyB = p.getLong("partyB");
+		Long companyId = p.getLong("companyId");
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", channelSrv.getContractList(platformId, partyA, partyB));
+		res.put("content", channelSrv.getContractList(companyId));
 
 		return res;
 	}
