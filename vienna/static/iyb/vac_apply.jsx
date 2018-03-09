@@ -213,9 +213,9 @@ var Ground = React.createClass({
                 }
 			});
 
-            document.title = r.name;
+            document.title = r.wareName + (r.name != null && r.name != "" ? "("+r.name+")" : "");
             if ("undefined" != typeof iHealthBridge) {
-                IYB.setTitle(r.name);
+                IYB.setTitle(r.wareName + (r.name != null && r.name != "" ? "("+r.name+")" : ""));
             }
 		});
     },
@@ -296,6 +296,7 @@ var Ground = React.createClass({
             return;
         }
         let contact = this.refs.contact.val();
+        let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");
 		let apply = {
 			wareId: env.pack.wareId,
 			wareCode: env.pack.wareCode,
@@ -317,13 +318,14 @@ var Ground = React.createClass({
 			read: env.pack.extra.read,
             tips: env.pack.extra.tips,
 			pay: this.props.defVal.pay,
-			vendor: env.vendor
+			vendor: env.vendor,
+            packName: (env.pack.extra.productName != null && env.pack.extra.productName != "" ? env.pack.extra.productName : orderName)
 		};
-		let order = {	
+		let order = {
 			orderId: env.orderId,
 			productId: env.packId,
             productCode: env.pack.code,
-			productName: env.pack.name,
+			productName: orderName,
             productType: env.pack.type,
 			vendorId: env.vendorId,
 			price: apply.premium,
