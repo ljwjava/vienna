@@ -343,9 +343,9 @@ var Ground = React.createClass({
             });
             */
 
-            document.title = r.name;
+            document.title = r.wareName + (r.name != null && r.name != "" ? "("+r.name+")" : "");
             if ("undefined" != typeof iHealthBridge) {
-                IYB.setTitle(r.name);
+                IYB.setTitle(r.wareName + (r.name != null && r.name != "" ? "("+r.name+")" : ""));
             }
 		});
     },
@@ -573,6 +573,7 @@ var Ground = React.createClass({
             return;
         }
 		let contact = this.refs.contact.val();
+		let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");
 		env.applicant.mobile = contact.mobile;
 		env.applicant.email = contact.email;
 		let apply = {
@@ -601,13 +602,14 @@ var Ground = React.createClass({
             returnVisit: env.pack.extra.returnVisit,
 			tips: env.pack.extra.tips,
 			pay: this.props.defVal.pay,
-			vendor: env.vendor
+			vendor: env.vendor,
+			packName: (env.pack.extra.productName != null && env.pack.extra.productName != "" ? env.pack.extra.productName : orderName)
 		};
 		let order = {
 			orderId: env.orderId,
 			productId: env.packId,
             productCode: env.pack.code,
-			productName: env.pack.wareName,
+			productName: orderName,
 			productType: env.pack.type,
 			vendorId: env.vendorId,
 			price: apply.premium,
@@ -755,7 +757,7 @@ var Ground = React.createClass({
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
 					{env.insocc || env.formOpt.insurant.height || env.formOpt.insurant.weight || env.formOpt.insurant.hasSmoke ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
-				<div className="title">保险计划（{env.pack.name}）</div>
+				<div className="title" style={{height: "auto", lineHeight: "25px"}}>保险计划（{env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "")}）</div>
 				<div className="form">
 					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.form} onRefresh={this.refreshPremium}/>
 					<div style={{paddingTop:"10px"}}>{r1}{r2}</div>
