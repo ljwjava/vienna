@@ -23,7 +23,7 @@ public class ChannelDao
 
     public int count(String search, final Long platformId)
     {
-        StringBuffer sql = new StringBuffer("select count(*) from t_company where valid is null");
+        StringBuffer sql = new StringBuffer("select count(*) from t_company");
         if (search != null && !"".equals(search))
             sql.append(" and name like '%" + search + "%' ");
 
@@ -32,10 +32,10 @@ public class ChannelDao
 
     public List<Channel> list(String search, int from, int number, final Long platformId)
     {
-        StringBuffer sql = new StringBuffer("select * from t_company where valid is null");
+        StringBuffer sql = new StringBuffer("select * from t_company");
         if (search != null && !"".equals(search))
             sql.append(" and name like '%" + search + "%' ");
-        sql.append(" order by update_time desc");
+        sql.append(" order by name");
         sql.append(" limit " + from + ", " + number);
 
         return jdbc.query(sql.toString(), new RowMapper<Channel>()
@@ -47,42 +47,69 @@ public class ChannelDao
                 p.setId(m.getLong("id"));
                 p.setName(m.getString("name"));
                 p.setType(m.getInt("type"));
-                p.setUpdateTime(m.getTimestamp("update_time"));
+                //p.setUpdateTime(m.getTimestamp("update_time"));
 
                 return p;
             }
         });
     }
 
-    public List<ChannelContract> loadContract(Long companyId)
+    public int countContract(Long companyId)
+    {
+        return jdbc.queryForObject("select count(*) from t_channel_contract where party_a = ? or party_b = ? and valid is null", Integer.class, companyId, companyId);
+    }
+
+    public List<ChannelContract> queryContract(Long partyA, Long partyB)
     {
         String sql = "select * from t_channel_contract where party_a = ? or party_b = ? and valid is null order by update_time desc";
-        return jdbc.query(sql, new Object[] {companyId, companyId}, new RowMapper<ChannelContract>()
+        return jdbc.query(sql, new Object[] {partyA, partyB}, new RowMapper<ChannelContract>()
         {
             @Override
             public ChannelContract mapRow(ResultSet m, int arg1) throws SQLException
             {
-                ChannelContract p = new ChannelContract();
-                p.setId(m.getLong("id"));
-                p.setPartyA(m.getLong("party_a"));
-                p.setPartyB(m.getLong("party_b"));
-                p.setName(m.getString("name"));
-                p.setBegin(m.getDate("begin"));
-                p.setEnd(m.getDate("end"));
-                p.setUpdateTime(m.getTimestamp("update_time"));
-
-                JSONArray list = JSON.parseArray(m.getString("docs"));
-                if (list != null)
-                {
-                    List<Long> docs = new ArrayList<>();
-                    for (int i = 0; i < list.size(); i++)
-                        docs.add(list.getLong(i));
-                    p.setDocs(docs);
-                }
-
-                return p;
+                return contractOf(m, true);
             }
         });
+    }
+
+    public List<ChannelContract> listContract(Long companyId, int from, int number)
+    {
+        String sql = "select * from t_channel_contract where party_a = ? or party_b = ? and valid is null order by update_time desc limit ?, ?";
+        return jdbc.query(sql, new Object[] {companyId, companyId, from, number}, new RowMapper<ChannelContract>()
+        {
+            @Override
+            public ChannelContract mapRow(ResultSet m, int arg1) throws SQLException
+            {
+                return contractOf(m, false);
+            }
+        });
+    }
+
+    private ChannelContract contractOf(ResultSet m, boolean fee) throws SQLException
+    {
+        ChannelContract p = new ChannelContract();
+        p.setId(m.getLong("id"));
+        p.setPlatformId(m.getLong("platform_id"));
+        p.setPartyA(m.getLong("party_a"));
+        p.setPartyB(m.getLong("party_b"));
+        p.setName(m.getString("name"));
+        p.setBegin(m.getDate("begin"));
+        p.setEnd(m.getDate("end"));
+        p.setUpdateTime(m.getTimestamp("update_time"));
+
+        JSONArray list = JSON.parseArray(m.getString("docs"));
+        if (list != null)
+        {
+            List<Long> docs = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++)
+                docs.add(list.getLong(i));
+            p.setDocs(docs);
+        }
+
+        if (fee)
+            p.setFeeDefine(loadProductFee(p.getId()));
+
+        return p;
     }
 
     public List<Map<String, Object>> loadProductFee(Long contractId)
@@ -90,33 +117,21 @@ public class ChannelDao
         final Date now = new Date();
 
         String sql = "select * from t_channel_fee_define where contract_id = ? order by product_id, insure, pay";
-        return jdbc.queryForList(sql, new Object[] {contractId}, new RowMapper<Map>()
+        return jdbc.query(sql, new Object[] {contractId}, new RowMapper<Map<String, Object>>()
         {
             @Override
-            public Map mapRow(ResultSet m, int arg1) throws SQLException
+            public Map<String, Object> mapRow(ResultSet m, int arg1) throws SQLException
             {
-                Date d1 = m.getDate("begin");
-                Date d2 = m.getDate("end");
-
                 JSONObject p = new JSONObject();
-                p.put("productId", m.getLong("product_id"));
+                p.put("productId", m.getString("product_id"));
                 p.put("pay", m.getString("pay"));
                 p.put("insure", m.getString("insure"));
-                p.put("begin", d1);
-                p.put("end", d2);
                 p.put("f1", m.getBigDecimal("f1"));
                 p.put("f2", m.getBigDecimal("f2"));
                 p.put("f3", m.getBigDecimal("f3"));
                 p.put("f4", m.getBigDecimal("f4"));
                 p.put("f5", m.getBigDecimal("f5"));
                 p.put("unit", m.getInt("unit"));
-
-                boolean valid = true;
-                if (d1 != null && d1.after(now))
-                    valid = false;
-                if (d2 != null && d2.before(now))
-                    valid = false;
-                p.put("valid", valid);
 
                 return p;
             }

@@ -22,7 +22,13 @@ public class PolicyDao
 
     public boolean isExists(Policy p)
     {
-        int num = jdbc.queryForObject("select exists(select id from t_policy where policy_no = ? and vendor_id = ? and valid is null) from dual", Integer.class, p.getPolicyNo(), p.getVendorId());
+        int num;
+
+        if (p.getEndorseNo() == null)
+            num = jdbc.queryForObject("select exists(select id from t_policy where policy_no = ? and vendor_id = ? and endorse_no is null and valid is null) from dual", Integer.class, p.getPolicyNo(), p.getVendorId());
+        else
+            num = jdbc.queryForObject("select exists(select id from t_policy where policy_no = ? and vendor_id = ? and endorse_no = ? and valid is null) from dual", Integer.class, p.getPolicyNo(), p.getVendorId(), p.getEndorseNo());
+
         return num > 0;
     }
 
@@ -185,7 +191,7 @@ public class PolicyDao
         return p.getId();
     }
 
-    public void update(Policy p)
+    public void updatePolicy(Policy p)
     {
         String sql = "replace into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
                 "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, update_time, updater) " +
@@ -223,5 +229,10 @@ public class PolicyDao
                 p.getVehiclePlateNo(),
                 p.getOwner()
         );
+    }
+
+    public Long endorsePolicy(Policy policy)
+    {
+        return null;
     }
 }

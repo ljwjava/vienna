@@ -81,18 +81,9 @@ public class PolicyReady extends PolicyBase
             if (Common.isEmpty(val.get("endorse_no")))
                 throw new RuntimeException("类型为批改，批改单号为空");
 
-            int pos = policyNo.indexOf("-批改");
-            if (pos > 0)
-            {
-                String p1 = policyNo.substring(0, pos);
-                val.put("policy_no", p1);
-
-                endorse = 1;
-            }
-            else
-            {
-                throw new RuntimeException("类型为批改，但保单号中未标记批改及批改次数");
-            }
+            int pos = policyNo.indexOf("-");
+            if (pos >= 0)
+                throw new RuntimeException("保单号有误");
         }
         else if (mode == 1)
         {

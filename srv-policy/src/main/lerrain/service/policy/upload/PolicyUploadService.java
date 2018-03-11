@@ -1,13 +1,13 @@
 package lerrain.service.policy.upload;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import lerrain.service.policy.Policy;
+import lerrain.service.policy.PolicyDao;
 import lerrain.tool.Common;
-import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +18,9 @@ public class PolicyUploadService
 {
     @Autowired
     PolicyUploadDao policyUploadDao;
+
+    @Autowired
+    PolicyDao policyDao;
 
     public String upload(Long userId, List<Object[]> tab)
     {
@@ -141,21 +144,16 @@ public class PolicyUploadService
             {
                 pr.prepare();
 
-                String policyNo = pr.getString("policy_no");
-                Long companyId = pr.getLong("company_id");
+                Policy policy = policyOf(pr);
 
-                PolicyBase policy = policyUploadDao.find(policyNo, companyId);
-                if (pr.compare(policy))
-                {
-                    if (policyUploadDao.savePolicy(pr))
-                        pr.result = 1;
-                    else
-                        throw new RuntimeException("保存失败");
-                }
+                if (policyDao.isExists(policy))
+                    policyDao.updatePolicy(policy);
+                else if (policy.getEndorseNo() == null)
+                    policyDao.newPolicy(policy);
                 else
-                {
-                    pr.result = 2;
-                }
+                    policyDao.endorsePolicy(policy);
+
+                pr.result = 1;
 
                 System.out.println(idx + " " + pr.result);
             }
@@ -173,6 +171,65 @@ public class PolicyUploadService
         }
 
         return err;
+    }
+
+    private Policy policyOf(PolicyReady pr)
+    {
+        Policy policy = new Policy();
+        policy.setType(2);
+        policy.setPlatformId(6L);
+        policy.setApplyNo(pr.getString("applyNo"));
+        policy.setPolicyNo(pr.getString("policyNo"));
+
+        policy.setPremium(pr.getDouble("premium"));
+
+        policy.setInsureTime(pr.getDate("insureTime"));
+        policy.setEffectiveTime(pr.getDate("effectiveTime"));
+        policy.setFinishTime(pr.getDate("finishTime"));
+
+        policy.setVendorId(pr.getLong("vendorId"));
+        policy.setAgencyId(pr.getLong("agencyId"));
+        policy.setPeriod(1);
+
+        policy.setOwner(pr.getLong("owner"));
+        policy.setOwnerOrg(pr.getLong("ownerOrg"));
+        policy.setOwnerCompany(pr.getLong("ownerCompany"));
+
+        policy.setApplicantName(pr.getString("applicantName"));
+        policy.setApplicantMobile(pr.getString("applicantMobile"));
+        policy.setApplicantEmail(pr.getString("applicantEmail"));
+        policy.setApplicantCertNo(pr.getString("applicantCertNo"));
+        policy.setApplicantCertType(pr.getString("applicantCertType"));
+        policy.setInsurantName(pr.getString("insurantName"));
+        policy.setInsurantCertNo(pr.getString("insurantCertNo"));
+        policy.setInsurantCertType(pr.getString("insurantCertType"));
+        policy.setVehicleFrameNo(pr.getString("vehicleFrameNo"));
+        policy.setVehiclePlateNo(pr.getString("vehiclePlateNo"));
+
+        JSONObject target = new JSONObject();
+
+        JSONObject app = new JSONObject();
+        app.put("name", policy.getApplicantName());
+        app.put("mobile", policy.getApplicantMobile());
+        app.put("email", policy.getApplicantEmail());
+        app.put("certType", policy.getApplicantCertType());
+        app.put("certNo", policy.getApplicantCertNo());
+        target.put("applicant", app);
+
+        JSONObject ins = new JSONObject();
+        ins.put("name", policy.getInsurantName());
+        ins.put("certType", policy.getInsurantCertType());
+        ins.put("certNo", policy.getInsurantCertNo());
+        target.put("insurant", ins);
+
+        JSONObject vehicle = new JSONObject();
+        vehicle.put("frameNo", policy.getVehicleFrameNo());
+        vehicle.put("plateNo", policy.getVehiclePlateNo());
+        target.put("vehicle", vehicle);
+
+        policy.setTarget(target);
+
+        return policy;
     }
 
     public Runnable newTask(final Long userId, final Object[] coll)

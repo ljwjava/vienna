@@ -63,7 +63,7 @@ public class PolicyController
         Policy policy = policySrv.getPolicy(policyId);
         policy = policyOf(policy, p);
 
-        policySrv.update(policy);
+        policySrv.updatePolicy(policy);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");

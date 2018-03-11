@@ -47,6 +47,8 @@ public class Lifeins implements Function
         if (birthday == null)
             birthday = Common.dateOf("1990-01-01");
         app.put("BIRTHDAY", birthday);
+        app.put("OCCUPATION_C", vals.get("A_OCCUPATION_C"));
+        app.put("OCCUPATION_L", vals.get("A_OCCUPATION_L"));
         r.put("applicant", app);
 
         Map ins = new HashMap();

@@ -757,7 +757,7 @@ var Ground = React.createClass({
 					{this.state.insurant ? (<InsurantForm ref="insurant" defVal={ins} onRefresh={this.refreshPremium}/>) : null}
 					{env.insocc || env.formOpt.insurant.height || env.formOpt.insurant.weight || env.formOpt.insurant.hasSmoke ? (<InsurantMore ref="more" defVal={this.state.insurant ? ins : app} onRefresh={this.refreshPremium}/>) : null}
 				</div>
-				<div className="title" style={{height: "auto", lineHeight: "25px"}}>保险计划（{env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "")}）</div>
+				<div className="title" style={{height: "auto", lineHeight: "25px"}}>保险计划（{env.pack.name != null && env.pack.name != "" ? env.pack.name : env.pack.wareName}）</div>
 				<div className="form">
 					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.form} onRefresh={this.refreshPremium}/>
 					<div style={{paddingTop:"10px"}}>{r1}{r2}</div>

@@ -5,10 +5,12 @@ import ReactDOM from 'react-dom';
 import List from '../common/component.list.jsx';
 
 var env = {
-	orgId: 10000,
-    search: null,
-    from: 0,
-    number: 20
+	orgId: 125001,
+    status: {
+	    "1": "正常",
+        "2": "离职",
+        "3": "挂起"
+    }
 }
 
 var OrgTree = React.createClass({
@@ -55,19 +57,20 @@ class MemberList extends List {
         document.location.href = "member.web?memberId=" + id;
     }
     refresh() {
-        common.req("btbx/org/list_member.json", {orgId: this.props.orgId, from: env.from, number: env.number}, r => {
+        common.req("btbx/org/list_member.json", {orgId: this.props.orgId, from: this.props.env.from, number: this.props.env.number}, r => {
             this.setState({content:r});
         });
     }
     buildTableTitle() {
         return (
 			<tr>
-				<th><div>组员</div></th>
-				<th><div>手机</div></th>
-                <th><div>Email</div></th>
-                <th><div>入职时间</div></th>
-                <th><div>状态</div></th>
-				<th></th>
+				<th>组员</th>
+                <th>证件</th>
+				<th>手机</th>
+                <th>Email</th>
+                <th>入职时间</th>
+                <th>状态</th>
+				<th>操作</th>
 			</tr>
         );
     }
@@ -76,10 +79,11 @@ class MemberList extends List {
         return (
 			<tr key={v.id}>
 				<td><img src="../images/user.png" style={{width:"24px", height:"24px"}}/> {v.name}</td>
+                <td>{v.certNo}</td>
 				<td>{v.mobile}</td>
                 <td>{v.email}</td>
                 <td>{joinTime}</td>
-                <td>{v.status}</td>
+                <td>{env.status[v.status]}</td>
 				<td>
 					<a onClick={this.open.bind(this, v.id)}>编辑</a>
 				</td>
@@ -93,18 +97,28 @@ var Main = React.createClass({
         return {orgId: env.orgId};
     },
     render() {
-        return <div className="form-horizontal">
-			<div className="form-group">
-				<div className="col-sm-2">
-					<br/>
-					<OrgTree orgId={env.orgId} parent={this}/>
-				</div>
-				<div className="col-sm-10">
-					<br/>
-					<MemberList ref="list" env={env} orgId={this.state.orgId}/>
-				</div>
-			</div>
-		</div>;
+        return (
+            <div>
+                <div className="form-row">
+                    <div className="col-sm-2">
+                        <br/>
+                        <OrgTree orgId={env.orgId} parent={this}/>
+                    </div>
+                    <div className="col-sm-10">
+                        <nav className="navbar navbar-light justify-content-between">
+                            <div>
+                                <button className="btn btn-primary mr-2">新增人员</button>
+                            </div>
+                            <div className="form-inline">
+                                <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+                                <button className="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+                            </div>
+                        </nav>
+                        <MemberList ref="list" env={{from: 0, number: 12}} orgId={this.state.orgId}/>
+                    </div>
+                </div>
+            </div>
+        )
     }
 });
 

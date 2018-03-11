@@ -2,11 +2,14 @@ package lerrain.service.channel;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ChannelContract
 {
     Long id;
     Long channelId;
+    Long platformId;
+
     Long partyA, partyB;
 
     String name;
@@ -14,6 +17,7 @@ public class ChannelContract
     Date begin, end;
 
     List<Long> docs;
+    List<Map<String, Object>> feeDefine;
 
     Date updateTime;
 
@@ -85,6 +89,26 @@ public class ChannelContract
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public Long getPlatformId()
+    {
+        return platformId;
+    }
+
+    public void setPlatformId(Long platformId)
+    {
+        this.platformId = platformId;
+    }
+
+    public List<Map<String, Object>> getFeeDefine()
+    {
+        return feeDefine;
+    }
+
+    public void setFeeDefine(List<Map<String, Object>> feeDefine)
+    {
+        this.feeDefine = feeDefine;
     }
 
     public Date getUpdateTime()

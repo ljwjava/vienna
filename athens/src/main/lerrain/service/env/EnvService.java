@@ -30,6 +30,7 @@ public class EnvService
     @Autowired Fold fold;
     @Autowired Unfold unfold;
     @Autowired Dict dict;
+    @Autowired TaskFX taskFX;
 
     Function time2long;
     Function today;
@@ -163,6 +164,7 @@ public class EnvService
         stack.put("TimeFX", new TimeFX());
         stack.put("FileFX", new FileFX());
         stack.put("ToolFX", new ToolFX());
+        stack.put("TaskFX", taskFX);
         stack.put("IYunBao", new IYunBao());
 
         environments = envDao.loadAllEnv(stack);

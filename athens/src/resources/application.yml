@@ -27,7 +27,7 @@ service:
   customer: http://localhost:7602
   dict: http://localhost:7773
   order: http://localhost:7770
-  user: http://localhost:7601
+  user: http://localhost:7501
   printer: http://localhost:7511
   rome: http://localhost:7766
   sale: http://localhost:7772
@@ -35,7 +35,7 @@ service:
   commission: http://localhost:7769
   fee: http://localhost:7768
   image: http://localhost:7771
-  policy: http://localhost:7676
+  policy: http://localhost:7781
   channel: http://localhost:7675
   product: http://localhost:7768
 

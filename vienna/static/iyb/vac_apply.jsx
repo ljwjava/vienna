@@ -395,7 +395,7 @@ var Ground = React.createClass({
 				<div className="form">
 					<InsurantForm ref="insurant" defVal={ins} fields={this.state.form} onRefresh={this.refreshPremium}/>
 				</div>
-				<div className="title">保险计划</div>
+				<div className="title">保险计划（{env.pack.name != null && env.pack.name != "" ? env.pack.name : env.pack.wareName}）</div>
 				<div className="form">
 					<PlanForm ref="plan" parent={this} defVal={this.props.defVal.factors} fields={this.state.form} onRefresh={this.refreshPremium}/>
 				</div>

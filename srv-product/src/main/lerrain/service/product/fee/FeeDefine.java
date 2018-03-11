@@ -9,10 +9,7 @@ import java.util.Map;
 public class FeeDefine
 {
     Long platformId;
-    Long agencyId;
     Long productId;
-
-    String group;
 
     Map factors;
 
@@ -37,16 +34,6 @@ public class FeeDefine
         this.platformId = platformId;
     }
 
-    public Long getAgencyId()
-    {
-        return agencyId;
-    }
-
-    public void setAgencyId(Long agencyId)
-    {
-        this.agencyId = agencyId;
-    }
-
     public Long getProductId()
     {
         return productId;
@@ -55,16 +42,6 @@ public class FeeDefine
     public void setProductId(Long productId)
     {
         this.productId = productId;
-    }
-
-    public String getGroup()
-    {
-        return group;
-    }
-
-    public void setGroup(String group)
-    {
-        this.group = group;
     }
 
     public Map getFactors()

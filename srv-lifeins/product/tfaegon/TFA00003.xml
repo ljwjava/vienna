@@ -30,7 +30,7 @@
 		</rider>
 
 		<init>
-			<item name="PREMIUM_EXEMPT" value="PREMIUM + try(RIDER('TFA00004').PREMIUM, 0)"/>
+			<item name="PREMIUM_EXEMPT" value="[PREMIUM, try(RIDER('TFA00004').PREMIUM, 0)]"/>
 			<item name="SALE_PROV" value="['11','12','13','31','44','32','42','37','51','35']"/>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
 			<item name="A_CITY" value="['1101','1102','1201','1202','1301','3101','3102','4401','4403','3201','3202','3205','4201','3701','3702','5101','3501','3502']"/>

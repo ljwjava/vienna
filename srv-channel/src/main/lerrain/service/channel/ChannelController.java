@@ -38,15 +38,36 @@ public class ChannelController
 		return res;
 	}
 
+	@RequestMapping("/query_contract.json")
+	@ResponseBody
+	public JSONObject queryContract(@RequestBody JSONObject p)
+	{
+		Long partyA = p.getLong("partyA");
+		Long partyB = p.getLong("partyB");
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", channelSrv.queryContract(partyA, partyB));
+
+		return res;
+	}
+
 	@RequestMapping("/list_contract.json")
 	@ResponseBody
 	public JSONObject listContract(@RequestBody JSONObject p)
 	{
 		Long companyId = p.getLong("companyId");
 
+		int from = Common.intOf(p.get("from"), 0);
+		int num = Common.intOf(p.get("number"), 10);
+
+		JSONObject r = new JSONObject();
+		r.put("list", channelSrv.listContract(companyId, from, num));
+		r.put("total", channelSrv.countContract(companyId));
+
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", channelSrv.getContractList(companyId));
+		res.put("content", r);
 
 		return res;
 	}

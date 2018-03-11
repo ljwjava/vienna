@@ -13,7 +13,6 @@ var env = {
 
 class UploadList extends List {
     deal(id) {
-
     }
     refresh() {
         common.req("btbx/policy/upload_list.json", env, r => {
@@ -70,34 +69,21 @@ class UploadList extends List {
 
 var Main = React.createClass({
     render() {
-        return <div className="form-horizontal">
-			<div className="form-group">
-				<div className="col-sm-12">
-					<div className="container-fluid">
-                        <ul className="nav navbar-nav">
-                            <li>
-                                <form className="navbar-form" role="search">
-                                    <div className="form-group">
-                                        <input type="text" className="form-control" placeholder=""/>
-                                    </div>
-                                    <button type="submit" className="btn btn-success">搜索</button>
-                                </form>
-                            </li>
-                        </ul>
-                        <ul className="nav navbar-nav navbar-right">
-                            <li>
-                                <form className="navbar-form">
-                                    <button className="btn btn-default">批次合并</button>
-                                    &nbsp;
-                                    <button className="btn btn-default">全部重试</button>
-                                </form>
-                            </li>
-                        </ul>
+        return (
+            <div>
+                <nav className="navbar navbar-light justify-content-between">
+                    <div>
+                        <button className="btn btn-primary mr-2">批次合并</button>
+                        <button className="btn btn-primary">全部重试</button>
                     </div>
-					<UploadList env={env}/>
-				</div>
-			</div>
-		</div>;
+                    <div className="form-inline">
+                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+                        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+                    </div>
+                </nav>
+                <UploadList env={env}/>
+	    	</div>
+        )
     }
 });
 

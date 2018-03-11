@@ -7,7 +7,7 @@ import List from '../common/component.list.jsx';
 var env = {
     search: null,
     from: 0,
-    number: 10,
+    number: 12,
 	companyType: {
     	"1": "保险公司",
         "2": "中介",

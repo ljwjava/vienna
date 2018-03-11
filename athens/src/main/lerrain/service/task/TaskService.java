@@ -20,7 +20,7 @@ public class TaskService
     @Autowired
     TaskDao taskDao;
 
-    List<Task> list;
+    List<TimingTask> list;
 
     public void reset(EnvService envSrv)
     {
@@ -113,7 +113,7 @@ public class TaskService
 
     private void invoke(String invokeTime)
     {
-        if (list != null) for (Task task : list)
+        if (list != null) for (TimingTask task : list)
         {
             if (task != null && invokeTime.equals(task.getInvoke()))
                 taskQueue.add(task);

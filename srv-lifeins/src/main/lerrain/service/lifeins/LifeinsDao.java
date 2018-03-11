@@ -48,7 +48,7 @@ public class LifeinsDao
 
                 ins.setType(Insurance.PACKAGE);
                 ins.setSequence(Common.intOf(rs.getObject("sequence"), 1000));
-                ins.setId(rs.getString("product_id"));
+                ins.setId(rs.getString("ins_id"));
                 ins.setName(rs.getString("name"));
                 ins.setAbbrName(rs.getString("name_abbr"));
                 ins.setUnit(Common.intOf(rs.getObject("unit"), 1000));

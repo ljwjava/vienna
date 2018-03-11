@@ -49,7 +49,7 @@ public class Excel
 
     static
     {
-        MAPPING.put("company_name", "company_id");
+        MAPPING.put("company_name", "vendorId");
         MAPPING.put("operate", "*");
         MAPPING.put("endorse_no", "*");
         MAPPING.put("endorse_time", "*");

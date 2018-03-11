@@ -22,9 +22,19 @@ public class ChannelService
         return channelDao.count(search, platformId);
     }
 
-    public List<ChannelContract> getContractList(Long companyId)
+    public List<ChannelContract> queryContract(Long partyA, Long partyB)
     {
-        return channelDao.loadContract(companyId);
+        return channelDao.queryContract(partyA, partyB);
+    }
+
+    public List<ChannelContract> listContract(Long companyId, int from, int to)
+    {
+        return channelDao.listContract(companyId, from, to);
+    }
+
+    public int countContract(Long companyId)
+    {
+        return channelDao.countContract(companyId);
     }
 
     public List<Map<String, Object>> getProductFee(Long contractId)

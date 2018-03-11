@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<variable type="product">
+		<item name="PREMIUM" formula="round(round(DS.RATE[0,0]*QUANTITY,2))"/>
+	</variable>
+</declare>

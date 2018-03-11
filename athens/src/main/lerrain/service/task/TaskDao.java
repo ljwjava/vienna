@@ -18,12 +18,12 @@ public class TaskDao
     @Autowired
     JdbcTemplate jdbc;
 
-    public List<Task> loadAllTask(final EnvService envSrv)
+    public List<TimingTask> loadAllTask(final EnvService envSrv)
     {
-        return jdbc.query("select * from t_task where valid is null order by sequence", new RowMapper<Task>()
+        return jdbc.query("select * from t_task where valid is null order by sequence", new RowMapper<TimingTask>()
         {
             @Override
-            public Task mapRow(ResultSet m, int rowNum) throws SQLException
+            public TimingTask mapRow(ResultSet m, int rowNum) throws SQLException
             {
                 Long envId = m.getLong("env_id");
                 String script = m.getString("script");
@@ -32,7 +32,7 @@ public class TaskDao
                 if (!envSrv.isValid(envId))
                     return null;
 
-                Task task = new Task();
+                TimingTask task = new TimingTask();
                 task.setStack(envSrv.getEnv(envId).getStack());
                 task.setScript(Script.scriptOf(script));
                 task.setInvoke(invoke);

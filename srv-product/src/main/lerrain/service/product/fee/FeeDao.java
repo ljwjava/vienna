@@ -47,9 +47,9 @@ public class FeeDao
 		return new Object[] {Common.doubleOf(str, 0)};
 	}
 
-	public List<FeeDefine> listFeeRate(Long platformId, Long agencyId, Long productId)
+	public List<FeeDefine> listFeeRate(Long platformId, Long productId)
 	{
-		String sql = "select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ? order by begin, end, agency_id, `group`, pay_freq, pay_period";
+		String sql = "select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ? order by begin, end, pay, insure";
 
 		return jdbc.query(sql, new RowMapper<FeeDefine>()
 		{
@@ -62,10 +62,10 @@ public class FeeDao
 		}, productId, platformId);
 	}
 
-	public List<FeeDefine> listFeeRate(Long platformId, Long agencyId, Long productId, String group, Map rs)
+	public List<FeeDefine> listFeeRate(Long platformId, Long productId, Map rs)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ? and agency_id = ? and `group` = ?");
+		sql.append("select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ?");
 
 		String pay = Common.trimStringOf(rs.get("pay"));
 		String insure = Common.trimStringOf(rs.get("insure"));
@@ -83,15 +83,13 @@ public class FeeDao
 				return feeRateOf(rs);
 			}
 
-		}, productId, platformId, agencyId, group);
+		}, productId, platformId);
 	}
 
 	private FeeDefine feeRateOf(ResultSet rs) throws SQLException
 	{
 		Long platformId = rs.getLong("platform_id");
 		Long productId = rs.getLong("product_id");
-		Long agencyId = rs.getLong("agency_id");
-		String group = rs.getString("group");
 
 		String pay = rs.getString("pay");
 		String insure = rs.getString("insure");
@@ -105,8 +103,6 @@ public class FeeDao
 		FeeDefine pc = new FeeDefine();
 		pc.platformId = platformId;
 		pc.productId = productId;
-		pc.agencyId = agencyId;
-		pc.group = group;
 		pc.begin = begin;
 		pc.end = end;
 		pc.freeze = freeze;
@@ -116,7 +112,7 @@ public class FeeDao
 		pc.upperBonus = valOf(rs.getString("upper_bonus"));
 
 		Map m = new JSONObject();
-		m.put("payPeriod", pay);
+		m.put("pay", pay);
 		m.put("insure", insure);
 		pc.setFactors(m);
 

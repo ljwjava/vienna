@@ -25,13 +25,16 @@ public class PolicyService
         return policyDao.newPolicy(policy);
     }
 
-    public void update(Policy policy)
+    public void updatePolicy(Policy policy)
     {
-        policyDao.update(policy);
+        policyDao.updatePolicy(policy);
     }
 
-    public Long endorse(Policy policy)
+    public Long endorsePolicy(Policy policy)
     {
-        return null;
+        if (policyDao.isExists(policy))
+            throw new RuntimeException("policy already exists");
+
+        return policyDao.endorsePolicy(policy);
     }
 }

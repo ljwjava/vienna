@@ -94,17 +94,16 @@ public class FeeController
         return res;
     }
 
-    @RequestMapping("/fee/list_rate.json")
+    @RequestMapping("/fee/query_rate.json")
     @ResponseBody
     public JSONObject listFeeDef(@RequestBody JSONObject c)
     {
         Long platformId = c.getLong("platformId");
-        Long agencyId = c.getLong("agencyId");
         Long productId = c.getLong("productId");
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", cs.listFeeDefine(platformId, agencyId, productId));
+        res.put("content", cs.listFeeDefine(platformId, productId));
 
         return res;
     }
@@ -143,9 +142,7 @@ public class FeeController
         Long platformId = c.getLong("platformId");
         Long productId = c.getLong("productId");
         //Long vendorId = c.getLong("vendorId");
-        Long agencyId = c.getLong("agencyId");
 
-        String group = c.getString("group");
         Map factors = c.getJSONObject("factors");
 
         Date time = c.getDate("time");
@@ -154,7 +151,7 @@ public class FeeController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", cs.getFeeDefine(platformId, agencyId, productId, group, factors, time));
+        res.put("content", cs.getFeeDefine(platformId, productId, factors, time));
 
         return res;
     }
