@@ -160,6 +160,7 @@ public class EnvService
         stack.put("reversalStr", reversalStr);
         stack.put("md5Of", new Md5());
         stack.put("urlParam", new UrlParam());
+        stack.put("getUrlParam", new GetUrlParam());
         stack.put("Encrypt", new Encrypt());
         stack.put("TimeFX", new TimeFX());
         stack.put("FileFX", new FileFX());
