@@ -31,6 +31,7 @@ public class EnvService
     @Autowired Unfold unfold;
     @Autowired Dict dict;
     @Autowired TaskFX taskFX;
+    @Autowired OnAlert alert;
 
     Function time2long;
     Function today;
@@ -140,6 +141,7 @@ public class EnvService
         Map stack = new HashMap();
         stack.put("log", log);
         stack.put("err", err);
+        stack.put("alert", alert);
         stack.put("run", new RunFunction());
         stack.put("copy", new Copy());
         stack.put("stackOf", new StackOf());

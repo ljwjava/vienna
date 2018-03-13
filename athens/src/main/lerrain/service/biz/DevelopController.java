@@ -185,7 +185,7 @@ public class DevelopController
 
             Long envId = req.getLong("envId");
             Environment p = envSrv.getEnv(envId);
-            Function f = new EnvDao.InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
+            Function f = new EnvDao.InnerFunction(null, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
             p.putVar(name, f);
 
         }
@@ -220,7 +220,7 @@ public class DevelopController
             String funcName = req.getString("name");
             String params = req.getString("params");
 
-            Function f = new EnvDao.InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
+            Function f = new EnvDao.InnerFunction(null, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
 
             Log.debug("replace env's function... " + funcName);
             p.putVar(funcName, f);

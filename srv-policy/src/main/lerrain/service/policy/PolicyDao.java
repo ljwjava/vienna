@@ -20,16 +20,19 @@ public class PolicyDao
     @Autowired
     ServiceTools tools;
 
-    public boolean isExists(Policy p)
+    public Long isExists(Policy p)
     {
-        int num;
-
-        if (p.getEndorseNo() == null)
-            num = jdbc.queryForObject("select exists(select id from t_policy where policy_no = ? and vendor_id = ? and endorse_no is null and valid is null) from dual", Integer.class, p.getPolicyNo(), p.getVendorId());
-        else
-            num = jdbc.queryForObject("select exists(select id from t_policy where policy_no = ? and vendor_id = ? and endorse_no = ? and valid is null) from dual", Integer.class, p.getPolicyNo(), p.getVendorId(), p.getEndorseNo());
-
-        return num > 0;
+        try
+        {
+            if (p.getEndorseNo() == null)
+                return jdbc.queryForObject("select id from t_policy where policy_no = ? and vendor_id = ? and endorse_no is null and valid is null", Long.class, p.getPolicyNo(), p.getVendorId());
+            else
+                return jdbc.queryForObject("select id from t_policy where policy_no = ? and vendor_id = ? and endorse_no = ? and valid is null", Long.class, p.getPolicyNo(), p.getVendorId(), p.getEndorseNo());
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
     public Policy loadPolicy(final Long policyId)
@@ -51,7 +54,7 @@ public class PolicyDao
                         {
                             PolicyClause p = new PolicyClause();
                             p.setId(rs.getLong("id"));
-                            p.setClauseId(rs.getString("clause_id"));
+                            p.setClauseId(rs.getLong("clause_id"));
                             p.setClauseCode(rs.getString("clause_code"));
                             p.setClauseName(rs.getString("clause_name"));
                             p.setEffectiveTime(rs.getDate("effective_time"));
@@ -143,15 +146,17 @@ public class PolicyDao
     {
         p.setId(tools.nextId("policy"));
 
-        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
+        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
                 "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, create_time, creator, update_time, updater) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
 
         jdbc.update(sql,
                 p.getId(),
                 p.getPlatformId(),
                 p.getApplyNo(),
                 p.getPolicyNo(),
+                p.getEndorseNo(),
+                p.getEndorseTime(),
                 p.getType(),
                 Common.trimStringOf(p.getTarget()),
                 Common.trimStringOf(p.getDetail()),
@@ -193,15 +198,20 @@ public class PolicyDao
 
     public void updatePolicy(Policy p)
     {
-        String sql = "replace into t_policy (id, platform_id, apply_no, policy_no, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
+        if (p.getId() == null)
+            throw new RuntimeException("更新保单，缺少policyId");
+
+        String sql = "replace into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
                 "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, update_time, updater) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)";
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)";
 
         jdbc.update(sql,
                 p.getId(),
                 p.getPlatformId(),
                 p.getApplyNo(),
                 p.getPolicyNo(),
+                p.getEndorseNo(),
+                p.getEndorseTime(),
                 p.getType(),
                 Common.trimStringOf(p.getTarget()),
                 Common.trimStringOf(p.getDetail()),
@@ -229,10 +239,5 @@ public class PolicyDao
                 p.getVehiclePlateNo(),
                 p.getOwner()
         );
-    }
-
-    public Long endorsePolicy(Policy policy)
-    {
-        return null;
     }
 }

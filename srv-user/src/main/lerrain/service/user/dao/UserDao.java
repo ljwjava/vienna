@@ -52,6 +52,7 @@ public class UserDao
 		user.setName((String) m.get("user_name"));
 		user.setLoginTime((Date) m.get("login_time"));
 		user.setStatus(Common.intOf(m.get("status"), 0));
+		user.setExtra(JSON.parseObject((String)m.get("extra")));
 
 		sql = "select a.role_id from t_user_role a, t_role b where a.role_id = b.role_id and a.user_id = ?";
 		user.setRole(jdbc.query(sql, new Object[] {userId}, new RowMapper<Role>()

@@ -169,7 +169,7 @@ public class PolicyUploadDao
 
     public Long[] findAgent(String agentName, Long companyId, String certNo, String mobile)
     {
-        StringBuffer sb = new StringBuffer("select user_id, org_id, company_id from t_member where company_id = ?");
+        StringBuffer sb = new StringBuffer("select id, org_id, company_id from t_member where company_id = ?");
         if (agentName != null)
             sb.append(" and name = '" + agentName + "'");
         if (certNo != null)
@@ -182,7 +182,7 @@ public class PolicyUploadDao
             @Override
             public Long[] mapRow(ResultSet rs, int rowNum) throws SQLException
             {
-                return new Long[] {rs.getLong("user_id"), rs.getLong("org_id"), rs.getLong("company_id")};
+                return new Long[] {rs.getLong("id"), rs.getLong("org_id"), rs.getLong("company_id")};
             }
         }, companyId);
     }
@@ -333,5 +333,11 @@ public class PolicyUploadDao
         }
 
         return true;
+    }
+
+    public List<Map<String, Object>> findProduct(String name, Long companyId)
+    {
+        String sql = "select * from t_product where company_id = ? and name = ? order by length(name) limit 0, 2";
+        return jdbc.queryForList(sql, companyId, name);
     }
 }

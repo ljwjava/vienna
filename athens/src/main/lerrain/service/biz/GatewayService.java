@@ -1,7 +1,11 @@
 package lerrain.service.biz;
 
+import com.alibaba.fastjson.JSON;
 import lerrain.service.common.Log;
 import lerrain.service.env.EnvService;
+import lerrain.tool.Common;
+import lerrain.tool.formula.Factors;
+import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +53,25 @@ public class GatewayService
                 return gateway;
 
         return null;
+    }
+
+    public void onError(Factors factors, String msg, String referNo, Exception e)
+    {
+        StringBuffer sb = new StringBuffer();
+
+        Factors f = factors;
+        while (f != null && f instanceof Stack)
+        {
+            Stack s = (Stack)f;
+            String env = Common.trimStringOf(f.get("ENV_CODE"));
+            String str = Common.trimStringOf(f.get("STACK_FUNCTION"));
+
+            sb.append(str + " on " + env);
+            sb.append("\n");
+
+            f = s.getParent();
+        }
+
+        gatewayDao.onError(sb.toString(), msg, referNo, Common.trimStringOf(e), JSON.toJSONString(factors));
     }
 }

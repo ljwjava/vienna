@@ -9,7 +9,7 @@ public class PolicyClause
 {
     Long id;
 
-    String clauseId;
+    Long clauseId;
     String clauseCode;
     String clauseName;
 
@@ -36,12 +36,12 @@ public class PolicyClause
         this.id = id;
     }
 
-    public String getClauseId()
+    public Long getClauseId()
     {
         return clauseId;
     }
 
-    public void setClauseId(String clauseId)
+    public void setClauseId(Long clauseId)
     {
         this.clauseId = clauseId;
     }

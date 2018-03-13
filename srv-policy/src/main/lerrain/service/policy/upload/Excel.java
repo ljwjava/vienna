@@ -22,7 +22,7 @@ public class Excel
             {"批改单号", "endorse_no"},
             {"批改时间", "endorse_time", "time"},
             {"*保险公司", "company_name"},
-            {"*险种", "ins_type"},
+            {"*险种", "product"},
             {"*被保险人", "applicant_name"},
             {"车牌号", "vehicle_plate_no"},
             {"*投保时间", "insure_time", "time"},

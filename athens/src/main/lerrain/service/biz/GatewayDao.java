@@ -112,4 +112,12 @@ public class GatewayDao
 
         return m;
     }
+
+    public void onError(String loc, String msg, String referNo, String detail, String stack)
+    {
+        if (loc.length() > 800)
+            loc = loc.substring(0, 800) + " ...";
+
+        jdbc.update("insert into t_error(location, message, refer_no, detail, stack, status, create_time, creator, update_time, updater) values(?,?,?,?,?,9,now(),?,now(),?)", loc, msg, referNo, detail, stack, "system", "system");
+    }
 }

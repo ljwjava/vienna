@@ -2,6 +2,7 @@ package lerrain.service.channel;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -104,6 +105,8 @@ public class ChannelController
 	 */
 	public JSONObject bill(@RequestBody JSONObject p)
 	{
+		Log.info(p);
+
 		Long platformId = p.getLong("platformId");
 		Long vendorId = p.getLong("vendorId");
 		Long agencyId = p.getLong("agencyId");
