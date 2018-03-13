@@ -160,13 +160,13 @@ public class PolicyUploadService
 
                 Policy policy = policyOf(pr);
 
-                if (policyDao.isExists(policy))
-                    throw new RuntimeException("exists - " + policy.getPolicyNo());
-//                    policyDao.updatePolicy(policy);
-                else if (policy.getEndorseNo() == null)
-                    policyDao.newPolicy(policy);
+                Long policyId = policyDao.isExists(policy);
+                policy.setId(policyId);
+
+                if (policyId != null)
+                    policyDao.updatePolicy(policy);
                 else
-                    policyDao.endorsePolicy(policy);
+                    policyDao.newPolicy(policy);
 
                 pr.result = 1;
 

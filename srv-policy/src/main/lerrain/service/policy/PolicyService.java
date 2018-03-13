@@ -19,7 +19,7 @@ public class PolicyService
 
     public Long newPolicy(Policy policy)
     {
-        if (policyDao.isExists(policy))
+        if (policyDao.isExists(policy) != null)
             throw new RuntimeException("policy already exists");
 
         return policyDao.newPolicy(policy);
@@ -28,13 +28,5 @@ public class PolicyService
     public void updatePolicy(Policy policy)
     {
         policyDao.updatePolicy(policy);
-    }
-
-    public Long endorsePolicy(Policy policy)
-    {
-        if (policyDao.isExists(policy))
-            throw new RuntimeException("policy already exists");
-
-        return policyDao.endorsePolicy(policy);
     }
 }
