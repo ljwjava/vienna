@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import List from '../common/component.list.jsx';
 
 var env = {
-	orgId: 125001,
+	orgId: 10000,
     status: {
 	    "1": "正常",
         "2": "离职",

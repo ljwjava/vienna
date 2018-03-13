@@ -54,6 +54,14 @@ public class GatewayController
 
         if (gateway.isLogin())
         {
+//            System.out.println(session.getId());
+//            Enumeration<String> str = session.getAttributeNames();
+//            while (str.hasMoreElements())
+//            {
+//                String s = str.nextElement();
+//                System.out.println(s + " = " + session.getAttribute(s));
+//            }
+
             Long userId = (Long)session.getAttribute("userId");
             if (userId == null)
                 throw new RuntimeException("not login - " + uri);

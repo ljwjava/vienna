@@ -45,49 +45,72 @@ public class PolicyReady extends PolicyBase
         return null;
     }
 
-    public void prepare()
+    public void prepare(PolicyUploadService pus)
     {
-        String policyNo = this.getString("policy_no");
-        if (Common.isEmpty(policyNo))
-            throw new RuntimeException("保单号为空");
-
-        String[] keys = new String[] {"operate", "biz_type", "ins_type", "company_name"};
+        String[] keys = val.keySet().toArray(new String[0]);
         for (String key : keys)
         {
-            String destKey = Excel.MAPPING.get(key);
-            if (destKey == null || "*".equals(destKey))
-                destKey = key;
+            Object value = this.get(key);
 
-            String s = Common.trimStringOf(this.getString(key));
-            JSONObject d = Excel.DICT.get(key);
-            boolean find = false;
-            for (String str : d.keySet())
+            int pos = key.indexOf("_");
+            while (pos >= 0)
             {
-                if (("/" + str + "/").indexOf("/" + s + "/") >= 0)
+                try
                 {
-                    find = true;
-                    put(destKey, d.getInteger(str));
+                    key = key.substring(0, pos) + key.substring(pos + 1, pos + 2).toUpperCase() + key.substring(pos + 2);
+                }
+                catch (Exception e)
+                {
                     break;
                 }
+
+                pos = key.indexOf("_");
             }
 
-            if (!find)
-                throw new RuntimeException(key + "无法匹配");
+            if (!val.containsKey(key))
+                val.put(key, value);
         }
 
-        int mode = Common.intOf(val.get("operate"), 0);
+        String policyNo = this.getString("policyNo");
+        if (Common.isEmpty(policyNo))
+            throw new RuntimeException("保单号为空");
+        int pos = policyNo.indexOf("-");
+        if (pos >= 0)
+            throw new RuntimeException("保单号有误");
+        this.put("policyNo", policyNo);
+
+        String companyName = this.getString("companyName");
+        Long companyId = pus.getCompanyId(companyName);
+        if (companyId == null)
+            throw new RuntimeException("公司未找到");
+        this.put("vendorId", companyId);
+
+        String operateStr = this.getString("operate");
+        if ("新单".equals(operateStr))
+            this.put("operate", 1);
+        else if ("退保".equals(operateStr))
+            this.put("operate", 3);
+        else if ("批改".equals(operateStr) || "保全".equals(operateStr))
+            this.put("operate", 2);
+        else
+            throw new RuntimeException("操作类型无法识别");
+
+        String typeStr = this.getString("bizType");
+        if ("车险".equals(typeStr))
+           this.put("type", 2);
+        else
+            throw new RuntimeException("保单类型无法识别");
+
+        int mode = Common.intOf(this.get("operate"), 0);
         if (mode == 2)
         {
-            if (Common.isEmpty(val.get("endorse_no")))
+            if (Common.isEmpty(this.get("endorse_no")))
                 throw new RuntimeException("类型为批改，批改单号为空");
 
-            int pos = policyNo.indexOf("-");
-            if (pos >= 0)
-                throw new RuntimeException("保单号有误");
         }
         else if (mode == 1)
         {
-            int pos = policyNo.indexOf("-");
+            pos = policyNo.indexOf("-");
             if (pos >= 0)
                 throw new RuntimeException("类型为新单，但保单号中有特殊标记");
         }
@@ -100,13 +123,23 @@ public class PolicyReady extends PolicyBase
             throw new RuntimeException("类型为无法识别");
         }
 
+        String agentName = this.getString("agentName");
+        String agentCertNo = this.getString("agentCertNo");
+        String agentMobile = this.getString("agentMobile");
+        Long[] agent = pus.findAgent(agentName, this.getLong("agencyId"), agentCertNo, agentMobile);
+        if (agent == null)
+            throw new RuntimeException("无法关联用户");
+        this.put("owner", agent[0]);
+        this.put("ownerOrg", agent[1]);
+        this.put("ownerCompany", agent[2]);
+
         double prm = Common.doubleOf(this.get("premium"), 0);
         if (prm > 0)
         {
-            if (val.get("fee") == null)
+            if (val.get("income") == null)
             {
-                double fr = Common.doubleOf(this.get("fee_rate"), 0);
-                this.put("fee", BigDecimal.valueOf(prm * fr).setScale(2, BigDecimal.ROUND_HALF_UP));
+                double fr = Common.doubleOf(this.get("income_rate"), 0);
+                this.put("income", BigDecimal.valueOf(prm * fr).setScale(2, BigDecimal.ROUND_HALF_UP));
             }
 
             if (val.get("cms") == null)
@@ -114,6 +147,18 @@ public class PolicyReady extends PolicyBase
                 double cr = Common.doubleOf(this.get("cms_rate"), 0);
                 this.put("cms", BigDecimal.valueOf(prm * cr).setScale(2, BigDecimal.ROUND_HALF_UP));
             }
+
+            JSONObject fee = new JSONObject();
+            fee.put("income", val.get("income"));
+            fee.put("incomeRate", val.get("incomeRate"));
+            fee.put("cms", val.get("cms"));
+            fee.put("cmsRate", val.get("cmsRate"));
+
+            val.put("fee", fee);
+        }
+        else
+        {
+            throw new RuntimeException("没有保费");
         }
     }
 

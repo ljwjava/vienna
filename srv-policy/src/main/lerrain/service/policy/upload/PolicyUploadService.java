@@ -2,6 +2,7 @@ package lerrain.service.policy.upload;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import lerrain.service.policy.Policy;
 import lerrain.service.policy.PolicyDao;
 import lerrain.tool.Common;
@@ -22,7 +23,9 @@ public class PolicyUploadService
     @Autowired
     PolicyDao policyDao;
 
-    public String upload(Long userId, List<Object[]> tab)
+    Map<String, Long> companyMap;
+
+    public String upload(Long userId, Long agencyId, Long orgId, List<Object[]> tab)
     {
         Object[] title = tab.get(0);
 
@@ -102,6 +105,9 @@ public class PolicyUploadService
                 if (pr.getPolicyNo() == null || pr.getPolicyNo().startsWith("TESTXD00") || (pr.getEndorseNo() != null && pr.getEndorseNo().startsWith("TESTBQ00")))
                     continue;
 
+                pr.put("userId", userId);
+                pr.put("agencyId", agencyId);
+
                 String res = pr.verify();
                 if (res != null)
                     err.add("上传错误：" + res + " - " + JSON.toJSON(row));
@@ -118,7 +124,7 @@ public class PolicyUploadService
         if (!err.isEmpty())
             throw new RuntimeException(JSON.toJSONString(err));
 
-        return policyUploadDao.upload(list);
+        return policyUploadDao.upload(list, userId);
     }
 
     private String t(Object v)
@@ -142,7 +148,7 @@ public class PolicyUploadService
 
             try
             {
-                pr.prepare();
+                pr.prepare(this);
 
                 Policy policy = policyOf(pr);
 
@@ -173,6 +179,14 @@ public class PolicyUploadService
         return err;
     }
 
+    public Long getCompanyId(String companyName)
+    {
+        if (companyMap == null)
+            companyMap = policyUploadDao.loadAllCompany();
+
+        return companyMap.get(companyName);
+    }
+
     private Policy policyOf(PolicyReady pr)
     {
         Policy policy = new Policy();
@@ -180,6 +194,8 @@ public class PolicyUploadService
         policy.setPlatformId(6L);
         policy.setApplyNo(pr.getString("applyNo"));
         policy.setPolicyNo(pr.getString("policyNo"));
+        policy.setEndorseNo(pr.getString("endorseNo"));
+        policy.setEndorseTime(pr.getDate("endorseTime"));
 
         policy.setPremium(pr.getDouble("premium"));
 
@@ -188,7 +204,7 @@ public class PolicyUploadService
         policy.setFinishTime(pr.getDate("finishTime"));
 
         policy.setVendorId(pr.getLong("vendorId"));
-        policy.setAgencyId(pr.getLong("agencyId"));
+        policy.setAgencyId(pr.getLong("ownerCompany"));
         policy.setPeriod(1);
 
         policy.setOwner(pr.getLong("owner"));
@@ -229,10 +245,25 @@ public class PolicyUploadService
 
         policy.setTarget(target);
 
+        policy.setFee((JSONObject)pr.get("fee"));
+
         return policy;
     }
 
-    public Runnable newTask(final Long userId, final Object[] coll)
+    public Long[] findAgent(String agentName, Long companyId, String certNo, String mobile)
+    {
+        try
+        {
+            return policyUploadDao.findAgent(agentName, companyId, certNo, mobile);
+        }
+        catch (Exception e)
+        {
+            Log.error("找不到代理人：%s, %s, %s", agentName, certNo, mobile);
+            return null;
+        }
+    }
+
+    public Runnable newTask(final Long userId, final Long agencyId, final Long orgId, final Object[] coll)
     {
         return new Runnable()
         {
@@ -247,7 +278,7 @@ public class PolicyUploadService
 
                     if (!tab.isEmpty())
                     {
-                        String batchUUID = upload(userId, tab);
+                        String batchUUID = upload(userId, agencyId, orgId, tab);
                         save(batchUUID);
                     }
                 }
