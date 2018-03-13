@@ -101,6 +101,12 @@ public class PolicyReady extends PolicyBase
         else
             throw new RuntimeException("保单类型无法识别");
 
+        String product = this.getString("product");
+        Map clause = pus.findProduct(product, companyId);
+        if (clause == null || clause.isEmpty())
+            throw new RuntimeException("产品未找到");
+        this.put("clause", clause);
+
         int mode = Common.intOf(this.get("operate"), 0);
         if (mode == 2)
         {

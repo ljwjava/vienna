@@ -1,9 +1,12 @@
 package lerrain.service.policy.upload;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.service.common.ServiceMgr;
 import lerrain.service.policy.Policy;
+import lerrain.service.policy.PolicyClause;
 import lerrain.service.policy.PolicyDao;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ public class PolicyUploadService
 
     @Autowired
     PolicyDao policyDao;
+
+    @Autowired
+    ServiceMgr serviceMgr;
 
     Map<String, Long> companyMap;
 
@@ -136,10 +142,12 @@ public class PolicyUploadService
         return r;
     }
 
-    public int save(String batchUUID)
+    public List<Policy> save(String batchUUID)
     {
         int err = 0;
         int idx = 0;
+
+        List<Policy> res = new ArrayList<>();
 
         List<PolicyReady> list = policyUploadDao.loadBatch(batchUUID);
         for (PolicyReady pr : list)
@@ -153,7 +161,8 @@ public class PolicyUploadService
                 Policy policy = policyOf(pr);
 
                 if (policyDao.isExists(policy))
-                    policyDao.updatePolicy(policy);
+                    throw new RuntimeException("exists - " + policy.getPolicyNo());
+//                    policyDao.updatePolicy(policy);
                 else if (policy.getEndorseNo() == null)
                     policyDao.newPolicy(policy);
                 else
@@ -161,6 +170,7 @@ public class PolicyUploadService
 
                 pr.result = 1;
 
+                res.add(policy);
                 System.out.println(idx + " " + pr.result);
             }
             catch (Exception e)
@@ -176,7 +186,7 @@ public class PolicyUploadService
             policyUploadDao.setResult(pr);
         }
 
-        return err;
+        return res;
     }
 
     public Long getCompanyId(String companyName)
@@ -247,6 +257,23 @@ public class PolicyUploadService
 
         policy.setFee((JSONObject)pr.get("fee"));
 
+        JSONObject clause = (JSONObject)JSON.toJSON(pr.get("clause"));
+        if (clause != null)
+        {
+            PolicyClause pc = new PolicyClause();
+            pc.setClauseId(clause.getLong("id"));
+            pc.setClauseCode(clause.getString("code"));
+            pc.setClauseName(clause.getString("name"));
+            pc.setPremium(policy.getPremium());
+            pc.setEffectiveTime(policy.getEffectiveTime());
+            pc.setFinishTime(policy.getFinishTime());
+
+            List<PolicyClause> list = new ArrayList<>();
+            list.add(pc);
+
+            policy.setClauses(list);
+        }
+
         return policy;
     }
 
@@ -261,6 +288,31 @@ public class PolicyUploadService
             Log.error("找不到代理人：%s, %s, %s", agentName, certNo, mobile);
             return null;
         }
+    }
+
+    public Map findProduct(String name, Long companyId)
+    {
+        Map r = new HashMap();
+        int len = 999;
+
+        for (Map<String, Object> m : policyUploadDao.findProduct(name, companyId))
+        {
+            String nm = Common.trimStringOf(m.get("name"));
+            if (len > nm.length())
+            {
+                r.put("id", Common.toLong(m.get("id")));
+                r.put("code",m.get("code"));
+                r.put("name", m.get("name"));
+
+                len = nm.length();
+            }
+            else if (len == nm.length())
+            {
+                throw new RuntimeException("产品重复");
+            }
+        }
+
+        return r;
     }
 
     public Runnable newTask(final Long userId, final Long agencyId, final Long orgId, final Object[] coll)
@@ -279,7 +331,39 @@ public class PolicyUploadService
                     if (!tab.isEmpty())
                     {
                         String batchUUID = upload(userId, agencyId, orgId, tab);
-                        save(batchUUID);
+                        List<Policy> list = save(batchUUID);
+
+                        for (Policy p : list)
+                        {
+                            JSONObject fee = p.getFee();
+                            if (fee == null || fee.isEmpty())
+                                continue;
+
+                            double incomeRate = fee.getDouble("incomeRate");
+
+                            JSONObject param = new JSONObject();
+                            param.put("platformId", p.getPlatformId());
+                            param.put("vendorId", p.getVendorId());
+                            param.put("agencyId", p.getAgencyId());
+                            param.put("bizNo", p.getPolicyNo());
+                            param.put("bizId", p.getId());
+                            param.put("bizType", 2);
+
+                            if (p.getClauses() != null)
+                            {
+                                JSONArray detail = new JSONArray();
+                                for (PolicyClause pc : p.getClauses())
+                                {
+                                    JSONObject bill = new JSONObject();
+                                    bill.put("productId", pc.getClauseId());
+                                    bill.put("amount", pc.getPremium() * incomeRate);
+                                    detail.add(bill);
+                                }
+                                param.put("detail", detail);
+                            }
+
+                            serviceMgr.req("channel", "bill.json", param);
+                        }
                     }
                 }
             }

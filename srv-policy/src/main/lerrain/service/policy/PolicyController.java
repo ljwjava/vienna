@@ -29,6 +29,8 @@ public class PolicyController
     @ResponseBody
     public JSONObject uploadExcel(@RequestBody JSONObject p)
     {
+        Log.info(p);
+
         String idempotent = p.getString("idempotent");
         Long userId = p.getLong("userId");
         Long orgId = p.getLong("orgId");
@@ -140,7 +142,7 @@ public class PolicyController
                 JSONObject c = clauses.getJSONObject(i);
 
                 PolicyClause pc = new PolicyClause();
-                pc.setClauseId(c.getString("clauseId"));
+                pc.setClauseId(c.getLong("clauseId"));
                 pc.setClauseCode(c.getString("clauseCode"));
                 pc.setClauseName(c.getString("clauseName"));
                 pc.setEffectiveTime(c.getDate("effectiveTime"));

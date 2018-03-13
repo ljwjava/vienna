@@ -51,7 +51,7 @@ public class PolicyDao
                         {
                             PolicyClause p = new PolicyClause();
                             p.setId(rs.getLong("id"));
-                            p.setClauseId(rs.getString("clause_id"));
+                            p.setClauseId(rs.getLong("clause_id"));
                             p.setClauseCode(rs.getString("clause_code"));
                             p.setClauseName(rs.getString("clause_name"));
                             p.setEffectiveTime(rs.getDate("effective_time"));

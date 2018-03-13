@@ -126,7 +126,7 @@ var Main = React.createClass({
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">关闭</button>
-                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.Clause}>保存修改</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.saveClause}>保存修改</button>
                             </div>
                         </div>
                     </div>

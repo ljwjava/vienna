@@ -95,7 +95,15 @@ public class GatewayController
             stack.set("self", param);
             stack.set("SESSION", new SessionAdapter(session));
 
-            val = script.run(stack);
+            try
+            {
+                val = script.run(stack);
+            }
+            catch (Exception e)
+            {
+                gatewaySrv.onError(stack, e.getMessage(), null, e);
+                throw e;
+            }
         }
 
         if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)

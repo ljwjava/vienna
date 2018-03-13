@@ -139,6 +139,7 @@ public class EnvDao
                 String valstr = rs.getString("value");
                 int type = rs.getInt("type");
 
+                Log.debug("loading env's const... " + consName);
                 try
                 {
                     Object val = null;
@@ -159,7 +160,6 @@ public class EnvDao
                     else if (type == 8)
                         val = jdbc.queryForList(valstr);
 
-                    Log.debug("loading env's const... " + consName);
                     p.putVar(consName, val);
                 }
                 catch (Exception e)
@@ -185,7 +185,7 @@ public class EnvDao
 
                 try
                 {
-                    Function f = new InnerFunction(Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), lockEnv ? p.getStack() : null);
+                    Function f = new InnerFunction(p.getCode() + "/" + consName, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), lockEnv ? p.getStack() : null);
 
                     String[] allName;
                     if (Common.isEmpty(otherNames))
@@ -216,12 +216,14 @@ public class EnvDao
 
     public static class InnerFunction implements Function
     {
+        String name;
         Formula f;
         String[] params;
         Factors fixed;
 
-        public InnerFunction(Formula f, String[] params, Factors fixed)
+        public InnerFunction(String name, Formula f, String[] params, Factors fixed)
         {
+            this.name = name;
             this.f = f;
             this.params = params;
             this.fixed = fixed;
@@ -231,6 +233,8 @@ public class EnvDao
         public Object run(Object[] objects, Factors factors)
         {
             Stack s = new Stack(fixed == null ? factors : fixed);
+            s.declare("STACK_FUNCTION", name);
+
             if (params != null && objects != null)
             {
                 for (int i = 0; i < params.length && i < objects.length; i++)
