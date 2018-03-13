@@ -3,7 +3,7 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	return "http://www.lerrain.com:7666/" + url;
+	// return "http://www.lerrain.com:7666/" + url;
 	// return "http://dingl.51vip.biz:60004/" + url;
 	// return "http://dingl.tpddns.cn:60004/" + url;
 	var host = location.host;
