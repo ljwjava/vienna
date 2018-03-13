@@ -101,7 +101,7 @@ public class GatewayController
             }
             catch (Exception e)
             {
-                gatewaySrv.onError(stack, e.getMessage(), null, e);
+                gatewaySrv.onError(null, e.getMessage(), uri, e);
                 throw e;
             }
         }
