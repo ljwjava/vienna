@@ -48,9 +48,20 @@ env.policyOf = function(v, m) {
         return null;
 
     var app = v.target && v.target.applicant ? v.target.applicant : {};
-    var ins = v.target && v.target.insurant ? v.target.insurant : {};
+    var ins = v.type == 1 && v.target && v.target.insurant ? v.target.insurant : null;
+    var vec = v.type == 2 && v.target && v.target.vehicle ? v.target.vehicle : null;
 
-    var clauses = !v.clauses ? null:
+    var cl = !v.clauses ? [] : v.clauses.map(v =>
+		<tr key={v.id}>
+			<td>{v.clauseName}</td>
+			<td>{v.insure}</td>
+			<td>{v.purchase}</td>
+			<td>{v.pay}</td>
+			<td>{v.premium}</td>
+		</tr>
+	);
+
+    var clauses = cl.length == 0 ? null:
 		<table className="table table-bordered">
 			<thead className="thead-light">
 			<tr>
@@ -61,18 +72,7 @@ env.policyOf = function(v, m) {
 				<th>首年保费</th>
 			</tr>
 			</thead>
-			<tbody>{
-                v.clauses.map(v => {
-                    return <tr key={v.id}>
-						<td>{v.clauseName}</td>
-						<td>{v.insure}</td>
-						<td>{v.purchase}</td>
-						<td>{v.pay}</td>
-						<td>{v.premium}</td>
-					</tr>;
-                })
-            }
-			</tbody>
+			<tbody>{cl}</tbody>
 		</table>
 
     return [
@@ -94,6 +94,20 @@ env.policyOf = function(v, m) {
 						<div className="col-md-4 mb-3">
 							<label>保单号</label>
 							<input type="text" className="form-control" defaultValue={v.policyNo}/>
+						</div>
+					</div>
+					<div className="form-row">
+						<div className="col-md-4 mb-3">
+							<label>出单人</label>
+							<input type="text" className="form-control" defaultValue={v.owner}/>
+						</div>
+						<div className="col-md-4 mb-3">
+							<label>出单机构</label>
+							<input type="text" className="form-control" defaultValue={v.ownerCompany}/>
+						</div>
+						<div className="col-md-4 mb-3">
+							<label>代理机构</label>
+							<input type="text" className="form-control" defaultValue={v.agencyId}/>
 						</div>
 					</div>
 					<div className="form-row">
@@ -134,42 +148,56 @@ env.policyOf = function(v, m) {
 							<input type="text" className="form-control" defaultValue={app.email}/>
 						</div>
 					</div>
-					<div className="form-row">
-						<div className="col-md-4 mb-3">
-							<label>被保险人</label>
-							<input type="text" className="form-control" defaultValue={ins.name}/>
-						</div>
-						<div className="col-md-4 mb-3">
-							<label>被保险人性别</label>
-							<select className="form-control" defaultValue={ins.gender}>
-                                {Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
-							</select>
-						</div>
-						<div className="col-md-4 mb-3">
-							<label>被保险人生日</label>
-							<input type="text" className="form-control" defaultValue={ins.birthday}/>
-						</div>
-					</div>
-					<div className="form-row">
-						<div className="col-md-4 mb-3">
-							<label>被保险人证件</label>
-							<div className="input-group">
-								<input type="text" className="form-control" defaultValue={ins.certNo}/>
-								<div className="input-group-append">
-									<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[ins.certType], "？")}</button>
-									<ul className="dropdown-menu">
-                                        { Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
-									</ul>
+					{ !ins ? null : [
+						<div className="form-row">
+							<div className="col-md-4 mb-3">
+								<label>被保险人</label>
+								<input type="text" className="form-control" defaultValue={ins.name}/>
+							</div>
+							<div className="col-md-4 mb-3">
+								<label>被保险人性别</label>
+								<select className="form-control" defaultValue={ins.gender}>
+									{Object.keys(env.dict.gender).map(v => <option value={v}>{env.dict.gender[v]}</option>)}
+								</select>
+							</div>
+							<div className="col-md-4 mb-3">
+								<label>被保险人生日</label>
+								<input type="text" className="form-control" defaultValue={ins.birthday}/>
+							</div>
+						</div>,
+						<div className="form-row">
+							<div className="col-md-4 mb-3">
+								<label>被保险人证件</label>
+								<div className="input-group">
+									<input type="text" className="form-control" defaultValue={ins.certNo}/>
+									<div className="input-group-append">
+										<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{env.strOf(env.dict.certType[ins.certType], "？")}</button>
+										<ul className="dropdown-menu">
+											{ Object.keys(env.dict.certType).map(v => <li><a href="#">{env.dict.certType[v]}</a></li>) }
+										</ul>
+									</div>
 								</div>
 							</div>
+							<div className="col-md-4 mb-3">
+								<label>与投保人关系</label>
+								<select className="form-control" defaultValue={ins.relation}>
+									{ Object.keys(env.dict.relation).map(v => <option value={v}>{env.dict.relation[v]}</option>) }
+								</select>
+							</div>
 						</div>
-						<div className="col-md-4 mb-3">
-							<label>与投保人关系</label>
-							<select className="form-control" defaultValue={ins.relation}>
-                                { Object.keys(env.dict.relation).map(v => <option value={v}>{env.dict.relation[v]}</option>) }
-							</select>
+					]}
+                    { !vec ? null : [
+						<div className="form-row">
+							<div className="col-md-4 mb-3">
+								<label>车牌号</label>
+								<input type="text" className="form-control" defaultValue={vec.plateNo}/>
+							</div>
+							<div className="col-md-4 mb-3">
+								<label>车架号</label>
+								<input type="text" className="form-control" defaultValue={vec.frameNo}/>
+							</div>
 						</div>
-					</div>
+					]}
 				</div>
                 { clauses }
 			</div>
@@ -219,36 +247,38 @@ var FeeList = React.createClass({
         );
     },
     render() {
-        return (<div>
-			<table className="table table-bordered mt-3">
-				<thead className="thead-light">
-				<tr>
-					<th>费用类型</th>
-					<th>金额（元）</th>
-					<th>预计结算时间</th>
-					<th>发放状态</th>
-					<th>实际结算时间</th>
-					<th>费用流向</th>
-				</tr>
-				</thead>
-				<tbody>{ this.state.list2 == null ? null : this.state.list2.map(v => this.channelOf(v)) }</tbody>
-			</table>
-			<table className="table table-bordered mt-3">
-				<thead className="thead-light">
-				<tr>
-					<th>费用类型</th>
-					<th>金额（元）</th>
-					<th>预计发放时间</th>
-					<th>是否自动发放</th>
-					<th>发放状态</th>
-					<th>实际发放时间</th>
-					<th>冻结天数</th>
-					<th>费用流向</th>
-				</tr>
-				</thead>
-				<tbody>{ this.state.list1 == null ? null : this.state.list1.map(v => this.agentOf(v)) }</tbody>
-			</table>
-		</div>);
+        return (
+        	<div>
+				<table className="table table-bordered mt-3">
+					<thead className="thead-light">
+					<tr>
+						<th>费用类型</th>
+						<th>金额（元）</th>
+						<th>预计结算时间</th>
+						<th>发放状态</th>
+						<th>实际结算时间</th>
+						<th>费用流向</th>
+					</tr>
+					</thead>
+					<tbody>{ this.state.list2 == null ? null : this.state.list2.map(v => this.channelOf(v)) }</tbody>
+				</table>
+				<table className="table table-bordered mt-3">
+					<thead className="thead-light">
+					<tr>
+						<th>费用类型</th>
+						<th>金额（元）</th>
+						<th>预计发放时间</th>
+						<th>是否自动发放</th>
+						<th>发放状态</th>
+						<th>实际发放时间</th>
+						<th>冻结天数</th>
+						<th>费用流向</th>
+					</tr>
+					</thead>
+					<tbody>{ this.state.list1 == null ? null : this.state.list1.map(v => this.agentOf(v)) }</tbody>
+				</table>
+			</div>
+		);
     }
 });
 

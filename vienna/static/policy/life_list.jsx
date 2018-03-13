@@ -103,18 +103,11 @@ $(document).ready( function() {
         if(fileList.length == 0)
             return false;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", common.url("btbx/policy/upload.file"), true);
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.onreadystatechange = function() {};
-
         var fd = new FormData();
         fd.append("index", env.index);
         fd.append("path", env.dir);
         for (var i=0;i<fileList.length;i++)
             fd.append("file", fileList[i]);
-        xhr.send(fd);
-
-        console.log(xhr.response);
+        $.ajax({url:common.url("btbx/policy/upload.file"), type:"POST", data:fd, xhrFields:{ withCredentials: true }, processData:false, contentType:false, success:function(r) {}, fail: function(r) {}, dataType:"json"});
     }, false);
 });

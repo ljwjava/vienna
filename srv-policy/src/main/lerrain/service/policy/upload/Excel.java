@@ -29,8 +29,8 @@ public class Excel
             {"保险起期", "effective_time", "time"},
             {"保险止期", "finish_time", "time"},
             {"*保费", "premium", "number"},
-            {"*代理费率", "fee_rate", "number"},
-            {"代理费", "fee", "number"},
+            {"*代理费率", "income_rate", "number"},
+            {"代理费", "income", "number"},
             {"*业务佣金率", "cms_rate", "number"},
             {"佣金", "cms", "number"},
             {"业务来源", "source"},
@@ -51,8 +51,8 @@ public class Excel
     {
         MAPPING.put("company_name", "vendorId");
         MAPPING.put("operate", "*");
-        MAPPING.put("endorse_no", "*");
-        MAPPING.put("endorse_time", "*");
+        MAPPING.put("endorse_no", "endorseNo");
+        MAPPING.put("endorse_time", "endorseTime");
         MAPPING.put("ins_type", "type");
         MAPPING.put("biz_type", "*");
         MAPPING.put("fee_rate", "*");
@@ -66,35 +66,7 @@ public class Excel
         MAPPING.put("amount", "*");
         MAPPING.put("register_time", "*");
         MAPPING.put("bonus", "*");
-        MAPPING.put("agent_name", "*");
-
-        ENDORSE.put("company_name", "company_id");
-        ENDORSE.put("operate", "*");
-        ENDORSE.put("ins_type", "type");
-        ENDORSE.put("biz_type", "*");
-        ENDORSE.put("fee_rate", "*");
-        ENDORSE.put("fee", "*");
-        ENDORSE.put("cms_rate", "*");
-        ENDORSE.put("cms", "*");
-        ENDORSE.put("source", "*");
-        ENDORSE.put("project_name", "*");
-        ENDORSE.put("happen", "*");
-        ENDORSE.put("claim", "*");
-        ENDORSE.put("amount", "*");
-        ENDORSE.put("register_time", "*");
-        ENDORSE.put("bonus", "*");
-        ENDORSE.put("agent_name", "*");
-
-//        ENDORSE.put("company_name", "*");
-//        ENDORSE.put("operate", "*");
-//        ENDORSE.put("bonus", "*");
-//        ENDORSE.put("source", "*");
-//        ENDORSE.put("project_name", "*");
-//        ENDORSE.put("apply_time", "*");
-//        ENDORSE.put("vehicle_plate_no", "*");
-//        ENDORSE.put("policy_no", "*");
-//        ENDORSE.put("ins_type", "*");
-//        ENDORSE.put("biz_type", "*");
+        MAPPING.put("agent_name", "owner");
 
         DICT.put("biz_type", JSON.parseObject("{'车险':'1'}"));
         DICT.put("ins_type", JSON.parseObject("{'交强险':'1001', '商业险':'1002'}"));

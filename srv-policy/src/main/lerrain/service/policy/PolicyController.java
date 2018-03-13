@@ -31,8 +31,10 @@ public class PolicyController
     {
         String idempotent = p.getString("idempotent");
         Long userId = p.getLong("userId");
+        Long orgId = p.getLong("orgId");
+        Long agencyId = p.getLong("agencyId");
 
-        queue.add(idempotent, policyUploadSrv.newTask(userId, p.getJSONObject("files").values().toArray()));
+        queue.add(idempotent, policyUploadSrv.newTask(userId, agencyId, orgId, p.getJSONObject("files").values().toArray()));
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -95,6 +97,8 @@ public class PolicyController
         policy.setPlatformId(p.getLong("platformId"));
         policy.setApplyNo(p.getString("applyNo"));
         policy.setPolicyNo(p.getString("policyNo"));
+        policy.setEndorseNo(p.getString("endorseNo"));
+        policy.setEndorseTime(p.getDate("endorseTime"));
 
         policy.setTarget(p.getJSONObject("target"));
         policy.setDetail(p.getJSONObject("detail"));

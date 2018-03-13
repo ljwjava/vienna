@@ -10,7 +10,12 @@ var env = {
     insType: {},
     search: null,
     from: 0,
-    number: 20
+    number: 12
+}
+
+function companyOf(vendorId) {
+    var r = env.company[vendorId];
+    return r ? r.name : null;
 }
 
 class PolicyList extends List {
@@ -32,18 +37,16 @@ class PolicyList extends List {
     buildTableTitle() {
         return (
 			<tr>
-                <th><div>保险公司</div></th>
-                <th><div>业务</div></th>
-				<th><div>产品类别</div></th>
-                <th><div>产品名称</div></th>
-                <th><div>保单号</div></th>
-				<th><div>投保人</div></th>
-                <th><div>车牌号</div></th>
-				<th><div>投保时间</div></th>
-				<th><div>保费</div></th>
-                <th><div>费用</div></th>
-                <th><div>佣金</div></th>
-                <th><div>业务员</div></th>
+                <th>保险公司</th>
+                <th>产品</th>
+                <th>保单号</th>
+				<th>投保人</th>
+                <th>车牌号</th>
+				<th>投保时间</th>
+				<th>保费</th>
+                <th>费用</th>
+                <th>佣金</th>
+                <th>业务员</th>
 				<th>操作</th>
 			</tr>
         );
@@ -53,23 +56,19 @@ class PolicyList extends List {
         if (!v.fee) v.fee = {};
         return (
 			<tr key={v.id}>
-                <td>{env.company[v.companyId]}</td>
-                <td>{env.bizType[Math.round(v.type/1000)]}</td>
-				<td>{env.insType[v.type]}</td>
+                <td>{companyOf(v.vendorId)}</td>
                 <td>{v.productName}</td>
                 <td>{v.policyNo}</td>
 				<td>{v.applicantName}</td>
                 <td>{v.vehiclePlateNo}</td>
 				<td>{date.format("yyyy-MM-dd")}</td>
 				<td style={{textAlign:"right"}}>{v.premium}</td>
-                <td style={{textAlign:"right"}}>{v.fee.fee}</td>
+                <td style={{textAlign:"right"}}>{v.fee.income}</td>
 				<td style={{textAlign:"right"}}>{v.fee.cms}</td>
                 <td>{v.owner}</td>
 				<td>
-                    <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-default" onClick={this.open.bind(this, v.id)}>编辑</button>
-                        <button type="button" className="btn btn-danger">删除</button>
-                    </div>
+                    <a className="ml-2" onClick={this.open.bind(this, v.id)}>编辑</a>
+                    <a className="ml-2">删除</a>
                 </td>
 			</tr>
         );
@@ -94,18 +93,10 @@ $(document).ready( function() {
     ReactDOM.render(<Main/>, document.getElementById("content"));
 
     $(document).on({
-        dragleave:function(e){    //拖离
-            e.preventDefault();
-        },
-        drop:function(e){  //拖后放
-            e.preventDefault();
-        },
-        dragenter:function(e){    //拖进
-            e.preventDefault();
-        },
-        dragover:function(e){    //拖来拖去
-            e.preventDefault();
-        }
+        dragleave: function(e) { e.preventDefault() },
+        drop: function(e) { e.preventDefault() },
+        dragenter: function(e) { e.preventDefault() },
+        dragover: function(e) { e.preventDefault() }
     });
 
     var box = document.getElementById('upload'); //拖拽区域
@@ -115,18 +106,11 @@ $(document).ready( function() {
         if(fileList.length == 0)
             return false;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", common.url("btbx/policy/upload.file"), true);
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.onreadystatechange = function() {};
-
         var fd = new FormData();
         fd.append("index", env.index);
         fd.append("path", env.dir);
         for (var i=0;i<fileList.length;i++)
             fd.append("file", fileList[i]);
-        xhr.send(fd);
-
-        console.log(xhr.response);
+        $.ajax({url:common.url("btbx/policy/upload.file"), type:"POST", data:fd, xhrFields:{ withCredentials: true }, processData:false, contentType:false, success:function(r) {}, fail: function(r) {}, dataType:"json"});
     }, false);
 });
