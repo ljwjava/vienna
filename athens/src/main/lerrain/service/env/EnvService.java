@@ -155,16 +155,16 @@ public class EnvService
         stack.put("fold", fold);
         stack.put("unfold", unfold);
         stack.put("today", today);
-        stack.put("time2long", time2long);
-        stack.put("timediff", timediff);
+        stack.put("time2long", time2long);  // 已移至TimeFX.long
+        stack.put("timediff", timediff);    // 已移至TimeFX.diff
         stack.put("reversalStr", reversalStr);
         stack.put("md5Of", new Md5());
-        stack.put("urlParam", new UrlParam());
-        stack.put("getUrlParam", new GetUrlParam());
+        stack.put("urlParam", new UrlParam());  // 已移至UrlFX.linkOf
         stack.put("Encrypt", new Encrypt());
         stack.put("TimeFX", new TimeFX());
         stack.put("FileFX", new FileFX());
         stack.put("ToolFX", new ToolFX());
+        stack.put("UrlFX", new UrlFX());
         stack.put("TaskFX", taskFX);
         stack.put("IYunBao", new IYunBao());
 

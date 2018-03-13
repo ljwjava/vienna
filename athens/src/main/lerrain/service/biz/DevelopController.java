@@ -7,6 +7,7 @@ import lerrain.service.env.EnvDao;
 import lerrain.service.env.EnvService;
 import lerrain.service.env.Environment;
 import lerrain.tool.Common;
+import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.Stack;
@@ -109,6 +110,21 @@ public class DevelopController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", developDao.loadFunction(req.getLong("functionId")));
+
+        return res;
+    }
+
+    @RequestMapping("/develop/test.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject test(@RequestBody JSONObject req)
+    {
+        Long envId = req.getLong("envId");
+        String script = req.getString("script");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", Script.scriptOf(script).run(envSrv.getEnv(envId).getStack()));
 
         return res;
     }
