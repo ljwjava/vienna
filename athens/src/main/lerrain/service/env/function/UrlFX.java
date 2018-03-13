@@ -33,8 +33,6 @@ public class UrlFX extends HashMap<String, Object>
                     return jo;
                 }
 
-                url = URLEncoder.encode(url);
-
                 String[] kvs = url.split("&");
                 for (String kv : kvs) {
                     if(kv.indexOf("=") >= 0){
