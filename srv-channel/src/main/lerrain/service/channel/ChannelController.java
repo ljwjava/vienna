@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public class ChannelController
 		return res;
 	}
 
-	@RequestMapping("/bill.json")
+	@RequestMapping("/bill_clause.json")
 	@ResponseBody
 	/**
 	 * [{
@@ -103,7 +104,7 @@ public class ChannelController
 	 * @param p
 	 * @return
 	 */
-	public JSONObject bill(@RequestBody JSONObject p)
+	public JSONObject billClause(@RequestBody JSONObject p)
 	{
 		Log.info(p);
 
@@ -121,12 +122,42 @@ public class ChannelController
 		for (int i = 0; i < list.size(); i++)
 		{
 			JSONObject clause = list.getJSONObject(i);
-			String productId = clause.getString("productId");
-			double amount =clause.getDouble("amount");
+			Long productId = clause.getLong("productId");
+			double amount = clause.getDouble("amount");
 			Map factors = clause.getJSONObject("factors");
 
 			if (amount > 0)
 				channelSrv.bill(platformId, vendorId, agencyId, productId, factors, bizType, bizId, bizNo, amount, time);
+		}
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+
+		return res;
+	}
+
+	@RequestMapping("/bill.json")
+	@ResponseBody
+	public JSONObject bill(@RequestBody JSONArray list)
+	{
+		Log.info(list);
+
+		for (int i = 0; i < list.size(); i++)
+		{
+			JSONObject b = list.getJSONObject(i);
+			Long platformId = b.getLong("platformId");
+			Long vendorId = b.getLong("vendorId");
+			Long payer = b.getLong("payer");
+			Long drawer = b.getLong("drawer");
+			String bizNo = b.getString("bizNo");
+			Integer bizType = b.getInteger("bizType");
+			Long bizId = b.getLong("bizId");
+			Long productId = b.getLong("productId");
+			Double amount = b.getDouble("amount");
+			Date time = b.getDate("estimate");
+
+			if (amount != null)
+				channelSrv.bill(platformId, productId, payer, drawer, bizType, bizId, bizNo, vendorId, amount, time);
 		}
 
 		JSONObject res = new JSONObject();

@@ -16,6 +16,8 @@ public class Policy
     String endorseNo;
     Date endorseTime;
 
+    String productName;
+
     int type;
     int period;
 
@@ -53,6 +55,16 @@ public class Policy
 
     String vehicleFrameNo;
     String vehiclePlateNo;
+
+    public String getProductName()
+    {
+        return productName;
+    }
+
+    public void setProductName(String productName)
+    {
+        this.productName = productName;
+    }
 
     public String getApplicantName()
     {

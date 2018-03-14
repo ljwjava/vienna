@@ -25,8 +25,8 @@ class ProductList extends List {
 			<tr>
                 <th><div>产品ID</div></th>
 				<th><div>产品CODE</div></th>
+                <th><div>所属公司</div></th>
                 <th><div>产品名称</div></th>
-				<th><div>所属公司</div></th>
                 <th><div>状态</div></th>
 				<th></th>
 			</tr>
@@ -38,8 +38,8 @@ class ProductList extends List {
 			<tr key={v.id}>
                 <td>{v.id}</td>
                 <td>{v.code}</td>
-                <td>{v.name}</td>
                 <td>{env.company[v.companyId]}</td>
+                <td>{v.name}</td>
                 <td>{v.status}</td>
 				<td>
 					<a data-toggle="modal" data-target="#editor" onClick={this.open.bind(this, v)}>编辑</a>

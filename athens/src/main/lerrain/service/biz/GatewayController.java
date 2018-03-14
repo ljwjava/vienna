@@ -7,6 +7,7 @@ import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
 import lerrain.tool.Disk;
 import lerrain.tool.script.Script;
+import lerrain.tool.script.ScriptRuntimeException;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,9 +100,18 @@ public class GatewayController
             {
                 val = script.run(stack);
             }
+            catch (ScriptRuntimeException e1)
+            {
+                if (gateway.isMonitor())
+                    gatewaySrv.onError(e1.getFactors(), e1.getMessage(), uri, e1);
+
+                throw e1;
+            }
             catch (Exception e)
             {
-                gatewaySrv.onError(null, e.getMessage(), uri, e);
+                if (gateway.isMonitor())
+                    gatewaySrv.onError(null, e.getMessage(), uri, e);
+
                 throw e;
             }
         }

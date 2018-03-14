@@ -14,9 +14,14 @@ public class ProductDao
 	public Long save(Long id, String code, String name, Long companyId, int type)
 	{
 		if (id == null)
+		{
 			id = tools.nextId("product");
-
-		jdbc.update("replace into t_product(id, code, name, company_id, type) value(?, ?, ?, ?, ?)", id, code, name, companyId, type);
+			jdbc.update("insert into t_product(id, code, name, company_id, type) value(?, ?, ?, ?, ?)", id, code, name, companyId, type);
+		}
+		else
+		{
+			jdbc.update("update t_product set code=?, name=?, company_id=?, type=? where id=?", code, name, companyId, type, id);
+		}
 
 		return id;
 	}

@@ -44,7 +44,8 @@ public class FeeService
 	public void bill(List<Fee> list)
 	{
 		for (Fee r : list)
-			feeDao.prepare(r);
+			if (Math.abs(r.amount) > 0.005f)
+				feeDao.prepare(r);
 	}
 
 	public List<Fee> findFee(Long platformId, Long vendorId, String bizNo)

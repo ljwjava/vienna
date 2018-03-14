@@ -9,6 +9,7 @@ var env = {
     bizType: {},
     insType: {},
     search: null,
+    type: 2,
     from: 0,
     number: 12
 }

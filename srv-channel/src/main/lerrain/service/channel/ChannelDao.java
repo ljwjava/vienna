@@ -138,7 +138,7 @@ public class ChannelDao
         });
     }
 
-    public List<FeeDefine> loadChannelFeeDefine(final Long platformId, Long agencyId, final String productId, Map rs)
+    public List<FeeDefine> loadChannelFeeDefine(final Long platformId, Long agencyId, final Long productId, Map rs)
     {
         StringBuffer sql = new StringBuffer("select a.*, b.* from t_channel_fee_define a, t_channel_contract b where a.contract_id = b.id and b.platform_id = ? and (b.party_a = ? or b.party_b = ?) and (a.product_id = ? or a.product_id is null)");
 
@@ -190,10 +190,10 @@ public class ChannelDao
 //        }
 //    }
 
-    public void bill(FeeDefine c, Integer bizType, Long bizId, String bizNo, Long vendorId, BigDecimal amt, int unit, Date time)
+    public void bill(Long platformId, Long productId, Long payer, Long drawer, int bizType, Long bizId, String bizNo, Long vendorId, double amt, int unit, Date time)
     {
         jdbc.update("insert into t_channel_fee(platform_id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                c.getPlatformId(), bizType, bizId, bizNo, c.getProductId(), vendorId, amt, unit, time, 0, c.getPayer(), c.getDrawer(), null, time);
+                platformId, bizType, bizId, bizNo, productId, vendorId, amt, unit, time, 0, payer, drawer, null, time);
     }
 
     public List findBill(Long platformId, Long vendorId, String bizNo)

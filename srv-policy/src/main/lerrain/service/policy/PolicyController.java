@@ -102,6 +102,7 @@ public class PolicyController
         policy.setEndorseNo(p.getString("endorseNo"));
         policy.setEndorseTime(p.getDate("endorseTime"));
 
+        policy.setProductName(p.getString("productName"));
         policy.setTarget(p.getJSONObject("target"));
         policy.setDetail(p.getJSONObject("detail"));
         policy.setFee(p.getJSONObject("fee"));

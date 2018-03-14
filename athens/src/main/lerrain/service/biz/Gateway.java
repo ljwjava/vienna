@@ -31,6 +31,7 @@ public class Gateway
     int seq = 1000000;
 
     boolean login;
+    boolean monitor = true;
 
     String uri;
     String uriX;
@@ -48,6 +49,16 @@ public class Gateway
             return uri.startsWith(this.uri) && uri.endsWith(this.uriX);
 
         return this.uri.equals(uri);
+    }
+
+    public boolean isMonitor()
+    {
+        return monitor;
+    }
+
+    public void setMonitor(boolean monitor)
+    {
+        this.monitor = monitor;
     }
 
     public Long getId()

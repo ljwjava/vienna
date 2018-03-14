@@ -3,9 +3,6 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	// return "http://www.lerrain.com:7666/" + url;
-	// return "http://dingl.51vip.biz:60004/" + url;
-	// return "http://dingl.tpddns.cn:60004/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {
@@ -17,6 +14,10 @@ common.url = function(url) {
             server += "api.iyb.tm";
         else if (location.pathname.startsWith("/uat/"))
             server += "api-uat.iyb.tm";
+    } else if (host.indexOf("lerrain") > 0) {
+        return "http://www.lerrain.com:7666/" + url;
+	} else if (host.indexOf("dingl") > 0) {
+        return "http://dingl.51vip.biz:60004/" + url;
     }
 	return server + "/" + url;
 };

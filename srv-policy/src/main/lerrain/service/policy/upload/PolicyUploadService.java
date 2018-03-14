@@ -12,6 +12,7 @@ import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -163,10 +164,10 @@ public class PolicyUploadService
                 Long policyId = policyDao.isExists(policy);
                 policy.setId(policyId);
 
-                if (policyId != null)
-                    policyDao.updatePolicy(policy);
-                else
+                if (policyId == null)
                     policyDao.newPolicy(policy);
+                else
+                    throw new RuntimeException("保单已存在 - " + policyId);
 
                 pr.result = 1;
 
@@ -207,6 +208,7 @@ public class PolicyUploadService
         policy.setEndorseNo(pr.getString("endorseNo"));
         policy.setEndorseTime(pr.getDate("endorseTime"));
 
+        policy.setProductName(pr.getString("product"));
         policy.setPremium(pr.getDouble("premium"));
 
         policy.setInsureTime(pr.getDate("insureTime"));
@@ -340,29 +342,61 @@ public class PolicyUploadService
                                 continue;
 
                             double incomeRate = fee.getDouble("incomeRate");
-
-                            JSONObject param = new JSONObject();
-                            param.put("platformId", p.getPlatformId());
-                            param.put("vendorId", p.getVendorId());
-                            param.put("agencyId", p.getAgencyId());
-                            param.put("bizNo", p.getPolicyNo());
-                            param.put("bizId", p.getId());
-                            param.put("bizType", 2);
+                            double cmsRate = fee.getDouble("cmsRate");
 
                             if (p.getClauses() != null)
                             {
                                 JSONArray detail = new JSONArray();
                                 for (PolicyClause pc : p.getClauses())
                                 {
+                                    double val = pc.getPremium() * incomeRate;
+                                    if (val < 0.005f)
+                                        continue;
+
                                     JSONObject bill = new JSONObject();
+                                    bill.put("platformId", p.getPlatformId());
+                                    bill.put("vendorId", p.getVendorId());
+                                    bill.put("payer", p.getVendorId());
+                                    bill.put("drawer", p.getAgencyId());
+                                    bill.put("bizNo", p.getPolicyNo());
+                                    bill.put("bizId", p.getId());
+                                    bill.put("bizType", 2);
                                     bill.put("productId", pc.getClauseId());
-                                    bill.put("amount", pc.getPremium() * incomeRate);
+                                    bill.put("amount", BigDecimal.valueOf(val).setScale(2, BigDecimal.ROUND_HALF_UP));
+                                    bill.put("estimate", p.getEndorseNo() == null ? p.getEffectiveTime() : p.getEndorseTime());
                                     detail.add(bill);
                                 }
-                                param.put("detail", detail);
+                                serviceMgr.req("channel", "bill.json", detail);
                             }
 
-                            serviceMgr.req("channel", "bill.json", param);
+                            if (p.getClauses() != null)
+                            {
+                                JSONArray detail = new JSONArray();
+                                for (PolicyClause pc : p.getClauses())
+                                {
+                                    double val = pc.getPremium() * cmsRate;
+                                    if (val < 0.005f)
+                                        continue;
+
+                                    JSONObject bill = new JSONObject();
+                                    bill.put("platformId", p.getPlatformId());
+                                    bill.put("drawer", p.getOwner());
+                                    bill.put("productId", pc.getClauseId());
+                                    bill.put("vendorId", p.getVendorId());
+                                    bill.put("bizNo", p.getPolicyNo());
+                                    bill.put("bizId", p.getId());
+                                    bill.put("bizType", 2);
+                                    bill.put("amount", BigDecimal.valueOf(val).setScale(2, BigDecimal.ROUND_HALF_UP));
+                                    bill.put("auto", false);
+                                    bill.put("type", 1);
+                                    bill.put("unit", 1);
+                                    bill.put("freeze", 0);
+                                    bill.put("estimate", p.getEndorseNo() == null ? p.getEffectiveTime() : p.getEndorseTime());
+                                    detail.add(bill);
+                                }
+
+                                serviceMgr.req("product", "fee/bill.json", detail);
+                            }
                         }
                     }
                 }

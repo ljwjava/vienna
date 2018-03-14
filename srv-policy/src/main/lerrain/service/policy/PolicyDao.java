@@ -146,9 +146,9 @@ public class PolicyDao
     {
         p.setId(tools.nextId("policy"));
 
-        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
+        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, product_name, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
                 "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, create_time, creator, update_time, updater) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
 
         jdbc.update(sql,
                 p.getId(),
@@ -158,6 +158,7 @@ public class PolicyDao
                 p.getEndorseNo(),
                 p.getEndorseTime(),
                 p.getType(),
+                p.getProductName(),
                 Common.trimStringOf(p.getTarget()),
                 Common.trimStringOf(p.getDetail()),
                 Common.trimStringOf(p.getFee()),
@@ -201,18 +202,18 @@ public class PolicyDao
         if (p.getId() == null)
             throw new RuntimeException("更新保单，缺少policyId");
 
-        String sql = "replace into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
-                "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, update_time, updater) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)";
+        String sql = "update t_policy set platform_id=?, apply_no=?, policy_no=?, endorse_no=?, endorse_time=?, type=?, product_name = ?, target=?, detail=?, fee=?, extra=?, premium=?, insure_time=?, effective_time=?, finish_time=?, " +
+                "vendor_id=?, agency_id=?, owner_company=?, owner_org=?, owner=?, period=?, applicant_name=?, applicant_mobile=?, applicant_email=?, applicant_cert_no=?, applicant_cert_type=?, insurant_name=?, insurant_cert_no=?, " +
+                "insurant_cert_type=?, vehicle_frame_no=?, vehicle_plate_no=?, update_time=?, updater=? where id = ?";
 
         jdbc.update(sql,
-                p.getId(),
                 p.getPlatformId(),
                 p.getApplyNo(),
                 p.getPolicyNo(),
                 p.getEndorseNo(),
                 p.getEndorseTime(),
                 p.getType(),
+                p.getProductName(),
                 Common.trimStringOf(p.getTarget()),
                 Common.trimStringOf(p.getDetail()),
                 Common.trimStringOf(p.getFee()),
@@ -237,7 +238,8 @@ public class PolicyDao
                 p.getInsurantCertType(),
                 p.getVehicleFrameNo(),
                 p.getVehiclePlateNo(),
-                p.getOwner()
+                p.getOwner(),
+                p.getId()
         );
     }
 }

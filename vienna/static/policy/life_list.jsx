@@ -8,6 +8,7 @@ var env = {
     company: {},
     bizType: {},
     insType: {},
+    type: 1,
     search: null,
     from: 0,
     number: 20

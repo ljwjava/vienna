@@ -42,7 +42,7 @@ public class ChannelService
         return channelDao.loadProductFee(contractId);
     }
 
-    public void bill(Long platformId, Long vendorId, Long agencyId, String productId, Map factors, Integer bizType, Long bizId, String bizNo, double premium, Date time)
+    public void bill(Long platformId, Long vendorId, Long agencyId, Long productId, Map factors, int bizType, Long bizId, String bizNo, double premium, Date time)
     {
         Map<String, Double> map = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
@@ -74,7 +74,7 @@ public class ChannelService
                     if (amt > 0)
                     {
                         calendar.set(Calendar.YEAR, year + i);
-                        channelDao.bill(c, bizType, bizId, bizNo, vendorId, BigDecimal.valueOf(amt).setScale(2, BigDecimal.ROUND_HALF_UP), 1, calendar.getTime());
+                        bill(c.getPlatformId(), c.getProductId(), c.getPayer(), c.getDrawer(), bizType, bizId, bizNo, vendorId, BigDecimal.valueOf(amt).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(), calendar.getTime());
 
                         Double val = map.get(c.getDrawer() + "/" + i);
                         map.put(c.getDrawer() + "/" + i, val == null ? amt : val + amt);
@@ -82,6 +82,12 @@ public class ChannelService
                 }
             }
         }
+    }
+
+    public void bill(Long platformId, Long productId, Long payer, Long drawer, int bizType, Long bizId, String bizNo, Long vendorId, double amt, Date time)
+    {
+        if (Math.abs(amt) > 0.005f)
+            channelDao.bill(platformId, productId, payer, drawer, bizType, bizId, bizNo, vendorId, amt, 1, time);
     }
 
     public List findBill(Long platformId, Long vendorId, String bizNo)
@@ -94,7 +100,7 @@ public class ChannelService
         return channelDao.findBill(bizType, bizId);
     }
 
-    public List<FeeDefine> getFeeDefine(Long platformId, Long agencyId, String productId, Map factors, Date time)
+    public List<FeeDefine> getFeeDefine(Long platformId, Long agencyId, Long productId, Map factors, Date time)
     {
         List<FeeDefine> r = new ArrayList<>();
 

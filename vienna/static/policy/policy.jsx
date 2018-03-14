@@ -77,23 +77,23 @@ env.policyOf = function(v, m) {
 
     return [
 		<div className="card border-info mt-3">
-			<div className="card-header text-white bg-info">{ m == 1 ? "批改保全（"+v.endorseTime+"）" : "保单信息" }</div>
+			<div className="card-header text-white bg-info">
+				{ m == 1 ? "保全信息" : "保单信息" }（{ env.dict.platform[v.platformId] }）
+			</div>
 			<div className="card-body text-secondary">
 				<div>
 					<div className="form-row">
 						<div className="col-md-4 mb-3">
-							<label>出单平台</label>
-							<select className="form-control" defaultValue={ v.platformId}>>
-                                {Object.keys(env.dict.platform).map(v => <option value={v}>{env.dict.platform[v]}</option>)}
-							</select>
+							<label>保单号</label>
+							<input type="text" className="form-control" defaultValue={v.policyNo}/>
 						</div>
 						<div className="col-md-4 mb-3">
 							<label>{ m == 1 ? "批单号" : "投保单号" }</label>
 							<input type="text" className="form-control" defaultValue={ m == 1 ? v.endorseNo : v.applyNo }/>
 						</div>
 						<div className="col-md-4 mb-3">
-							<label>保单号</label>
-							<input type="text" className="form-control" defaultValue={v.policyNo}/>
+							<label>代理机构</label>
+							<input type="text" className="form-control" defaultValue={v.agencyId}/>
 						</div>
 					</div>
 					<div className="form-row">
@@ -102,12 +102,12 @@ env.policyOf = function(v, m) {
 							<input type="text" className="form-control" defaultValue={v.owner}/>
 						</div>
 						<div className="col-md-4 mb-3">
-							<label>出单机构</label>
+							<label>出单人所在机构</label>
 							<input type="text" className="form-control" defaultValue={v.ownerCompany}/>
 						</div>
 						<div className="col-md-4 mb-3">
-							<label>代理机构</label>
-							<input type="text" className="form-control" defaultValue={v.agencyId}/>
+							<label>出单人所在组织</label>
+							<input type="text" className="form-control" defaultValue={v.ownerOrg}/>
 						</div>
 					</div>
 					<div className="form-row">
@@ -144,7 +144,7 @@ env.policyOf = function(v, m) {
 							<input type="text" className="form-control" defaultValue={app.mobile}/>
 						</div>
 						<div className="col-md-4 mb-3">
-							<label>投保人</label>
+							<label>投保人Email</label>
 							<input type="text" className="form-control" defaultValue={app.email}/>
 						</div>
 					</div>

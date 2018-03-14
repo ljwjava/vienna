@@ -155,6 +155,7 @@ var Main = React.createClass({
                             </div>
                             <div className="modal-body">
                                 {this.state.feeRate}
+                                <span style={{color:"#F00"}}>注：开始及结束时间指当日0点（空白时为不限制），结束日期配置时请注意延后一天</span>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">关闭</button>
