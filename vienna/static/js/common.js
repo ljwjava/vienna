@@ -297,6 +297,11 @@ common.isWeixin = function() {
     return ua.match(/MicroMessenger/i) == 'micromessenger';
 };
 
+common.isAPP = function() {
+    var UA = window.navigator.userAgent.toLowerCase();
+    return !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
+};
+
 common.dateStr = function(t) {
 	if (t == null)
 		return null;
