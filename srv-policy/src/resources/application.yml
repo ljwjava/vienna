@@ -8,4 +8,4 @@ datasource:
 
 service:
   channel: http://localhost:7675
-  product: http://localhost:7768
+  product: http://localhost:7758

@@ -37,7 +37,7 @@ service:
   image: http://localhost:7771
   policy: http://localhost:7781
   channel: http://localhost:7675
-  product: http://localhost:7768
+  product: http://localhost:7758
   org: http://localhost:7731
 
 path:
