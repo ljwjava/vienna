@@ -102,8 +102,6 @@ public class GatewayController
             }
             catch (ScriptRuntimeException e1)
             {
-                Log.error(e1);
-
                 if (gateway.isMonitor())
                     gatewaySrv.onError(e1.getFactors(), e1.getMessage(), uri, e1);
 
@@ -111,8 +109,6 @@ public class GatewayController
             }
             catch (Exception e)
             {
-                Log.error(e);
-
                 if (gateway.isMonitor())
                     gatewaySrv.onError(null, e.getMessage(), uri, e);
 
