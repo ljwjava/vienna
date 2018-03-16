@@ -124,12 +124,12 @@ public class LifeinsDao
 
     public void supplyClauses()
     {
-        jdbc.query("select * from t_product where type = 1 or type = 2 and refer_id is not null", new RowCallbackHandler()
+        jdbc.query("select * from t_proposal_product", new RowCallbackHandler()
         {
             @Override
             public void processRow(ResultSet rs) throws SQLException
             {
-                String clauseId = rs.getString("refer_id");
+                String clauseId = rs.getString("ins_id");
                 Insurance ins = lifeins.getProduct(clauseId);
 
                 if (ins != null)
