@@ -3,9 +3,20 @@ package lerrain.service.org;
 public class Org
 {
     Long id;
+    Long parentId;
 
     String code;
     String name;
+
+    public Long getParentId()
+    {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId)
+    {
+        this.parentId = parentId;
+    }
 
     public Long getId()
     {

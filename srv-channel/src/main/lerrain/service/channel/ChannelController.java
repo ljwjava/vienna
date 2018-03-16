@@ -87,7 +87,7 @@ public class ChannelController
 		return res;
 	}
 
-	@RequestMapping("/bill_clause.json")
+	@RequestMapping("/charge.json")
 	@ResponseBody
 	/**
 	 * [{
@@ -104,7 +104,7 @@ public class ChannelController
 	 * @param p
 	 * @return
 	 */
-	public JSONObject billClause(@RequestBody JSONObject p)
+	public JSONObject charge(@RequestBody JSONObject p)
 	{
 		Log.info(p);
 

@@ -102,6 +102,8 @@ public class GatewayController
             }
             catch (ScriptRuntimeException e1)
             {
+                Log.error(e1);
+
                 if (gateway.isMonitor())
                     gatewaySrv.onError(e1.getFactors(), e1.getMessage(), uri, e1);
 
@@ -109,6 +111,8 @@ public class GatewayController
             }
             catch (Exception e)
             {
+                Log.error(e);
+
                 if (gateway.isMonitor())
                     gatewaySrv.onError(null, e.getMessage(), uri, e);
 
@@ -139,6 +143,7 @@ public class GatewayController
             if (str.length() > 1024)
                 str = str.substring(0, 1024) + " ......";
         }
+
         Log.debug(host + "/" + uri + " ==> " + str);
 
         return val;
