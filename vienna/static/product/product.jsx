@@ -17,13 +17,6 @@ var strOf = function(s1, s2) {
 
 var env = {};
 
-env.test = {
-    name: "产品1",
-    fee: [{
-        val: [35, 5, 5, 3]
-    }]
-}
-
 env.baseOf = function(v) {
     return v == null ? null : (
         <div className="card border-info mb-3">

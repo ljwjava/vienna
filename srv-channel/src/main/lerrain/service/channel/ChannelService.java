@@ -27,6 +27,26 @@ public class ChannelService
         return channelDao.queryContract(partyA, partyB);
     }
 
+    public ChannelContract viewContract(Long contractId)
+    {
+        return channelDao.loadContract(contractId);
+    }
+
+    public Long saveContract(ChannelContract contract)
+    {
+        return channelDao.saveContract(contract);
+    }
+
+    public void setContractStatus(Long contractId, int status)
+    {
+        channelDao.updateContract(contractId, status);
+    }
+
+    public void deleteContract(Long contractId)
+    {
+        channelDao.deleteContract(contractId);
+    }
+
     public List<ChannelContract> listContract(Long companyId, int from, int to)
     {
         return channelDao.listContract(companyId, from, to);
@@ -37,12 +57,7 @@ public class ChannelService
         return channelDao.countContract(companyId);
     }
 
-    public List<Map<String, Object>> getProductFee(Long contractId)
-    {
-        return channelDao.loadProductFee(contractId);
-    }
-
-    public void bill(Long platformId, Long vendorId, Long agencyId, Long productId, Map factors, int bizType, Long bizId, String bizNo, double premium, Date time)
+    public void charge(Long platformId, Long vendorId, Long agencyId, Long productId, Map factors, int bizType, Long bizId, String bizNo, double premium, Date time)
     {
         Map<String, Double> map = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
@@ -111,5 +126,30 @@ public class ChannelService
         }
 
         return r;
+    }
+
+    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, Double[] val)
+    {
+        if (val == null)
+            val = new Double[5];
+
+        if (val.length < 5)
+            val = Arrays.copyOf(val, 5);
+
+        channelDao.addItem(contractId, clauseId, unit, pay, insure, val);
+    }
+
+    public void updateItem(Long itemId, Integer unit, Double[] val)
+    {
+        if (itemId == null)
+            return;
+
+        if (val == null)
+            val = new Double[5];
+
+        if (val.length < 5)
+            val = Arrays.copyOf(val, 5);
+
+        channelDao.updateItem(itemId, unit, val);
     }
 }

@@ -20,13 +20,13 @@ class PolicyList extends List {
     }
     componentDidMount() {
         super.componentDidMount();
-        common.req("btbx/channel/company.json", {}, r => {
+        common.req("channel/company.json", {}, r => {
             if (r != null) env.company = r;
             this.setState({});
         });
     }
     refresh() {
-        common.req("btbx/policy/list.json", env, r => {
+        common.req("policy/list.json", env, r => {
             this.setState({content:r});
         });
     }

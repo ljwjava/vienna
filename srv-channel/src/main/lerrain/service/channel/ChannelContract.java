@@ -12,6 +12,8 @@ public class ChannelContract
 
     Long partyA, partyB;
 
+    int status;
+
     String name;
 
     Date begin, end;
@@ -119,6 +121,16 @@ public class ChannelContract
     public void setUpdateTime(Date updateTime)
     {
         this.updateTime = updateTime;
+    }
+
+    public int getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(int status)
+    {
+        this.status = status;
     }
 
     public List<Long> getDocs()

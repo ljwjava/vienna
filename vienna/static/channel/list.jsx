@@ -23,7 +23,7 @@ class MainList extends List {
     	super.componentDidMount();
 	}
     refresh() {
-        common.req("btbx/channel/list.json", env, r => {
+        common.req("channel/list.json", env, r => {
             this.setState({content:r});
         });
     }

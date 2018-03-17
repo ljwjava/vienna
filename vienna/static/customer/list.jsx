@@ -7,7 +7,7 @@ import Navi from '../common/component.list.jsx';
 var env = {
 	search: null,
 	from: 0,
-	number: 16,
+	number: 12,
 	dict: {
 		gender: {
 			"M": "男",
@@ -36,12 +36,12 @@ class CustomerList extends List {
 	buildTableTitle() {
 		return (
 			<tr>
-				<th><div>姓名</div></th>
-				<th><div>性别</div></th>
-				<th><div>生日</div></th>
-				<th><div>证件</div></th>
-				<th><div>手机</div></th>
-				<th><div>电子邮件</div></th>
+				<th>姓名</th>
+				<th>性别</th>
+				<th>生日</th>
+				<th>证件</th>
+				<th>手机</th>
+				<th>电子邮件</th>
 				<th>操作</th>
 			</tr>
 		);
@@ -56,10 +56,8 @@ class CustomerList extends List {
 				<td>{v.mobile}</td>
 				<td>{v.email}</td>
 				<td>
-					<div className="btn-group" role="group">
-						<button type="button" className="btn btn-default" onClick={this.open.bind(this, v.id)}>编辑</button>
-						<button type="button" className="btn btn-danger">删除</button>
-					</div>
+					<a className="mr-2" onClick={this.open.bind(this, v.id)}>编辑</a>
+					<a>删除</a>
 				</td>
 			</tr>
 		);
@@ -68,32 +66,18 @@ class CustomerList extends List {
 
 var Main = React.createClass({
     render() {
-        return <div className="form-horizontal">
-			<div className="form-group">
-				<div className="col-sm-12">
-					<div className="container-fluid">
-						<ul className="nav navbar-nav">
-							<li>
-								<form className="navbar-form navbar-left" role="search">
-									<div className="form-group">
-										<input type="text" className="form-control" placeholder=""/>
-									</div>
-									<button type="submit" className="btn btn-success">搜索</button>
-								</form>
-							</li>
-						</ul>
-						<ul className="nav navbar-nav navbar-right">
-							<li>
-								<div className="navbar-nav-console">
-									<button className="btn btn-default">新增客户</button>
-								</div>
-							</li>
-						</ul>
+        return (
+			<div>
+				<nav className="navbar navbar-light justify-content-between">
+					<button className="btn btn-primary" data-toggle="modal" data-target="#editor" onClick={this.newCustomer}>新增客户</button>
+					<div className="form-inline">
+						<input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+						<button className="btn btn-success my-2 my-sm-0" type="submit">搜索</button>
 					</div>
-					<CustomerList env={env}/>
-				</div>
+				</nav>
+				<CustomerList env={env}/>
 			</div>
-		</div>;
+		);
     }
 });
 

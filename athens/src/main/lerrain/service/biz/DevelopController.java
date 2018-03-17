@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -248,7 +249,7 @@ public class DevelopController
     @RequestMapping("/develop/run.json")
     @ResponseBody
     @CrossOrigin
-    public JSONObject runScript(@RequestBody JSONObject req)
+    public JSONObject runScript(HttpSession session, @RequestBody JSONObject req)
     {
         Long envId = req.getLong("envId");
         String script = req.getString("script");
@@ -256,6 +257,7 @@ public class DevelopController
 
         Stack stack = new Stack(envSrv.getEnv(envId).getStack());
         stack.declare("self", self);
+        stack.declare("SESSION", new SessionAdapter(session));
 
         PrintStream oldPs = System.out;
         try (ByteArrayOutputStream sysOs = new ByteArrayOutputStream(); PrintStream sysPs = new PrintStream(sysOs))

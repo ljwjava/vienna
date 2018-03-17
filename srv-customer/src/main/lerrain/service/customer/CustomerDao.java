@@ -26,13 +26,15 @@ public class CustomerDao
 	
 	public List<Customer> list(String search, int from, int number, final Long platformId, final Long owner)
 	{
-		StringBuffer sql = new StringBuffer("select id,name,gender,birthday,city,mobile,email,type,cert_no,cert_type,owner,platform_id,create_time,update_time, null as detail from t_customer where platform_id = ? and owner = ? and valid is null");
+		StringBuffer sql = new StringBuffer("select id,name,gender,birthday,city,mobile,email,type,cert_no,cert_type,owner,platform_id,create_time,update_time, null as detail from t_customer where owner = ? and valid is null");
 		
 		if (!Common.isEmpty(search))
 			sql.append(" and name like '%" + search + "%' ");
+		if (platformId != null)
+			sql.append(" platform_id = " + platformId);
 		sql.append(" order by update_time desc limit " + from + ", " + number);
 		
-		return jdbc.query(sql.toString(), new Object[] {platformId, owner}, new RowMapper<Customer>()
+		return jdbc.query(sql.toString(), new Object[] {owner}, new RowMapper<Customer>()
 		{
 			@Override
 			public Customer mapRow(ResultSet rs, int arg1) throws SQLException
@@ -44,12 +46,14 @@ public class CustomerDao
 
 	public int count(String search, Long platformId, Long owner)
 	{
-		StringBuffer sql = new StringBuffer("select count(*) from t_customer where platform_id = ? and owner = ? and valid is null");
+		StringBuffer sql = new StringBuffer("select count(*) from t_customer where owner = ? and valid is null");
 
 		if (!Common.isEmpty(search))
 			sql.append(" and name like '%" + search + "%' ");
+		if (platformId != null)
+			sql.append(" platform_id = " + platformId);
 
-		return jdbc.queryForObject(sql.toString(), Integer.class, platformId, owner);
+		return jdbc.queryForObject(sql.toString(), Integer.class, owner);
 	}
 	
 	public boolean delete(Long customerId)

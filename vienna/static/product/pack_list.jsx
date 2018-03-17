@@ -21,7 +21,7 @@ var strOf = function(s1, s2) {
 
 class ProductList extends List {
     refresh() {
-        common.req("btbx/product/list.json", {typeId: 2, companyId: null, search: env.search, from: env.from, number: env.number}, r => {
+        common.req("product/list.json", {typeId: 2, companyId: null, search: env.search, from: env.from, number: env.number}, r => {
             this.setState({content:r});
         });
     }
@@ -32,7 +32,6 @@ class ProductList extends List {
 				<th><div>产品CODE</div></th>
                 <th><div>产品名称</div></th>
 				<th><div>所属公司</div></th>
-                <th><div>状态</div></th>
 				<th></th>
 			</tr>
         );
@@ -45,10 +44,10 @@ class ProductList extends List {
                 <td>{v.code}</td>
                 <td>{v.name}</td>
                 <td>{env.company[v.companyId]}</td>
-                <td>{v.status}</td>
-				<td>
-					<a data-toggle="modal" data-target="#editor" onClick={this.props.parent.showFee.bind(this.props.parent, v)}>推广费</a>
-				</td>
+                <td style={{padding:"6px"}}>
+                    <button className="btn btn-outline-success mr-1" data-toggle="modal" data-target="#editor" onClick={this.props.parent.showFee.bind(this.props.parent, v)}>费用</button>
+                    <button className="btn btn-outline-success mr-1">编辑</button>
+                </td>
 			</tr>
         );
     }
@@ -59,7 +58,7 @@ var Main = React.createClass({
         return {company: null};
     },
     componentDidMount() {
-        common.req("btbx/channel/company.json", {}, r => {
+        common.req("channel/company.json", {}, r => {
             if (r != null) {
                 env.company = {};
                 let company = [];
@@ -72,7 +71,7 @@ var Main = React.createClass({
         });
     },
     showFee(v) {
-        common.req("btbx/product/query_rate.json", {productId: v.id, platformId: 2}, r => {
+        common.req("product/query_rate.json", {productId: v.id, platformId: 2}, r => {
             let list = !r ? null : r.map(x => {
                 return (
                     <tr>
@@ -155,7 +154,7 @@ var Main = React.createClass({
                             </div>
                             <div className="modal-body">
                                 {this.state.feeRate}
-                                <span style={{color:"#F00"}}>注：开始及结束时间指当日0点（空白时为不限制），结束日期配置时请注意延后一天</span>
+                                <span style={{color:"#F00"}}>注：1、开始及结束时间指当日0点（空白时为不限制），结束日期配置时请注意延后一天。2、配置错误问题很严重，务必注意！</span>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">关闭</button>

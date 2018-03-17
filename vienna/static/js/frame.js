@@ -9,7 +9,7 @@ FRAME.logout = function() {
 $(document).ready( function() {
     common.req("user/info.json", null, function(r) {
         var str = "";
-        r.forEach(v => {
+        r.menu.forEach(v => {
             str += '<li class="nav-item dropdown">';
             str += '<a class="nav-link dropdown-toggle" id="menu'+v.code+'" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">' + v.name + '</a>';
             str += '<div class="dropdown-menu" aria-labelledby="menu'+v.code+'">';
@@ -19,6 +19,7 @@ $(document).ready( function() {
             str += '</div></li>';
         });
         $("#menu").html('<ul class="navbar-nav mr-auto">' + str + '</ul>');
+        $("#user").html(r.name);
     }, function(r) {
         console.log(r);
     });

@@ -18,7 +18,7 @@ var OrgTree = React.createClass({
         return {orgs: []};
     },
 	componentDidMount() {
-        common.req("btbx/org/view_org.json", {orgId: this.props.orgId}, r => {
+        common.req("org/view_org.json", {orgId: this.props.orgId}, r => {
             this.setState({orgs: [r]});
             this.findChildren(r);
         });
@@ -27,7 +27,7 @@ var OrgTree = React.createClass({
     	if (org.children != null) {
             org.children = null;
             this.forceUpdate();
-        } else common.req("btbx/org/list_org.json", {orgId: org.id}, r => {
+        } else common.req("org/list_org.json", {orgId: org.id}, r => {
             org.children = r;
             this.forceUpdate();
         });
@@ -57,7 +57,7 @@ class MemberList extends List {
         document.location.href = "member.web?memberId=" + id;
     }
     refresh() {
-        common.req("btbx/org/list_member.json", {orgId: this.props.orgId, from: this.props.env.from, number: this.props.env.number}, r => {
+        common.req("org/list_member.json", {orgId: this.props.orgId, from: this.props.env.from, number: this.props.env.number}, r => {
             this.setState({content:r});
         });
     }

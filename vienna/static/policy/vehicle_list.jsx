@@ -25,13 +25,13 @@ class PolicyList extends List {
     }
     componentDidMount() {
         super.componentDidMount();
-        common.req("btbx/channel/company.json", {}, r => {
+        common.req("channel/company.json", {}, r => {
             if (r != null) env.company = r;
             this.setState({});
         });
     }
     refresh() {
-        common.req("btbx/policy/list.json", env, r => {
+        common.req("policy/list.json", env, r => {
             this.setState({content:r});
         });
     }
@@ -112,6 +112,6 @@ $(document).ready( function() {
         fd.append("path", env.dir);
         for (var i=0;i<fileList.length;i++)
             fd.append("file", fileList[i]);
-        $.ajax({url:common.url("btbx/policy/upload.file"), type:"POST", data:fd, xhrFields:{ withCredentials: true }, processData:false, contentType:false, success:function(r) {}, fail: function(r) {}, dataType:"json"});
+        $.ajax({url:common.url("policy/upload.file"), type:"POST", data:fd, xhrFields:{ withCredentials: true }, processData:false, contentType:false, success:function(r) {}, fail: function(r) {}, dataType:"json"});
     }, false);
 });

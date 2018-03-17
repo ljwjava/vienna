@@ -23,7 +23,7 @@ public class CustomerController
 	@ResponseBody
 	public JSONObject list(@RequestBody JSONObject json)
 	{
-		Long platformId = json.getLong("platformId");
+		Long platformId = null; //json.getLong("platformId");
 		Long owner = json.getLong("owner");
 
 		String search = json.getString("search");
@@ -50,7 +50,7 @@ public class CustomerController
 	@ResponseBody
 	public JSONObject query(@RequestBody JSONObject json)
 	{
-		Long platformId = json.getLong("platformId");
+		Long platformId = null; //json.getLong("platformId");
 		Long owner = json.getLong("owner");
 
 		String search = json.getString("search");

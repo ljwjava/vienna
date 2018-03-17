@@ -56,13 +56,39 @@ public class ChannelDao
 
     public int countContract(Long companyId)
     {
-        return jdbc.queryForObject("select count(*) from t_channel_contract where party_a = ? or party_b = ? and valid is null", Integer.class, companyId, companyId);
+        return jdbc.queryForObject("select count(*) from t_channel_contract where (party_a = ? or party_b = ?) and valid is null", Integer.class, companyId, companyId);
     }
 
     public List<ChannelContract> queryContract(Long partyA, Long partyB)
     {
-        String sql = "select * from t_channel_contract where party_a = ? or party_b = ? and valid is null order by update_time desc";
+        String sql = "select * from t_channel_contract where (party_a = ? or party_b = ?) and valid is null order by update_time desc";
         return jdbc.query(sql, new Object[] {partyA, partyB}, new RowMapper<ChannelContract>()
+        {
+            @Override
+            public ChannelContract mapRow(ResultSet m, int arg1) throws SQLException
+            {
+                return contractOf(m, false);
+            }
+        });
+    }
+
+    public List<ChannelContract> listContract(Long companyId, int from, int number)
+    {
+        String sql = "select * from t_channel_contract where (party_a = ? or party_b = ?) and valid is null order by update_time desc limit ?, ?";
+        return jdbc.query(sql, new Object[] {companyId, companyId, from, number}, new RowMapper<ChannelContract>()
+        {
+            @Override
+            public ChannelContract mapRow(ResultSet m, int arg1) throws SQLException
+            {
+                return contractOf(m, false);
+            }
+        });
+    }
+
+    public ChannelContract loadContract(Long contractId)
+    {
+        String sql = "select * from t_channel_contract where id = ? and valid is null";
+        return jdbc.queryForObject(sql, new Object[] {contractId}, new RowMapper<ChannelContract>()
         {
             @Override
             public ChannelContract mapRow(ResultSet m, int arg1) throws SQLException
@@ -72,17 +98,33 @@ public class ChannelDao
         });
     }
 
-    public List<ChannelContract> listContract(Long companyId, int from, int number)
+    public Long saveContract(ChannelContract cc)
     {
-        String sql = "select * from t_channel_contract where party_a = ? or party_b = ? and valid is null order by update_time desc limit ?, ?";
-        return jdbc.query(sql, new Object[] {companyId, companyId, from, number}, new RowMapper<ChannelContract>()
+        if (cc.getId() == null)
         {
-            @Override
-            public ChannelContract mapRow(ResultSet m, int arg1) throws SQLException
-            {
-                return contractOf(m, false);
-            }
-        });
+            cc.setId(tools.nextId("contract"));
+            jdbc.update("insert into t_channel_contract(id, platform_id, party_a, party_b, name, begin, end, status, docs, create_time, creator, update_time, updater) values(?,?,?,?,?,?,?,?,?,now(),?,now(),?)",
+                    cc.getId(), cc.getPlatformId(), cc.getPartyA(), cc.getPartyB(), cc.getName(), cc.getBegin(), cc.getEnd(), 1, cc.getDocs(), null, null);
+        }
+        else
+        {
+            jdbc.update("update t_channel_contract set platform_id=?, party_a=?, party_b=?, name=?, begin=?, end=?, docs=?, update_time=now(), updater=? where id=?",
+                    cc.getPlatformId(), cc.getPartyA(), cc.getPartyB(), cc.getName(), cc.getBegin(), cc.getEnd(), cc.getDocs(), null, cc.getId());
+        }
+
+        return cc.getId();
+    }
+
+    public void updateContract(Long contractId, int status)
+    {
+        jdbc.update("update t_channel_contract set status=?, update_time=now(), updater=? where id=?",
+                status, null, contractId);
+    }
+
+    public void deleteContract(Long contractId)
+    {
+        jdbc.update("update t_channel_contract set valid='N', update_time=now(), updater=? where id=?",
+                null, contractId);
     }
 
     private ChannelContract contractOf(ResultSet m, boolean fee) throws SQLException
@@ -96,6 +138,7 @@ public class ChannelDao
         p.setBegin(m.getDate("begin"));
         p.setEnd(m.getDate("end"));
         p.setUpdateTime(m.getTimestamp("update_time"));
+        p.setStatus(Common.intOf(m.getObject("status"), 1));
 
         JSONArray list = JSON.parseArray(m.getString("docs"));
         if (list != null)
@@ -140,7 +183,7 @@ public class ChannelDao
 
     public List<FeeDefine> loadChannelFeeDefine(final Long platformId, Long agencyId, final Long productId, Map rs)
     {
-        StringBuffer sql = new StringBuffer("select a.*, b.* from t_channel_fee_define a, t_channel_contract b where a.contract_id = b.id and b.platform_id = ? and (b.party_a = ? or b.party_b = ?) and (a.product_id = ? or a.product_id is null)");
+        StringBuffer sql = new StringBuffer("select a.*, b.* from t_channel_fee_define a, t_channel_contract b where b.valid is null and b.status = 2 and a.contract_id = b.id and b.platform_id = ? and (b.party_a = ? or b.party_b = ?) and (a.product_id = ? or a.product_id is null)");
 
         String pay = Common.trimStringOf(rs.get("pay"));
         String insure = Common.trimStringOf(rs.get("insure"));
@@ -233,5 +276,17 @@ public class ChannelDao
         m.put("drawer", rs.getLong("drawer"));
 
         return m;
+    }
+
+    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, Double[] val)
+    {
+        jdbc.update("insert into t_channel_fee_define(contract_id, product_id, pay, insure, f1, f2, f3, f4, f5, unit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                contractId, clauseId, pay, insure, val[0], val[1], val[2], val[3], val[4], unit);
+    }
+
+    public void updateItem(Long itemId, Integer unit, Double[] val)
+    {
+        jdbc.update("update t_channel_fee_define set unit=?, f1=?, f2=?, f3=?, f4=?, f5=? where id=?",
+                unit, val[0], val[1], val[2], val[3], val[4], itemId);
     }
 }
