@@ -70,69 +70,17 @@ var Main = React.createClass({
             }
         });
     },
+    addItem() {
+        this.state.feeRate.push({factors: {}});
+        this.forceUpdate();
+    },
     showFee(v) {
         common.req("product/query_rate.json", {productId: v.id, platformId: 2}, r => {
-            let list = !r ? null : r.map(x => {
-                return (
-                    <tr>
-                        <td width="12%">
-                            <input type="text" className="form-control" defaultValue={x.begin}/>
-                        </td>
-                        <td width="12%">
-                            <input type="text" className="form-control" defaultValue={x.end}/>
-                        </td>
-                        <td>
-                            <select className="form-control" defaultValue={x.factors.pay}>
-                                { env.termList.map(t => <option value={t}>{strOf(t, "全部")}</option>) }
-                            </select>
-                        </td>
-                        <td>
-                            <select className="form-control" defaultValue={x.factors.insure}>
-                                { env.termList.map(t => <option value={t}>{strOf(t, "全部")}</option>) }
-                            </select>
-                        </td>
-                        <td width="18%">
-                            <input type="text" className="form-control" defaultValue={x.saleFee}/>
-                        </td>
-                        <td width="10%">
-                            <input type="text" className="form-control" defaultValue={x.upperBonus}/>
-                        </td>
-                        <td width="10%">
-                            <input type="text" className="form-control" defaultValue={x.saleBonus}/>
-                        </td>
-                        <td>
-                            <select className="form-control" defaultValue={x.unit}>
-                                <option value="3">百分比</option>
-                                <option value="1">比例</option>
-                                <option value="2">定额</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button className="btn btn-outline-danger mr-1">删除</button>
-                        </td>
-                    </tr>
-                );
-            });
-            let fee = (
-                <table className="table table-bordered" key={v.id}>
-                    <thead className="thead-light">
-                        <tr>
-                            <th>开始</th>
-                            <th>结束</th>
-                            <th>交费</th>
-                            <th>保障</th>
-                            <th>基础</th>
-                            <th>上线</th>
-                            <th>奖励</th>
-                            <th>单位</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>{list}</tbody>
-                </table>
-            );
-            this.setState({feeRate: fee});
+            this.setState({productId: v.id, feeRate: r});
         });
+    },
+    saveFeeRate() {
+        console.log(this.state.feeRate);
     },
     render() {
         return (
@@ -155,13 +103,68 @@ var Main = React.createClass({
                                 </button>
                             </div>
                             <div className="modal-body">
-                                {this.state.feeRate}
+                                <table className="table table-bordered" key={this.state.productId}>
+                                    <thead className="thead-light">
+                                    <tr>
+                                        <th>开始</th>
+                                        <th>结束</th>
+                                        <th>交费</th>
+                                        <th>保障</th>
+                                        <th>基础</th>
+                                        <th>上线</th>
+                                        <th>奖励</th>
+                                        <th>单位</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    { !this.state.feeRate ? null : this.state.feeRate.map(x =>
+                                        <tr>
+                                            <td width="12%">
+                                                <input type="text" className="form-control" defaultValue={x.begin} onChange={y => {x.begin = y.target.value}}/>
+                                            </td>
+                                            <td width="12%">
+                                                <input type="text" className="form-control" defaultValue={x.end} onChange={y => {x.end = y.target.value}}/>
+                                            </td>
+                                            <td>
+                                                <select className="form-control" defaultValue={x.factors.pay} onChange={y => {x.factors.pay = y.target.value}}>
+                                                    { env.termList.map(t => <option value={t}>{strOf(t, "全部")}</option>) }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className="form-control" defaultValue={x.factors.insure} onChange={y => {x.factors.insure = y.target.value}}>
+                                                    { env.termList.map(t => <option value={t}>{strOf(t, "全部")}</option>) }
+                                                </select>
+                                            </td>
+                                            <td width="18%">
+                                                <input type="text" className="form-control" defaultValue={x.saleFee} onChange={y => {x.saleFee = y.target.value}}/>
+                                            </td>
+                                            <td width="10%">
+                                                <input type="text" className="form-control" defaultValue={x.upperBonus} onChange={y => {x.upperBonus = y.target.value}}/>
+                                            </td>
+                                            <td width="10%">
+                                                <input type="text" className="form-control" defaultValue={x.saleBonus} onChange={y => {x.saleBonus = y.target.value}}/>
+                                            </td>
+                                            <td>
+                                                <select className="form-control" defaultValue={x.unit} onChange={y => {x.unit = y.target.value}}>
+                                                    <option value="3">百分比</option>
+                                                    <option value="1">比例</option>
+                                                    <option value="2">定额</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button className="btn btn-outline-danger mr-1">删除</button>
+                                            </td>
+                                        </tr>
+                                    )}
+                                    </tbody>
+                                </table>
                                 <div className="mr-auto" style={{color:"#F00"}}>注：1、开始及结束时间指当日0点（空白时为不限制），结束日期配置时请注意延后一天。2、配置错误问题很严重，务必注意！</div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-success mr-auto">添加条目</button>
+                                <button type="button" className="btn btn-success mr-auto" onClick={this.addItem}>添加条目</button>
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">关闭</button>
-                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.Clause}>保存修改</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.saveFeeRate}>保存修改</button>
                             </div>
                         </div>
                     </div>

@@ -101,6 +101,7 @@ public class FeeDao
 		Date end = rs.getDate("end");
 
 		FeeDefine pc = new FeeDefine();
+		pc.id = rs.getLong("id");
 		pc.platformId = platformId;
 		pc.productId = productId;
 		pc.begin = begin;

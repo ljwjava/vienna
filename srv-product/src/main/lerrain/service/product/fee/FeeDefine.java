@@ -8,6 +8,7 @@ import java.util.Map;
  */
 public class FeeDefine
 {
+    Long id;
     Long platformId;
     Long productId;
 
@@ -132,6 +133,16 @@ public class FeeDefine
     public void setUpperBonus(Object upperBonus)
     {
         this.upperBonus = upperBonus;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     public boolean match(Date now)
