@@ -67,9 +67,9 @@ public class ChannelService
             calendar.setTime(time);
             int year = calendar.get(Calendar.YEAR);
 
-            for (int i = 0; i < c.getFeeRate().length; i++)
+            for (int i = 0; i < c.getRate().length; i++)
             {
-                BigDecimal fr = c.getFeeRate()[i];
+                BigDecimal fr = c.getRate()[i];
                 if (fr != null)
                 {
                     double amt = 0;
@@ -121,7 +121,7 @@ public class ChannelService
 
         for (FeeDefine fd : channelDao.loadChannelFeeDefine(platformId, agencyId, productId, factors))
         {
-            if (fd.getFeeRate() != null && fd.match(time))
+            if (fd.getRate() != null && fd.match(time))
                 r.add(fd);
         }
 
@@ -151,5 +151,10 @@ public class ChannelService
             val = Arrays.copyOf(val, 5);
 
         channelDao.updateItem(itemId, unit, val);
+    }
+
+    public void removeItem(Long itemId)
+    {
+        channelDao.removeItem(itemId);
     }
 }

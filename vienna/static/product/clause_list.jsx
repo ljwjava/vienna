@@ -91,11 +91,12 @@ var Main = React.createClass({
                     </div>
                 </nav>
                 <ProductList ref="list" env={env} parent={this}/>
+
                 <div className="modal fade" id="editor" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog modal-lg" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">条款详情</h5>
+                                <h5 className="modal-title">条款详情</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

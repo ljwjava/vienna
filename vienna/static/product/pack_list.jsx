@@ -107,7 +107,9 @@ var Main = React.createClass({
                                 <option value="2">定额</option>
                             </select>
                         </td>
-                        <td></td>
+                        <td>
+                            <button className="btn btn-outline-danger mr-1">删除</button>
+                        </td>
                     </tr>
                 );
             });
@@ -154,9 +156,10 @@ var Main = React.createClass({
                             </div>
                             <div className="modal-body">
                                 {this.state.feeRate}
-                                <span style={{color:"#F00"}}>注：1、开始及结束时间指当日0点（空白时为不限制），结束日期配置时请注意延后一天。2、配置错误问题很严重，务必注意！</span>
+                                <div className="mr-auto" style={{color:"#F00"}}>注：1、开始及结束时间指当日0点（空白时为不限制），结束日期配置时请注意延后一天。2、配置错误问题很严重，务必注意！</div>
                             </div>
                             <div className="modal-footer">
+                                <button type="button" className="btn btn-success mr-auto">添加条目</button>
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">关闭</button>
                                 <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.Clause}>保存修改</button>
                             </div>

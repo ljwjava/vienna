@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -117,7 +119,7 @@ public class ChannelController
 		Date begin = p.getDate("begin");
 		Date end = p.getDate("end");
 
-		ChannelContract cc = new ChannelContract();
+		ChannelContract cc = contractId == null ? new ChannelContract() : channelSrv.viewContract(contractId);
 		cc.setId(contractId);
 		cc.setPlatformId(platformId);
 		cc.setName(name);
@@ -128,20 +130,56 @@ public class ChannelController
 
 		contractId = channelSrv.saveContract(cc);
 
+		List<Long> itemIdList = new ArrayList<>();
+		if (cc.getFeeDefine() != null)
+			for (FeeDefine fd : cc.getFeeDefine())
+				itemIdList.add(fd.getId());
+
 		JSONArray detail = p.getJSONArray("detail");
 		if (detail != null) for (int i = 0; i < detail.size(); i++)
 		{
 			JSONObject item = detail.getJSONObject(i);
-			JSONArray rate = item.getJSONArray("rate");
-			if (rate != null)
-			{
-				Double[] val = new Double[rate.size()];
-				for (int j = 0; j < rate.size(); j++)
-					val[j] = rate.getDouble(j);
+			Long itemId = item.getLong("itemId");
 
-				channelSrv.updateItem(item.getLong("itemId"), item.getInteger("unit"), val);
+			if (itemId == null)
+			{
+				JSONArray rate = item.getJSONArray("rate");
+				Integer unit = item.getInteger("unit");
+
+				if (rate != null && unit != null)
+				{
+					Long productId = item.getLong("productId");
+
+					Integer pay = item.getInteger("pay");
+					Integer insure = item.getInteger("insure");
+
+					Double[] val = new Double[rate.size()];
+					for (int j = 0; j < rate.size(); j++)
+						val[j] = rate.getDouble(j);
+
+					channelSrv.addItem(contractId, productId, unit, pay, insure, val);
+				}
+			}
+			else
+			{
+				JSONArray rate = item.getJSONArray("rate");
+				Integer unit = item.getInteger("unit");
+
+				if (rate != null && unit != null)
+				{
+					Double[] val = new Double[rate.size()];
+					for (int j = 0; j < rate.size(); j++)
+						val[j] = rate.getDouble(j);
+
+					channelSrv.updateItem(itemId, unit, val);
+				}
+
+				itemIdList.remove(itemId);
 			}
 		}
+
+		for (Long itemId : itemIdList)
+			channelSrv.removeItem(itemId);
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");

@@ -19,7 +19,7 @@ var Main = React.createClass({
 	},
 	test() {
 		var envId = this.refs.envList.value;
-		var jsonStr = this.refs.reqParams.value;
+		var jsonStr = this.refs.params.value;
 		var req = {
 			envId: envId,
 			script: this.refs.script.value,
@@ -47,7 +47,7 @@ var Main = React.createClass({
 						<textarea ref="script" className="form-control" style={{height:"600px"}}></textarea>
 					</div>
 					<div className="col-sm-4">
-						<textarea ref="reqParams" className="form-control" style={{height:"600px"}}></textarea>
+						<textarea ref="params" className="form-control" style={{height:"600px"}}></textarea>
 					</div>
 				</div>
 				<div className="form-row mt-3">

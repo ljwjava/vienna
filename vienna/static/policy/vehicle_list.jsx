@@ -20,8 +20,8 @@ function companyOf(vendorId) {
 }
 
 class PolicyList extends List {
-    open(id) {
-        document.location.href = "policy.web?policyId=" + id;
+    open(v) {
+        document.location.href = "policy.web?policyId=" + v.id;
     }
     componentDidMount() {
         super.componentDidMount();
@@ -67,9 +67,9 @@ class PolicyList extends List {
                 <td style={{textAlign:"right"}}>{v.fee.income}</td>
 				<td style={{textAlign:"right"}}>{v.fee.cms}</td>
                 <td>{v.owner}</td>
-				<td>
-                    <a className="ml-2" onClick={this.open.bind(this, v.id)}>编辑</a>
-                    <a className="ml-2">删除</a>
+                <td style={{padding:"6px"}}>
+                    <button className="btn btn-outline-success mr-1" onClick={this.open.bind(this, v)}>编辑</button>
+                    <button className="btn btn-outline-danger mr-1">删除</button>
                 </td>
 			</tr>
         );

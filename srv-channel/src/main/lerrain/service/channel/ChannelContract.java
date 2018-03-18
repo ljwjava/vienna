@@ -19,7 +19,7 @@ public class ChannelContract
     Date begin, end;
 
     List<Long> docs;
-    List<Map<String, Object>> feeDefine;
+    List<FeeDefine> feeDefine;
 
     Date updateTime;
 
@@ -103,12 +103,12 @@ public class ChannelContract
         this.platformId = platformId;
     }
 
-    public List<Map<String, Object>> getFeeDefine()
+    public List<FeeDefine> getFeeDefine()
     {
         return feeDefine;
     }
 
-    public void setFeeDefine(List<Map<String, Object>> feeDefine)
+    public void setFeeDefine(List<FeeDefine> feeDefine)
     {
         this.feeDefine = feeDefine;
     }

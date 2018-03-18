@@ -155,28 +155,15 @@ public class ChannelDao
         return p;
     }
 
-    public List<Map<String, Object>> loadProductFee(Long contractId)
+    public List<FeeDefine> loadProductFee(Long contractId)
     {
-        final Date now = new Date();
-
-        String sql = "select * from t_channel_fee_define where contract_id = ? order by product_id, insure, pay";
-        return jdbc.query(sql, new Object[] {contractId}, new RowMapper<Map<String, Object>>()
+        String sql = "select a.*, b.* from t_channel_fee_define a, t_channel_contract b where b.valid is null and b.id = ? and a.contract_id = b.id order by product_id, convert(insure, signed), convert(pay, signed)";
+        return jdbc.query(sql, new Object[] {contractId}, new RowMapper<FeeDefine>()
         {
             @Override
-            public Map<String, Object> mapRow(ResultSet m, int arg1) throws SQLException
+            public FeeDefine mapRow(ResultSet m, int arg1) throws SQLException
             {
-                JSONObject p = new JSONObject();
-                p.put("productId", m.getString("product_id"));
-                p.put("pay", m.getString("pay"));
-                p.put("insure", m.getString("insure"));
-                p.put("f1", m.getBigDecimal("f1"));
-                p.put("f2", m.getBigDecimal("f2"));
-                p.put("f3", m.getBigDecimal("f3"));
-                p.put("f4", m.getBigDecimal("f4"));
-                p.put("f5", m.getBigDecimal("f5"));
-                p.put("unit", m.getInt("unit"));
-
-                return p;
+                return feeDefineOf(m.getLong("product_id"), m);
             }
         });
     }
@@ -200,38 +187,35 @@ public class ChannelDao
             @Override
             public FeeDefine mapRow(ResultSet m, int arg1) throws SQLException
             {
-                FeeDefine p = new FeeDefine();
-                p.platformId = platformId;
-                p.productId = productId;
-                p.payer = m.getLong("party_a");
-                p.drawer = m.getLong("party_b");
-                p.begin = m.getDate("begin");
-                p.end = m.getDate("end");
-                p.feeRate = new BigDecimal[] {
-                    m.getBigDecimal("f1"),
-                    m.getBigDecimal("f2"),
-                    m.getBigDecimal("f3"),
-                    m.getBigDecimal("f4"),
-                    m.getBigDecimal("f5")
-                };
-                p.unit = m.getInt("unit");
-
-                return p;
+                return feeDefineOf(productId, m);
             }
         });
     }
 
-//    public Long getVendor(String productId)
-//    {
-//        try
-//        {
-//            return jdbc.queryForObject("select company_id from t_product where id = ?", Long.class, productId);
-//        }
-//        catch (Exception e)
-//        {
-//            return null;
-//        }
-//    }
+    private FeeDefine feeDefineOf(Long productId, ResultSet m) throws SQLException
+    {
+        FeeDefine p = new FeeDefine();
+        p.id = m.getLong("id");
+        p.productId = productId;
+        p.platformId = m.getLong("platform_id");
+        p.contractId = m.getLong("contract_id");
+        p.payer = m.getLong("party_a");
+        p.drawer = m.getLong("party_b");
+        p.begin = m.getDate("begin");
+        p.end = m.getDate("end");
+        p.pay = m.getString("pay");
+        p.insure = m.getString("insure");
+        p.rate = new BigDecimal[] {
+                m.getBigDecimal("f1"),
+                m.getBigDecimal("f2"),
+                m.getBigDecimal("f3"),
+                m.getBigDecimal("f4"),
+                m.getBigDecimal("f5")
+        };
+        p.unit = m.getInt("unit");
+
+        return p;
+    }
 
     public void bill(Long platformId, Long productId, Long payer, Long drawer, int bizType, Long bizId, String bizNo, Long vendorId, double amt, int unit, Date time)
     {
@@ -288,5 +272,10 @@ public class ChannelDao
     {
         jdbc.update("update t_channel_fee_define set unit=?, f1=?, f2=?, f3=?, f4=?, f5=? where id=?",
                 unit, val[0], val[1], val[2], val[3], val[4], itemId);
+    }
+
+    public void removeItem(Long itemId)
+    {
+        jdbc.update("delete from t_channel_fee_define where id=?", itemId);
     }
 }

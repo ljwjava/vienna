@@ -93,7 +93,7 @@ env.policyOf = function(v, m) {
 						</div>
 						<div className="col-md-4 mb-3">
 							<label>代理机构</label>
-							<input type="text" className="form-control" defaultValue={v.agencyId}/>
+							<input type="text" className="form-control" defaultValue={v.agencyName}/>
 						</div>
 					</div>
 					<div className="form-row">
