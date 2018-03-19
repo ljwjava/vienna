@@ -20,18 +20,18 @@ function companyOf(vendorId) {
 }
 
 class PolicyList extends List {
-    open(id) {
-        document.location.href = "policy.web?policyId=" + id;
+    open(v) {
+        document.location.href = "policy.web?policyId=" + v.id;
     }
     componentDidMount() {
         super.componentDidMount();
-        common.req("btbx/channel/company.json", {}, r => {
+        common.req("channel/company.json", {}, r => {
             if (r != null) env.company = r;
             this.setState({});
         });
     }
     refresh() {
-        common.req("btbx/policy/list.json", env, r => {
+        common.req("policy/list.json", env, r => {
             this.setState({content:r});
         });
     }
@@ -67,9 +67,9 @@ class PolicyList extends List {
                 <td style={{textAlign:"right"}}>{v.fee.income}</td>
 				<td style={{textAlign:"right"}}>{v.fee.cms}</td>
                 <td>{v.owner}</td>
-				<td>
-                    <a className="ml-2" onClick={this.open.bind(this, v.id)}>编辑</a>
-                    <a className="ml-2">删除</a>
+                <td style={{padding:"6px"}}>
+                    <button className="btn btn-outline-success mr-1" onClick={this.open.bind(this, v)}>编辑</button>
+                    <button className="btn btn-outline-danger mr-1">删除</button>
                 </td>
 			</tr>
         );
@@ -112,6 +112,6 @@ $(document).ready( function() {
         fd.append("path", env.dir);
         for (var i=0;i<fileList.length;i++)
             fd.append("file", fileList[i]);
-        $.ajax({url:common.url("btbx/policy/upload.file"), type:"POST", data:fd, xhrFields:{ withCredentials: true }, processData:false, contentType:false, success:function(r) {}, fail: function(r) {}, dataType:"json"});
+        $.ajax({url:common.url("policy/upload.file"), type:"POST", data:fd, xhrFields:{ withCredentials: true }, processData:false, contentType:false, success:function(r) {}, fail: function(r) {}, dataType:"json"});
     }, false);
 });

@@ -93,7 +93,7 @@ env.policyOf = function(v, m) {
 						</div>
 						<div className="col-md-4 mb-3">
 							<label>代理机构</label>
-							<input type="text" className="form-control" defaultValue={v.agencyId}/>
+							<input type="text" className="form-control" defaultValue={v.agencyName}/>
 						</div>
 					</div>
 					<div className="form-row">
@@ -210,7 +210,7 @@ var FeeList = React.createClass({
         return {};
     },
     componentDidMount() {
-        if (this.props.req != null) common.req("btbx/policy/fee.json", this.props.req, r => {
+        if (this.props.req != null) common.req("policy/fee.json", this.props.req, r => {
             this.setState({list1: r.agent, list2: r.channel});
         });
     },
@@ -291,9 +291,9 @@ var Main = React.createClass({
     },
     componentDidMount() {
         let policyId = common.param("policyId");
-        common.req("btbx/policy/view.json", {policyId: policyId}, r => {
+        common.req("policy/view.json", {policyId: policyId}, r => {
             this.setState({policy: r});
-            common.req("btbx/channel/company.json", {}, r1 => {
+            common.req("channel/company.json", {}, r1 => {
                 if (r1 != null) env.company = r1;
                 common.req("dict/view.json", {company: env.company[r.vendorId].code, name: "relation,cert"}, s => {
                     s.relation.map(v => { env.dict.relation[v.code] = v.text });

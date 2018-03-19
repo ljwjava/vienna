@@ -49,7 +49,7 @@ public class GatewayController
         Gateway gateway = gatewaySrv.getGateway(uri);
 
         if (gateway == null)
-            return null;
+            throw new RuntimeException(uri + " not found");
 
         Stack root = gateway.getEnv().getStack();
 

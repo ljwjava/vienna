@@ -37,7 +37,7 @@ class PayForm extends Form {
             bauto = env.order.extra.pay.autoPayFlag;
         }
         let v = [
-            {name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank},
+            {name:'开户银行', code:"bank", type:"select", req:"yes", value: bk, options:env.dict.bank, onChange: this.changeBank.bind(this)},
             {name:'银行帐号', code:"bankCard", type:"number", req:"yes", value: bc, mistake:"请输入正确的银行卡号", desc:"银行卡号码"}
         ];
         if(env.company == "shlife" || env.company == "citicpru") {
@@ -48,8 +48,18 @@ class PayForm extends Form {
             v.push({name:'是否自动垫交保费', code:"autoPayFlag", type:"switch", req:"yes", value: bauto, options:[["Y","是"],["N","否"]]});
             v.push({name:'自动垫交保费释义', code:"autoPayFlagDesc", type:"label", value: "自动垫交保险费是一项权益。如果选择本权益，续期保费可以用现金价值扣除未还借款本息之后的余额垫缴，同时保险公司会收取一定的利息。"});
         }
-        return this.buildForm(v);
+        let forms = this.buildForm(v);
+        return forms;
     }
+    changeBank() {
+    	if(env.company != "fosun"){
+    		return false;
+		}
+    	if(",9002,9003,9004,9007,9008,9009,9010,9013,9014,9015,9017,9018,9021,9022,9023,9024,9025,9026,9027,9028,9029,9030,9039,".indexOf(","+this.refs.bank.val()+",") >= 0 && !common.isWeixin()) {
+			// 是否分享至微信端
+			$("#payTipsDiv").show();
+		}
+	}
 }
 
 class PayRenewForm extends Form {
@@ -202,6 +212,7 @@ var Ground = React.createClass({
             return false;
         }
         this.setState({isSubmit: true}, ()=>{
+        	env.order.extra.isWX = common.isWeixin();
             common.req("sale/apply.json", env.order, r => {
                 common.save("iyb/orderId", env.order.id);
                 if (r.success != false) {
@@ -286,11 +297,25 @@ var Ground = React.createClass({
         });
 	},
 	openDivDispute() {
-
         $(this.refs.disputeDiv).show();
 	},
     hide() {
 		$(this.refs.disputeDiv).hide();
+	},
+	hidePayTipsDiv(){
+		$(this.refs.payTipsDiv).hide();
+	},
+    sharePage(){
+		if(common.isAPP()){
+            var shareObj = {
+                title: "复星联合康乐e生重大疾病保险",
+                desc: "继续投保",
+                thumb: "https://static.zhongan.com/website/health/iyb/resource/product/ware12/ware12_share.jpg",
+                imgUrl: "https://static.zhongan.com/website/health/iyb/resource/product/ware12/ware12_share.jpg",
+                link: window.location.href
+            };
+            iHealthBridge.doAction("share", JSON.stringify(shareObj));
+		}
 	},
 	render() {
 		let docs = [];
@@ -370,10 +395,10 @@ var Ground = React.createClass({
 						})
 					}
 				</div>
-                { env.order.detail.applyMode == 2 ? null :
+                { env.order.detail.applyMode == 2 && !env.order.extra.hasPay ? null :
 					<div className="title">支付信息</div>
                 }
-                { env.order.detail.applyMode == 2 ? null :
+                { env.order.detail.applyMode == 2 && !env.order.extra.hasPay ? null :
 					<div className="form">
 						<PayForm ref="pay"/>
 					</div>
@@ -441,6 +466,18 @@ var Ground = React.createClass({
 								}) : null
 						}
                         {<div style={{backgroundColor: "#bdbdbd", color: "#FFFFFF", height: "50px", lineHeight: "50px", margin: "15px 20px 0px", borderRadius: "5px", textAlign: "center"}} onClick={this.hide.bind(this)}>已知晓</div>}
+					</div>
+				</div>
+				<div ref="payTipsDiv" id="payTipsDiv" className="notice dispute" style={{display: "none"}} onClick={this.hidePayTipsDiv.bind(this)}>
+					<div className="content" style={{padding: "20px", textAlign: "left"}}>
+						{
+							!common.isWeixin() ?
+								<div>
+									您当前选择的银行仅支持续期支付，首年支付请移步微信内操作。<br/>
+									您可<font style={{color: "#ff8300", fontWeight: "bold"}}>{common.isAPP() ? null : "通过右上角"}分享当前页面至微信</font>继续操作，或者<font style={{color: "#ff8300", fontWeight: "bold"}}>选择其它银行支付</font>
+								</div> : null
+						}
+                        { !common.isAPP() ? null : <div style={{backgroundColor: "#f9cc4d", color: "#FFFFFF", height: "50px", lineHeight: "50px", margin: "15px 20px 0px", borderRadius: "5px", textAlign: "center"}} onClick={this.sharePage.bind(this)}>分享继续</div>}
 					</div>
 				</div>
 				<PaySwich ref="paySwich"></PaySwich>

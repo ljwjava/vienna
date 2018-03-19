@@ -12,12 +12,14 @@ public class ChannelContract
 
     Long partyA, partyB;
 
+    int status;
+
     String name;
 
     Date begin, end;
 
     List<Long> docs;
-    List<Map<String, Object>> feeDefine;
+    List<FeeDefine> feeDefine;
 
     Date updateTime;
 
@@ -101,12 +103,12 @@ public class ChannelContract
         this.platformId = platformId;
     }
 
-    public List<Map<String, Object>> getFeeDefine()
+    public List<FeeDefine> getFeeDefine()
     {
         return feeDefine;
     }
 
-    public void setFeeDefine(List<Map<String, Object>> feeDefine)
+    public void setFeeDefine(List<FeeDefine> feeDefine)
     {
         this.feeDefine = feeDefine;
     }
@@ -119,6 +121,16 @@ public class ChannelContract
     public void setUpdateTime(Date updateTime)
     {
         this.updateTime = updateTime;
+    }
+
+    public int getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(int status)
+    {
+        this.status = status;
     }
 
     public List<Long> getDocs()

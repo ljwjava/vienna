@@ -27,6 +27,26 @@ public class ChannelService
         return channelDao.queryContract(partyA, partyB);
     }
 
+    public ChannelContract viewContract(Long contractId)
+    {
+        return channelDao.loadContract(contractId);
+    }
+
+    public Long saveContract(ChannelContract contract)
+    {
+        return channelDao.saveContract(contract);
+    }
+
+    public void setContractStatus(Long contractId, int status)
+    {
+        channelDao.updateContract(contractId, status);
+    }
+
+    public void deleteContract(Long contractId)
+    {
+        channelDao.deleteContract(contractId);
+    }
+
     public List<ChannelContract> listContract(Long companyId, int from, int to)
     {
         return channelDao.listContract(companyId, from, to);
@@ -37,12 +57,7 @@ public class ChannelService
         return channelDao.countContract(companyId);
     }
 
-    public List<Map<String, Object>> getProductFee(Long contractId)
-    {
-        return channelDao.loadProductFee(contractId);
-    }
-
-    public void bill(Long platformId, Long vendorId, Long agencyId, Long productId, Map factors, int bizType, Long bizId, String bizNo, double premium, Date time)
+    public void charge(Long platformId, Long vendorId, Long agencyId, Long productId, Map factors, int bizType, Long bizId, String bizNo, double premium, Date time)
     {
         Map<String, Double> map = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
@@ -52,9 +67,9 @@ public class ChannelService
             calendar.setTime(time);
             int year = calendar.get(Calendar.YEAR);
 
-            for (int i = 0; i < c.getFeeRate().length; i++)
+            for (int i = 0; i < c.getRate().length; i++)
             {
-                BigDecimal fr = c.getFeeRate()[i];
+                BigDecimal fr = c.getRate()[i];
                 if (fr != null)
                 {
                     double amt = 0;
@@ -106,10 +121,40 @@ public class ChannelService
 
         for (FeeDefine fd : channelDao.loadChannelFeeDefine(platformId, agencyId, productId, factors))
         {
-            if (fd.getFeeRate() != null && fd.match(time))
+            if (fd.getRate() != null && fd.match(time))
                 r.add(fd);
         }
 
         return r;
+    }
+
+    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, Double[] val)
+    {
+        if (val == null)
+            val = new Double[5];
+
+        if (val.length < 5)
+            val = Arrays.copyOf(val, 5);
+
+        channelDao.addItem(contractId, clauseId, unit, pay, insure, val);
+    }
+
+    public void updateItem(Long itemId, Integer unit, Double[] val)
+    {
+        if (itemId == null)
+            return;
+
+        if (val == null)
+            val = new Double[5];
+
+        if (val.length < 5)
+            val = Arrays.copyOf(val, 5);
+
+        channelDao.updateItem(itemId, unit, val);
+    }
+
+    public void removeItem(Long itemId)
+    {
+        channelDao.removeItem(itemId);
     }
 }

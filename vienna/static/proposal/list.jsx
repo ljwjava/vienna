@@ -39,11 +39,12 @@ class ProposalList extends List {
 	buildTableTitle() {
 		return (
 			<tr>
-				<th style={{width: "40%", textAlign:"center"}}><div>建议书名称</div></th>
-				<th style={{textAlign:"center"}}>主要险种</th>
-				<th style={{textAlign:"center"}}>修改时间</th>
-				<th style={{textAlign:"center"}}>保费</th>
-				<th></th>
+				<th>建议书名称</th>
+				<th>主要险种</th>
+				<th>投保人</th>
+				<th>修改时间</th>
+				<th>保费</th>
+				<th>操作</th>
 			</tr>
 		);
 	}
@@ -53,12 +54,13 @@ class ProposalList extends List {
 			<tr key={v.id}>
 				<td><img src={v.tag == "single" ? "../images/user.png" : "../images/users.png"} style={{width:"24px", height:"24px"}}/> {v.name}</td>
 				<td></td>
-				<td style={{textAlign:"center"}}>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
-				<td style={{textAlign:"right"}}>{Number(v.premium).toFixed(2)}</td>
-				<td style={{textAlign:"center"}}>
-					<a onClick={this.copy.bind(this, v.id)} style={{marginRight:"10px"}}>复制</a>
-					<a onClick={this.open.bind(this, v.id)} style={{marginRight:"10px"}}>编辑</a>
-					<a onClick={this.delete.bind(this, v.id)}>删除</a>
+				<td>{v.applicant}</td>
+				<td>{date.format("yyyy-MM-dd hh:mm:ss")}</td>
+				<td>{Number(v.premium).toFixed(2)}</td>
+				<td style={{padding:"6px"}}>
+					<button className="btn btn-outline-success mr-1" onClick={this.copy.bind(this, v.id)}>复制</button>
+					<button className="btn btn-outline-success mr-1" onClick={this.open.bind(this, v.id)}>编辑</button>
+					<button className="btn btn-outline-danger mr-1" onClick={this.delete.bind(this, v.id)}>删除</button>
 				</td>
 			</tr>
 		);

@@ -23,7 +23,7 @@ class MainList extends List {
     	super.componentDidMount();
 	}
     refresh() {
-        common.req("btbx/channel/list.json", env, r => {
+        common.req("channel/list.json", env, r => {
             this.setState({content:r});
         });
     }
@@ -51,8 +51,10 @@ class MainList extends List {
 				<td>{v.contact}</td>
 				<td>{v.telephone}</td>
 				<td>{v.email}</td>
-				<td>
-					<a href="#" onClick={this.open.bind(this, v.id)}>编辑</a>
+				<td style={{padding:"6px"}}>
+					<button className="btn btn-outline-success mr-1">编辑</button>
+					<button className="btn btn-outline-success mr-1" onClick={this.open.bind(this, v.id)}>合约</button>
+					<button className="btn btn-outline-danger mr-1">删除</button>
 				</td>
 			</tr>
         );
@@ -64,7 +66,7 @@ var Main = React.createClass({
         return (
         	<div>
 				<nav className="navbar navbar-light bg-white justify-content-between">
-					<button className="btn btn-primary">新增渠道</button>
+					<button className="btn btn-outline-primary">新增渠道</button>
 					<div className="form-inline">
 						<input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
 						<button className="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>

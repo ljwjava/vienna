@@ -625,7 +625,6 @@ public class PlanController
     public JSONObject fee(@RequestBody JSONObject p)
     {
         String planId = p.getString("planId");
-        JSONObject rate = p.getJSONObject("rate");
 
         if (Common.isEmpty(planId))
             throw new RuntimeException("缺少planId");

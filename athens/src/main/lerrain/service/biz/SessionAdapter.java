@@ -5,6 +5,7 @@ import lerrain.tool.formula.Function;
 import lerrain.tool.script.Stack;
 
 import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 
 /**
  * Created by lerrain on 2017/11/13.
@@ -41,5 +42,20 @@ public class SessionAdapter extends Stack
     public void set(String name, Object value)
     {
         session.setAttribute(name, value);
+    }
+
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append("SESSION<" + session.getId() + ">");
+
+        Enumeration<String> keys = session.getAttributeNames();
+        while (keys.hasMoreElements())
+        {
+            String key = keys.nextElement();
+            sb.append(", " + key + " = " + session.getAttribute(key));
+        }
+
+        return sb.toString();
     }
 }

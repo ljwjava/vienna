@@ -9,13 +9,15 @@ import java.util.Map;
  */
 public class FeeDefine
 {
+    Long id;
     Long platformId;
     Long contractId;
     Long drawer, payer;
 
     Long productId;
-    BigDecimal[] feeRate;
+    String pay, insure;
 
+    BigDecimal[] rate;
     int unit;
 
     Date begin, end;
@@ -40,14 +42,14 @@ public class FeeDefine
         this.contractId = contractId;
     }
 
-    public BigDecimal[] getFeeRate()
+    public BigDecimal[] getRate()
     {
-        return feeRate;
+        return rate;
     }
 
-    public void setFeeRate(BigDecimal[] feeRate)
+    public void setRate(BigDecimal[] rate)
     {
-        this.feeRate = feeRate;
+        this.rate = rate;
     }
 
     public int getUnit()
@@ -108,6 +110,36 @@ public class FeeDefine
     public void setPayer(Long payer)
     {
         this.payer = payer;
+    }
+
+    public String getPay()
+    {
+        return pay;
+    }
+
+    public void setPay(String pay)
+    {
+        this.pay = pay;
+    }
+
+    public String getInsure()
+    {
+        return insure;
+    }
+
+    public void setInsure(String insure)
+    {
+        this.insure = insure;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     public boolean match(Date now)

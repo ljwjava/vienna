@@ -28,9 +28,9 @@ public class OrgController
         return res;
     }
 
-    @RequestMapping("/name.json")
+    @RequestMapping("/find.json")
     @ResponseBody
-    public JSONObject name(@RequestBody JSONObject json)
+    public JSONObject find(@RequestBody JSONObject json)
     {
         JSONObject r = new JSONObject();
 
@@ -41,7 +41,7 @@ public class OrgController
             for (int i = 0; i < m1.size(); i++)
             {
                 Member member = orgSrv.getMember(m1.getLong(i));
-                m2.add(member == null ? null : member.getName());
+                m2.add(member);
             }
 
             r.put("member", m2);
@@ -54,7 +54,7 @@ public class OrgController
             for (int i = 0; i < o1.size(); i++)
             {
                 Org org = orgSrv.getOrg(o1.getLong(i));
-                o2.add(org == null ? null : org.getName());
+                o2.add(org);
             }
 
             r.put("org", o2);
@@ -67,7 +67,7 @@ public class OrgController
             for (int i = 0; i < c1.size(); i++)
             {
                 Company company = orgSrv.getCompany(c1.getLong(i));
-                c2.add(company == null ? null : company.getName());
+                c2.add(company);
             }
 
             r.put("company", c2);

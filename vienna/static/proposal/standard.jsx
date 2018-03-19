@@ -192,16 +192,14 @@ var ClauseWindow = React.createClass({
 	},
 	render() {
 		return (
-			<div className="modal fade" id="clauseEdit" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div className="modal fade" id="clauseEdit" tabIndex="-1" role="dialog" aria-hidden="true">
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button type="button" className="close" data-dismiss="modal" aria-hidden="true">
-								&times;
+							<h5 className="modal-title">{this.state.clause.name}</h5>
+							<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title" id="myModalLabel">
-								{this.state.clause.name}
-							</h4>
 						</div>
 						<div className="modal-body">
 							<div className="form">
@@ -378,7 +376,7 @@ var Main = React.createClass({
 			});
 		} else if (x == "5") {
 			common.req("proposal/print.json", {proposalId: env.proposalId}, r => {
-				this.setState({mode:x, type:"preview"}, () => {
+				this.setState({mode:x, show:null, type:"preview"}, () => {
 					printer.preview("iyb_proposal", "preview", r);
 				});
 			});
@@ -395,7 +393,7 @@ var Main = React.createClass({
 		}
 	},
 	render() {
-		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["4","利益总览"],["5","建议书预览"],["6","健康告知"],["7","费用"],["8","合并图"]];
+		var bar = [["1","保险责任"],["2","利益表"],["3","利益图"],["5","建议书预览"],["4","利益总览"],["6","健康告知"],["7","费用"],["8","合并图"]];
 		var barList = bar.map(r => {
 			return (<button key={r[0]} className={this.state.mode == r[0] ? "btn btn-success" : "btn border btn-light"} onClick={this.doEvent.bind(this, r[0])}>{r[1]}</button>);
 		});
@@ -500,7 +498,7 @@ var Show = React.createClass({
 			if (this.state.content == null || this.state.type != this.props.type)
 				func(this.props.content[0]);
 		}
-		return <div className="navbar navbar-expand-lg navbar-light bg-light btn-group">{prds}</div>;
+		return <div key="tabs" className="navbar navbar-expand-lg navbar-light bg-light btn-group">{prds}</div>;
 	},
 	render() {
 		let r = null;
@@ -558,7 +556,7 @@ var Show = React.createClass({
 				r.push(<table className="table table-bordered"><thead className="thead-light"><tr><th>保单年度</th><th>年龄</th>{head}</tr></thead><tbody>{x}</tbody></table>);
             }
 		} else if (this.props.type == "preview") {
-			r = <div id="preview" style={{backgroundColor:"#AAA", paddingTop:"10px", paddingBottom:"10px"}}></div>;
+			r = <div key="preview" id="preview" style={{backgroundColor:"#AAA", paddingTop:"10px", paddingBottom:"10px"}}></div>;
 		} else if (this.props.type == "liability") {
 			r = [this.buildConsole(this.showLiability)];
 			if (this.state.content != null && this.state.type == this.props.type) {

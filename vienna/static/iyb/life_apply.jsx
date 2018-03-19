@@ -191,9 +191,9 @@ class InsurantMore extends Form {
         if (env.insocc)
             v.push({name:'职业', code:"occupation", type:"occupation", refresh:"yes", req:"yes", desc:"请选择职业"});
         if (env.formOpt.insurant.height)
-            v.push({name:'身高(厘米)', code:"height", type:"text", req:"yes", desc:"请填写身高"});
+            v.push({name:'身高(厘米)', code:"height", type:"text", reg:"^[1-9]{1}[0-9]{0,}$", mistake:"格式只能为整数", req:"yes", desc:"请填写身高"});
         if (env.formOpt.insurant.weight)
-            v.push({name:'体重(公斤)', code:"weight", type:"text", req:"yes", desc:"请填写体重"});
+            v.push({name:'体重(公斤)', code:"weight", type:"text", reg:"^[1-9]{1}[0-9]{0,}$", mistake:"格式只能为整数", req:"yes", desc:"请填写体重"});
         if (env.formOpt.insurant.hasSmoke)
             v.push({name:'是否吸烟', code:"smoke", type:"switch", refresh:"yes", options: env.formOpt.insurant.smoke});
 		return this.buildForm(v);
@@ -505,6 +505,7 @@ var Ground = React.createClass({
 		} else {
             env.insurant = env.applicant;
             if (m != null) {
+                env.applicant.occupation = m.occupation;
                 env.applicant.height = m.height;
                 env.applicant.weight = m.weight;
                 env.applicant.smoke = m.smoke;

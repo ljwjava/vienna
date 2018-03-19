@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -40,7 +41,7 @@ public class ChannelController
 		return res;
 	}
 
-	@RequestMapping("/query_contract.json")
+	@RequestMapping("/contract/query.json")
 	@ResponseBody
 	public JSONObject queryContract(@RequestBody JSONObject p)
 	{
@@ -54,7 +55,7 @@ public class ChannelController
 		return res;
 	}
 
-	@RequestMapping("/list_contract.json")
+	@RequestMapping("/contract/list.json")
 	@ResponseBody
 	public JSONObject listContract(@RequestBody JSONObject p)
 	{
@@ -74,18 +75,159 @@ public class ChannelController
 		return res;
 	}
 
-	@RequestMapping("/list_contract_rate.json")
+	@RequestMapping("/contract/view.json")
 	@ResponseBody
-	public JSONObject listFee(@RequestBody JSONObject p)
+	public JSONObject viewContract(@RequestBody JSONObject p)
 	{
 		Long contractId = p.getLong("contractId");
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", channelSrv.getProductFee(contractId));
+		res.put("content", channelSrv.viewContract(contractId));
 
 		return res;
 	}
+
+	@RequestMapping("/contract/item.json")
+	@ResponseBody
+	public JSONObject addFee(@RequestBody JSONObject p)
+	{
+		Long contractId = p.getLong("contractId");
+		Long clauseId = p.getLong("clauseId");
+
+		Integer pay = p.getInteger("pay");
+		Integer insure = p.getInteger("insure");
+		Integer unit = p.getInteger("unit");
+
+		channelSrv.addItem(contractId, clauseId, unit, pay, insure, null);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+
+		return res;
+	}
+
+	@RequestMapping("/contract/save.json")
+	@ResponseBody
+	public JSONObject saveContract(@RequestBody JSONObject p)
+	{
+		Long contractId = p.getLong("contractId");
+		Long platformId = p.getLong("platformId");
+		String name = p.getString("name");
+		Long partyA = p.getLong("partyA");
+		Long partyB = p.getLong("partyB");
+		Date begin = p.getDate("begin");
+		Date end = p.getDate("end");
+
+		ChannelContract cc = contractId == null ? new ChannelContract() : channelSrv.viewContract(contractId);
+		cc.setId(contractId);
+		cc.setPlatformId(platformId);
+		cc.setName(name);
+		cc.setPartyA(partyA);
+		cc.setPartyB(partyB);
+		cc.setBegin(begin);
+		cc.setEnd(end);
+
+		contractId = channelSrv.saveContract(cc);
+
+		List<Long> itemIdList = new ArrayList<>();
+		if (cc.getFeeDefine() != null)
+			for (FeeDefine fd : cc.getFeeDefine())
+				itemIdList.add(fd.getId());
+
+		JSONArray detail = p.getJSONArray("detail");
+		if (detail != null) for (int i = 0; i < detail.size(); i++)
+		{
+			JSONObject item = detail.getJSONObject(i);
+			Long itemId = item.getLong("itemId");
+
+			if (itemId == null)
+			{
+				JSONArray rate = item.getJSONArray("rate");
+				Integer unit = item.getInteger("unit");
+
+				if (rate != null && unit != null)
+				{
+					Long productId = item.getLong("productId");
+
+					Integer pay = item.getInteger("pay");
+					Integer insure = item.getInteger("insure");
+
+					Double[] val = new Double[rate.size()];
+					for (int j = 0; j < rate.size(); j++)
+						val[j] = rate.getDouble(j);
+
+					channelSrv.addItem(contractId, productId, unit, pay, insure, val);
+				}
+			}
+			else
+			{
+				JSONArray rate = item.getJSONArray("rate");
+				Integer unit = item.getInteger("unit");
+
+				if (rate != null && unit != null)
+				{
+					Double[] val = new Double[rate.size()];
+					for (int j = 0; j < rate.size(); j++)
+						val[j] = rate.getDouble(j);
+
+					channelSrv.updateItem(itemId, unit, val);
+				}
+
+				itemIdList.remove(itemId);
+			}
+		}
+
+		for (Long itemId : itemIdList)
+			channelSrv.removeItem(itemId);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", contractId);
+
+		return res;
+	}
+
+	@RequestMapping("/contract/status.json")
+	@ResponseBody
+	public JSONObject status(@RequestBody JSONObject p)
+	{
+		Long contractId = p.getLong("contractId");
+		int status = p.getIntValue("status");
+
+		channelSrv.setContractStatus(contractId, status);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+
+		return res;
+	}
+
+	@RequestMapping("/contract/delete.json")
+	@ResponseBody
+	public JSONObject delete(@RequestBody JSONObject p)
+	{
+		Long contractId = p.getLong("contractId");
+		channelSrv.deleteContract(contractId);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+
+		return res;
+	}
+
+//	@RequestMapping("/list_contract_rate.json")
+//	@ResponseBody
+//	public JSONObject listFee(@RequestBody JSONObject p)
+//	{
+//		Long contractId = p.getLong("contractId");
+//
+//		JSONObject res = new JSONObject();
+//		res.put("result", "success");
+//		res.put("content", channelSrv.getProductFee(contractId));
+//
+//		return res;
+//	}
 
 	@RequestMapping("/charge.json")
 	@ResponseBody
@@ -127,7 +269,7 @@ public class ChannelController
 			Map factors = clause.getJSONObject("factors");
 
 			if (amount > 0)
-				channelSrv.bill(platformId, vendorId, agencyId, productId, factors, bizType, bizId, bizNo, amount, time);
+				channelSrv.charge(platformId, vendorId, agencyId, productId, factors, bizType, bizId, bizNo, amount, time);
 		}
 
 		JSONObject res = new JSONObject();

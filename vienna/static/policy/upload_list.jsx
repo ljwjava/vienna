@@ -15,7 +15,7 @@ class UploadList extends List {
     deal(id) {
     }
     refresh() {
-        common.req("btbx/policy/upload_list.json", env, r => {
+        common.req("policy/upload_list.json", env, r => {
             this.setState({content:r});
         });
     }
