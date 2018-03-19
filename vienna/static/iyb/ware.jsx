@@ -341,6 +341,7 @@ env.shareApp = function(){
     if (window.iHealthBridge) {
         try{
             window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
+            env.getShareObj();
         }catch(e){}
         if(timer) {clearTimeout(timer);}
         return;
