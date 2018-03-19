@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="ZAH00003" corporation_id="zhongan" code="ZAH00003" name="尊享e生旗舰版" name_abbr="尊享e生旗舰版" premium="DS.RATE[0][SOCIAL_INS?0:1]*(AMOUNT/UNIT)"
+		type="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2018-03-16">
+
+		<data>
+			<item parser="dds" value="ZAH00003" />
+		</data>
+
+		<init amount="3000000">
+			<item name="SOCIAL_INS" value="true" type="boolean"/>
+		</init>
+
+		<input>
+			<item name="SOCIAL_INS" label="社保" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+		</input>
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+<!-- 		<portfolio> -->
+<!-- 			<product id="ZAH00003"> -->
+<!-- 				<AMOUNT>PACK.AMOUNT</AMOUNT> -->
+<!-- 				<SOCIAL_INS>PACK.SOCIAL_INS</SOCIAL_INS> -->
+<!-- 			</product> -->
+<!-- 		</portfolio> -->
+		
+		<rule>
+		    <if condition="DAY lt 30 or AGE > 60">
+				被保险人年龄要求出生满30天~60周岁。
+			</if>
+		</rule>
+
+	</product>
+</declare>
