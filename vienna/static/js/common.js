@@ -3,12 +3,12 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	var host = location.host;
-	var server;
-	if (host.startsWith("sv")) {
-		host = "api" + host.substr(2);
-		server = location.protocol + "//" + host;
-	} else if (host.startsWith("lifeins")) {
+    var host = location.host;
+    var server;
+    if (host.startsWith("sv")) {
+        host = "api" + host.substr(2);
+        server = location.protocol + "//" + host;
+    } else if (host.startsWith("lifeins")) {
         server = location.protocol + "//";
         if (location.pathname.startsWith("/rel/"))
             server += "api.iyb.tm";
@@ -16,10 +16,10 @@ common.url = function(url) {
             server += "api-uat.iyb.tm";
     } else if (host.indexOf("lerrain") > 0) {
         return "http://www.lerrain.com:7666/" + url;
-	} else if (host.indexOf("dingl") > 0) {
+    } else if (host.indexOf("dingl") > 0) {
         return "http://dingl.51vip.biz:60004/" + url;
     }
-	return server + "/" + url;
+    return server + "/" + url;
 };
 
 common.link = function(link) {
@@ -296,11 +296,6 @@ common.initForm = function(url, params, method){
 common.isWeixin = function() {
     var ua = window.navigator.userAgent.toLowerCase();
     return ua.match(/MicroMessenger/i) == 'micromessenger';
-};
-
-common.isAPP = function() {
-    var UA = window.navigator.userAgent.toLowerCase();
-    return !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
 };
 
 common.dateStr = function(t) {

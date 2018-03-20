@@ -200,11 +200,14 @@ public class GatewayController
             JSONObject param = getParam(req);
             HttpSession session = req.getSession();
 
-            Long userId = param.getLong("owner");
-            if (userId == null)
-                userId = param.getLong("accountId");
-            if (userId != null)
-                session.setAttribute("userId", userId);
+            Long memberId = param.getLong("owner");
+            if (memberId == null)
+                memberId = param.getLong("accountId");
+            if (memberId != null)
+            {
+                session.setAttribute("userId", 2L);
+                session.setAttribute("memberId", memberId);
+            }
 
             res.put("isSuccess", true);
             res.put("result", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
