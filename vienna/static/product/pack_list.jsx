@@ -74,13 +74,19 @@ var Main = React.createClass({
         this.state.feeRate.push({factors: {}});
         this.forceUpdate();
     },
+    removeItem(i) {
+        this.state.feeRate[i] = {id: this.state.feeRate[i].id};
+        this.forceUpdate();
+    },
     showFee(v) {
         common.req("product/query_rate.json", {productId: v.id, platformId: 2}, r => {
             this.setState({productId: v.id, feeRate: r});
         });
     },
     saveFeeRate() {
-        console.log(this.state.feeRate);
+        common.req("product/save_rate.json", {productId: this.state.productId, platformId: 2, detail: this.state.feeRate}, r => {
+            console.log(r);
+        });
     },
     render() {
         return (
@@ -93,6 +99,7 @@ var Main = React.createClass({
                     </div>
                 </nav>
                 <ProductList ref="list" env={env} parent={this}/>
+
                 <div className="modal fade" id="editor" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog modal-lg" style={{maxWidth:"1200px"}} role="document">
                         <div className="modal-content">
@@ -118,7 +125,7 @@ var Main = React.createClass({
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    { !this.state.feeRate ? null : this.state.feeRate.map(x =>
+                                    { !this.state.feeRate ? null : this.state.feeRate.map((x, i) => x.factors == null ? null :
                                         <tr>
                                             <td width="12%">
                                                 <input type="text" className="form-control" defaultValue={x.begin} onChange={y => {x.begin = y.target.value}}/>
@@ -153,7 +160,7 @@ var Main = React.createClass({
                                                 </select>
                                             </td>
                                             <td>
-                                                <button className="btn btn-outline-danger mr-1">删除</button>
+                                                <button className="btn btn-outline-danger mr-1" onClick={this.removeItem.bind(this, i)}>删除</button>
                                             </td>
                                         </tr>
                                     )}

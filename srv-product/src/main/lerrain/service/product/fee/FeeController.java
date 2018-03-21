@@ -2,6 +2,7 @@ package lerrain.service.product.fee;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -104,6 +105,34 @@ public class FeeController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", cs.listFeeDefine(platformId, productId));
+
+        return res;
+    }
+
+    @RequestMapping("/fee/save_rate.json")
+    @ResponseBody
+    public JSONObject saveRate(@RequestBody JSONObject c)
+    {
+        Log.info(c);
+
+        Long platformId = c.getLong("platformId");
+        Long productId = c.getLong("productId");
+
+        List<FeeDefine> list = new ArrayList<>();
+        JSONArray detail = c.getJSONArray("detail");
+
+        for (int i=0;i<detail.size();i++)
+        {
+            FeeDefine fd = detail.getObject(i, FeeDefine.class);
+            fd.setProductId(productId);
+            fd.setPlatformId(platformId);
+            list.add(fd);
+        }
+
+        cs.saveFeeDefine(platformId, productId, list);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
 
         return res;
     }

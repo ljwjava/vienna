@@ -27,6 +27,11 @@ public class FeeService
 		return feeDao.listFeeRate(platformId, productId);
 	}
 
+	public void saveFeeDefine(Long platformId, Long productId, List<FeeDefine> list)
+	{
+		feeDao.saveFeeRate(platformId, productId, list);
+	}
+
 	public List<FeeDefine> getFeeDefine(Long platformId, Long productId, Map factors, Date time)
 	{
 		List<FeeDefine> r = new ArrayList<>();

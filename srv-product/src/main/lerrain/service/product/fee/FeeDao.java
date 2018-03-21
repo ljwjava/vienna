@@ -56,10 +56,43 @@ public class FeeDao
 			@Override
 			public FeeDefine mapRow(ResultSet rs, int j) throws SQLException
 			{
-				return feeRateOf(rs);
+				return feeRateOf(rs, false);
 			}
 
 		}, productId, platformId);
+	}
+
+	public void saveFeeRate(Long platformId, Long productId, List<FeeDefine> list)
+	{
+		String insert = "insert into t_product_fee_define(platform_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String update = "replace into t_product_fee_define(id, platform_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		for (FeeDefine fd : list)
+		{
+			String sf = Common.trimStringOf(fd.getSaleFee());
+			String ub = Common.trimStringOf(fd.getUpperBonus());
+			String sb = Common.trimStringOf(fd.getSaleBonus());
+
+			if (Common.isEmpty(sf))
+				sf = null;
+			if (Common.isEmpty(ub))
+				ub = null;
+			if (Common.isEmpty(sb))
+				sb = null;
+
+			if (sf != null || ub != null || sb != null)
+			{
+				Map map = fd.getFactors();
+				if (fd == null)
+					jdbc.update(insert, platformId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
+				else
+					jdbc.update(update, fd.getId(), platformId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
+			}
+			else if (fd.getId() != null)
+			{
+				jdbc.update("delete from t_product_fee_define where id = ?", fd.getId());
+			}
+		}
 	}
 
 	public List<FeeDefine> listFeeRate(Long platformId, Long productId, Map rs)
@@ -80,13 +113,13 @@ public class FeeDao
 			@Override
 			public FeeDefine mapRow(ResultSet rs, int j) throws SQLException
 			{
-				return feeRateOf(rs);
+				return feeRateOf(rs, true);
 			}
 
 		}, productId, platformId);
 	}
 
-	private FeeDefine feeRateOf(ResultSet rs) throws SQLException
+	private FeeDefine feeRateOf(ResultSet rs, boolean tran) throws SQLException
 	{
 		Long platformId = rs.getLong("platform_id");
 		Long productId = rs.getLong("product_id");
@@ -108,9 +141,16 @@ public class FeeDao
 		pc.end = end;
 		pc.freeze = freeze;
 		pc.unit = unit;
-		pc.saleFee = valOf(rs.getString("sale_fee"));
-		pc.saleBonus = valOf(rs.getString("sale_bonus"));
-		pc.upperBonus = valOf(rs.getString("upper_bonus"));
+		pc.saleFee = rs.getString("sale_fee");
+		pc.saleBonus = rs.getString("sale_bonus");
+		pc.upperBonus = rs.getString("upper_bonus");
+
+		if (tran)
+		{
+			pc.saleFee = valOf((String)pc.saleFee);
+			pc.saleBonus = valOf((String)pc.saleBonus);
+			pc.upperBonus = valOf((String)pc.upperBonus);
+		}
 
 		Map m = new JSONObject();
 		m.put("pay", pay);
