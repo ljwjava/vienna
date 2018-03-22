@@ -14,7 +14,7 @@ common.url = function(url) {
             server += "api.iyb.tm";
         else if (location.pathname.startsWith("/uat/"))
             server += "api-uat.iyb.tm";
-    } else if (host.indexOf("lerrain") > 0) {
+    } else if (host.indexOf("lerrain") >= 0 || host.indexOf("local") >= 0) {
         return "http://www.lerrain.com:7666/" + url;
 	} else if (host.indexOf("dingl") >= 0) {
         return "http://dingl.51vip.biz:60004/" + url;

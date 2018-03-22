@@ -297,6 +297,7 @@ var Ground = React.createClass({
         }
         let contact = this.refs.contact.val();
         let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");
+        let vehicle = this.refs.insurant.val();
 		let apply = {
 			wareId: env.pack.wareId,
 			wareCode: env.pack.wareCode,
@@ -309,7 +310,8 @@ var Ground = React.createClass({
             couponCode: common.param("couponCode"),
 			factors: this.getPlanFactors(),
 			applicant: env.applicant,
-			insurant: this.refs.insurant.val(),
+			insurant: vehicle, //兼容旧版
+            vehicle: vehicle,
             contact: contact,
 			premium: this.state.premium,
 			smsCode: contact.smsCode,

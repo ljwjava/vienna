@@ -115,6 +115,15 @@ public class ScriptService
 			}
 		});
 
+		functions.put("factors", new Function()
+		{
+			@Override
+			public Object run(Object[] objects, Factors factors)
+			{
+				return ((Commodity)objects[0]).getFactors();
+			}
+		});
+
 		functions.put("getPremium", new Function()
 		{
 			@Override
