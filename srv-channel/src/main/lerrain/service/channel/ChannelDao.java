@@ -163,7 +163,7 @@ public class ChannelDao
             @Override
             public FeeDefine mapRow(ResultSet m, int arg1) throws SQLException
             {
-                return feeDefineOf(m.getLong("product_id"), m);
+                return feeDefineOf(Common.toLong(m.getObject("product_id")), m);
             }
         });
     }
@@ -180,7 +180,7 @@ public class ChannelDao
         if (insure != null)
             sql.append(" and (insure is null or insure = '" + insure + "')");
 
-        sql.append(" order by sequence desc");
+        sql.append(" order by sequence");
 
         return jdbc.query(sql.toString(), new Object[] {platformId, agencyId, agencyId, productId}, new RowMapper<FeeDefine>()
         {
@@ -252,6 +252,7 @@ public class ChannelDao
     private Map billOf(ResultSet rs) throws SQLException
     {
         Map m = new HashMap();
+        m.put("productId", rs.getLong("product_id"));
         m.put("amount", rs.getDouble("amount"));
         m.put("estimate", rs.getDate("estimate"));
         m.put("payTime", rs.getDate("pay"));

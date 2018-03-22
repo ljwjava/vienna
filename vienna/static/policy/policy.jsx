@@ -238,6 +238,7 @@ var FeeList = React.createClass({
         return (
 			<tr key={v.id}>
 				<td>渠道费用</td>
+				<td>{v.productName}</td>
 				<td>{v.amount}</td>
 				<td>{estimateDate}</td>
 				<td>{env.dict.feeStatus[v.status]}</td>
@@ -253,6 +254,7 @@ var FeeList = React.createClass({
 					<thead className="thead-light">
 					<tr>
 						<th>费用类型</th>
+						<th>条款</th>
 						<th>金额（元）</th>
 						<th>预计结算时间</th>
 						<th>发放状态</th>
