@@ -53,6 +53,7 @@ public class Policy
     String insurantCertNo;
     String insurantCertType;
 
+    String vehicleEngineNo;
     String vehicleFrameNo;
     String vehiclePlateNo;
 
@@ -204,6 +205,16 @@ public class Policy
     public void setVehiclePlateNo(String vehiclePlateNo)
     {
         this.vehiclePlateNo = vehiclePlateNo;
+    }
+
+    public String getVehicleEngineNo()
+    {
+        return vehicleEngineNo;
+    }
+
+    public void setVehicleEngineNo(String vehicleEngineNo)
+    {
+        this.vehicleEngineNo = vehicleEngineNo;
     }
 
     public Long getId()

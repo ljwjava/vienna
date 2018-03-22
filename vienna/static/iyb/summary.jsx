@@ -51,10 +51,28 @@ var Summary = React.createClass({
 			} else if (item.type == "html") {
 				content = <div className="html" dangerouslySetInnerHTML={{__html:item.content}}/>;
 			} else if (item.type == "dhtml") {
-				let str = item.content;
-				if (this.props.vals) for (var i=0;i<item.vals.length;i++) {
-					str = str.replace(new RegExp("[$]" + (i+1) + "[$]",'gm'), this.props.vals[item.vals[i]]);
-				}
+                let str = "";
+				if (typeof item.content == "string") {
+					str = item.content;
+                    if (this.props.vals) {
+                    	for (var i = 0; i < item.vals.length; i++) {
+                            str = str.replace(new RegExp("[$]" + (i + 1) + "[$]", 'gm'), this.props.vals[item.vals[i]]);
+                        }
+                        for (var v in this.props.vals) {
+                            str = str.replace(new RegExp("[$]" + v + "[$]", 'gm'), this.props.vals[v]);
+                        }
+                    }
+                } else if (typeof item.content == "object") {
+                    item.content.map(v => {
+                    	if (typeof v == "string")
+	                        str = str + v;
+                    	else if (this.props.vals && this.props.vals[v.name])
+                    		str = str + v.html;
+                    });
+                    if (this.props.vals) for (var v in this.props.vals) {
+                        str = str.replace(new RegExp("[$]" + v + "[$]", 'gm'), this.props.vals[v]);
+                    }
+                }
 				content = <div className="html" dangerouslySetInnerHTML={{__html:str}}/>;
 			}
 			return (

@@ -130,6 +130,7 @@ public class PolicyController
         policy.setInsurantName(p.getString("insurantName"));
         policy.setInsurantCertNo(p.getString("insurantCertNo"));
         policy.setInsurantCertType(p.getString("insurantCertType"));
+        policy.setVehicleEngineNo(p.getString("vehicleEngineNo"));
         policy.setVehicleFrameNo(p.getString("vehicleFrameNo"));
         policy.setVehiclePlateNo(p.getString("vehiclePlateNo"));
 
