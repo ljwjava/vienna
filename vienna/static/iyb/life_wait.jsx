@@ -478,7 +478,7 @@ var Ground = React.createClass({
         if (t == 1) {
 			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png", hasReturnVisit: (env.order.detail.returnVisit != null)};
             try{this.getUseableCountByOrderNo();}catch (e){}
-            try{this.refs.returnVisit.setState({order: env.order, isConfirm: false && (env.order.extra.isConfirmReturnVisit == true)});}catch(e){}
+            try{this.refs.returnVisit.setState({order: env.order, isConfirm: env.order.extra.isConfirmReturnVisit == true});}catch(e){}
         } else if (t == 20)
 			s = {modify:2, title:"核保失败", text:text, memo:failText, icon:"images/insure_fail.png"};
 		else if (t == 21)
