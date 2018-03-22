@@ -17,7 +17,6 @@ public class DictController
 
     @RequestMapping("/reset")
     @ResponseBody
-    @CrossOrigin
     public String reset()
     {
         dictSrv.reset();
@@ -26,7 +25,6 @@ public class DictController
 
     @RequestMapping("/view.json")
     @ResponseBody
-    @CrossOrigin
     public JSONObject dict(@RequestBody JSONObject p)
     {
         String company = p.getString("company");

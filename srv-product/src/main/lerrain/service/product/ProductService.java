@@ -14,7 +14,7 @@ public class ProductService
 	{
 	}
 
-	public Long save(Long id, String code, String name, Long companyId, int type)
+	public Long save(Long id, String code, String name, Long companyId, int type, Long categoryId)
 	{
 		if (companyId == null)
 			throw new RuntimeException("companyId不能为空");
@@ -23,6 +23,6 @@ public class ProductService
 		if (Common.isEmpty(code))
 			code = null;
 
-		return productDao.save(id, code, name, companyId, type);
+		return productDao.save(id, code, name, companyId, type, categoryId);
 	}
 }
