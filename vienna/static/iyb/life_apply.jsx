@@ -216,7 +216,7 @@ class ContactForm extends Form {
         try{
             env.slider = new ClickIdentifyControl({
                 container: "#sliderBox", //必填 容器id
-                sId: "iyunbao_h5#prd#activity_1",  // 必填 埋点场景ID
+                sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID
                 host: "https://af.zhongan.io", //https://test-af.zhongan.io  或者 https://af.zhongan.io
                 placeholdLabel: "智能检测中",  // 可选， loading时显示内容 可以根据业务场景更改内容
                 onSuccess: (did, token, sId) => {
@@ -863,7 +863,7 @@ var Ground = React.createClass({
 				<div className="title">通讯信息</div>
 				<div className="form" style={{position: "relative"}}>
 					<ContactForm ref="contact" defVal={app}/>
-					<div id="sliderBox" className="slider-style" style={{position: "absolute", width: "auto", height: "40px", right: "20px", bottom: "65px", opacity: "0", pointerEvents: "none"}}/>
+					<div id="sliderBox" className="slider-style" style={{position: "absolute", width: "auto", height: "40px", right: "20px", bottom: "80px", opacity: "0", pointerEvents: "none"}}/>
 				</div>
 
 				<div className="console">
