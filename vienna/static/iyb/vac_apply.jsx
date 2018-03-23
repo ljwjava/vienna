@@ -129,11 +129,99 @@ class ContactForm extends Form {
             return;
         }
         this.countDown(-1);
-		let phone = this.refs.mobile.val();
-		common.req("util/sms.json", {platformId: 2, tokenId:env.tokenId, phone:phone}, r => {
-			env.smsKey = phone;
-		});
+        this.securityRc();
 	}
+    initSlider() {
+        try{
+            env.slider = new ClickIdentifyControl({
+                container: "#sliderBox", //必填 容器id
+                sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID
+                host: "https://af.zhongan.io", //https://test-af.zhongan.io  或者 https://af.zhongan.io
+                placeholdLabel: "智能检测中",  // 可选， loading时显示内容 可以根据业务场景更改内容
+                onSuccess: (did, token, sId) => {
+                    env.tokenId = token;
+                    this.afTicket(sId, did, token);
+                },
+                onFail: () => {
+                    if(this.refs.mobile.verify() == null){
+                        env.slider.setPayload({
+                            phone: this.refs.mobile.val()
+                        });
+                        env.slider.startAnalyze();
+                    }
+                },
+                onCloseDialog: () => {
+                    if(this.refs.mobile.verify() == null){
+                        env.slider.setPayload({
+                            phone: this.refs.mobile.val()
+                        });
+                        env.slider.startAnalyze();
+                    }
+                },
+                onDunkeyLoad: () => {
+                    let phone = this.refs.mobile.val();
+                    env.slider.setPayload({
+                        phone: phone
+                    });
+                    env.slider.startAnalyze();
+                }
+                //其它可选参数
+                // width:宽度  height: 高度 backgroundColor:背景色  host: 服务端地址   dunkeyhost：设备指纹服务地址
+            });
+        }catch(e){}
+    }
+    // 风险检查，并发送短信
+    securityRc() {
+        let furl = getUrl("facilities");
+        $.ajax({url:furl + "open/v1/common/security/rc", type:"GET", data:{bizType: 'insure_verify', data: this.refs.mobile.val()}, async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8',
+            success: (r)=> {
+                if (r.isSuccess+"" == "true") {
+                    if(!!r.result){
+                        if(parseInt(r.result.riskLevel) == 0) {
+                            this.sendSmsCode(r.result.ticket);
+                        }else{
+                            if(r.result.verifyType == "af") {
+                                env.sTokenId = r.result.sTokenId;
+                                this.initSlider();
+                            }else{
+                                ToastIt("风险验证异常");
+                            }
+                        }
+                    }
+                } else {
+                    ToastIt(r.errorMsg);
+                }
+            }, fail: (r) => {
+                ToastIt("访问短信服务器失败");
+            }, dataType:"json"});
+    }
+    // 反欺诈服务校验
+    afTicket(sid, did, token) {
+        let furl = getUrl("facilities");
+        $.ajax({url:furl + "open/v1/common/security/af/ticket", type:"POST", data:JSON.stringify({token: token, did: did, sid: sid, bizType: 'insure_verify', data: this.refs.mobile.val(), sTokenId: env.sTokenId}), async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8',
+            success: (r)=> {
+                if (r.success+"" == "true") {
+                    if(!!r.result){
+                        env.ticket = r.result.ticket;
+                        this.sendSmsCode(env.ticket);
+                    }
+                } else {
+                    ToastIt(r.message);
+                }
+            }, fail: (r) => {
+                ToastIt("访问短信服务器失败");
+            }, dataType:"json"});
+    }
+    // 发送短信验证码
+    sendSmsCode(ticket){
+        common.req("util/sms.json", {platformId: 2, ticket:ticket, phone:this.refs.mobile.val()}, r => {
+            if(r.isSuccess){
+                env.smsKey = this.refs.mobile.val();
+            } else {
+                ToastIt(r.errorMsg);
+            }
+        });
+    }
     countDown(k){
         let cc = this.state.show;
         if((!cc || cc <= 0) && k == -1){
@@ -406,8 +494,9 @@ var Ground = React.createClass({
 					</div>
 				}
 				<div className="title">通讯信息</div>
-				<div className="form">
+				<div className="form" style={{position: "relative"}}>
 					<ContactForm ref="contact" defVal={cnt}/>
+					<div id="sliderBox" className="slider-style" style={{position: "absolute", width: "auto", height: "40px", right: "20px", bottom: "80px", opacity: "0", pointerEvents: "none"}}/>
 				</div>
 				<div className="console">
 					<div className="tab">
@@ -428,7 +517,22 @@ var draw = function(defVal) {
 	ReactDOM.render(
 		<Ground defVal={defVal}/>, document.getElementById("content")
 	);
-}
+};
+
+var getUrl = function(key){
+    if(!env.url){
+        common.reqSync("util/env_conf.json", {}, r => {
+            if(!!r && !!r.url) {
+                env.url = r.url;
+            }
+        }, r => {});
+    }
+    if(key == null || key == ""){
+        return env.url;
+    }else{
+        return env.url[key];
+    }
+};
 
 $(document).ready( function() {
 	env.orderId = common.param("orderId");
@@ -461,14 +565,7 @@ $(document).ready( function() {
 			}
 		});
 	}
-
-	try {
-		pointman.use('do', () => {
-			let config = pointman.getConfig();
-			env.tokenId = encodeURIComponent(config.token);
-		});
-	} catch(e){}
-
+    getUrl();
     if ("undefined" != typeof iHealthBridge) {
         window.IYB.setRightButton(JSON.stringify([]));
     }

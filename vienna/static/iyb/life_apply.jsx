@@ -296,7 +296,11 @@ class ContactForm extends Form {
     // 发送短信验证码
     sendSmsCode(ticket){
         common.req("util/sms.json", {platformId: 2, ticket:ticket, phone:this.refs.mobile.val()}, r => {
-            env.smsKey = this.refs.mobile.val();
+            if(r.isSuccess){
+                env.smsKey = this.refs.mobile.val();
+            } else {
+                ToastIt(r.errorMsg);
+            }
         });
     }
     countDown(k){
