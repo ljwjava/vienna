@@ -33,11 +33,12 @@ public class ProductController
 
         Long clauseId = p.getLong("id");
         Long companyId = p.getLong("companyId");
+        Long categoryId = p.getLong("categoryId");
         String clauseCode = p.getString("code");
         String clauseName = p.getString("name");
         int type = p.getIntValue("type");
 
-        clauseId = productSrv.save(clauseId, clauseCode, clauseName, companyId, type);
+        clauseId = productSrv.save(clauseId, clauseCode, clauseName, companyId, type, categoryId);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");

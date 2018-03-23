@@ -71,7 +71,7 @@ var Main = React.createClass({
         });
     },
     addItem() {
-        this.state.feeRate.push({factors: {}});
+        this.state.feeRate.push({factors: {pay: "ALL", insure: "ALL"}, freeze: 19, unit: 3});
         this.forceUpdate();
     },
     removeItem(i) {
@@ -120,6 +120,7 @@ var Main = React.createClass({
                                         <th>基础</th>
                                         <th>上线</th>
                                         <th>奖励</th>
+                                        <th>冻结</th>
                                         <th>单位</th>
                                         <th>操作</th>
                                     </tr>
@@ -143,16 +144,19 @@ var Main = React.createClass({
                                                     { env.termList.map(t => <option value={t}>{strOf(t, "全部")}</option>) }
                                                 </select>
                                             </td>
-                                            <td width="18%">
+                                            <td width="12%">
                                                 <input type="text" className="form-control" defaultValue={x.saleFee} onChange={y => {x.saleFee = y.target.value}}/>
                                             </td>
-                                            <td width="10%">
+                                            <td width="8%">
                                                 <input type="text" className="form-control" defaultValue={x.upperBonus} onChange={y => {x.upperBonus = y.target.value}}/>
                                             </td>
-                                            <td width="10%">
+                                            <td width="8%">
                                                 <input type="text" className="form-control" defaultValue={x.saleBonus} onChange={y => {x.saleBonus = y.target.value}}/>
                                             </td>
-                                            <td>
+                                            <td width="8%">
+                                                <input type="text" className="form-control" defaultValue={x.freeze} onChange={y => {x.freeze = y.target.value}}/>
+                                            </td>
+                                            <td width="12%">
                                                 <select className="form-control" defaultValue={x.unit} onChange={y => {x.unit = y.target.value}}>
                                                     <option value="3">百分比</option>
                                                     <option value="1">比例</option>

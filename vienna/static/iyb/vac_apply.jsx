@@ -310,8 +310,7 @@ var Ground = React.createClass({
             couponCode: common.param("couponCode"),
 			factors: this.getPlanFactors(),
 			applicant: env.applicant,
-			insurant: vehicle, //兼容旧版
-            vehicle: vehicle,
+			insurant: vehicle,
             contact: contact,
 			premium: this.state.premium,
 			smsCode: contact.smsCode,
