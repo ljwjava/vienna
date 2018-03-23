@@ -1,0 +1,10 @@
+<link href="https://af.zhongan.io/antiSlider.min.css" rel="stylesheet" />
+
+<script type="text/javascript" src="https://af.zhongan.io/dunkey.js"></script>
+<script src="https://af.zhongan.io/antiSlider.min.js"></script>
+
+<style>
+    .za-id-dialog {
+
+    }
+</style>
