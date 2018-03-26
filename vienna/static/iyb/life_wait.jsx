@@ -285,7 +285,7 @@ var LotteryBox = React.createClass({
 var ReturnVisitBox = React.createClass({
     getInitialState(){
         let order = this.props.order;
-        return {isShow: false, order: order, callback: this.props.cb, isConfirm: false};
+        return {isShow: false, order: order, callback: this.props.cb, isConfirmReturnVisit: false};
     },
 	val() {
     	let res = [];
@@ -309,7 +309,7 @@ var ReturnVisitBox = React.createClass({
     componentDidMount(){
     },
     confirmVisit(){
-        if(this.state.callback && !this.state.isConfirm){
+        if(this.state.callback && !this.state.isConfirmReturnVisit) {
             this.state.callback(this);
         }
         this.setState({isShow: false});
@@ -403,7 +403,7 @@ var ReturnVisitBox = React.createClass({
 					<div className="console">
 						<div className="tab">
 							<div className="row">
-								<div className="col right" onClick={this.confirmVisit.bind(this)}>{this.state.isConfirm ? "您已完成以上回访内容" : "确认以上回访内容"}</div>
+								<div className="col right" onClick={this.confirmVisit.bind(this)}>{this.state.isConfirmReturnVisit ? "您已完成以上回访内容" : "确认以上回访内容"}</div>
 							</div>
 						</div>
 					</div>
@@ -418,7 +418,7 @@ var Ground = React.createClass({
 	intervalId: null,
 	getInitialState() {
 		// ，投保成功后可获得抽奖机会哦
-		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面", memo:"", modify:0, icon:"images/insure_succ.png", order: null};
+		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面", memo:"", modify:0, icon:"images/insure_succ.png", order: null, isConfirmReturnVisit: false, isConfirmCorrect: false, hasCorrect: false, correctUrl: null};
 	},
 	back(step) {
 		common.req("order/restore.json", {orderId: env.order.id}, r => {
@@ -476,9 +476,10 @@ var Ground = React.createClass({
         	failText = !!vd.failTips ? vd.failTips : "请修改后重新提交";
 
         if (t == 1) {
-			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png", hasReturnVisit: (env.order.detail.returnVisit != null)};
+			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png", hasReturnVisit: (env.order.detail.returnVisit != null), isConfirmReturnVisit: (env.order.extra.isConfirmReturnVisit == true), hasCorrect: (env.order.extra.isConfirmCorrect != true && env.order.extra.returnNextUrl), isConfirmCorrect: (env.order.extra.isConfirmCorrect == true), correctUrl: env.order.extra.returnNextUrl};
+			console.log(s);
             try{this.getUseableCountByOrderNo();}catch (e){}
-            try{this.refs.returnVisit.setState({order: env.order, isConfirm: env.order.extra.isConfirmReturnVisit == true});}catch(e){}
+            try{this.refs.returnVisit.setState({order: env.order, isConfirmReturnVisit: env.order.extra.isConfirmReturnVisit == true});}catch(e){}
         } else if (t == 20)
 			s = {modify:2, title:"核保失败", text:text, memo:failText, icon:"images/insure_fail.png"};
 		else if (t == 21)
@@ -603,10 +604,13 @@ var Ground = React.createClass({
         common.req("sale/return_visit.json", {orderId: env.order.id, params: this.refs.returnVisit.val()}, r => {
         	if(r.success){
                 ToastIt("在线回访成功！");
-                if(r.nextUrl != null) {
-                    document.location.href = r.nextUrl;
-				}
-                _this.refs.returnVisit.setState({isConfirm: true});
+                // if(r.nextUrl != null) {
+                 //    // document.location.href = r.nextUrl;
+                 //    _this.gotoCorrect(r.nextUrl);
+				// }
+				let returnNextUrl = r.nextUrl;
+                _this.refs.returnVisit.setState({isConfirmReturnVisit: true});
+                _this.setState({hasCorrect: !!returnNextUrl, correctUrl: returnNextUrl, isConfirmReturnVisit: true});
 			}else{
                 ToastIt(r.errMsg);
 			}
@@ -614,9 +618,17 @@ var Ground = React.createClass({
             if(r != null){
                 ToastIt(r);
             }
-            _this.refs.returnVisit.setState({isConfirm: false});
+            _this.refs.returnVisit.setState({isConfirmReturnVisit: false, isConfirmCorrect: false});
         });
 	},
+    gotoCorrect(){
+        if(!this.state.isConfirmCorrect){
+            // 是否已做批改
+            document.location.href = this.state.correctUrl;
+        }else{
+            ToastIt("您已提交详细地址变更");
+		}
+    },
    	render() {
 		return (
 			<div className="graph" style={{maxWidth: "750px", minWidth: "320px", margin: "0 auto"}}>
@@ -639,9 +651,15 @@ var Ground = React.createClass({
 						</div>
 					}
 					{
-						!this.state.hasReturnVisit ? null :
+						(!this.state.hasReturnVisit || this.state.isConfirmReturnVisit) ? null :
 							<div style={{paddingBottom:"5px"}}>
-								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.showReturnVisit}>在线回访</div>
+								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.showReturnVisit.bind(this)}>在线回访</div>
+							</div>
+					}
+					{
+						(!this.state.hasCorrect || this.state.isConfirmCorrect) ? null :
+							<div style={{paddingBottom:"5px"}}>
+								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.gotoCorrect.bind(this)}>变更详细地址</div>
 							</div>
 					}
 				</div>

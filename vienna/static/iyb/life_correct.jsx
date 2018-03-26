@@ -164,7 +164,8 @@ var Ground = React.createClass({
             appQuest: false,
             insurant: false,
             dict: false,
-            isSubmit: false
+            isSubmit: false,
+            isConfirmCorrect: false
         };
     },
     componentDidMount() {
@@ -185,7 +186,8 @@ var Ground = React.createClass({
                 }
             }
             var ins = this.props.defVal.insurant != null || (env.formOpt.insurant.relation.length > 0 && (env.formOpt.insurant.relation[0][0] != env.formOpt.relationSelf));
-            this.setState({form:r.form, insurant:ins}, () => {
+            console.log(env.order.extra);
+            this.setState({form:r.form, insurant:ins, isConfirmCorrect: (env.order.extra.isConfirmCorrect == true)}, () => {
                 if (this.props.defVal.packId) {
                     this.refs.applicant.verifyAll();
                     if (this.refs.insurant)
@@ -222,16 +224,19 @@ var Ground = React.createClass({
                 applicant: env.applicant
 			}
 		};
-console.log(params);
 
         // 判断是否可提交
 		if(this.state.isSubmit){
             ToastIt("数据提交中，请耐心等待");
             return false;
         }
+        if(this.state.isConfirmCorrect) {
+            ToastIt("您已成功完成地址信息修改，无需重复变更");
+            return false;
+        }
         this.setState({isSubmit: true}, ()=>{
             common.req("sale/correct.json", params, r => {
-                this.setState({isSubmit: false});
+                this.setState({isSubmit: false, isConfirmCorrect: !!r.success});
                 if(r.success){
                     ToastIt("在线批改成功！");
                     document.location.href = "life_wait.mobile?orderId=" + env.orderId;
@@ -259,7 +264,7 @@ console.log(params);
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
         return (
 			<div className="graph">
-				<div style={{backgroundColor: "rgb(1, 193, 244)", padding: "15px", fontWeight: "bold", color: "#fff"}}>尊敬的客户您好，请您更新并确认下您的投保信息</div>
+				<div style={{backgroundColor: "rgb(1, 193, 244)", padding: "15px", fontWeight: "bold", color: "#fff"}}>尊敬的客户您好，请您更新并确认下您的投保地址信息</div>
 				<div className="title" style={{textAlign: "left"}}>投保人信息</div>
 				<div className="form">
 					<ApplicantForm ref="applicant" defVal={app} onRefresh={null}/>
@@ -267,7 +272,7 @@ console.log(params);
 				<div className="console">
 					<div className="tab">
 						<div className="row">
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : "确认提交"}</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : (this.state.isConfirmCorrect ? "您已完成变更" : "确认提交")}</div>
 						</div>
 					</div>
 				</div>
@@ -286,6 +291,7 @@ $(document).ready( function() {
     env.orderId = common.param("orderId");
     if (env.orderId != null && env.orderId != "") {
         common.req("order/view.json", {orderId: env.orderId}, r => {
+            env.order = r;
             env.packId = r.productId;
             env.brokerId = r.owner;
             if (r.detail != null) {
@@ -295,9 +301,9 @@ $(document).ready( function() {
             }
         });
     }
-    document.title = "在线批改";
+    document.title = "地址在线批改";
     if ("undefined" != typeof iHealthBridge) {
-        IYB.setTitle("在线批改");
+        IYB.setTitle("地址在线批改");
     }
 });
 
