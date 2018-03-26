@@ -13,9 +13,16 @@
 			<item name="PROTON_INS" value="true" type="boolean"/>
 		</init>
 
+	   <attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="COMMON_MEDICAL">AMOUNT</item>
+				<item name="CANCER_MEDICAL">AMOUNT</item>
+			</fgraph>
+		</attachment>
+
 		<input>
-			<item name="SOCIAL_INS" label="社保1" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
-			<item name="PROTON_INS" label="质子重离子治疗2" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+			<item name="SOCIAL_INS" label="社保" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+			<item name="PROTON_INS" label="质子重离子治疗(100%赔付)" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
 		</input>
 
 		<param>
