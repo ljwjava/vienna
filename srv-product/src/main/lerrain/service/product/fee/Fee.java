@@ -14,6 +14,7 @@ public class Fee
     Long id;
     Long platformId;
     Long vendorId;
+    Long payer;
     Long drawer;
 
     int bizType;
@@ -183,6 +184,16 @@ public class Fee
     public void setStatus(int status)
     {
         this.status = status;
+    }
+
+    public Long getPayer()
+    {
+        return payer;
+    }
+
+    public void setPayer(Long payer)
+    {
+        this.payer = payer;
     }
 
     public Long getDrawer()

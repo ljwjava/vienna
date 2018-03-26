@@ -99,7 +99,7 @@ public class ChannelController
 		Integer insure = p.getInteger("insure");
 		Integer unit = p.getInteger("unit");
 
-		channelSrv.addItem(contractId, clauseId, unit, pay, insure, null);
+		channelSrv.addItem(contractId, clauseId, unit, pay, insure, null, null);
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
@@ -141,12 +141,13 @@ public class ChannelController
 			JSONObject item = detail.getJSONObject(i);
 			Long itemId = item.getLong("itemId");
 
+			JSONArray rate = item.getJSONArray("rate");
+			Double tech = item.getDouble("tech");
+			Integer unit = item.getInteger("unit");
+
 			if (itemId == null)
 			{
-				JSONArray rate = item.getJSONArray("rate");
-				Integer unit = item.getInteger("unit");
-
-				if (rate != null && unit != null)
+				if ((tech != null || rate != null) && unit != null)
 				{
 					Long productId = item.getLong("productId");
 
@@ -157,21 +158,18 @@ public class ChannelController
 					for (int j = 0; j < rate.size(); j++)
 						val[j] = rate.getDouble(j);
 
-					channelSrv.addItem(contractId, productId, unit, pay, insure, val);
+					channelSrv.addItem(contractId, productId, unit, pay, insure, tech, val);
 				}
 			}
 			else
 			{
-				JSONArray rate = item.getJSONArray("rate");
-				Integer unit = item.getInteger("unit");
-
-				if (rate != null && unit != null)
+				if ((tech != null || rate != null) && unit != null)
 				{
 					Double[] val = new Double[rate.size()];
 					for (int j = 0; j < rate.size(); j++)
 						val[j] = rate.getDouble(j);
 
-					channelSrv.updateItem(itemId, unit, val);
+					channelSrv.updateItem(itemId, unit, tech, val);
 				}
 
 				itemIdList.remove(itemId);
@@ -297,9 +295,10 @@ public class ChannelController
 			Long productId = b.getLong("productId");
 			Double amount = b.getDouble("amount");
 			Date time = b.getDate("estimate");
+			int type = Common.intOf(b.get("type"), 1);
 
 			if (amount != null)
-				channelSrv.bill(platformId, productId, payer, drawer, bizType, bizId, bizNo, vendorId, amount, time);
+				channelSrv.bill(platformId, productId, payer, drawer, bizType, bizId, bizNo, vendorId, amount, type, time);
 		}
 
 		JSONObject res = new JSONObject();

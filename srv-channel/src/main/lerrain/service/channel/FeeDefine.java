@@ -17,6 +17,7 @@ public class FeeDefine
     Long productId;
     String pay, insure;
 
+    BigDecimal tech;
     BigDecimal[] rate;
     int unit;
 
@@ -140,6 +141,16 @@ public class FeeDefine
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public BigDecimal getTech()
+    {
+        return tech;
+    }
+
+    public void setTech(BigDecimal tech)
+    {
+        this.tech = tech;
     }
 
     public boolean match(Date now)

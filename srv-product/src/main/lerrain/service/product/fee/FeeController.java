@@ -66,6 +66,7 @@ public class FeeController
             Fee r = new Fee();
             r.id = Common.toLong(c.get("id")); //
             r.platformId = Common.toLong(c.get("platformId"));
+            r.payer = Common.toLong(c.get("payer"));
             r.drawer = Common.toLong(c.get("drawer"));
             r.productId = Common.trimStringOf(c.get("productId"));
             r.vendorId = Common.toLong(c.get("vendorId"));

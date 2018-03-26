@@ -4,6 +4,7 @@ import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -61,6 +62,43 @@ public class TimeFX extends HashMap<String, Object>
                 }
 
                 return new Date().getTime();
+            }
+        });
+
+        this.put("year", new Function()
+        {
+            @Override
+            public Object run(Object[] v, Factors factors)
+            {
+                Calendar cal = Calendar.getInstance();
+                if (v != null && v.length > 0)
+                    cal.setTime(Common.dateOf(v[0]));
+                return cal.get(Calendar.YEAR);
+            }
+        });
+
+
+        this.put("month", new Function()
+        {
+            @Override
+            public Object run(Object[] v, Factors factors)
+            {
+                Calendar cal = Calendar.getInstance();
+                if (v != null && v.length > 0)
+                    cal.setTime(Common.dateOf(v[0]));
+                return cal.get(Calendar.MONTH) + 1;
+            }
+        });
+
+        this.put("day", new Function()
+        {
+            @Override
+            public Object run(Object[] v, Factors factors)
+            {
+                Calendar cal = Calendar.getInstance();
+                if (v != null && v.length > 0)
+                    cal.setTime(Common.dateOf(v[0]));
+                return cal.get(Calendar.DAY_OF_MONTH);
             }
         });
 

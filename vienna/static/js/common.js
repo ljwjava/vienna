@@ -309,6 +309,10 @@ common.dateStr = function(t) {
     return new Date(t).format("yyyy-MM-dd");
 };
 
+common.round = function(v, s) {
+	return v == null || v == "" ? null : Number(v).toFixed(s);
+};
+
 common.timeStr = function(t) {
     if (t == null)
         return null;

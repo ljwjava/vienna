@@ -47,6 +47,7 @@ var Contract = React.createClass({
 				pay: v.pay,
 				insure: v.insure,
 				unit: v.unit,
+                tech: v.tech,
 				rate: v.rate
             }
 		});
@@ -77,7 +78,8 @@ var Contract = React.createClass({
             productId: this.refs.clause.value,
             pay: this.refs.pay.value,
 			insure: this.refs.insure.value,
-			rate: [0, 0, 0, 0, 0],
+            tech: null,
+			rate: [null, null, null, null, null],
 			unit: this.refs.unit.value
 		});
         this.forceUpdate();
@@ -154,7 +156,8 @@ var Contract = React.createClass({
 								<th>条款</th>
 								<th>交费</th>
 								<th>保障</th>
-								<th>收入</th>
+								<th>代理手续费</th>
+                                <th>技术服务费</th>
 								<th>单位</th>
 								<th>操作</th>
 							</tr>
@@ -165,15 +168,18 @@ var Contract = React.createClass({
 										<td>{x.productId == null ? "全部" : strOf(env.clauses[x.productId], x.productId)}</td>
 										<td>{strOf(x.pay, "全部")}</td>
 										<td>{strOf(x.insure, "全部")}</td>
-										<td style={{width:"30%", padding:"6px"}}>
-											<div className="form-inline">
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[0]} onChange={y => {x.rate[0] = y.target.value}}/>
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[1]} onChange={y => {x.rate[1] = y.target.value}}/>
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[2]} onChange={y => {x.rate[2] = y.target.value}}/>
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[3]} onChange={y => {x.rate[3] = y.target.value}}/>
-												<input type="text" className="form-control col-2" defaultValue={x.rate[4]} onChange={y => {x.rate[4] = y.target.value}}/>
-											</div>
-										</td>
+                                        <td style={{width:"30%", padding:"6px"}}>
+                                            <div className="form-inline">
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[0]} onChange={y => {x.rate[0] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[1]} onChange={y => {x.rate[1] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[2]} onChange={y => {x.rate[2] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[3]} onChange={y => {x.rate[3] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2" defaultValue={x.rate[4]} onChange={y => {x.rate[4] = y.target.value}}/>
+                                            </div>
+                                        </td>
+                                        <td style={{width:"6%", padding:"6px"}}>
+                                            <input type="text" className="form-control" defaultValue={x.tech} onChange={y => {x.tech = y.target.value}}/>
+                                        </td>
 										<td style={{padding:"6px"}}>
 											<select className="form-control" defaultValue={x.unit} onChange={y => {x.unit = y.target.value}}>
 												<option value="3">保费百分比</option>
