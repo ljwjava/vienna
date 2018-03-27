@@ -842,6 +842,10 @@ var Ground = React.createClass({
 
         let app = this.props.defVal.applicant == null ? {} : this.props.defVal.applicant;
         let ins = this.props.defVal.insurant == null ? {} : this.props.defVal.insurant;
+
+        if(env.formOpt.insurant.relation[0][0] != env.formOpt.relationSelf && JSON.stringify(ins) == "{}"){
+            ins = app;
+        }
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
