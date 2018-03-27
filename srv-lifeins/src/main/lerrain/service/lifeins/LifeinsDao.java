@@ -41,6 +41,7 @@ public class LifeinsDao
                 Company company = lifeins.getCompany(rs.getString("company"));
 
                 JSONObject init = JSON.parseObject(rs.getString("init"));
+                JSONObject param = JSON.parseObject(rs.getString("param"));
                 JSONArray detail = JSON.parseArray(rs.getString("detail"));
 
                 Insurance ins = new Insurance();

@@ -190,7 +190,7 @@ public class EnvDao
 
                 try
                 {
-                    Function f = new InnerFunction(p.getCode() + "/" + consName, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), lockEnv ? p.getStack() : null);
+                    Function f = new InnerFunction(p.getCode() + "/" + consName, Script.scriptOf(p.getCode() + "/" + consName, script), Common.isEmpty(params) ? null : params.split(","), lockEnv ? p.getStack() : null);
 
                     String[] allName;
                     if (Common.isEmpty(otherNames))
