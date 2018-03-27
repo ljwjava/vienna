@@ -59,6 +59,32 @@ public class DevelopController
         return "success";
     }
 
+    @RequestMapping("/admin/log/open")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject logOpen(@RequestBody JSONObject req)
+    {
+        Script.STACK_MESSAGE = true;
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/admin/log/fold")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject logFold(@RequestBody JSONObject req)
+    {
+        Script.STACK_MESSAGE = false;
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
     @RequestMapping("/develop/list_gateway.json")
     @ResponseBody
     @CrossOrigin

@@ -49,6 +49,9 @@
 				投保人年龄不能大于50周岁
 			</if>
 
+			<if condition="PAY_VALUE == 70 and INSURE_VALUE != 70">
+				只有选择保至70周岁时，才能选择交至70周岁
+			</if>
 			<if condition="AGE >= 41 and AGE le 45 and PAY_VALUE >= 30">
 				41~45周岁，可选5/10/25年交
 			</if>

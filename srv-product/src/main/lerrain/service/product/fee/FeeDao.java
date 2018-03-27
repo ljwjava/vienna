@@ -164,8 +164,8 @@ public class FeeDao
 	{
 		c.setId(tools.nextId("fee"));
 
-		jdbc.update("insert into t_product_fee(id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, type, unit, estimate, freeze, pay, status, platform_id, drawer, auto, memo, extra, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-				c.getId(), c.getBizType(), c.getBizId(), c.getBizNo(), c.getProductId(), c.getVendorId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getDrawer(), c.isAuto() ? "Y" : "N", c.getMemo(), JSON.toJSONString(c.getExtra()), c.getCreateTime());
+		jdbc.update("insert into t_product_fee(id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, type, unit, estimate, freeze, pay, status, platform_id, payer, drawer, auto, memo, extra, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+				c.getId(), c.getBizType(), c.getBizId(), c.getBizNo(), c.getProductId(), c.getVendorId(), c.getAmount(), c.getType(), c.getUnit(), c.getEstimate(), c.getFreeze(), null, 0, c.getPlatformId(), c.getPayer(), c.getDrawer(), c.isAuto() ? "Y" : "N", c.getMemo(), JSON.toJSONString(c.getExtra()), c.getCreateTime());
 
 		return c.getId();
 	}
@@ -235,6 +235,7 @@ public class FeeDao
 
 		r.id = c.getLong("id");
 		r.platformId = Common.toLong(c.getObject("platform_id"));
+		r.payer = Common.toLong(c.getObject("payer"));
 		r.drawer = Common.toLong(c.getObject("drawer"));
 
 		r.productId = Common.trimStringOf(c.getObject("product_id"));

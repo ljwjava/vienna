@@ -47,6 +47,7 @@ var Contract = React.createClass({
 				pay: v.pay,
 				insure: v.insure,
 				unit: v.unit,
+                type: v.type,
 				rate: v.rate
             }
 		});
@@ -77,7 +78,8 @@ var Contract = React.createClass({
             productId: this.refs.clause.value,
             pay: this.refs.pay.value,
 			insure: this.refs.insure.value,
-			rate: [0, 0, 0, 0, 0],
+            type: 1,
+			rate: [null, null, null, null, null],
 			unit: this.refs.unit.value
 		});
         this.forceUpdate();
@@ -104,7 +106,7 @@ var Contract = React.createClass({
     	let v = this.state.detail ? this.state.detail : this.props.value;
         return (
 			<div className="card border-info mb-3">
-				<nav className="navbar navbar-light text-white bg-info justify-content-between" onClick={this.detail}>
+				<nav className={"navbar navbar-light text-white " + (v.status == 2 ? "bg-info" : "bg-secondary") + " justify-content-between"} onClick={this.detail}>
 					<div className="mr-auto">合约（{ env.companyStr(v.partyA) + " → " + env.companyStr(v.partyB) + "）"}</div>
 					<div>{ env.timeOf(v.begin) + " → " + env.timeOf(v.end) }</div>
 				</nav>
@@ -154,7 +156,8 @@ var Contract = React.createClass({
 								<th>条款</th>
 								<th>交费</th>
 								<th>保障</th>
-								<th>收入</th>
+								<th>代理手续费</th>
+                                <th>技术服务费</th>
 								<th>单位</th>
 								<th>操作</th>
 							</tr>
@@ -165,15 +168,21 @@ var Contract = React.createClass({
 										<td>{x.productId == null ? "全部" : strOf(env.clauses[x.productId], x.productId)}</td>
 										<td>{strOf(x.pay, "全部")}</td>
 										<td>{strOf(x.insure, "全部")}</td>
-										<td style={{width:"30%", padding:"6px"}}>
-											<div className="form-inline">
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[0]} onChange={y => {x.rate[0] = y.target.value}}/>
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[1]} onChange={y => {x.rate[1] = y.target.value}}/>
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[2]} onChange={y => {x.rate[2] = y.target.value}}/>
-												<input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[3]} onChange={y => {x.rate[3] = y.target.value}}/>
-												<input type="text" className="form-control col-2" defaultValue={x.rate[4]} onChange={y => {x.rate[4] = y.target.value}}/>
-											</div>
-										</td>
+                                        <td style={{width:"30%", padding:"6px"}}>
+                                            <div className="form-inline">
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[0]} onChange={y => {x.rate[0] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[1]} onChange={y => {x.rate[1] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[2]} onChange={y => {x.rate[2] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2 mr-2" defaultValue={x.rate[3]} onChange={y => {x.rate[3] = y.target.value}}/>
+                                                <input type="text" className="form-control col-2" defaultValue={x.rate[4]} onChange={y => {x.rate[4] = y.target.value}}/>
+                                            </div>
+                                        </td>
+                                        <td style={{padding:"6px"}}>
+                                            <select className="form-control" defaultValue={x.type} onChange={y => {x.type = y.target.value}}>
+                                                <option value="1">保险代理费</option>
+                                                <option value="2">技术服务费</option>
+                                            </select>
+                                        </td>
 										<td style={{padding:"6px"}}>
 											<select className="form-control" defaultValue={x.unit} onChange={y => {x.unit = y.target.value}}>
 												<option value="3">保费百分比</option>
@@ -214,7 +223,7 @@ var Contract = React.createClass({
 											<div className="col-md-6 mb-3">
 												<label>条款</label>
 												<select className="form-control" ref="clause">
-													<option>全部</option>
+													<option value="ALL">全部</option>
                                                     { this.state.clauses.map(t => <option value={t.id}>{t.name}</option>) }
 												</select>
 											</div>

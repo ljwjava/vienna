@@ -157,7 +157,7 @@ public class ChannelDao
 
     public List<FeeDefine> loadProductFee(Long contractId)
     {
-        String sql = "select a.*, b.* from t_channel_fee_define a, t_channel_contract b where b.valid is null and b.id = ? and a.contract_id = b.id order by product_id, convert(insure, signed), convert(pay, signed)";
+        String sql = "select a.*, b.* from t_channel_fee_define a, t_channel_contract b where b.valid is null and b.id = ? and a.contract_id = b.id order by product_id, convert(insure, signed), convert(pay, signed), type";
         return jdbc.query(sql, new Object[] {contractId}, new RowMapper<FeeDefine>()
         {
             @Override
@@ -205,6 +205,7 @@ public class ChannelDao
         p.end = m.getDate("end");
         p.pay = m.getString("pay");
         p.insure = m.getString("insure");
+        p.type = m.getInt("type");
         p.rate = new BigDecimal[] {
                 m.getBigDecimal("f1"),
                 m.getBigDecimal("f2"),
@@ -217,10 +218,10 @@ public class ChannelDao
         return p;
     }
 
-    public void bill(Long platformId, Long productId, Long payer, Long drawer, int bizType, Long bizId, String bizNo, Long vendorId, double amt, int unit, Date time)
+    public void bill(Long platformId, Long productId, Long payer, Long drawer, int bizType, Long bizId, String bizNo, Long vendorId, double amt, int type, int unit, Date time)
     {
-        jdbc.update("insert into t_channel_fee(platform_id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                platformId, bizType, bizId, bizNo, productId, vendorId, amt, unit, time, 0, payer, drawer, null, time);
+        jdbc.update("insert into t_channel_fee(platform_id, biz_type, biz_id, biz_no, product_id, vendor_id, amount, type, unit, estimate, status, payer, drawer, memo, create_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                platformId, bizType, bizId, bizNo, productId, vendorId, amt, type, unit, time, 0, payer, drawer, null, time);
     }
 
     public List findBill(Long platformId, Long vendorId, String bizNo)
@@ -263,16 +264,16 @@ public class ChannelDao
         return m;
     }
 
-    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, Double[] val)
+    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, int type, Double[] val)
     {
-        jdbc.update("insert into t_channel_fee_define(contract_id, product_id, pay, insure, f1, f2, f3, f4, f5, unit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                contractId, clauseId, pay, insure, val[0], val[1], val[2], val[3], val[4], unit);
+        jdbc.update("insert into t_channel_fee_define(contract_id, product_id, pay, insure, type, f1, f2, f3, f4, f5, unit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                contractId, clauseId, pay, insure, type, val[0], val[1], val[2], val[3], val[4], unit);
     }
 
-    public void updateItem(Long itemId, Integer unit, Double[] val)
+    public void updateItem(Long itemId, Integer unit, int type, Double[] val)
     {
-        jdbc.update("update t_channel_fee_define set unit=?, f1=?, f2=?, f3=?, f4=?, f5=? where id=?",
-                unit, val[0], val[1], val[2], val[3], val[4], itemId);
+        jdbc.update("update t_channel_fee_define set unit=?, type=?, f1=?, f2=?, f3=?, f4=?, f5=? where id=?",
+                unit, type, val[0], val[1], val[2], val[3], val[4], itemId);
     }
 
     public void removeItem(Long itemId)

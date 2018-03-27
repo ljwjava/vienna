@@ -12,10 +12,15 @@
 				<item code="parent" />
 			</pay>
 			<insure>
-				<item code="to_70" />
-				<item code="to_80" />
+				<item code="custom" />
 			</insure>
 		</param>
+
+		<init>
+			<item name="CUSTOM_INSURE_MODE" value="PARENT.INSURE_MODE"/>
+			<item name="CUSTOM_INSURE_VALUE" value="PARENT.INSURE_VALUE > 100 ? 80 : 70"/>
+			<item name="CUSTOM_INSURE_DESC" value="INSURE_VALUE == 70 ? '保至70岁' : '保至80岁'"/>
+		</init>
 
 		<attachment>
 		</attachment>
