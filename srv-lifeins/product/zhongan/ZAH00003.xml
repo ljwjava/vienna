@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="ZAH00003" corporation_id="zhongan" code="50003410008" name="尊享e生旗舰版" name_abbr="尊享e生旗舰版" unit="3000000"
+	<product id="ZAH00003" corporation_id="zhongan" code="AA31" name="尊享e生旗舰版" name_abbr="尊享e生旗舰版" unit="3000000"
 	premium="DS.RATE[0][SOCIAL_INS?0:1] + (PROTON_INS?DS.RATE[0][4]:0)"
 		type="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2018-03-16">
 
