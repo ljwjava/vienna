@@ -81,7 +81,7 @@ env.checkCustomer = function(f) {
         if ((f.gender == "M" && crx == 0) || (f.gender == "F" && crx == 1))
             r.gender = "性别与证件不符";
     } else {
-        if(f.certNo != null && f.certNo.length <= 3) {
+        if(f.certNo != null && f.certNo.length < 3) {
             r.certNo = "不得少于3个字符";
         }
     }
