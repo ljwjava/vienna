@@ -55,6 +55,16 @@ public class LifeinsDao
                 ins.setUnit(Common.intOf(rs.getObject("unit"), 1000));
                 ins.getPurchase().setPremium(Script.scriptOf("PremiumChildren"));
 
+                if (param != null)
+                {
+                    for (String key : param.keySet())
+                    {
+                        JSONArray sa = param.getJSONArray(key);
+                        for (int i = 0; i < sa.size(); i++)
+                            ins.addOption(key, company.getOption(key, sa.getString(i)));
+                    }
+                }
+
                 String purchaseTypeStr = rs.getString("purchase");
                 ins.getPurchase().setPurchaseType(
                     "none".equals(purchaseTypeStr) ? Purchase.NONE :
