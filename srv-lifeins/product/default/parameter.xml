@@ -101,6 +101,7 @@
 			<item code="parent" mode="PARENT.INSURE_MODE" value="PARENT.INSURE_VALUE" desc="PARENT.INSURE_DESC" show="同主险" />
 			<item code="rank" value="0" desc="IT.RANK_INSURE_DESC" show="按档次" />
 			<item code="exempt" value="PARENT.PAY_PERIOD-1" desc="'保'+round(PARENT.PAY_PERIOD-1)+'年'" show="豁免期间" />
+			<item code="custom" mode="CUSTOM_INSURE_MODE" value="CUSTOM_INSURE_VALUE" desc="CUSTOM_INSURE_DESC" show="自动选择" />
 		</insure>
 
 		<draw_freq>
