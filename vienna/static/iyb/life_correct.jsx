@@ -236,12 +236,12 @@ var Ground = React.createClass({
         }
         this.setState({isSubmit: true}, ()=>{
             common.req("sale/correct.json", params, r => {
-                this.setState({isSubmit: false, isConfirmCorrect: !!r.success});
                 if(r.success){
-                    ToastIt("在线批改成功！");
-                    document.location.href = "life_wait.mobile?orderId=" + env.orderId;
+                    ToastIt("修改成功！");
+                    setTimeout(function(){document.location.href = "life_wait.mobile?orderId=" + env.orderId;}, 1000);
                 }else{
                     ToastIt(r.errMsg);
+                    this.setState({isSubmit: false});
                 }
             }, r => {
                 if(r != null){
@@ -264,7 +264,7 @@ var Ground = React.createClass({
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
         return (
 			<div className="graph">
-				<div style={{backgroundColor: "rgb(1, 193, 244)", padding: "15px", fontWeight: "bold", color: "#fff"}}>尊敬的客户您好，请您更新并确认下您的投保地址信息</div>
+				<div style={{backgroundColor: "rgb(1, 193, 244)", padding: "15px", fontWeight: "bold", color: "#fff"}}>尊敬的客户您好，请您更新并确认下您的投保地址信息准确无误</div>
 				<div className="title" style={{textAlign: "left"}}>投保人信息</div>
 				<div className="form">
 					<ApplicantForm ref="applicant" defVal={app} onRefresh={null}/>

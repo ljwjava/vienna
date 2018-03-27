@@ -599,7 +599,6 @@ var Ground = React.createClass({
     	this.refs.returnVisit.setState({isShow: true});
 	},
 	onConfirmVisit(obj){
-		// TODO: 提交回访确认请求
 		let _this = this;
         common.req("sale/return_visit.json", {orderId: env.order.id, params: this.refs.returnVisit.val()}, r => {
         	if(r.success){
@@ -610,7 +609,11 @@ var Ground = React.createClass({
 				// }
 				let returnNextUrl = r.nextUrl;
                 _this.refs.returnVisit.setState({isConfirmReturnVisit: true});
-                _this.setState({hasCorrect: !!returnNextUrl, correctUrl: returnNextUrl, isConfirmReturnVisit: true});
+                if (!!returnNextUrl) {
+                    _this.setState({hasCorrect: !!returnNextUrl, correctUrl: returnNextUrl, isConfirmReturnVisit: true, modify:0, title:"回访成功", memo:"如需变更地址，请点击下方按钮", icon:"images/insure_succ.png", asking: 0});
+				} else {
+                    _this.setState({hasCorrect: !!returnNextUrl, correctUrl: returnNextUrl, isConfirmReturnVisit: true, modify:0, title:"回访成功", icon:"images/insure_succ.png", asking: 0});
+				}
 			}else{
                 ToastIt(r.errMsg);
 			}
