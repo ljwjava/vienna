@@ -157,7 +157,7 @@ public class ChannelDao
 
     public List<FeeDefine> loadProductFee(Long contractId)
     {
-        String sql = "select a.*, b.* from t_channel_fee_define a, t_channel_contract b where b.valid is null and b.id = ? and a.contract_id = b.id order by product_id, convert(insure, signed), convert(pay, signed)";
+        String sql = "select a.*, b.* from t_channel_fee_define a, t_channel_contract b where b.valid is null and b.id = ? and a.contract_id = b.id order by product_id, convert(insure, signed), convert(pay, signed), type";
         return jdbc.query(sql, new Object[] {contractId}, new RowMapper<FeeDefine>()
         {
             @Override
@@ -205,7 +205,7 @@ public class ChannelDao
         p.end = m.getDate("end");
         p.pay = m.getString("pay");
         p.insure = m.getString("insure");
-        p.tech = m.getBigDecimal("tech");
+        p.type = m.getInt("type");
         p.rate = new BigDecimal[] {
                 m.getBigDecimal("f1"),
                 m.getBigDecimal("f2"),
@@ -264,16 +264,16 @@ public class ChannelDao
         return m;
     }
 
-    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, Double tech, Double[] val)
+    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, int type, Double[] val)
     {
-        jdbc.update("insert into t_channel_fee_define(contract_id, product_id, pay, insure, tech, f1, f2, f3, f4, f5, unit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                contractId, clauseId, pay, insure, tech, val[0], val[1], val[2], val[3], val[4], unit);
+        jdbc.update("insert into t_channel_fee_define(contract_id, product_id, pay, insure, type, f1, f2, f3, f4, f5, unit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                contractId, clauseId, pay, insure, type, val[0], val[1], val[2], val[3], val[4], unit);
     }
 
-    public void updateItem(Long itemId, Integer unit, Double tech, Double[] val)
+    public void updateItem(Long itemId, Integer unit, int type, Double[] val)
     {
-        jdbc.update("update t_channel_fee_define set unit=?, tech=?, f1=?, f2=?, f3=?, f4=?, f5=? where id=?",
-                unit, tech, val[0], val[1], val[2], val[3], val[4], itemId);
+        jdbc.update("update t_channel_fee_define set unit=?, type=?, f1=?, f2=?, f3=?, f4=?, f5=? where id=?",
+                unit, type, val[0], val[1], val[2], val[3], val[4], itemId);
     }
 
     public void removeItem(Long itemId)

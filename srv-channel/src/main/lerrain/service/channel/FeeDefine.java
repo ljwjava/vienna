@@ -17,9 +17,9 @@ public class FeeDefine
     Long productId;
     String pay, insure;
 
-    BigDecimal tech;
     BigDecimal[] rate;
     int unit;
+    int type;
 
     Date begin, end;
 
@@ -143,14 +143,14 @@ public class FeeDefine
         this.id = id;
     }
 
-    public BigDecimal getTech()
+    public int getType()
     {
-        return tech;
+        return type;
     }
 
-    public void setTech(BigDecimal tech)
+    public void setType(int type)
     {
-        this.tech = tech;
+        this.type = type;
     }
 
     public boolean match(Date now)
