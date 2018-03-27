@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="ZAH00003" corporation_id="zhongan" code="ZAH00003" name="尊享e生旗舰版" name_abbr="尊享e生旗舰版" unit="3000000"
-	premium="DS.RATE[0][SOCIAL_INS?0:1]+(PROTON_INS?10:0)"
+	<product id="ZAH00003" corporation_id="zhongan" code="50003410008" name="尊享e生旗舰版" name_abbr="尊享e生旗舰版" unit="3000000"
+	premium="DS.RATE[0][SOCIAL_INS?0:1] + (PROTON_INS?DS.RATE[0][4]:0)"
 		type="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2018-03-16">
 
 		<data>
@@ -68,6 +68,10 @@
 		<rule>
 		    <if condition="DAY lt 30 or AGE > 60">
 				被保险人年龄要求出生满30天~60周岁。
+			</if>
+			
+			<if condition="AGE lt 14 and PROTON_INS">
+				14岁以下不允许选择质子重离子治疗
 			</if>
 		</rule>
 
