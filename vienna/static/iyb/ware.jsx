@@ -207,7 +207,7 @@ var Ware = React.createClass({
 				}
 			}
 			return (
-				<div className="common">
+				<div className="common" style={{maxWidth: "750px", minWidth: "320px"}}>
 					<div className="title">健康及财务告知（{questTitle}）</div>
 					<div className="text" style={{overflow:"auto"}}>
 						<Summary content={quests}/>
@@ -248,7 +248,7 @@ var Ware = React.createClass({
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
 		return (
-			<div className="common">
+			<div className="common" style={{maxWidth: "750px", minWidth: "320px"}}>
 				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none"}}></div>
 				<div ref="top_banner" style={{marginTop: this.state.bannerTop || 0}}>
 					<div style={{position: "relative"}}>
