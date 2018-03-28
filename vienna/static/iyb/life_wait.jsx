@@ -324,7 +324,7 @@ var ReturnVisitBox = React.createClass({
         	let regularPrem = this.state.order.detail.plan.premium == null ? "" : Number(this.state.order.detail.plan.premium).toFixed(2);	// 年期保费
         	let payPeriod = "";	// 交费期间
         	let insPeriod = "";	// 保障期间
-			let productItemTMP = "<b>$PRODUCT_NAME$</b>的保险期间<b>$INS_PERIOD$</b>、缴费期间<b>$PAY_PERIOD$</b>、<b>$PAY_INTV$</b>、缴费金额<b>$FIRST_PREM$</b>元";
+			let productItemTMP = "<b>$PRODUCT_NAME$</b>的保险期间<b>$INS_PERIOD$</b>、交费期间<b>$PAY_PERIOD$</b>、交费频率<b>$PAY_INTV$</b>、缴费金额<b>$FIRST_PREM$</b>元";
 			let productItems = "";
             this.state.order.detail.plan.product.map(v => {
             	if(v.parent == null){
@@ -339,7 +339,7 @@ var ReturnVisitBox = React.createClass({
                 productItems = productItems.replace(/\$PRODUCT_NAME\$/g, v.name);
                 productItems = productItems.replace(/\$INS_PERIOD\$/g, v.insure);
                 productItems = productItems.replace(/\$PAY_PERIOD\$/g, v.pay);
-                productItems = productItems.replace(/\$PAY_INTV\$/g, "年交");
+                productItems = productItems.replace(/\$PAY_INTV\$/g, (v.pay_code == "single" ? "一次交清" : "年交"));
                 productItems = productItems.replace(/\$FIRST_PREM\$/g, Number(v.premium).toFixed(2));
 			});
 
@@ -477,7 +477,6 @@ var Ground = React.createClass({
 
         if (t == 1) {
 			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png", hasReturnVisit: (env.order.detail.returnVisit != null), isConfirmReturnVisit: (env.order.extra.isConfirmReturnVisit == true), hasCorrect: (env.order.extra.isConfirmCorrect != true && env.order.extra.returnNextUrl), isConfirmCorrect: (env.order.extra.isConfirmCorrect == true), correctUrl: env.order.extra.returnNextUrl};
-			console.log(s);
             try{this.getUseableCountByOrderNo();}catch (e){}
             try{this.refs.returnVisit.setState({order: env.order, isConfirmReturnVisit: env.order.extra.isConfirmReturnVisit == true});}catch(e){}
         } else if (t == 20)

@@ -850,7 +850,7 @@ var Ground = React.createClass({
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
         return (
-			<div className="common">
+			<div className="common" style={{maxWidth: "750px", minWidth: "320px", margin: "0 auto"}}>
 				<div className="title">投保人信息</div>
 				<div className="form">
 					<ApplicantForm ref="applicant" defVal={app} onRefresh={this.refreshPremium}/>

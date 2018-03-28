@@ -186,9 +186,8 @@ var Ground = React.createClass({
                 }
             }
             var ins = this.props.defVal.insurant != null || (env.formOpt.insurant.relation.length > 0 && (env.formOpt.insurant.relation[0][0] != env.formOpt.relationSelf));
-            console.log(env.order.extra);
             this.setState({form:r.form, insurant:ins, isConfirmCorrect: (env.order.extra.isConfirmCorrect == true)}, () => {
-                if (this.props.defVal.packId) {
+                if (this.props.defVal.packId && !!this.refs.applicant) {
                     this.refs.applicant.verifyAll();
                     if (this.refs.insurant)
                         this.refs.insurant.verifyAll();
@@ -238,7 +237,8 @@ var Ground = React.createClass({
             common.req("sale/correct.json", params, r => {
                 if(r.success){
                     ToastIt("修改成功！");
-                    setTimeout(function(){document.location.href = "life_wait.mobile?orderId=" + env.orderId;}, 1000);
+                    // setTimeout(function(){document.location.href = "life_wait.mobile?orderId=" + env.orderId;}, 1000);
+                    this.setState({isConfirmCorrect: true});
                 }else{
                     ToastIt(r.errMsg);
                     this.setState({isSubmit: false});
@@ -263,19 +263,31 @@ var Ground = React.createClass({
         let app = this.props.defVal.applicant == null ? {} : this.props.defVal.applicant;
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
         return (
-			<div className="graph">
-				<div style={{backgroundColor: "rgb(1, 193, 244)", padding: "15px", fontWeight: "bold", color: "#fff"}}>尊敬的客户您好，请您更新并确认下您的投保地址信息准确无误</div>
-				<div className="title" style={{textAlign: "left"}}>投保人信息</div>
-				<div className="form">
-					<ApplicantForm ref="applicant" defVal={app} onRefresh={null}/>
-				</div>
-				<div className="console">
-					<div className="tab">
-						<div className="row">
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : (this.state.isConfirmCorrect ? "您已完成变更" : "确认提交")}</div>
-						</div>
-					</div>
-				</div>
+			<div className="graph" style={{maxWidth: "750px", minWidth: "320px", margin: "0 auto"}}>
+                {
+                    this.state.isConfirmCorrect == true ?
+                        (<div style={{backgroundColor:"01c1f4"}}>
+                            <div style={{height:"120px", paddingTop:"10px"}}><img style={{width:"160px", height:"117px", margin:"auto"}} src="images/insure_succ.png"/></div>
+                            <div style={{height:"50px", paddingTop:"15px"}} className="font-wxl">修改成功</div>
+                            <div style={{paddingTop:"10px"}} className="font-wm">保单号：{env.order.bizNo}</div>
+                            <div style={{height:"50px"}} className="font-wm"></div>
+                        </div>)
+                        :
+                        (<div>
+                            <div style={{backgroundColor: "rgb(1, 193, 244)", padding: "15px", fontWeight: "bold", color: "#fff"}}>尊敬的客户您好，请您更新并确认下您的投保地址信息准确无误</div>
+                            <div className="title" style={{textAlign: "left"}}>投保人信息</div>
+                            <div className="form">
+                                <ApplicantForm ref="applicant" defVal={app} onRefresh={null}/>
+                            </div>
+                            <div className="console">
+                                <div className="tab">
+                                    <div className="row">
+                                        <div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : (this.state.isConfirmCorrect ? "您已完成变更" : "确认提交")}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>)
+                }
 			</div>
         );
     }
