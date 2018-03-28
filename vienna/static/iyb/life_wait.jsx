@@ -633,7 +633,7 @@ var Ground = React.createClass({
     },
    	render() {
 		return (
-			<div className="graph" style={{maxWidth: "750px", minWidth: "320px", margin: "0 auto"}}>
+			<div className="graph" style={{maxWidth: "750px", minWidth: "320px"}}>
 				<div style={{backgroundColor:"01c1f4"}}>
 					<div style={{height:"120px", paddingTop:"10px"}}><img style={{width:"160px", height:"117px", margin:"auto"}} src={this.state.icon}/></div>
 					<div style={{height:"50px", paddingTop:"15px"}} className="font-wxl">{this.state.title}</div>
@@ -659,7 +659,7 @@ var Ground = React.createClass({
 							</div>
 					}
 					{
-						(!this.state.hasCorrect || this.state.isConfirmCorrect) ? null :
+						(!this.state.hasCorrect || this.state.isConfirmCorrect || !this.state.isConfirmReturnVisit) ? null :
 							<div style={{paddingBottom:"5px"}}>
 								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.gotoCorrect.bind(this)}>变更详细地址</div>
 							</div>
