@@ -25,6 +25,7 @@
 			<item name="PROTON_INS" label="质子重离子治疗(100%赔付)" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
 		</input>
 
+
 		<param>
 			<pay>
 				<item code="term_1" />
