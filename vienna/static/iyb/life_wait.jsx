@@ -659,7 +659,7 @@ var Ground = React.createClass({
 							</div>
 					}
 					{
-						(!this.state.hasCorrect || this.state.isConfirmCorrect) ? null :
+						(!this.state.hasCorrect || this.state.isConfirmCorrect || !this.state.isConfirmReturnVisit) ? null :
 							<div style={{paddingBottom:"5px"}}>
 								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.gotoCorrect.bind(this)}>变更详细地址</div>
 							</div>
