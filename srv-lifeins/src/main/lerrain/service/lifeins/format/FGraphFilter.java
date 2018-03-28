@@ -2,6 +2,7 @@ package lerrain.service.lifeins.format;
 
 import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
+import lerrain.project.insurance.plan.UnstableList;
 import lerrain.project.insurance.plan.filter.FilterPlan;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Formula;
@@ -80,10 +81,33 @@ public class FGraphFilter implements FilterPlan
 		{
 			Commodity c = plan.getCommodity(i);
 			Map<String, Formula> items = (Map)c.getProduct().getAttachment(attachmentName);
-			if (items != null) for (Map.Entry<String, Formula> item : items.entrySet())
+			if (items != null)
 			{
-				Object val = item.getValue().run(c.getFactors());
-				map.put(item.getKey(), addUp(map.get(item.getKey()), val));
+				for (Map.Entry<String, Formula> item : items.entrySet())
+				{
+					Object val = item.getValue().run(c.getFactors());
+					map.put(item.getKey(), addUp(map.get(item.getKey()), val));
+				}
+			}
+			else
+			{
+				UnstableList list = c.getChildren();
+				if (list != null)
+				{
+					for (int j=0;j<list.size();j++)
+					{
+						c = list.get(j);
+						items = (Map)c.getProduct().getAttachment(attachmentName);
+						if (items != null)
+						{
+							for (Map.Entry<String, Formula> item : items.entrySet())
+							{
+								Object val = item.getValue().run(c.getFactors());
+								map.put(item.getKey(), addUp(map.get(item.getKey()), val));
+							}
+						}
+					}
+				}
 			}
 		}
 

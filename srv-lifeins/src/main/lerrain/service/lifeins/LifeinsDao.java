@@ -41,6 +41,7 @@ public class LifeinsDao
                 Company company = lifeins.getCompany(rs.getString("company"));
 
                 JSONObject init = JSON.parseObject(rs.getString("init"));
+                JSONObject param = JSON.parseObject(rs.getString("param"));
                 JSONArray detail = JSON.parseArray(rs.getString("detail"));
 
                 Insurance ins = new Insurance();
@@ -53,6 +54,16 @@ public class LifeinsDao
                 ins.setAbbrName(rs.getString("name_abbr"));
                 ins.setUnit(Common.intOf(rs.getObject("unit"), 1000));
                 ins.getPurchase().setPremium(Script.scriptOf("PremiumChildren"));
+
+                if (param != null)
+                {
+                    for (String key : param.keySet())
+                    {
+                        JSONArray sa = param.getJSONArray(key);
+                        for (int i = 0; i < sa.size(); i++)
+                            ins.addOption(key, company.getOption(key, sa.getString(i)));
+                    }
+                }
 
                 String purchaseTypeStr = rs.getString("purchase");
                 ins.getPurchase().setPurchaseType(
