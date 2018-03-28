@@ -59,6 +59,8 @@ public class GatewayService
     {
         StringBuffer sb = new StringBuffer();
 
+        String fs = null;
+
         Factors f = factors;
         while (f != null && f instanceof Stack)
         {
@@ -69,9 +71,12 @@ public class GatewayService
             sb.append(str + " on " + env);
             sb.append("\n");
 
+            if (fs == null)
+                fs = JSON.toJSONString(((Stack)f).getStackMap());
+
             f = s.getParent();
         }
 
-        gatewayDao.onError(sb.toString(), msg, referNo, Common.trimStringOf(e), JSON.toJSONString(factors));
+        gatewayDao.onError(sb.toString(), msg, referNo, Common.trimStringOf(e), fs);
     }
 }
