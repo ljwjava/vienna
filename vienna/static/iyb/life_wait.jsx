@@ -633,7 +633,7 @@ var Ground = React.createClass({
     },
    	render() {
 		return (
-			<div className="graph" style={{maxWidth: "750px", minWidth: "320px"}}>
+			<div className="graph" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div style={{backgroundColor:"01c1f4"}}>
 					<div style={{height:"120px", paddingTop:"10px"}}><img style={{width:"160px", height:"117px", margin:"auto"}} src={this.state.icon}/></div>
 					<div style={{height:"50px", paddingTop:"15px"}} className="font-wxl">{this.state.title}</div>

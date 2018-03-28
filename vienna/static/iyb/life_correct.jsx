@@ -263,7 +263,7 @@ var Ground = React.createClass({
         let app = this.props.defVal.applicant == null ? {} : this.props.defVal.applicant;
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
         return (
-			<div className="graph" style={{maxWidth: "750px", minWidth: "320px"}}>
+			<div className="graph" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
                 {
                     this.state.isConfirmCorrect == true ?
                         (<div style={{backgroundColor:"01c1f4"}}>
