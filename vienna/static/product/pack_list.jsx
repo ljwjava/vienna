@@ -11,7 +11,7 @@ var env = {
     number: 12,
 };
 
-env.termList = [null, 1, 2, 3, 5, 10, 15, 20, 25, 30, 50, 55, 60, 65, 70, 75, 80, 88, 100, 999];
+env.termList = ["ALL", 1, 2, 3, 5, 10, 15, 20, 25, 30, 50, 55, 60, 65, 70, 75, 80, 88, 100, 999];
 
 var strOf = function(s1, s2) {
     if (s1 == null || s1 == "")
@@ -71,7 +71,11 @@ var Main = React.createClass({
         });
     },
     addItem() {
-        this.state.feeRate.push({factors: {}});
+        this.state.feeRate.push({factors: {pay: "ALL", insure: "ALL"}, freeze: 19, unit: 3});
+        this.forceUpdate();
+    },
+    removeItem(i) {
+        this.state.feeRate[i] = {id: this.state.feeRate[i].id};
         this.forceUpdate();
     },
     showFee(v) {
@@ -80,7 +84,9 @@ var Main = React.createClass({
         });
     },
     saveFeeRate() {
-        console.log(this.state.feeRate);
+        common.req("product/save_rate.json", {productId: this.state.productId, platformId: 2, detail: this.state.feeRate}, r => {
+            console.log(r);
+        });
     },
     render() {
         return (
@@ -93,6 +99,7 @@ var Main = React.createClass({
                     </div>
                 </nav>
                 <ProductList ref="list" env={env} parent={this}/>
+
                 <div className="modal fade" id="editor" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog modal-lg" style={{maxWidth:"1200px"}} role="document">
                         <div className="modal-content">
@@ -113,12 +120,13 @@ var Main = React.createClass({
                                         <th>基础</th>
                                         <th>上线</th>
                                         <th>奖励</th>
+                                        <th>冻结</th>
                                         <th>单位</th>
                                         <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    { !this.state.feeRate ? null : this.state.feeRate.map(x =>
+                                    { !this.state.feeRate ? null : this.state.feeRate.map((x, i) => x.factors == null ? null :
                                         <tr>
                                             <td width="12%">
                                                 <input type="text" className="form-control" defaultValue={x.begin} onChange={y => {x.begin = y.target.value}}/>
@@ -136,16 +144,19 @@ var Main = React.createClass({
                                                     { env.termList.map(t => <option value={t}>{strOf(t, "全部")}</option>) }
                                                 </select>
                                             </td>
-                                            <td width="18%">
+                                            <td width="12%">
                                                 <input type="text" className="form-control" defaultValue={x.saleFee} onChange={y => {x.saleFee = y.target.value}}/>
                                             </td>
-                                            <td width="10%">
+                                            <td width="8%">
                                                 <input type="text" className="form-control" defaultValue={x.upperBonus} onChange={y => {x.upperBonus = y.target.value}}/>
                                             </td>
-                                            <td width="10%">
+                                            <td width="8%">
                                                 <input type="text" className="form-control" defaultValue={x.saleBonus} onChange={y => {x.saleBonus = y.target.value}}/>
                                             </td>
-                                            <td>
+                                            <td width="8%">
+                                                <input type="text" className="form-control" defaultValue={x.freeze} onChange={y => {x.freeze = y.target.value}}/>
+                                            </td>
+                                            <td width="12%">
                                                 <select className="form-control" defaultValue={x.unit} onChange={y => {x.unit = y.target.value}}>
                                                     <option value="3">百分比</option>
                                                     <option value="1">比例</option>
@@ -153,7 +164,7 @@ var Main = React.createClass({
                                                 </select>
                                             </td>
                                             <td>
-                                                <button className="btn btn-outline-danger mr-1">删除</button>
+                                                <button className="btn btn-outline-danger mr-1" onClick={this.removeItem.bind(this, i)}>删除</button>
                                             </td>
                                         </tr>
                                     )}

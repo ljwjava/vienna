@@ -67,9 +67,9 @@ public class ChannelService
             calendar.setTime(time);
             int year = calendar.get(Calendar.YEAR);
 
-            for (int i = 0; i < c.getRate().length; i++)
+            for (int py = 0; py < c.getRate().length; py++)
             {
-                BigDecimal fr = c.getRate()[i];
+                BigDecimal fr = c.getRate()[py];
                 if (fr != null)
                 {
                     double amt = 0;
@@ -81,28 +81,28 @@ public class ChannelService
                         amt = premium * fr.doubleValue() / 100;
                     else if (c.getUnit() == 4)
                     {
-                        Double val = map.get(c.getPayer() + "/" + i);
+                        Double val = map.get(c.getPayer() + "/" + py);
                         if (val != null)
                             amt = val * fr.doubleValue() / 100;
                     }
 
                     if (amt > 0)
                     {
-                        calendar.set(Calendar.YEAR, year + i);
-                        bill(c.getPlatformId(), c.getProductId(), c.getPayer(), c.getDrawer(), bizType, bizId, bizNo, vendorId, BigDecimal.valueOf(amt).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(), calendar.getTime());
+                        calendar.set(Calendar.YEAR, year + py);
+                        bill(c.getPlatformId(), c.getProductId(), c.getPayer(), c.getDrawer(), bizType, bizId, bizNo, vendorId, BigDecimal.valueOf(amt).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(), c.getType(), calendar.getTime());
 
-                        Double val = map.get(c.getDrawer() + "/" + i);
-                        map.put(c.getDrawer() + "/" + i, val == null ? amt : val + amt);
+                        Double val = map.get(c.getDrawer() + "/" + py);
+                        map.put(c.getDrawer() + "/" + py, val == null ? amt : val + amt);
                     }
                 }
             }
         }
     }
 
-    public void bill(Long platformId, Long productId, Long payer, Long drawer, int bizType, Long bizId, String bizNo, Long vendorId, double amt, Date time)
+    public void bill(Long platformId, Long productId, Long payer, Long drawer, int bizType, Long bizId, String bizNo, Long vendorId, double amt, int type, Date time)
     {
         if (Math.abs(amt) > 0.005f)
-            channelDao.bill(platformId, productId, payer, drawer, bizType, bizId, bizNo, vendorId, amt, 1, time);
+            channelDao.bill(platformId, productId, payer, drawer, bizType, bizId, bizNo, vendorId, amt, type, 1, time);
     }
 
     public List findBill(Long platformId, Long vendorId, String bizNo)
@@ -128,7 +128,7 @@ public class ChannelService
         return r;
     }
 
-    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, Double[] val)
+    public void addItem(Long contractId, Long clauseId, Integer unit, Integer pay, Integer insure, int type, Double[] val)
     {
         if (val == null)
             val = new Double[5];
@@ -136,10 +136,10 @@ public class ChannelService
         if (val.length < 5)
             val = Arrays.copyOf(val, 5);
 
-        channelDao.addItem(contractId, clauseId, unit, pay, insure, val);
+        channelDao.addItem(contractId, clauseId, unit, pay, insure, type, val);
     }
 
-    public void updateItem(Long itemId, Integer unit, Double[] val)
+    public void updateItem(Long itemId, Integer unit, int type, Double[] val)
     {
         if (itemId == null)
             return;
@@ -150,7 +150,7 @@ public class ChannelService
         if (val.length < 5)
             val = Arrays.copyOf(val, 5);
 
-        channelDao.updateItem(itemId, unit, val);
+        channelDao.updateItem(itemId, unit, type, val);
     }
 
     public void removeItem(Long itemId)

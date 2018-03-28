@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="TFA00005" corporation_id="tfaegon" code="TCIB07" name="同方全球「同佑e生」重大疾病" name_abbr="同佑e生" unit="1000"
+		type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="TFA00005" />
+			<item parser="dds" value="OCCUPATION" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_25" />
+				<item code="term_30" />
+				<item code="to_70" />
+			</pay>
+			<insure>
+				<item code="term_30" />
+				<item code="to_70" />
+				<item code="to_full" />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="TFA00006"/>
+		</rider>
+
+		<init>
+			<item name="SALE_PROV" value="['11','12','13','31','44','32','42','37','51','35']"/>
+			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
+			<item name="A_CITY" value="['1101','1102','1201','1202','1301','3101','3102','4401','4403','3201','3202','3205','4201','3701','3702','5101','3501','3502']"/>
+		</init>
+
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY" />
+		</interest>
+
+		<attachment>
+		</attachment>
+
+		<rule>
+			<if condition="AGE > 55" type="customer">
+				投保年龄须为出生满30天~55周岁
+			</if>
+			<if condition="APPLICANT.AGE > 50" type="customer">
+				投保人年龄不能大于50周岁
+			</if>
+
+			<if condition="PAY_VALUE == 70 and INSURE_VALUE != 70">
+				只有选择保至70周岁时，才能选择交至70周岁
+			</if>
+			<if condition="AGE >= 41 and AGE le 45 and PAY_VALUE >= 30">
+				41~45周岁，可选5/10/25年交
+			</if>
+			<if condition="AGE >= 46 and AGE le 55 and PAY_VALUE >= 25">
+				46~55周岁，可选5/10年交
+			</if>
+			<if condition="AGE + PAY_PERIOD > 70">
+				投保年龄+交费期限需要≤70
+			</if>
+
+			<if condition="OCCUPATION_CODE == null" level="alert">
+				未确定职业，部分职业可能投保失败
+			</if>
+			<if condition="OCCUPATION_CODE != null and (DS.OCC_RANK[0][0] > 0 or DS.OCC_RANK[0][1] > 4)">
+				该职业暂时无法投保
+			</if>
+			<if condition="AMOUNT % 10000 > 0">
+				保额必须为10000元的整数倍。
+			</if>
+			<if condition="ZONE == null and AGE lt 18 and AMOUNT > 200000 and AMOUNT le 500000" level="alert">
+				未成年人，A类地区最高50万，其他地区20万
+			</if>
+			<if condition="AGE lt 18 and AMOUNT > 500000">
+				未成年人，保额最高50万
+			</if>
+			<if condition="ZONE == null and AGE >= 18 and AGE le 40 and AMOUNT > 300000 and AMOUNT le 500000" level="alert">
+				18~40周岁，A类地区保额最高50万，其他地区30万
+			</if>
+			<if condition="AGE >= 18 and AGE le 40 and AMOUNT > 500000">
+				18~40周岁，保额最高50万
+			</if>
+			<if condition="AGE >= 41 and AGE le 45 and AMOUNT > 200000">
+				41~45周岁，保额最高20万
+			</if>
+			<if condition="AGE >= 46 and AGE le 50 and AMOUNT > 150000">
+				46~50周岁，保额最高15万
+			</if>
+			<if condition="AGE >= 51 and AGE le 55 and AMOUNT > 50000">
+				51~55周岁，保额最高5万
+			</if>
+
+			<if condition="ZONE == null" level="alert">
+				未确定地区，该产品销售限以下地区：北京、上海、天津、广东、江苏、湖北、河北、山东、四川、福建
+			</if>
+			<if condition="ZONE != null and find(SALE_PROV, str(ZONE,0,2)) == null">
+				该地区暂不销售
+			</if>
+			<if>
+				if (ZONE == null)
+				return null;
+				var bcity = find(A_CITY, str(ZONE,0,4)) == null;
+				if (bcity) {
+				if (AGE lt 18 and AMOUNT > 200000 and AMOUNT le 500000) {
+				return '普通地区未成年人最高保额为20万';
+				} else if (AGE >= 18 and AGE le 40 and AMOUNT > 300000 and AMOUNT le 500000) {
+				return '普通地区18~40岁最高保额为30万';
+				}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

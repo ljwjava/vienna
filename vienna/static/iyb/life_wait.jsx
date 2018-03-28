@@ -3,6 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ToastIt from '../common/widget.toast.jsx';
+import Switcher from '../common/widget.switcher.jsx';
 
 var ModalLottery = React.createClass({
 	getInitialState(){
@@ -217,7 +218,7 @@ var LotteryBox = React.createClass({
     	// console.log(prize);
 	},
     onComplete(){
-		console.log('onComplete',this.state);
+		// console.log('onComplete',this.state);
 	},
 	render(){
         this.onComplete();
@@ -284,13 +285,32 @@ var LotteryBox = React.createClass({
 var ReturnVisitBox = React.createClass({
     getInitialState(){
         let order = this.props.order;
-        return {isShow: false, order: order, callback: this.props.cb, isConfirm: false};
+        return {isShow: false, order: order, callback: this.props.cb, isConfirmReturnVisit: false};
     },
+	val() {
+    	let res = [];
+    	if(this.refs != null) {
+    		for(var qq in this.refs) {
+    			if(this.refs[qq].props != null && this.refs[qq].props.addtData != null) {
+    				let ddd = this.refs[qq].props.addtData;
+                    ddd.value = this.refs[qq].val();
+                    ddd.qKey = qq;
+    				res.push(ddd);
+				} else {
+    				res.push({
+						qKey: qq,
+						value: this.refs[qq].val()
+					});
+				}
+			}
+		}
+		return res;
+	},
     componentDidMount(){
     },
     confirmVisit(){
-        if(this.state.callback && !this.state.isConfirm){
-            this.state.callback();
+        if(this.state.callback && !this.state.isConfirmReturnVisit) {
+            this.state.callback(this);
         }
         this.setState({isShow: false});
     },
@@ -304,32 +324,86 @@ var ReturnVisitBox = React.createClass({
         	let regularPrem = this.state.order.detail.plan.premium == null ? "" : Number(this.state.order.detail.plan.premium).toFixed(2);	// 年期保费
         	let payPeriod = "";	// 交费期间
         	let insPeriod = "";	// 保障期间
+			let productItemTMP = "<b>$PRODUCT_NAME$</b>的保险期间<b>$INS_PERIOD$</b>、缴费期间<b>$PAY_PERIOD$</b>、<b>$PAY_INTV$</b>、缴费金额<b>$FIRST_PREM$</b>元";
+			let productItems = "";
             this.state.order.detail.plan.product.map(v => {
             	if(v.parent == null){
                     payPeriod = v.pay;
                     insPeriod = v.insure;
 				}
+				if(productItems != "") {
+                    productItems += "</br>";
+				}
+                productItems += productItemTMP;
+
+                productItems = productItems.replace(/\$PRODUCT_NAME\$/g, v.name);
+                productItems = productItems.replace(/\$INS_PERIOD\$/g, v.insure);
+                productItems = productItems.replace(/\$PAY_PERIOD\$/g, v.pay);
+                productItems = productItems.replace(/\$PAY_INTV\$/g, "年交");
+                productItems = productItems.replace(/\$FIRST_PREM\$/g, Number(v.premium).toFixed(2));
 			});
 
             return (<div style={{animationDuration: "300ms", display: this.state.isShow ? "" : "none", position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#fff", textAlign: "left"}}>
 				<div className="common">
 					<div className="title">网销在线回访</div>
-					<div className="text">
+					<div className="text" style={{padding:"5px 10px 95px 10px", overflowY: "scroll", height: "100%"}}>
 						{this.state.order.detail.returnVisit.map(v => {
 							let content = v.content;
-							content = content.replace(/\$APP_NAME\$/g, appName);
-							content = content.replace(/\$FIRST_PREM\$/g, firstPrem);
-							content = content.replace(/\$PAY_PERIOD\$/g, payPeriod);
-							content = content.replace(/\$REGULAR_PREM\$/g, regularPrem);
-							content = content.replace(/\$INS_PERIOD\$/g, insPeriod);
-							return <p className="html" dangerouslySetInnerHTML={{__html:content}}></p>;
+							if(v.type == "html") {
+                                content = content.replace(/\$APP_NAME\$/g, appName);
+                                content = content.replace(/\$FIRST_PREM\$/g, firstPrem);
+                                content = content.replace(/\$PAY_PERIOD\$/g, payPeriod);
+                                content = content.replace(/\$REGULAR_PREM\$/g, regularPrem);
+                                content = content.replace(/\$INS_PERIOD\$/g, insPeriod);
+                                return <p className="html" dangerouslySetInnerHTML={{__html:content}}></p>;
+							} else if (v.type == "quest"){
+                                // "seqIdx": 3,
+                                // "code": "quest003",
+                                // "title": "在投保确认过程中有段话，内容为 “本人已阅读保险条款、产品说明书和投保提示书，了解本产品的特点和保单利益的不确定性。”这些内容您是否已经清楚并在购买时亲自勾选确认。",
+                                // "type": 1,
+                                // "isReq": true,
+                                // "options": [{"value": "Y", "show": "是"}, {"value": "N", "show": "否"}]
+                                // console.log(v);
+								let qIdx = content.seqIdx;
+								let qCode = content.code;
+								let qTitle = content.title;
+								let qType = content.type;
+								let qIsReq = content.isReq;
+								let qOptions = content.options;
+                                let addtData = {
+                                	seqIdx: qIdx,
+									code: qCode,
+									// title: qTitle,
+									type: qType,
+									isReq: qIsReq
+								};
+
+								let opsArr = [];
+								if(qOptions != null && qOptions.length > 0) {
+									for(var vv in qOptions) {
+                                        opsArr.push([qOptions[vv].value, qOptions[vv].show]);
+									}
+								}
+
+                                qTitle = qTitle.replace(/\$APP_NAME\$/g, appName);
+                                qTitle = qTitle.replace(/\$FIRST_PREM\$/g, firstPrem);
+                                qTitle = qTitle.replace(/\$PAY_PERIOD\$/g, payPeriod);
+                                qTitle = qTitle.replace(/\$REGULAR_PREM\$/g, regularPrem);
+                                qTitle = qTitle.replace(/\$INS_PERIOD\$/g, insPeriod);
+                                qTitle = qTitle.replace(/\$PRODUCTS_ITEMS\$/g, productItems);
+                                // return <p className="html"><div dangerouslySetInnerHTML={{__html:qIdx + "、" + qTitle}}></div></p>;
+                                return <p className="">
+											<div dangerouslySetInnerHTML={{__html: qIdx + "、" + qTitle}}></div>
+											<div><Switcher ref={qCode} valCode={qCode} onChange={null} options={opsArr} value={"Y"} addtData={addtData}/></div>
+										</p>;
+							}
                         })}
                         {/*<Summary content={this.state.order.detail.returnVisit}/>*/}
 					</div>
 					<div className="console">
 						<div className="tab">
 							<div className="row">
-								<div className="col right" onClick={this.confirmVisit}>{this.state.isConfirm ? "您已完成以上回访内容" : "确认以上回访内容"}</div>
+								<div className="col right" onClick={this.confirmVisit.bind(this)}>{this.state.isConfirmReturnVisit ? "您已完成以上回访内容" : "确认以上回访内容"}</div>
 							</div>
 						</div>
 					</div>
@@ -344,7 +418,7 @@ var Ground = React.createClass({
 	intervalId: null,
 	getInitialState() {
 		// ，投保成功后可获得抽奖机会哦
-		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面", memo:"", modify:0, icon:"images/insure_succ.png", order: null};
+		return {asking:0, title:"处理中", text:"请耐心等待，不要离开页面", memo:"", modify:0, icon:"images/insure_succ.png", order: null, isConfirmReturnVisit: false, isConfirmCorrect: false, hasCorrect: false, correctUrl: null};
 	},
 	back(step) {
 		common.req("order/restore.json", {orderId: env.order.id}, r => {
@@ -402,9 +476,10 @@ var Ground = React.createClass({
         	failText = !!vd.failTips ? vd.failTips : "请修改后重新提交";
 
         if (t == 1) {
-			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png", hasReturnVisit: (env.order.detail.returnVisit != null)};
+			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png", hasReturnVisit: (env.order.detail.returnVisit != null), isConfirmReturnVisit: (env.order.extra.isConfirmReturnVisit == true), hasCorrect: (env.order.extra.isConfirmCorrect != true && env.order.extra.returnNextUrl), isConfirmCorrect: (env.order.extra.isConfirmCorrect == true), correctUrl: env.order.extra.returnNextUrl};
+			console.log(s);
             try{this.getUseableCountByOrderNo();}catch (e){}
-            try{this.refs.returnVisit.setState({order: env.order, isConfirm: (env.order.extra.isConfirmReturnVisit == true)});}catch(e){}
+            try{this.refs.returnVisit.setState({order: env.order, isConfirmReturnVisit: env.order.extra.isConfirmReturnVisit == true});}catch(e){}
         } else if (t == 20)
 			s = {modify:2, title:"核保失败", text:text, memo:failText, icon:"images/insure_fail.png"};
 		else if (t == 21)
@@ -523,13 +598,19 @@ var Ground = React.createClass({
     showReturnVisit(){
     	this.refs.returnVisit.setState({isShow: true});
 	},
-	onConfirmVisit(){
+	onConfirmVisit(obj){
 		// TODO: 提交回访确认请求
 		let _this = this;
-        common.req("sale/return_visit.json", {orderId: env.order.id}, r => {
+        common.req("sale/return_visit.json", {orderId: env.order.id, params: this.refs.returnVisit.val()}, r => {
         	if(r.success){
                 ToastIt("在线回访成功！");
-                _this.refs.returnVisit.setState({isConfirm: true});
+                // if(r.nextUrl != null) {
+                 //    // document.location.href = r.nextUrl;
+                 //    _this.gotoCorrect(r.nextUrl);
+				// }
+				let returnNextUrl = r.nextUrl;
+                _this.refs.returnVisit.setState({isConfirmReturnVisit: true});
+                _this.setState({hasCorrect: !!returnNextUrl, correctUrl: returnNextUrl, isConfirmReturnVisit: true});
 			}else{
                 ToastIt(r.errMsg);
 			}
@@ -537,9 +618,17 @@ var Ground = React.createClass({
             if(r != null){
                 ToastIt(r);
             }
-            _this.refs.returnVisit.setState({isConfirm: false});
+            _this.refs.returnVisit.setState({isConfirmReturnVisit: false, isConfirmCorrect: false});
         });
 	},
+    gotoCorrect(){
+        if(!this.state.isConfirmCorrect){
+            // 是否已做批改
+            document.location.href = this.state.correctUrl;
+        }else{
+            ToastIt("您已提交详细地址变更");
+		}
+    },
    	render() {
 		return (
 			<div className="graph" style={{maxWidth: "750px", minWidth: "320px", margin: "0 auto"}}>
@@ -562,9 +651,15 @@ var Ground = React.createClass({
 						</div>
 					}
 					{
-						!this.state.hasReturnVisit ? null :
+						(!this.state.hasReturnVisit || this.state.isConfirmReturnVisit) ? null :
 							<div style={{paddingBottom:"5px"}}>
-								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.showReturnVisit}>在线回访</div>
+								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.showReturnVisit.bind(this)}>在线回访</div>
+							</div>
+					}
+					{
+						(!this.state.hasCorrect || this.state.isConfirmCorrect) ? null :
+							<div style={{paddingBottom:"5px"}}>
+								<div style={{height:"40px", lineHeight:"40px", margin:"10px", backgroundColor:"#ffba34"}} className="font-wl" onClick={this.gotoCorrect.bind(this)}>变更详细地址</div>
 							</div>
 					}
 				</div>

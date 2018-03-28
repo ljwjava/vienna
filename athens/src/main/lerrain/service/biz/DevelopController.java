@@ -10,6 +10,7 @@ import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import lerrain.tool.script.Script;
+import lerrain.tool.script.ScriptRuntimeException;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,6 +58,32 @@ public class DevelopController
     {
         athensSrv.reset();
         return "success";
+    }
+
+    @RequestMapping("/admin/log/open")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject logOpen(@RequestBody JSONObject req)
+    {
+        Script.STACK_MESSAGE = true;
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/admin/log/fold")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject logFold(@RequestBody JSONObject req)
+    {
+        Script.STACK_MESSAGE = false;
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
     }
 
     @RequestMapping("/develop/list_gateway.json")
@@ -272,6 +299,10 @@ public class DevelopController
             try
             {
                 val.put("result", Script.scriptOf(script).run(stack));
+            }
+            catch (ScriptRuntimeException e)
+            {
+                val.put("exception", e.toStackString());
             }
             catch(Exception e)
             {

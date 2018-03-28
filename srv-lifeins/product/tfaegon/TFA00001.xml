@@ -67,7 +67,7 @@
 		</attachment>
 
 		<rule>
-			<if condition="PAY_PERIOD lt 10 and AGE > 55" type="customer">
+			<if condition="AGE > 55" type="customer">
 				投保年龄须为出生满30天~55周岁
 			</if>
 			<if condition="OCCUPATION_CODE == null" level="alert">

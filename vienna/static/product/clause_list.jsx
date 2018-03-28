@@ -6,6 +6,7 @@ import List from '../common/component.list.jsx';
 
 var env = {
     company: {},
+    category: {},
     search: null,
     from: 0,
     number: 12,
@@ -27,6 +28,7 @@ class ProductList extends List {
 				<th>产品CODE</th>
                 <th>所属公司</th>
                 <th>产品名称</th>
+                <th>类别</th>
 				<th></th>
 			</tr>
         );
@@ -39,6 +41,7 @@ class ProductList extends List {
                 <td>{v.code}</td>
                 <td>{env.company[v.companyId]}</td>
                 <td>{v.name}</td>
+                <td>{env.category[v.categoryId]}</td>
 				<td style={{padding:"6px"}}>
                     <button className="btn btn-outline-success mr-1" data-toggle="modal" data-target="#editor" onClick={this.open.bind(this, v)}>编辑</button>
                     <button className="btn btn-outline-success mr-1">配置</button>
@@ -51,7 +54,7 @@ class ProductList extends List {
 
 var Main = React.createClass({
     getInitialState() {
-        return {clause: {}, company: null};
+        return {clause: {}};
     },
     componentDidMount() {
         common.req("channel/company.json", {}, r => {
@@ -65,6 +68,13 @@ var Main = React.createClass({
                 this.setState({company: company});
             }
         });
+        common.req("dict/view.json", {name: "clauseCategory"}, r => {
+            let c = r.clauseCategory.map(v => {
+                env.category[v.code] = v.name;
+                return <option value={v.code}>{v.name}</option>;
+            });
+            this.setState({category: c});
+        });
     },
     newClause() {
         this.setState({clause: {}});
@@ -74,6 +84,7 @@ var Main = React.createClass({
             id: this.state.clause.id,
             code: this.refs.clauseCode.value,
             name: this.refs.clauseName.value,
+            categoryId: this.refs.clauseCategory.value,
             companyId: this.refs.clauseCompany.value
         }
         common.req("product/save_clause.json", param, r => {
@@ -121,6 +132,15 @@ var Main = React.createClass({
                                         <label>保险公司</label>
                                         <select ref="clauseCompany" className="form-control" defaultValue={this.state.clause.companyId}>
                                             {this.state.company}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="col-md-6 mb-3">
+                                        <label>类别</label>
+                                        <select ref="clauseCategory" className="form-control" defaultValue={this.state.clause.categoryId}>
+                                            <option value="90">请选择</option>
+                                            {this.state.category}
                                         </select>
                                     </div>
                                 </div>

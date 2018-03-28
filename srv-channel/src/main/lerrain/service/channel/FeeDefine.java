@@ -19,6 +19,7 @@ public class FeeDefine
 
     BigDecimal[] rate;
     int unit;
+    int type;
 
     Date begin, end;
 
@@ -140,6 +141,16 @@ public class FeeDefine
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public int getType()
+    {
+        return type;
+    }
+
+    public void setType(int type)
+    {
+        this.type = type;
     }
 
     public boolean match(Date now)

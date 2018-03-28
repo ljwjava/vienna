@@ -50,6 +50,9 @@ public class WebController
             if (jsxSrv.exists(full + ".css"))
                 os.write(String.format("<link href=\"%s.css\" rel=\"stylesheet\">\n", file).getBytes());
 
+            if (jsxSrv.exists(path + "/" + file + ".head"))
+                os.write(Disk.load(jsxSrv.getFile(path + "/" + file + ".head")));
+
             if (jsxSrv.exists(full + ".js"))
             {
                 os.write(String.format("<script src=\"%s.js\"></script>\n", file).getBytes());
@@ -89,6 +92,9 @@ public class WebController
 
             if (jsxSrv.exists(file + ".css"))
                 os.write(String.format("<link href=\"%s.css\" rel=\"stylesheet\">\n", file).getBytes());
+
+            if (jsxSrv.exists(file + ".head"))
+                os.write(Disk.load(jsxSrv.getFile(file + ".head")));
 
             if (jsxSrv.exists(file + ".js"))
             {

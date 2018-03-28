@@ -11,16 +11,16 @@ public class ProductDao
 	@Autowired JdbcTemplate jdbc;
 	@Autowired ServiceTools tools;
 
-	public Long save(Long id, String code, String name, Long companyId, int type)
+	public Long save(Long id, String code, String name, Long companyId, int type, Long categoryId)
 	{
 		if (id == null)
 		{
 			id = tools.nextId("product");
-			jdbc.update("insert into t_product(id, code, name, company_id, type) value(?, ?, ?, ?, ?)", id, code, name, companyId, type);
+			jdbc.update("insert into t_product(id, code, name, company_id, type, category_id) value(?, ?, ?, ?, ?, ?)", id, code, name, companyId, type, categoryId);
 		}
 		else
 		{
-			jdbc.update("update t_product set code=?, name=?, company_id=?, type=? where id=?", code, name, companyId, type, id);
+			jdbc.update("update t_product set code=?, name=?, company_id=?, type=?, category_id=? where id=?", code, name, companyId, type, categoryId, id);
 		}
 
 		return id;

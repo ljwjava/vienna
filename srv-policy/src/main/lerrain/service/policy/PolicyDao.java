@@ -134,6 +134,7 @@ public class PolicyDao
         p.setInsurantCertNo(rs.getString("insurant_cert_no"));
         p.setInsurantCertType(rs.getString("insurant_cert_type"));
 
+        p.setVehicleEngineNo(rs.getString("vehicle_engine_no"));
         p.setVehicleFrameNo(rs.getString("vehicle_frame_no"));
         p.setVehiclePlateNo(rs.getString("vehicle_plate_no"));
 
@@ -147,8 +148,8 @@ public class PolicyDao
         p.setId(tools.nextId("policy"));
 
         String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, product_name, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
-                "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_frame_no, vehicle_plate_no, create_time, creator, update_time, updater) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
+                "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_engine_no, vehicle_frame_no, vehicle_plate_no, create_time, creator, update_time, updater) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
 
         jdbc.update(sql,
                 p.getId(),
@@ -181,6 +182,7 @@ public class PolicyDao
                 p.getInsurantName(),
                 p.getInsurantCertNo(),
                 p.getInsurantCertType(),
+                p.getVehicleEngineNo(),
                 p.getVehicleFrameNo(),
                 p.getVehiclePlateNo(),
                 p.getOwner(),
@@ -204,7 +206,7 @@ public class PolicyDao
 
         String sql = "update t_policy set platform_id=?, apply_no=?, policy_no=?, endorse_no=?, endorse_time=?, type=?, product_name = ?, target=?, detail=?, fee=?, extra=?, premium=?, insure_time=?, effective_time=?, finish_time=?, " +
                 "vendor_id=?, agency_id=?, owner_company=?, owner_org=?, owner=?, period=?, applicant_name=?, applicant_mobile=?, applicant_email=?, applicant_cert_no=?, applicant_cert_type=?, insurant_name=?, insurant_cert_no=?, " +
-                "insurant_cert_type=?, vehicle_frame_no=?, vehicle_plate_no=?, update_time=?, updater=? where id = ?";
+                "insurant_cert_type=?, vehicle_engine_no=?, vehicle_frame_no=?, vehicle_plate_no=?, update_time=?, updater=? where id = ?";
 
         jdbc.update(sql,
                 p.getPlatformId(),
@@ -236,6 +238,7 @@ public class PolicyDao
                 p.getInsurantName(),
                 p.getInsurantCertNo(),
                 p.getInsurantCertType(),
+                p.getVehicleEngineNo(),
                 p.getVehicleFrameNo(),
                 p.getVehiclePlateNo(),
                 p.getOwner(),

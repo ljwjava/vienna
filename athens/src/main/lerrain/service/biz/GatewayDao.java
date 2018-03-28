@@ -89,20 +89,12 @@ public class GatewayDao
                         }
                         gw.setWith(map);
                     }
-                    gw.setScript(Script.scriptOf(script));
-                }
-                catch (Exception e)
-                {
-                    Log.error("<" + gw.getId() + "> " + gw.getUri() + " error");
-                }
 
-                try
-                {
                     gw.setScript(Script.scriptOf(script));
                 }
                 catch (Exception e)
                 {
-                    Log.error("<" + gw.getId() + "> " + gw.getUri() + " error");
+                    Log.error("<" + gw.getId() + "> " + gw.getUri() + " error", e);
                 }
 
                 list.add(gw);

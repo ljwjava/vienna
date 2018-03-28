@@ -12,10 +12,7 @@ import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@ControllerAdvice
 public class GatewayController
 {
     @Autowired
@@ -41,6 +39,19 @@ public class GatewayController
 
     @Value("${path.temp}")
     String tempDir;
+
+    @ExceptionHandler(ScriptRuntimeException.class)
+    @ResponseBody
+    public JSONObject exc(ScriptRuntimeException e)
+    {
+        Log.error(e.toStackString());
+
+        JSONObject res = new JSONObject();
+        res.put("result", "fail");
+        res.put("reason", e.getMessage());
+
+        return res;
+    }
 
     private Object call(String host, String uri, HttpSession session, JSONObject param)
     {
@@ -103,7 +114,7 @@ public class GatewayController
             catch (ScriptRuntimeException e1)
             {
                 if (gateway.isMonitor())
-                    gatewaySrv.onError(e1.getFactors(), e1.getMessage(), uri, e1);
+                    gatewaySrv.onError(e1.getFactors(), e1.toStackString(), uri, e1);
 
                 throw e1;
             }

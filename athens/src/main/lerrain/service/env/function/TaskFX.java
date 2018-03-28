@@ -7,6 +7,7 @@ import lerrain.service.task.TaskQueue;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
+import lerrain.tool.script.ScriptRuntimeException;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,13 +42,19 @@ public class TaskFX extends HashMap<String, Object>
                         try
                         {
                             Function f = (Function) objects[0];
-                            return f.run((Object[]) (objects.length >= 1 ? objects[1] : null), factors);
+                            return f.run((Object[]) (objects.length > 1 ? objects[1] : null), factors);
                         }
                         catch (ScriptErrorException e1)
                         {
                             gatewaySrv.onError(e1.getFactors(), e1.getMessage(), e1.getReferNo(), e1);
 
                             throw e1;
+                        }
+                        catch (ScriptRuntimeException e)
+                        {
+                            gatewaySrv.onError(e.getFactors(), e.toStackString(), null, e);
+
+                            throw e;
                         }
                         catch (Exception e)
                         {
