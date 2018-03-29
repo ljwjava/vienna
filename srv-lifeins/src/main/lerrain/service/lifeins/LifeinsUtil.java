@@ -81,9 +81,13 @@ public class LifeinsUtil
 					v[i] = c.getPremium(Commodity.PREMIUM_YEAR, i);
 
 				l.put("premium", v);
+				l.put("payValue", c.getPay().getValue());
 				l.put("payPeriod", year);
 				l.put("payFreq", "year");
 			}
+
+			if (c.getInsure() != null)
+				l.put("insureValue", c.getInsure().getValue());
 
 			r.add(l);
 		}

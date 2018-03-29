@@ -51,7 +51,9 @@ env.def = {
         certValidate: true,
         relation: [["4","父母"],["2","配偶"],["3","子女"]],
     },
-    certTypeId: "1",
+    certTypeId: "1",    // 身份证
+    familyCertTypeId: "888",    // 户口本
+    birthCertTypeId: "999", // 出生证
     relationSelf: "1",
 };
 
@@ -59,13 +61,19 @@ env.parseDict = function(dict) {
     return dict.map(v => [v.code, v.text]);
 };
 
+// 是否进行身份证验证
 env.isIdCert = function(certType) {
-    return env.formOpt.certTypeId == certType;
+    return env.formOpt.certTypeId == certType || env.formOpt.familyCertTypeId == certType;
 };
 
 env.checkCustomer = function(f) {
     let r = {};
-    if ((f.certType == env.formOpt.certTypeId) && (f.certNo != null && f.certNo.length == 18)) {
+    if(f.certNo != null) {
+        if(f.certNo.length < 3){
+            r.certNo = "不得少于3个字符";
+        }
+    }
+    if ((f.certType == env.formOpt.certTypeId || f.certType == env.formOpt.familyCertTypeId) && (f.certNo != null && f.certNo.length == 18)) {    // 身份证
         if (f.birthday != null && f.birthday.length == 10) {
             let y1 = f.certNo.substr(6, 4);
             let m1 = f.certNo.substr(10, 2);
@@ -80,12 +88,14 @@ env.checkCustomer = function(f) {
         let crx = Number(f.certNo.substr(16,1)) % 2;
         if ((f.gender == "M" && crx == 0) || (f.gender == "F" && crx == 1))
             r.gender = "性别与证件不符";
-    } else {
-        if(f.certNo != null && f.certNo.length < 3) {
-            r.certNo = "不得少于3个字符";
+    } else if(f.certType == env.formOpt.birthCertTypeId && (f.certNo != null)){    // 出生证
+        // 必须有英文字母，英文字母为大写，不能有空格，最少输入3个字符。
+        var re = /^[A-Z0-9]*[A-Z]+[A-Z0-9]*$/;
+        if(f.certNo.match(re) == null){
+            r.certNo = "必须有英文字母，且大写";
         }
+    } else {
     }
-    console.log(f);
     return r;
 };
 
@@ -117,7 +127,7 @@ class Beneficiary extends Form {
         this.props.onRemove(this.props.index);
     }
     resetCertNo(certNo) {
-        if (this.refs.certType.val() == env.formOpt.certTypeId){
+        if (this.refs.certType.val() == env.formOpt.certTypeId || this.refs.certType.val() == env.formOpt.familyCertTypeId){
             this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
             this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
         }
@@ -153,7 +163,7 @@ class ApplicantForm extends Form {
         return env.checkCustomer(this.val());
     }
     resetCertNo(certNo) {
-        if (this.refs.certType.val() == env.formOpt.certTypeId){
+        if (this.refs.certType.val() == env.formOpt.certTypeId || this.refs.certType.val() == env.formOpt.familyCertTypeId){
             this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
             this.refs.gender.change(Number(certNo.substr(16,1)) % 2 == 1 ? "M" : "F");
         }
@@ -183,7 +193,7 @@ class InsurantForm extends Form {
         return env.checkCustomer(this.val());
     }
     resetCertNo(certNo) {
-        if (this.refs.certType.val() == env.formOpt.certTypeId) {
+        if (this.refs.certType.val() == env.formOpt.certTypeId || this.refs.certType.val() == env.formOpt.familyCertTypeId) {
             this.refs.birthday.change(certNo.substr(6, 4) + "-" + certNo.substr(10, 2) + "-" + certNo.substr(12, 2));
             this.refs.gender.change(Number(certNo.substr(16, 1)) % 2 == 1 ? "M" : "F");
         }
@@ -832,11 +842,15 @@ var Ground = React.createClass({
 
         let app = this.props.defVal.applicant == null ? {} : this.props.defVal.applicant;
         let ins = this.props.defVal.insurant == null ? {} : this.props.defVal.insurant;
+
+        if(env.formOpt.insurant.relation[0][0] != env.formOpt.relationSelf && JSON.stringify(ins) == "{}"){
+            ins = app;
+        }
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
         return (
-			<div className="common">
+			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="title">投保人信息</div>
 				<div className="form">
 					<ApplicantForm ref="applicant" defVal={app} onRefresh={this.refreshPremium}/>

@@ -36,66 +36,75 @@
             });
         }, function(r){});
     });
-
+    var setEnd = true;
     var wxReady = function(shareObj, shareCallback){
-        wxSet(shareObj, function(){
-            wx.onMenuShareTimeline({
-                title  : shareObj.title || "投保成功",
-                desc   : shareObj.desc || '投保成功',
-                imgUrl : shareObj.imgUrl,
-                link   : shareObj.link,
-                success: shareCallback,
-                cancel: function(){
-                    console.log('分享取消了');
-                }
+        if(!setEnd) {
+            setTimeout(function(){
+                wxReady(shareObj, shareCallback);
+            }, 100);
+        } else {
+            wxSet(shareObj, function(wx){
+                wx.onMenuShareTimeline({
+                    title  : shareObj.title || "投保成功",
+                    desc   : shareObj.desc || '投保成功',
+                    imgUrl : shareObj.imgUrl,
+                    link   : shareObj.link,
+                    success: shareCallback,
+                    cancel: function(){
+                        console.log('分享取消了');
+                    }
+                });
+                wx.onMenuShareAppMessage({
+                    title  : shareObj.title || "投保成功",
+                    desc   : shareObj.desc || '投保成功',
+                    imgUrl : shareObj.imgUrl,
+                    link   : shareObj.link,
+                    success: shareCallback,
+                    cancel: function(){
+                        console.log('分享取消了');
+                    }
+                });
+                wx.onMenuShareQQ({
+                    title  : shareObj.title || "投保成功",
+                    desc   : shareObj.desc || '投保成功',
+                    imgUrl : shareObj.imgUrl,
+                    link   : shareObj.link,
+                    success: shareCallback,
+                    cancel: function(){
+                        console.log('分享取消了');
+                    }
+                });
+                wx.onMenuShareWeibo({
+                    title  : shareObj.title || "投保成功",
+                    desc   : shareObj.desc || '投保成功',
+                    imgUrl : shareObj.imgUrl,
+                    link   : shareObj.link,
+                    success: shareCallback,
+                    cancel: function(){
+                        console.log('分享取消了');
+                    }
+                });
+                wx.onMenuShareQZone({
+                    title  : shareObj.title || "投保成功",
+                    desc   : shareObj.desc || '投保成功',
+                    imgUrl : shareObj.imgUrl,
+                    link   : shareObj.link,
+                    success: shareCallback,
+                    cancel: function(){
+                        console.log('分享取消了');
+                    }
+                });
             });
-            wx.onMenuShareAppMessage({
-                title  : shareObj.title || "投保成功",
-                desc   : shareObj.desc || '投保成功',
-                imgUrl : shareObj.imgUrl,
-                link   : shareObj.link,
-                success: shareCallback,
-                cancel: function(){
-                    console.log('分享取消了');
-                }
-            });
-            wx.onMenuShareQQ({
-                title  : shareObj.title || "投保成功",
-                desc   : shareObj.desc || '投保成功',
-                imgUrl : shareObj.imgUrl,
-                link   : shareObj.link,
-                success: shareCallback,
-                cancel: function(){
-                    console.log('分享取消了');
-                }
-            });
-            wx.onMenuShareWeibo({
-                title  : shareObj.title || "投保成功",
-                desc   : shareObj.desc || '投保成功',
-                imgUrl : shareObj.imgUrl,
-                link   : shareObj.link,
-                success: shareCallback,
-                cancel: function(){
-                    console.log('分享取消了');
-                }
-            });
-            wx.onMenuShareQZone({
-                title  : shareObj.title || "投保成功",
-                desc   : shareObj.desc || '投保成功',
-                imgUrl : shareObj.imgUrl,
-                link   : shareObj.link,
-                success: shareCallback,
-                cancel: function(){
-                    console.log('分享取消了');
-                }
-            });
-        });
+        }
     };
 
+
     var wxSet = function(shareObj, func){
+        setEnd = false;
         setTimeout(function(){
             if (isReady) {
                 if(func) func(wx);
+                setEnd = true;
             } else {
                 wxSet(shareObj, func)
             }

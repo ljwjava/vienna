@@ -132,6 +132,7 @@ var Ware = React.createClass({
                         r.summary = r.detail.summary[label];
                 }
             }
+            env.banner = env.ware.banner[0];
             this.setState(r, () => {
             	// console.log(this.state.packs);
             	if(this.refs.detailTabs) {
@@ -139,6 +140,33 @@ var Ware = React.createClass({
 				}
             	this.refreshPremium();
             });
+            // 判断是否指定单个计划
+			let packIds = common.param("packIds");
+			if(packIds != null && packIds.indexOf(",") < 0) {
+				if(s.extra.shareObject != null && JSON.stringify(s.extra.shareObject) != "{}") {
+                    if(env.shareObj == null) {
+                        env.shareObj = {
+                            title: s.extra.shareObject.title,
+                            desc: s.extra.shareObject.desc,
+                            thumb: s.extra.shareObject.imgUrl,
+                            imgUrl: s.extra.shareObject.imgUrl,
+                            link: window.location.href
+                        };
+                    } else {
+                        env.shareObj = {
+                            title: s.extra.shareObject.title,
+                            desc: s.extra.shareObject.desc,
+                            thumb: s.extra.shareObject.imgUrl,
+                            imgUrl: s.extra.shareObject.imgUrl,
+                            link: env.shareObj.link
+                        };
+                    }
+                    readyShare(env.shareObj);
+				}
+				if(s.extra.banner != null) {
+					env.banner = s.extra.banner;
+				}
+			}
         });
 	},
     /* getPlanFactors() {
@@ -180,7 +208,7 @@ var Ware = React.createClass({
     	this.setState({summary: this.state.detail.summary[code]});
     },
 	openPoster() {
-		document.location.href = "iyunbao://poster?code=" + env.pack.wareCode;
+		document.location.href = "iyunbao://poster?code=" + (common.param("qrCode") || env.pack.wareCode);
 	},
     openKF() {
 		document.location.href = env.kefuUrl;
@@ -207,7 +235,7 @@ var Ware = React.createClass({
 				}
 			}
 			return (
-				<div className="common">
+				<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 					<div className="title">健康及财务告知（{questTitle}）</div>
 					<div className="text" style={{overflow:"auto"}}>
 						<Summary content={quests}/>
@@ -248,11 +276,11 @@ var Ware = React.createClass({
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
 		return (
-			<div className="common">
+			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none"}}></div>
 				<div ref="top_banner" style={{marginTop: this.state.bannerTop || 0}}>
 					<div style={{position: "relative"}}>
-						<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
+						<img src={env.banner} style={{width:"100%", height:"auto"}}/>
 						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", paddingBottom:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
 							<div className="font-wl">{v.name}</div>
 							<div className="font-wm">{v.remark}</div>
@@ -293,14 +321,19 @@ var Ware = React.createClass({
 	}
 });
 
-env.getShareObj = function(){
-    var shareObj = {
-        title: env.ware.name,
-        desc: env.ware.remark,
-        thumb: env.ware.logo,
-        imgUrl: env.ware.logo,
-        link: window.location.href
-    };
+env.getShareObj = function(shareObj){
+	if(env.shareObj == null) {
+        env.shareObj = {
+            title: env.ware.name,
+            desc: env.ware.remark,
+            thumb: env.ware.logo,
+            imgUrl: env.ware.logo,
+            link: window.location.href
+        };
+	}
+	if(shareObj != null) {
+		env.shareObj = shareObj;
+	}
 
     if(!env.url){
         common.reqSync("util/env_conf.json", {}, r => {
@@ -311,12 +344,12 @@ env.getShareObj = function(){
 	}
 
 	if(!!env.url && !!env.url.club && !env.newShareUrl){
-        $.ajax({url:env.url.club + "open/v2/reception/link/newShareLink", type:"POST", data:JSON.stringify({originalLink: shareObj.link, pageCode: 'cp', pageId: env.ware.code, pageTitle: shareObj.title, accountId: common.param("accountId"), pageIcon: shareObj.imgUrl}), async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8',
+        $.ajax({url:env.url.club + "open/v2/reception/link/newShareLink", type:"POST", data:JSON.stringify({originalLink: env.shareObj.link, pageCode: 'cp', pageId: env.ware.code, pageTitle: env.shareObj.title, accountId: common.param("accountId"), pageIcon: env.shareObj.imgUrl}), async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8',
 			success: (r)=> {
             if (r.isSuccess+"" == "true") {
                 if(!!r.result.shareLink){
                 	env.newShareUrl = r.result.shareLink;
-                    shareObj.link = env.newShareUrl;
+                    env.shareObj.link = env.newShareUrl;
 				}
             } else {
                 ToastIt(r.errorMsg);
@@ -325,9 +358,9 @@ env.getShareObj = function(){
         	ToastIt("访问服务器失败");
         }, dataType:"json"});
 	}else{
-        shareObj.link = env.newShareUrl;
+        env.shareObj.link = env.newShareUrl;
 	}
-    return shareObj;
+    return env.shareObj;
 };
 
 env.sharePrd = function() {
@@ -336,31 +369,31 @@ env.sharePrd = function() {
 };
 
 var timer;
-env.shareApp = function(){
+env.shareApp = function(shareObj){
     // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
     if (window.iHealthBridge) {
         try{
             window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
-            env.getShareObj();
+            env.getShareObj(shareObj);
         }catch(e){}
         if(timer) {clearTimeout(timer);}
         return;
     }
     timer = setTimeout(function(){
-        env.shareApp();
+        env.shareApp(shareObj);
 	}, 200);
 };
 
-var readyShare = function(){
+var readyShare = function(shareObj){
     var UA = window.navigator.userAgent.toLowerCase();
     var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
 
     if (isInApp) {
         env.frame = "iyb";
         window.IYB.setTitle(document.title);
-        env.shareApp();
+        env.shareApp(shareObj);
     } else {
-        window.wxReady(env.getShareObj(), null);
+        window.wxReady(env.getShareObj(shareObj), null);
     }
 };
 

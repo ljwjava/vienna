@@ -332,7 +332,7 @@ var Ground = React.createClass({
             }
 		}catch(e){console.log("添加广东纠纷调节处信息失败");}
 		return (
-			<div className="common">
+			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="title">投保信息</div>
 				<div className="view">
 					<div><span>投保人{env.order.detail.insurant == null ? " / 被保险人" : ""}</span></div>

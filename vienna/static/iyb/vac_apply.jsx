@@ -475,7 +475,7 @@ var Ground = React.createClass({
 		let ins = this.props.defVal.insurant == null ? {} : this.props.defVal.insurant;
 		let cnt = this.props.defVal.contact == null ? {} : this.props.defVal.contact;
 		return (
-			<div className="common">
+			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="title">投保人信息</div>
 				<div className="form">
 					<ApplicantForm ref="applicant" defVal={app}/>
