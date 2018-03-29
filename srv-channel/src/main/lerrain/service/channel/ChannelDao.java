@@ -175,11 +175,8 @@ public class ChannelDao
         String pay = Common.trimStringOf(rs.get("pay"));
         String insure = Common.trimStringOf(rs.get("insure"));
 
-        if (pay != null)
-            sql.append(" and (pay is null or pay = '" + pay + "')");
-        if (insure != null)
-            sql.append(" and (insure is null or insure = '" + insure + "')");
-
+        sql.append(" and (pay is null or pay = '" + pay + "')");
+        sql.append(" and (insure is null or insure = '" + insure + "')");
         sql.append(" order by sequence");
 
         return jdbc.query(sql.toString(), new Object[] {platformId, agencyId, agencyId, productId}, new RowMapper<FeeDefine>()
