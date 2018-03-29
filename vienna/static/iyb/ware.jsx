@@ -139,27 +139,33 @@ var Ware = React.createClass({
 				}
             	this.refreshPremium();
             });
+            env.banner = env.ware.banner[0];
             // 判断是否指定单个计划
 			let packIds = common.param("packIds");
-			if(packIds != null && packIds.indexOf(",") < 0 && s.extra.shareObject != null && JSON.stringify(s.extra.shareObject) != "{}") {
-				if(env.shareObj == null) {
-                    env.shareObj = {
-                        title: s.extra.shareObject.title,
-                        desc: s.extra.shareObject.desc,
-                        thumb: s.extra.shareObject.imgUrl,
-                        imgUrl: s.extra.shareObject.imgUrl,
-                        link: window.location.href
-                    };
-				} else {
-                    env.shareObj = {
-                        title: s.extra.shareObject.title,
-                        desc: s.extra.shareObject.desc,
-                        thumb: s.extra.shareObject.imgUrl,
-                        imgUrl: s.extra.shareObject.imgUrl,
-                        link: env.shareObj.link
-                    };
+			if(packIds != null && packIds.indexOf(",") < 0) {
+				if(s.extra.shareObject != null && JSON.stringify(s.extra.shareObject) != "{}") {
+                    if(env.shareObj == null) {
+                        env.shareObj = {
+                            title: s.extra.shareObject.title,
+                            desc: s.extra.shareObject.desc,
+                            thumb: s.extra.shareObject.imgUrl,
+                            imgUrl: s.extra.shareObject.imgUrl,
+                            link: window.location.href
+                        };
+                    } else {
+                        env.shareObj = {
+                            title: s.extra.shareObject.title,
+                            desc: s.extra.shareObject.desc,
+                            thumb: s.extra.shareObject.imgUrl,
+                            imgUrl: s.extra.shareObject.imgUrl,
+                            link: env.shareObj.link
+                        };
+                    }
+                    readyShare(env.shareObj);
 				}
-                readyShare(env.shareObj);
+				if(s.extra.banner != null) {
+					env.banner = s.extra.banner;
+				}
 			}
         });
 	},
@@ -274,7 +280,7 @@ var Ware = React.createClass({
 				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none"}}></div>
 				<div ref="top_banner" style={{marginTop: this.state.bannerTop || 0}}>
 					<div style={{position: "relative"}}>
-						<img src={v.banner[0]} style={{width:"100%", height:"auto"}}/>
+						<img src={env.banner} style={{width:"100%", height:"auto"}}/>
 						<div style={{width: "100%", position:"absolute", bottom: "0", paddingTop:"5px", paddingBottom:"5px", zIndex:"1", textAlign:"center", color:"#FFF", backgroundColor:"rgba(66,66,66,0.7)"}}>
 							<div className="font-wl">{v.name}</div>
 							<div className="font-wm">{v.remark}</div>
