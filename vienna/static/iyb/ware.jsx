@@ -132,6 +132,7 @@ var Ware = React.createClass({
                         r.summary = r.detail.summary[label];
                 }
             }
+            env.banner = env.ware.banner[0];
             this.setState(r, () => {
             	// console.log(this.state.packs);
             	if(this.refs.detailTabs) {
@@ -139,7 +140,6 @@ var Ware = React.createClass({
 				}
             	this.refreshPremium();
             });
-            env.banner = env.ware.banner[0];
             // 判断是否指定单个计划
 			let packIds = common.param("packIds");
 			if(packIds != null && packIds.indexOf(",") < 0) {
