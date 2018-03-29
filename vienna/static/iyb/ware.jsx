@@ -202,7 +202,7 @@ var Ware = React.createClass({
     	this.setState({summary: this.state.detail.summary[code]});
     },
 	openPoster() {
-		document.location.href = "iyunbao://poster?code=" + env.pack.wareCode;
+		document.location.href = "iyunbao://poster?code=" + (common.param("qrCode") || env.pack.wareCode);
 	},
     openKF() {
 		document.location.href = env.kefuUrl;
