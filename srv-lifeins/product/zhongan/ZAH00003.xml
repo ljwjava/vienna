@@ -67,8 +67,6 @@
 		</attachment>
 
 
-		
-		
 		<rule>
 		    <if condition="DAY lt 30 or AGE > 60">
 				被保险人年龄要求出生满30天~60周岁。
