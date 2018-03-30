@@ -71,10 +71,7 @@
 		    <if condition="DAY lt 30 or AGE > 60">
 				被保险人年龄要求出生满30天~60周岁。
 			</if>
-			
-			<if condition="AGE lt 14 and PROTON_INS">
-				14岁以下不允许选择质子重离子治疗
-			</if>
+
 		</rule>
 
 	</product>
