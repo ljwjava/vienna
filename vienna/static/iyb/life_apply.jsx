@@ -674,8 +674,8 @@ var Ground = React.createClass({
             return;
         }
         if (env.smsKey == null) {
-            ToastIt("请获取并输入验证码");
-            return;
+            //ToastIt("请获取并输入验证码");
+            //return;
         }
         let contact = this.refs.contact.val();
         let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");

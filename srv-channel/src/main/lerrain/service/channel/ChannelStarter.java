@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource(locations={"classpath:spring.xml"})
 public class ChannelStarter
 {
-
 	public static void main(String[] args) throws Exception
 	{
 		SpringApplication.run(ChannelStarter.class, args);
