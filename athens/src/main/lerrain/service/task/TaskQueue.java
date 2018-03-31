@@ -1,29 +1,95 @@
 package lerrain.service.task;
 
-import lerrain.service.common.Log;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
-public class TaskQueue extends lerrain.tool.TaskQueue<Task>
+public class TaskQueue implements Runnable
 {
+    public static final int MAX	= 100000;
+
+    Map<String, Runnable> list = new LinkedHashMap<>();
+
+    Thread thread = new Thread(this);
+
+    public void add(Runnable runnable)
+    {
+        add(null, runnable);
+    }
+
+    public void add(String key, Runnable runnable)
+    {
+        if (key == null)
+            key = UUID.randomUUID().toString();
+
+        synchronized (list)
+        {
+            if (list.size() < MAX)
+                list.put(key, runnable);
+
+            list.notify();
+        }
+    }
+
     @PostConstruct
     public void start()
     {
-        super.start();
+        if (!thread.isAlive())
+            thread.start();
     }
 
-    @Override
-    public void perform(Task task)
+    public void run()
     {
-        try
+        Map<String, Runnable> pack = new LinkedHashMap<>();
+
+        while (true)
         {
-            Log.info(task.perform());
-        }
-        catch (Exception e)
-        {
-            Log.error(e);
+            synchronized (list)
+            {
+                pack.putAll(list);
+                list.clear();
+            }
+
+            if (pack.size() > 0)
+            {
+                for (Runnable runnable : pack.values())
+                {
+                    try
+                    {
+                        runnable.run();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                try
+                {
+                    Thread.sleep(10000);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+            else synchronized (list)
+            {
+                try
+                {
+                    if (list.isEmpty())
+                        list.wait();
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            pack.clear();
         }
     }
 }

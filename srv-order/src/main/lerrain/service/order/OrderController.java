@@ -321,11 +321,10 @@ public class OrderController
 //            order.setStatus(p.getIntValue("status"));
     }
 
-    private Map fill(Map m1, Map m2, Boolean reset)
+    private Map fill(Map m1, Map m2, boolean reset)
     {
-        if(reset != null && reset){
+        if (reset)
             return m2;
-        }
 
         if (m1 == null)
             return m2;
@@ -333,6 +332,7 @@ public class OrderController
             return m1;
 
         m1.putAll(m2);
+
         return m1;
     }
 }

@@ -19,11 +19,39 @@ var Main = React.createClass({
         return {content: []};
     },
     componentDidMount() {
-        this.refresh();
+        this.count(2);
     },
-    refresh() {
-        var b = toDateStr(Number(this.refs.year1.value), Number(this.refs.month1.value));
-        var e = toDateStr(Number(this.refs.year1.value), Number(this.refs.month1.value) + 1);
+    count(v) {
+        var b, e;
+        var now = new Date();
+        var y = now.getFullYear();
+        var m = now.getMonth();
+        if (v == 1) {
+            b = new Date(now.getTime() - 3600000 * 24).format("yyyy-MM-dd");
+            e = now.format("yyyy-MM-dd");
+        } else if (v == 2) {
+            b = now.format("yyyy-MM-dd");
+            e = new Date(now.getTime() + 3600000 * 24).format("yyyy-MM-dd");
+        } else if (v == 3) {
+            m--;
+            if (m < 0) {
+                y--;
+                m = 12;
+            }
+            b = new Date(y, m, 1).format("yyyy-MM-01");
+            e = now.format("yyyy-MM-01");
+        } else if (v == 4) {
+            m++;
+            if (m >= 12) {
+                y++;
+                m = 0;
+            }
+            b = now.format("yyyy-MM-01");
+            e = new Date(y, m, 1).format("yyyy-MM-01");
+        } else if (v == 5) {
+            b = now.format("yyyy-01-01");
+            e = new Date(y + 1, 1, 1).format("yyyy-01-01");
+        }
         common.req("report/pack_sale.json", {begin: b, end: e}, r => {
             this.setState({content: r});
         });
@@ -37,26 +65,12 @@ var Main = React.createClass({
                         <h5 className="text-primary font-weight-bold mt-sm-1">【报表】</h5>
                         <h5 className="mt-sm-1">网销产品出单情况</h5>
                     </div>
-                    <div className="form-inline">
-                        <select className="form-control mr-sm-2" ref="year1">
-                            <option value="2018">2018年</option>
-                            <option value="2017">2017年</option>
-                        </select>
-                        <select className="form-control mr-sm-2" ref="month1">
-                            <option value="1">1月</option>
-                            <option value="2">2月</option>
-                            <option value="3">3月</option>
-                            <option value="4">4月</option>
-                            <option value="5">5月</option>
-                            <option value="6">6月</option>
-                            <option value="7">7月</option>
-                            <option value="8">8月</option>
-                            <option value="9">9月</option>
-                            <option value="10">10月</option>
-                            <option value="11">11月</option>
-                            <option value="12">12月</option>
-                        </select>
-                        <button className="btn btn-info" onClick={this.refresh}>查询</button>
+                    <div className="form-inline btn-group">
+                        <button className="btn btn-outline-info" onClick={this.count.bind(this, 1)}>昨日</button>
+                        <button className="btn btn-outline-info" onClick={this.count.bind(this, 2)}>今日</button>
+                        <button className="btn btn-outline-info" onClick={this.count.bind(this, 3)}>上月</button>
+                        <button className="btn btn-outline-info" onClick={this.count.bind(this, 4)}>本月</button>
+                        <button className="btn btn-outline-info" onClick={this.count.bind(this, 5)}>今年</button>
                     </div>
                 </nav>
                 <table className="table table-bordered">

@@ -1,23 +1,17 @@
 package lerrain.service.env.function;
 
 import lerrain.service.biz.GatewayService;
+import lerrain.service.common.Log;
 import lerrain.service.env.ScriptErrorException;
-import lerrain.service.task.Task;
 import lerrain.service.task.TaskQueue;
-import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import lerrain.tool.script.ScriptRuntimeException;
-import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 
-
-/**
- * Created by lerrain on 2017/5/19.
- */
 @Service
 public class TaskFX extends HashMap<String, Object>
 {
@@ -34,15 +28,18 @@ public class TaskFX extends HashMap<String, Object>
             @Override
             public Object run(final Object[] objects, final Factors factors)
             {
-                queue.add(new Task()
+                String key = objects.length > 2 ? objects[2].toString() : null;
+                queue.add(key, new Runnable()
                 {
                     @Override
-                    public Object perform()
+                    public void run()
                     {
                         try
                         {
                             Function f = (Function) objects[0];
-                            return f.run((Object[]) (objects.length > 1 ? objects[1] : null), factors);
+                            Object val = f.run((Object[]) (objects.length > 1 ? objects[1] : null), factors);
+
+                            Log.info("TASK -- " + val);
                         }
                         catch (ScriptErrorException e1)
                         {
@@ -69,4 +66,6 @@ public class TaskFX extends HashMap<String, Object>
             }
         });
     }
+
+
 }

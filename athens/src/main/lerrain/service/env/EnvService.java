@@ -32,6 +32,7 @@ public class EnvService
     @Autowired Dict dict;
     @Autowired TaskFX taskFX;
     @Autowired OnAlert alert;
+    @Autowired StoreFX storeFX;
 
     Function time2long;
     Function today;
@@ -154,6 +155,7 @@ public class EnvService
         stack.put("jsonMap", new JsonMap());
         stack.put("jsonList", new JsonList());
         stack.put("jsonOf", new JsonOf());
+        stack.put("jsonStr", new JsonStr());
         stack.put("fold", fold);
         stack.put("unfold", unfold);
         stack.put("today", today);
@@ -168,6 +170,7 @@ public class EnvService
         stack.put("ToolFX", new ToolFX());
         stack.put("UrlFX", new UrlFX());
         stack.put("TaskFX", taskFX);
+        stack.put("StoreFX", storeFX);
         stack.put("IYunBao", new IYunBao());
 
         environments = envDao.loadAllEnv(stack);

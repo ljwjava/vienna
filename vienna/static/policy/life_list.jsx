@@ -70,7 +70,10 @@ var Main = React.createClass({
         return (
             <div>
                 <nav className="navbar navbar-light justify-content-between">
-                    <div></div>
+                    <div className="form-inline">
+                        <h5 className="text-primary font-weight-bold mt-sm-1">【保单】</h5>
+                        <h5 className="mt-sm-1">人身险</h5>
+                    </div>
                     <button className="btn btn-primary" id="upload">拖拽至此处上传</button>
                 </nav>
                 <PolicyList env={env}/>
