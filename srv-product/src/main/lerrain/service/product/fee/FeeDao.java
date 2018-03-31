@@ -183,10 +183,10 @@ public class FeeDao
 
 	public Fee loadFee(Long id)
 	{
-		return jdbc.query("select * from t_product_fee where status in (0,9) and estimate <= now() and id = ?", new ResultSetExtractor<Fee>()
+		return jdbc.queryForObject("select * from t_product_fee where status in (0,9) and estimate <= now() and id = ?", new RowMapper<Fee>()
 		{
 			@Override
-			public Fee extractData(ResultSet rs) throws SQLException, DataAccessException
+			public Fee mapRow(ResultSet rs, int rowNum) throws SQLException
 			{
 				return feeOf(rs);
 			}

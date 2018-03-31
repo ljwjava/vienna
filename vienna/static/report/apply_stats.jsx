@@ -43,12 +43,12 @@ var Main = React.createClass({
                         <th>产品</th>
                         <th>校验提交次数</th>
                         <th>校验失败率</th>
-                        <th>投保提交次数</th>
+                        <th>投保提交次数 ↓</th>
                         <th>核保失败率</th>
                         <th>支付失败率</th>
                         <th>出单失败率</th>
                         <th>出单成功率</th>
-                        <th>最终成功率 ↓</th>
+                        <th>最终成功率</th>
                     </tr>
                     </thead>
                     <tbody>

@@ -77,13 +77,18 @@ public class FeeService
 		return r;
 	}
 
-	public void pay(List<Long> list)
+	public int pay(List<Long> list)
 	{
+		int r = 0;
+
 		for (Long id : list)
 		{
 			Fee fee = feeDao.loadFee(id);
-			pay(fee);
+			if (pay(fee))
+				r++;
 		}
+
+		return r;
 	}
 
 	public boolean pay(Fee fee)

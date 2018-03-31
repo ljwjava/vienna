@@ -25,10 +25,10 @@ public class FeeController
         List<Long> idlist = new ArrayList<Long>();
         for (int i = 0; i < ids.size(); i++)
             idlist.add(ids.getLong(i));
-        cs.pay(idlist);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
+        res.put("content", cs.pay(idlist));
 
         return res;
     }

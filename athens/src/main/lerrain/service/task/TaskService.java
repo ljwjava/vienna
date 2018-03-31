@@ -63,10 +63,34 @@ public class TaskService
         invoke("day/04:00");
     }
 
+    @Scheduled(cron = "0 30 3 * * ?")
+    public void day0330()
+    {
+        invoke("day/03:30");
+    }
+
+    @Scheduled(cron = "0 15 3 * * ?")
+    public void day0315()
+    {
+        invoke("day/03:15");
+    }
+
     @Scheduled(cron = "0 0 3 * * ?")
     public void day03()
     {
         invoke("day/03:00");
+    }
+
+    @Scheduled(cron = "0 30 2 * * ?")
+    public void day0230()
+    {
+        invoke("day/02:30");
+    }
+
+    @Scheduled(cron = "0 15 2 * * ?")
+    public void day0215()
+    {
+        invoke("day/02:15");
     }
 
     @Scheduled(cron = "0 0 2 * * ?")

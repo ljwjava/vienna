@@ -152,6 +152,7 @@ public class EnvService
         stack.put("Sql", sql);
         stack.put("service", service);
         stack.put("dict", dict);
+        stack.put("sort", new Sort());
         stack.put("jsonMap", new JsonMap());
         stack.put("jsonList", new JsonList());
         stack.put("jsonOf", new JsonOf());

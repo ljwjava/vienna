@@ -214,6 +214,11 @@ var FeeList = React.createClass({
             this.setState({list1: r.agent, list2: r.channel});
         });
     },
+	pay(feeId) {
+        common.req("policy/fee/pay_agent.json", {feeList: [feeId]}, r => {
+            alert(r + "笔费用已发放");
+        });
+	},
     agentOf(v) {
         let estimateDate = v.estimate == null ? null : new Date(v.estimate).format("yyyy-MM-dd");
         let payTime = v.payTime == null ? null : new Date(v.payTime).format("yyyy-MM-dd hh:mm:ss");
@@ -227,6 +232,9 @@ var FeeList = React.createClass({
 				<td>{payTime}</td>
 				<td>{v.freeze}</td>
 				<td>平台 &rarr; 代理人{v.drawer}</td>
+				<td style={{padding:"6px"}}>
+					{v.payTime == null ? <button className="btn btn-outline-danger mr-1" onClick={this.pay.bind(this, v.id)}>发放</button> : null}
+				</td>
 			</tr>
         );
     },
@@ -275,6 +283,7 @@ var FeeList = React.createClass({
 						<th>实际发放时间</th>
 						<th>冻结天数</th>
 						<th>费用流向</th>
+						<th>操作</th>
 					</tr>
 					</thead>
 					<tbody>{ this.state.list1 == null ? null : this.state.list1.map(v => this.agentOf(v)) }</tbody>
