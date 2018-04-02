@@ -28,6 +28,6 @@
       </div>
     </nav>
 
-    <div class="container-fluid" id="content"><!--HTML--></div>
+    <div id="content"><!--HTML--></div>
   </body>
 </html>
