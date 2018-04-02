@@ -42,6 +42,8 @@ var Main = React.createClass({
                     <tr className="text-center">
                         <th>产品</th>
                         <th>校验提交次数</th>
+                        <th>验证码错误率</th>
+                        <th>信息查询失败率</th>
                         <th>校验失败率</th>
                         <th>投保提交次数 ↓</th>
                         <th>核保失败率</th>
@@ -56,13 +58,15 @@ var Main = React.createClass({
                             <tr className="text-center">
                                 <td>{v.productName}</td>
                                 <td>{v.check}</td>
-                                <td className="text-warning">{rateOf(v.checkFail, v.check)}</td>
+                                <td className="text-danger font-weight-bold">{rateOf(v.smsFail, v.check)}</td>
+                                <td className="text-danger font-weight-bold">{rateOf(v.otherFail, v.check)}</td>
+                                <td className="text-danger font-weight-bold">{rateOf(v.checkFail, v.check)}</td>
                                 <td>{v.apply}</td>
-                                <td className="text-danger">{rateOf(v.verifyFail, v.apply)}</td>
-                                <td className="text-danger">{rateOf(v.payFail, v.apply)}</td>
-                                <td className="text-danger">{rateOf(v.insureFail, v.apply)}</td>
-                                <td className="text-success">{rateOf(v.applySuccess, v.apply)}</td>
-                                <td className="text-success">{rateOf(v.insureSuccess, v.apply)}</td>
+                                <td className="text-danger font-weight-bold">{rateOf(v.verifyFail, v.apply)}</td>
+                                <td className="text-danger font-weight-bold">{rateOf(v.payFail, v.apply)}</td>
+                                <td className="text-danger font-weight-bold">{rateOf(v.insureFail, v.apply)}</td>
+                                <td className="text-success font-weight-bold">{rateOf(v.applySuccess, v.apply)}</td>
+                                <td className="text-success font-weight-bold">{rateOf(v.insureSuccess, v.apply)}</td>
                             </tr>
                         )}
                     </tbody>
