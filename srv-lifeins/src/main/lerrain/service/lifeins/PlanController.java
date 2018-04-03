@@ -63,10 +63,10 @@ public class PlanController
     @ResponseBody
     public String reset()
     {
-        Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv));
-        Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
+        //Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv));
+        //Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
 
-        Log.EXCEPTION_STACK = Script.STACK_MESSAGE;
+        //Log.EXCEPTION_STACK = Script.STACK_MESSAGE;
 
         lifeins.reset();
         planSrv.reset();
