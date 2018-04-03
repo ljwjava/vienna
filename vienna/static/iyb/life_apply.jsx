@@ -361,7 +361,7 @@ class PlanForm extends Form {
                     refresh: "yes",
                     options: v.detail,
                     value: v.value,
-                    onChange: v.name != "A_EXEMPT" ? null : (comp, code) => {
+                    onChange: v.name != "A_EXEMPT" && v.name != "EXEMPT" ? null : (comp, code) => {
                         if (code == "Y") {
                             this.props.parent.popQuest();
                         }

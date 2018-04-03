@@ -85,6 +85,13 @@ env.policyOf = function(v) {
 					<label>代理机构</label>
 					<input type="text" className="form-control" defaultValue={v.agencyName}/>
 				</div>
+				<div className="col-md-4">
+					<label>保单状态</label>
+					<select className="form-control" defaultValue={v.status}>>
+						<option value="1">正常</option>)}
+						<option value="2">已退保</option>)}
+					</select>
+				</div>
 			</div>
 		</div>
 		<div className="card card-body border-success mt-3">
@@ -437,7 +444,7 @@ var Main = React.createClass({
                     )}
 					</div>
 				</nav>
-				<div className="container-fluid mt-3">
+				<div className="container-fluid mt-3 mb-3">
 					{ body }
 				</div>
 			</div>

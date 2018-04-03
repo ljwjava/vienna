@@ -45,8 +45,8 @@
 			<if condition="AGE > 55" type="customer">
 				投保年龄须为出生满30天~55周岁
 			</if>
-			<if condition="APPLICANT.AGE > 50" type="customer">
-				投保人年龄不能大于50周岁
+			<if condition="APPLICANT.AGE > 55" type="customer">
+				投保人年龄不能大于55周岁
 			</if>
 
 			<if condition="PAY_VALUE == 70 and INSURE_VALUE != 70">

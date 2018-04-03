@@ -19,6 +19,7 @@ public class Policy
     String productName;
 
     int type;
+    int status;
     int period;
 
     JSONObject target;
@@ -185,6 +186,16 @@ public class Policy
     public void setInsurantCertType(String insurantCertType)
     {
         this.insurantCertType = insurantCertType;
+    }
+
+    public int getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(int status)
+    {
+        this.status = status;
     }
 
     public String getVehicleFrameNo()

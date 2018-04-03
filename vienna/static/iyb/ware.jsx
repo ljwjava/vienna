@@ -215,11 +215,12 @@ var Ware = React.createClass({
 	},
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
-			var appExempt = env.factors.A_EXEMPT;
+			var exempt = env.factors.EXEMPT;	// 轻症豁免
+			var appExempt = env.factors.A_EXEMPT;	// 投保人豁免
 			var questTitle = "被保险人";
 			var quests = env.docs.quests;
 			var questsPlus = null;
-			if (appExempt == "Y") {
+			if (appExempt == "Y" || exempt == "Y") {
 				if (env.docs.allQuests) {
                     questTitle = "投保人及被保险人";
                     quests = env.docs.allQuests;
@@ -253,7 +254,7 @@ var Ware = React.createClass({
 						<div className="notice">
 							<div className="content">
 								<br/>
-								很抱歉，{ appExempt == "Y" ? "投保人或被保险人" :"被保险人"}的健康状况不满足该保险的投保规定<br/>
+								很抱歉，{ appExempt == "Y" || exempt == "Y" ? "投保人或被保险人" :"被保险人"}的健康状况不满足该保险的投保规定<br/>
 								如有疑问，请联系{this.state.vendor.name}客服<br/>
 								<br/>
 								<a href={"tel:"+env.docs.telephone}>{env.docs.telephone}</a>
