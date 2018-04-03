@@ -31,8 +31,8 @@
 			<if condition="DAY lt 30 or AGE >= 18" type="customer">
 				被保险人年龄须为出生满30天~17周岁
 			</if>
-			<if condition="APPLICANT.AGE > 70" type="customer">
-				投保人年龄不能大于70周岁
+			<if condition="APPLICANT.AGE lt 18 or APPLICANT.AGE > 70" type="customer">
+				投保人年龄必须年满18周岁且不能大于70周岁
 			</if>
 		</rule>
 	</product>
