@@ -188,7 +188,11 @@ public class FeeDao
 			@Override
 			public Fee extractData(ResultSet rs) throws SQLException, DataAccessException
 			{
-				return feeOf(rs);
+				if(rs.next()){
+					return feeOf(rs);
+				} else {
+					return null;
+				}
 			}
 		}, id);
 	}
