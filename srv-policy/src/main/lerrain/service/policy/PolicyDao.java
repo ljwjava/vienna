@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 @Repository
 public class PolicyDao
@@ -197,6 +198,16 @@ public class PolicyDao
         }
 
         return p.getId();
+    }
+
+    public void surrender(Long policyId, Date surrenderTime)
+    {
+        jdbc.update("update t_policy set status = 9, surrender_time = ? where policy_id = ?", surrenderTime, policyId);
+    }
+
+    public Long findPolicy(Long vendorId, String policyNo)
+    {
+        return jdbc.queryForObject("select id from t_policy where vendor_id = ? and policy_no = ?", Long.TYPE, vendorId, policyNo);
     }
 
     public void updatePolicy(Policy p)

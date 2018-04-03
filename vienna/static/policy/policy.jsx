@@ -44,9 +44,6 @@ env.strOf = function(s1, s2) {
 }
 
 env.policyOf = function(v) {
-    if (v == null)
-        return null;
-
     var app = v.target && v.target.applicant ? v.target.applicant : {};
     var ins = v.type == 1 && v.target && v.target.insurant ? v.target.insurant : null;
     var vec = v.type == 2 && v.target && v.target.vehicle ? v.target.vehicle : null;
@@ -199,7 +196,7 @@ env.clauseOf = function(v) {
     );
 
     return cl.length == 0 ? null:
-		<table className="table table-bordered">
+		<table className="table table-bordered mt-3">
 			<thead className="thead-light">
 			<tr>
 				<th><div>条款</div></th>
@@ -215,11 +212,12 @@ env.clauseOf = function(v) {
 
 var ChannelFee = React.createClass({
     getInitialState() {
-        return {};
+        return {list: []};
     },
     componentDidMount() {
-        if (this.props.req != null) common.req("policy/fee.json", this.props.req, r => {
-            this.setState({list1: r.agent, list2: r.channel});
+        let req = {bizType: 2, bizId: this.props.policy.id}
+        if (this.props.req != null) common.req("policy/channel_fee.json", req, r => {
+            this.setState({list: r});
         });
     },
     channelOf(v) {
@@ -229,7 +227,7 @@ var ChannelFee = React.createClass({
         let drawer = env.company[v.drawer] ? env.company[v.drawer].name : v.drawer;
         return (
 			<tr key={v.id}>
-				<td>渠道费用</td>
+				<td>{v.type == 1 ? "渠道代理费" : v.type == 2 ? "技术服务费" : null}</td>
 				<td>{v.productName}</td>
 				<td>{v.amount}</td>
 				<td>{estimateDate}</td>
@@ -248,13 +246,13 @@ var ChannelFee = React.createClass({
 						<th>费用类型</th>
 						<th>条款</th>
 						<th>金额（元）</th>
-						<th>预计结算时间</th>l
+						<th>预计结算时间</th>
 						<th>发放状态</th>
 						<th>实际结算时间</th>
 						<th>费用流向</th>
 					</tr>
 					</thead>
-					<tbody>{ this.state.list2 == null ? null : this.state.list2.map(v => this.channelOf(v)) }</tbody>
+					<tbody>{ this.state.list.map(v => this.channelOf(v)) }</tbody>
 				</table>
 			</div>
         );
@@ -263,11 +261,11 @@ var ChannelFee = React.createClass({
 
 var AgentFee = React.createClass({
     getInitialState() {
-        return {};
+        return {list: []};
     },
     componentDidMount() {
-        if (this.props.req != null) common.req("policy/fee.json", this.props.req, r => {
-            this.setState({list1: r.agent, list2: r.channel});
+        if (this.props.req != null) common.req("policy/agent_fee.json", this.props.req, r => {
+            this.setState({list: r});
         });
     },
     pay(feeId) {
@@ -282,6 +280,7 @@ var AgentFee = React.createClass({
 			<tr key={v.id}>
 				<td>{env.dict.feeType[v.type]}</td>
 				<td>{v.amount}</td>
+				<td>{common.round(v.amount * 100 / this.props.policy.premium, 0)}%</td>
 				<td>{estimateDate}</td>
 				<td>{v.auto ? "是" : "否"}</td>
 				<td>{env.dict.feeStatus[v.status]}</td>
@@ -296,11 +295,12 @@ var AgentFee = React.createClass({
     },
     render() {
         return (
-			<table className="table table-bordered mt-3">
+			<table className="table table-bordered mt-3 text-center">
 				<thead className="thead-light">
 				<tr>
 					<th>费用类型</th>
 					<th>金额（元）</th>
+					<th>比例（％）</th>
 					<th>预计发放时间</th>
 					<th>是否自动发放</th>
 					<th>发放状态</th>
@@ -310,7 +310,7 @@ var AgentFee = React.createClass({
 					<th>操作</th>
 				</tr>
 				</thead>
-				<tbody>{ this.state.list1 == null ? null : this.state.list1.map(v => this.agentOf(v)) }</tbody>
+				<tbody>{ this.state.list.map(v => this.agentOf(v)) }</tbody>
 			</table>
         );
     }
@@ -344,22 +344,20 @@ var ClauseList = React.createClass({
     },
     render() {
         return (
-			<div>
-				<table className="table table-bordered mt-3">
-					<thead className="thead-light">
-					<tr>
-						<th>费用类型</th>
-						<th>条款</th>
-						<th>金额（元）</th>
-						<th>预计结算时间</th>
-						<th>发放状态</th>
-						<th>实际结算时间</th>
-						<th>费用流向</th>
-					</tr>
-					</thead>
-					<tbody>{ this.state.list2 == null ? null : this.state.list2.map(v => this.channelOf(v)) }</tbody>
-				</table>
-			</div>
+			<table className="table table-bordered mt-3">
+				<thead className="thead-light">
+				<tr>
+					<th>费用类型</th>
+					<th>条款</th>
+					<th>金额（元）</th>
+					<th>预计结算时间</th>
+					<th>发放状态</th>
+					<th>实际结算时间</th>
+					<th>费用流向</th>
+				</tr>
+				</thead>
+				<tbody>{ this.state.list2 == null ? null : this.state.list2.map(v => this.channelOf(v)) }</tbody>
+			</table>
         );
     }
 });
@@ -369,7 +367,7 @@ var Main = React.createClass({
         return {tab: "base"};
     },
     back() {
-        document.location.href = "list.web";
+        document.location.href = "life_list.web";
     },
 	change(tab) {
 		this.setState({tab: tab})
@@ -395,19 +393,37 @@ var Main = React.createClass({
     	if (this.state.policy == null)
     		return null;
 
-        var tabs = [["base", "基础信息"], ["endorse", "批改保全"], ["clause", "条款明细"], ["channel", "渠道费用"], ["agent", "个人费用"]];
+        var tabs = [["base", "基础信息"], ["endorse", "批改保全"], ["channel", "渠道费用"], ["agent", "个人费用"]];
         var body;
         if (this.state.tab == "base") {
-            body = env.policyOf(this.state.policy);
-        } else if (this.state.tab == "clause") {
-            body = env.clauseOf(this.state.policy);
+            body = [
+            	env.policyOf(this.state.policy),
+                env.clauseOf(this.state.policy),
+				<div className="container-fluid mt-3 text-center">
+					<button className="btn btn-danger mr-2">
+						<span className="glyphicon glyphicon-yen mr-1"></span> 生成费用
+					</button>
+					<button className="btn btn-danger mr-5">
+						<span className="glyphicon glyphicon-exclamation-sign mr-1"></span> 退保退费
+					</button>
+					<button className="btn btn-success mr-2">
+						<span className="glyphicon glyphicon-ok mr-1"></span> 保存
+					</button>
+					<button className="btn btn-outline-dark" onClick={this.back}>
+						<span className="glyphicon glyphicon-remove mr-1"></span> 取消
+					</button>
+				</div>
+            ];
         } else if (this.state.tab == "channel") {
             let biz = {bizType: 2, bizId: this.state.policy.id};
-            body = <ChannelFee req={biz}/>
+            body = <ChannelFee req={biz} policy={this.state.policy}/>
         } else if (this.state.tab == "agent") {
             let biz = {bizType: 2, bizId: this.state.policy.id};
-            body = <AgentFee req={biz}/>
-        }
+            body = <AgentFee req={biz} policy={this.state.policy}/>
+        } else {
+        	body = null;
+		}
+
         return (
 			<div>
 				<nav className="navbar nav-pills flex-column flex-sm-row bg-light border-bottom">
@@ -423,17 +439,6 @@ var Main = React.createClass({
 				</nav>
 				<div className="container-fluid mt-3">
 					{ body }
-				</div>
-				<div className="container-fluid mt-3 text-center">
-					<button className="btn btn-success mr-2">
-						<span className="glyphicon glyphicon-ok mr-1"></span> 保存
-					</button>
-					<button className="btn btn-danger mr-2">
-						<span className="glyphicon glyphicon-exclamation-sign mr-1"></span> 退保
-					</button>
-					<button className="btn btn-outline-dark mr-2">
-						<span className="glyphicon glyphicon-remove mr-1"></span> 取消
-					</button>
 				</div>
 			</div>
         );

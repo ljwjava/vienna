@@ -88,11 +88,11 @@ var Main = React.createClass({
                         { c.map(v =>
                             <tr className="text-center">
                                 <td>{v.productName}</td>
-                                <td>{v.policyNum}</td>
-                                <td>{v.sumPremium}</td>
-                                <td>{v.commission}</td>
-                                <td>{v.relaBonus}</td>
-                                <td>{v.bonus}</td>
+                                <td className="text-right number">{common.round(v.policyNum, 2)}</td>
+                                <td className="text-right number">{common.round(v.sumPremium, 2)}</td>
+                                <td className="text-right number">{common.round(v.commission, 2)}</td>
+                                <td className="text-right number">{common.round(v.relaBonus, 2)}</td>
+                                <td className="text-right number">{common.round(v.bonus, 2)}</td>
                             </tr>
                         )}
                     </tbody>

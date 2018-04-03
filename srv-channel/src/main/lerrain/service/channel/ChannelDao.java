@@ -257,6 +257,7 @@ public class ChannelDao
         m.put("status", rs.getInt("status"));
         m.put("payer", rs.getLong("payer"));
         m.put("drawer", rs.getLong("drawer"));
+        m.put("type", Common.intOf(rs.getObject("type"), 0));
 
         return m;
     }
