@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="ZAH00003" corporation_id="zhongan" code="AA31" name="尊享e生旗舰版" name_abbr="尊享e生旗舰版" unit="3000000"
+	premium="DS.RATE[0][SOCIAL_INS?0:1]"
+		type="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2018-03-16">
+
+		<data>
+			<item parser="dds" value="ZAH00003" />
+		</data>
+
+		<init amount="3000000">
+			<item name="SOCIAL_INS" value="true" type="boolean"/>
+			<item name="PROTON_INS" value="true" type="boolean"/>
+		</init>
+
+	   <attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="COMMON_MEDICAL">AMOUNT</item>
+				<item name="CANCER_MEDICAL">AMOUNT</item>
+			</fgraph>
+		</attachment>
+
+		<input>
+			<item name="SOCIAL_INS" label="社保" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+			<item name="PROTON_INS" label="质子重离子治疗(100%赔付)" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+		</input>
+
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+<!-- 		<portfolio> -->
+<!-- 			<product id="ZAH00003"> -->
+<!-- 				<AMOUNT>PACK.AMOUNT</AMOUNT> -->
+<!-- 				<SOCIAL_INS>PACK.SOCIAL_INS</SOCIAL_INS> -->
+<!-- 			</product> -->
+<!-- 		</portfolio> -->
+
+<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="一般医疗保险金">
+				  <item>在保险期间内，被保险人因遭受意外伤害（释义二）事故或在等待期(释义三)后因患疾病(释义四)，在医院（释义五）接受治疗的，保险人依照下列约定给付保险金：</item>
+<item>1.住院医疗费用</item>
+<item>被保险人经中华人民共和国境内（不含港、澳、台地区）二级及以上医院，或保险人认可的医院诊断必须住院（释义六）治疗的，保险人对于被保险人需个人支付的、必需且合理的住院医疗费用（释义七），在扣除约定的免赔额后，依照约定的给付比例赔付。住院医疗费用包括床位费（释义八）、膳食费（释义九）、护理费（释义十）、重症监护室床位费、诊疗费、检查检验费（释义十一）、治疗费（释义十二）、药品费（释义十三）、手术费（释义十四）等。</item>
+<item>2.特殊门诊医疗费用</item>
+<item>被保险人在中华人民共和国境内（不含港、澳、台地区）二级及以上医院，或保险人认可的医院接受特殊门诊（不含特需门诊）治疗的，保险人对于被保险人需个人支付的、必需且合理的特殊门诊医疗费用，在扣除约定的免赔额后，依照约定的给付比例赔付。特殊门诊医疗费用包括：
+（1）门诊肾透析费；
+（2）门诊恶性肿瘤（释义十五）治疗费，包括化学疗法（释义十六）、放射疗法（释义十七）、肿瘤免疫疗法（释义十八）、肿瘤内分泌疗法（释义十九）、肿瘤靶向疗法（释义二十）治疗费用；
+（3）器官移植后的门诊抗排异治疗费。</item>
+<item>保险人对住院医疗费用和特殊门诊医疗费用的累计给付之和以本合同约定的一般医疗保险金的保险金额为限，当保险人累计给付金额达到本项保险金额时，保险人对被保险人在本项下的保险责任终止。</item>
+				</paragraph>
+				<paragraph title="恶性肿瘤医疗保险金">
+					<item>保险期间内，被保险人在等待期后因初次确诊罹患恶性肿瘤，在医院接受治疗的，保险人首先按照第六条第（一）款的约定给付一般医疗保险金，当保险人累计给付金额达到一般医疗保险金的保险金额后，保险人依照下列约定给付恶性肿瘤医疗保险金：</item>
+<item>1.恶性肿瘤住院医疗费用</item>
+<item>被保险人经中华人民共和国境内（不含港、澳、台地区）二级及以上医院，或保险人认可的医院诊断必须住院治疗的，保险人对于被保险人需个人支付的、必需且合理的住院医疗费用，在扣除约定的免赔额后，依照约定的给付比例赔付。住院医疗费用包括床位费、膳食费、护理费、重症监护室床位费、诊疗费、检查检验费、治疗费、药品费、手术费等。</item>
+<item>2.恶性肿瘤特殊门诊医疗费用</item>
+<item>被保险人在中华人民共和国境内（不含港、澳、台地区）二级及以上医院，或保险人认可的医院接受特殊门诊（不含特需门诊）治疗的，保险人对于被保险人需个人支付的、必需且合理的特殊门诊医疗费用，在扣除约定的免赔额后，依照约定的给付比例赔付。恶性肿瘤特殊门诊医疗费用包括化学疗法、放射疗法、肿瘤免疫疗法、肿瘤内分泌疗法、肿瘤靶向疗法治疗费用。</item>
+<item>保险人对恶性肿瘤住院医疗费用和恶性肿瘤特殊门诊医疗费用的累计给付之和以本合同约定的恶性肿瘤医疗保险金的保险金额为限，当保险人累计给付金额达到本项保险金额时，保险人对被保险人在本项下的保险责任终止。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+
+
+		<rule>
+		    <if condition="DAY lt 30 or AGE > 60">
+				被保险人年龄要求出生满30天~60周岁。
+			</if>
+
+		</rule>
+
+	</product>
+</declare>

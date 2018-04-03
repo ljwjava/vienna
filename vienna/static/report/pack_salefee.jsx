@@ -52,7 +52,7 @@ var Main = React.createClass({
             b = now.format("yyyy-01-01");
             e = new Date(y + 1, 1, 1).format("yyyy-01-01");
         }
-        common.req("report/pack_sale.json", {begin: b, end: e}, r => {
+        common.req("report/pack_salefee.json", {begin: b, end: e}, r => {
             this.setState({content: r});
         });
     },
@@ -63,7 +63,7 @@ var Main = React.createClass({
                 <nav className="navbar navbar-light">
                     <div className="form-inline">
                         <h5 className="text-primary font-weight-bold mt-sm-1">【报表】</h5>
-                        <h5 className="mt-sm-1">网销产品出单情况</h5>
+                        <h5 className="mt-sm-1">网销产品费用情况</h5>
                     </div>
                     <div className="form-inline btn-group">
                         <button className="btn btn-outline-info" onClick={this.count.bind(this, 1)}>昨日</button>
@@ -77,24 +77,22 @@ var Main = React.createClass({
                     <thead className="thead-light">
                     <tr className="text-center">
                         <th>产品</th>
-                        <th>填单数量</th>
-                        <th>成交数量</th>
-                        <th>保单成交比例</th>
-                        <th>填单保费 ↓</th>
-                        <th>成交保费</th>
-                        <th>保费成交比例</th>
+                        <th>保单数量</th>
+                        <th>总保费 ↓</th>
+                        <th>佣金费用</th>
+                        <th>关联费用</th>
+                        <th>营销费用</th>
                     </tr>
                     </thead>
                     <tbody>
                         { c.map(v =>
                             <tr className="text-center">
                                 <td>{v.productName}</td>
-                                <td>{v.orderNum}</td>
-                                <td>{v.dealNum <= 0 ? "-" : v.dealNum}</td>
-                                <td>{v.dealNum <= 0 ? "-" : common.round(v.dealNum * 100 / v.orderNum, 2) + "%"}</td>
-                                <td>{common.round(v.orderAmt, 2)}</td>
-                                <td>{v.dealNum <= 0 ? "-" : common.round(v.dealAmt, 2)}</td>
-                                <td>{v.dealNum <= 0 ? "-" : common.round(v.dealAmt * 100 / v.orderAmt, 2) + "%"}</td>
+                                <td className="text-right number">{common.round(v.policyNum, 2)}</td>
+                                <td className="text-right number">{common.round(v.sumPremium, 2)}</td>
+                                <td className="text-right number">{common.round(v.commission, 2)}</td>
+                                <td className="text-right number">{common.round(v.relaBonus, 2)}</td>
+                                <td className="text-right number">{common.round(v.bonus, 2)}</td>
                             </tr>
                         )}
                     </tbody>

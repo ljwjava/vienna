@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 public class PolicyController
@@ -54,7 +55,19 @@ public class PolicyController
         res.put("result", "success");
         res.put("content", policySrv.getPolicy(policyId));
 
-        Log.info(res);
+        return res;
+    }
+
+    @RequestMapping("/find.json")
+    @ResponseBody
+    public JSONObject find(@RequestBody JSONObject p)
+    {
+        String policyNo = p.getString("policyNo");
+        Long vendorId = p.getLong("vendorId");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", policySrv.findPolicy(vendorId, policyNo));
 
         return res;
     }
@@ -68,6 +81,21 @@ public class PolicyController
         policy = policyOf(policy, p);
 
         policySrv.updatePolicy(policy);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/surrender.json")
+    @ResponseBody
+    public JSONObject status(@RequestBody JSONObject p)
+    {
+        Long policyId = p.getLong("policyId");
+        Date surrenderTime = p.getDate("surrenderTime");
+
+        policySrv.surrender(policyId, surrenderTime);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");

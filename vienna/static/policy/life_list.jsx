@@ -66,14 +66,25 @@ class PolicyList extends List {
 }
 
 var Main = React.createClass({
+    create() {
+
+    },
     render() {
         return (
             <div>
                 <nav className="navbar navbar-light justify-content-between">
-                    <div></div>
-                    <button className="btn btn-primary" id="upload">拖拽至此处上传</button>
+                    <div className="form-inline">
+                        <h5 className="text-primary font-weight-bold mt-sm-1">【保单】</h5>
+                        <h5 className="mt-sm-1">人身险</h5>
+                    </div>
+                    <div className="form-inline">
+                        <button className="btn btn-outline-primary mr-2" id="upload">拖拽至此处上传</button>
+                        <button className="btn btn-primary mr-2" onClick={this.create}>录入保单</button>
+                    </div>
                 </nav>
-                <PolicyList env={env}/>
+                <div  className="container-fluid">
+                    <PolicyList env={env}/>
+                </div>
             </div>
         );
     }

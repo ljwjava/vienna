@@ -25,10 +25,10 @@ public class FeeController
         List<Long> idlist = new ArrayList<Long>();
         for (int i = 0; i < ids.size(); i++)
             idlist.add(ids.getLong(i));
-        cs.pay(idlist);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
+        res.put("content", cs.pay(idlist));
 
         return res;
     }
@@ -57,6 +57,7 @@ public class FeeController
     public JSONObject bill(@RequestBody JSONArray list)
     {
         //这里要加判断，一张保单只允许bill一次
+        List<String> temp = new ArrayList<>();
 
         List<Fee> bills = new ArrayList<>();
         for (int i = 0; i < list.size(); i++)
@@ -84,6 +85,15 @@ public class FeeController
             r.status = Common.intOf(c.get("status"), 9); //
             r.payTime = null;
             r.createTime = new Date();
+
+            if (temp.indexOf(r.bizType + "/" + r.bizId) < 0)
+            {
+                List<Fee> x = cs.findFee(r.bizType, r.bizId);
+                if (x != null && !x.isEmpty())
+                    throw new RuntimeException(r.bizId + "<" + r.bizType + "> exists");
+
+                temp.add(r.bizType + "/" + r.bizId);
+            }
 
             bills.add(r);
         }
@@ -131,6 +141,22 @@ public class FeeController
         }
 
         cs.saveFeeDefine(platformId, productId, list);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/fee/cancel.json")
+    @ResponseBody
+    public JSONObject cancel(@RequestBody JSONObject c)
+    {
+        Long platformId = c.getLong("platformId");
+        Long vendorId = c.getLong("vendorId");
+        String bizNo = c.getString("bizNo");
+
+
 
         JSONObject res = new JSONObject();
         res.put("result", "success");

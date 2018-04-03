@@ -1,9 +1,10 @@
 package lerrain.service.task;
 
+import lerrain.service.common.Log;
 import lerrain.tool.formula.Formula;
 import lerrain.tool.script.Stack;
 
-public class TimingTask implements Task
+public class TimingTask implements Runnable
 {
     String invoke;
 
@@ -41,8 +42,10 @@ public class TimingTask implements Task
         this.stack = stack;
     }
 
-    public Object perform()
+    @Override
+    public void run()
     {
-        return script.run(stack);
+        Object val = script.run(stack);
+        Log.info("TASK ON TIME -- " + val);
     }
 }
