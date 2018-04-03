@@ -401,6 +401,9 @@ var Ground = React.createClass({
                 { env.order.detail.applyMode == 2 && !env.order.extra.hasPay ? null :
 					<div className="form">
 						<PayForm ref="pay"/>
+						{
+							(env.company != "fosun" || !common.isWeixin()) ? null : <div style={{color: "#FF0000", paddingTop: "5px"}}>保费超10000元请点击<a onClick={this.openDoc.bind(this, "https://static.zhongan.com/website/health/iyb/resource/product/fosunkangle/pay_tips/pay_tips.html")} style={{color: "blue"}}>微信单笔支付额度提示</a>查阅</div>
+						}
 					</div>
                 }
                 { !env.order.extra.hasPayRenew ? null :
