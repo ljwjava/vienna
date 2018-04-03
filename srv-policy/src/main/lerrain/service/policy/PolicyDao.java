@@ -148,9 +148,9 @@ public class PolicyDao
     {
         p.setId(tools.nextId("policy"));
 
-        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, product_name, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
+        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, status, product_name, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
                 "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_engine_no, vehicle_frame_no, vehicle_plate_no, create_time, creator, update_time, updater) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
 
         jdbc.update(sql,
                 p.getId(),
@@ -160,6 +160,7 @@ public class PolicyDao
                 p.getEndorseNo(),
                 p.getEndorseTime(),
                 p.getType(),
+                p.getStatus(),
                 p.getProductName(),
                 Common.trimStringOf(p.getTarget()),
                 Common.trimStringOf(p.getDetail()),
