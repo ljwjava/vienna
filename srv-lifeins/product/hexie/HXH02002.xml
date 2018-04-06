@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="HXH02002" corporation_id="hexie" code="HXH02001" name="和谐健康宝贝护理组合" name_abbr="健康宝贝" premium="PremiumChildren"
+	<product id="HXH02002" corporation_id="hexie" code="HXH02001" name="和谐健康宝贝护理组合" name_abbr="健康宝贝" premium="PremiumChildren()"
 		type="thunder" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<init amount="80000">

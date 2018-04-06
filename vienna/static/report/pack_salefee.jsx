@@ -57,7 +57,7 @@ var Main = React.createClass({
         });
     },
     render() {
-        let c = this.state.content;l
+        let c = this.state.content;
         return (
             <div>
                 <nav className="navbar navbar-light">

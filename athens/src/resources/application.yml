@@ -39,6 +39,7 @@ service:
   channel: http://localhost:7675
   product: http://localhost:7758
   org: http://localhost:7731
+  underwriting: http://localhost:7782
 
 path:
   temp: x:/temp/1/

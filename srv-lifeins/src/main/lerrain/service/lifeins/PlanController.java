@@ -609,15 +609,15 @@ public class PlanController
                     }
                 }
             }
+
+            JSONObject res = new JSONObject();
+            res.put("result", "success");
+            res.put("content", LifeinsUtil.jsonOf(plan));
+
+            queue.add(plan);
+
+            return res;
         }
-
-        queue.add(plan);
-
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", LifeinsUtil.jsonOf(plan));
-
-        return res;
     }
 
     @RequestMapping({"/plan/fee.json"})

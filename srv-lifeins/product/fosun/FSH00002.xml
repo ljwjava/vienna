@@ -43,6 +43,8 @@
 		<init>
 			<item name="OTHER">return {PLAN_CODE: "JH1100321", PRODUCT_CODE: "110032"}</item>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
+			<item name="RM" value="RIDER('FSH00003')"/>
+			<item name="RE" value="RIDER('FSH00004')"/>
 		</init>
 
 		<interest>
@@ -59,6 +61,16 @@
 		</rider>
 
 		<attachment>
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
+				<item name="MILD">RM == null ? 0 : AMOUNT*0.6</item>
+				<item name="MILD_EXEMPT">RM == null ? 0 : 1</item>
+				<item name="ACCIDENT_DEATH">AMOUNT</item>
+				<item name="OTHER_DEATH">AMOUNT</item>
+				<item name="A_DEATH_EXEMPT">RE == null ? 0 : 1</item>
+				<item name="A_MILD_EXEMPT">RE == null ? 0 : 1</item>
+				<item name="A_THUNDER_EXEMPT">RE == null ? 0 : 1</item>
+			</fgraph>
 		</attachment>
 
 		<rule>
