@@ -63,10 +63,10 @@ public class PlanController
     @ResponseBody
     public String reset()
     {
-        Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv));
-        Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
+        //Script.STACK_MESSAGE = !("prd".equalsIgnoreCase(srvEnv));
+        //Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
 
-        Log.EXCEPTION_STACK = Script.STACK_MESSAGE;
+        //Log.EXCEPTION_STACK = Script.STACK_MESSAGE;
 
         lifeins.reset();
         planSrv.reset();
@@ -609,15 +609,15 @@ public class PlanController
                     }
                 }
             }
+
+            JSONObject res = new JSONObject();
+            res.put("result", "success");
+            res.put("content", LifeinsUtil.jsonOf(plan));
+
+            queue.add(plan);
+
+            return res;
         }
-
-        queue.add(plan);
-
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", LifeinsUtil.jsonOf(plan));
-
-        return res;
     }
 
     @RequestMapping({"/plan/fee.json"})

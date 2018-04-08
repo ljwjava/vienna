@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="HXH02001" corporation_id="hexie" code="HXH02001" name="和谐健康之享定期重大疾病组合" name_abbr="健康之享" premium="PremiumChildren"
+	<product id="HXH02001" corporation_id="hexie" code="HXH02001" name="和谐健康之享定期重大疾病组合" name_abbr="健康之享" premium="PremiumChildren()"
 		type="thunder" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
 
 		<init amount="150000">

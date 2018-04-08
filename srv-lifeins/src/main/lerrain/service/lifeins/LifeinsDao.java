@@ -53,7 +53,7 @@ public class LifeinsDao
                 ins.setName(rs.getString("name"));
                 ins.setAbbrName(rs.getString("name_abbr"));
                 ins.setUnit(Common.intOf(rs.getObject("unit"), 1000));
-                ins.getPurchase().setPremium(Script.scriptOf("PremiumChildren"));
+                ins.getPurchase().setPremium(Script.scriptOf("PremiumChildren()"));
 
                 if (param != null)
                 {
