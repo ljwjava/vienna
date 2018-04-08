@@ -19,13 +19,13 @@ public class Underwriting
 
     Long id;
 
-    Map<Integer, Map<String, Object>> val = new HashMap<>();
+    Map<String, Object> val = new HashMap<>();
     Map<Integer, Character> res = new HashMap<>();
     Map<Integer, List<Quest>> quest = new HashMap<>();
 
-    public void setAnswer(int step, Map<String, Object> answer)
+    public void putAnswer(Map<String, Object> answer)
     {
-        val.put(step, answer);
+        val.putAll(answer);
     }
 
     public void setResult(int step, char result)
@@ -51,9 +51,9 @@ public class Underwriting
         return quest.get(step);
     }
 
-    public Map<String, Object> getAnswer(int step)
+    public Map<String, Object> getAnswer()
     {
-        return val.get(step);
+        return val;
     }
 
     public Long getId()

@@ -23,7 +23,7 @@ public class UnderwritingController
 	@ResponseBody
 	public JSONObject create(@RequestBody JSONObject p)
 	{
-		Underwriting uw = uwSrv.create();
+		Underwriting uw = uwSrv.create(p);
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
@@ -82,8 +82,18 @@ public class UnderwritingController
 		char r = uwSrv.verify(uwId, stepOf(step), val);
 
 		JSONObject cnt = new JSONObject();
-		cnt.put("result", r == Underwriting.RESULT_PASS ? "pass" : r == Underwriting.RESULT_CONTINUE ? "next" : "fail");
-		cnt.put("notice", null);
+		if (r == Underwriting.RESULT_PASS)
+		{
+			Underwriting uw = uwSrv.getUnderwriting(uwId);
+			cnt.put("result", "pass");
+			cnt.put("applyUrl", uw.getAnswer().get("url"));
+			cnt.put("notice", null);
+		}
+		else
+		{
+			cnt.put("result", r == Underwriting.RESULT_CONTINUE ? "next" : "fail");
+			cnt.put("notice", null);
+		}
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
@@ -121,10 +131,11 @@ public class UnderwritingController
 		Long uwId = p.getLong("uwId");
 		Underwriting uw = uwSrv.getUnderwriting(uwId);
 
+		Map<String, Object> ans = uw.getAnswer();
+
 		for (int step : new int[] {Underwriting.STEP_APPLY, Underwriting.STEP_HEALTH1, Underwriting.STEP_HEALTH2, Underwriting.STEP_DISEASE1, Underwriting.STEP_DISEASE2})
 		{
 			List<Quest> list = uw.getQuests(step);
-			Map<String, Object> ans = uw.getAnswer(Underwriting.STEP_APPLY);
 
 			for (Quest q : list)
 			{

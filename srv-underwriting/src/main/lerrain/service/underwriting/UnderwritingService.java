@@ -38,10 +38,11 @@ public class UnderwritingService
         msgQueue.start();
     }
 
-    public Underwriting create()
+    public Underwriting create(Map v)
     {
         Underwriting uw = new Underwriting();
         uw.setId(tools.nextId("underwriting"));
+        uw.putAnswer(v);
 
         synchronized (temp)
         {
@@ -59,7 +60,16 @@ public class UnderwritingService
                 return temp.get(uwId);
         }
 
-        throw new RuntimeException("underwriting: " + uwId + " not found");
+        Underwriting uw = uwDao.load(uwId, map);
+        if (uw == null)
+            throw new RuntimeException("underwriting: " + uwId + " not found");
+
+        synchronized (temp)
+        {
+            temp.put(uw.getId(), uw);
+        }
+
+        return uw;
     }
 
     public List<Quest> find(Long uwId, int step, JSONObject val)
@@ -71,7 +81,9 @@ public class UnderwritingService
 
         List<Quest> r = new ArrayList<>();
 
-        Stack stack = new Stack(val);
+        uw.putAnswer(val);
+        Stack stack = new Stack(uw.getAnswer());
+
         for (Quest q : map.values())
         {
             if (q.getType() == step)
@@ -120,7 +132,7 @@ public class UnderwritingService
 
         synchronized (uw)
         {
-            uw.setAnswer(step, ans);
+            uw.putAnswer(ans);
             uw.setResult(step, r);
         }
 

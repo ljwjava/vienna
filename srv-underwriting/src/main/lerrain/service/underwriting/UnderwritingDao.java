@@ -82,8 +82,7 @@ public class UnderwritingDao
                 uw.setId(rs.getLong("id"));
 
                 JSONObject val = JSON.parseObject(rs.getString("answer"));
-                if (val != null) for (String key : val.keySet())
-                    uw.setAnswer(Integer.parseInt(key), val.getJSONObject(key));
+                uw.putAnswer(val);
 
                 JSONObject res = JSON.parseObject(rs.getString("result"));
                 if (res != null) for (String key : res.keySet())
