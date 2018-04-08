@@ -43,6 +43,7 @@
 		<init>
 			<item name="OTHER">return {PLAN_CODE: "JH11002401", PRODUCT_CODE: "110024"}</item>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
+			<item name="RE" value="RIDER('FSH00004')"/>
 		</init>
 
 		<interest>
@@ -62,6 +63,9 @@
 				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
 				<item name="MILD">AMOUNT*0.9</item>
 				<item name="MILD_EXEMPT">1</item>
+				<item name="A_DEATH_EXEMPT">RE == null ? 0 : 1</item>
+				<item name="A_MILD_EXEMPT">RE == null ? 0 : 1</item>
+				<item name="A_THUNDER_EXEMPT">RE == null ? 0 : 1</item>
 			</fgraph>
 
 			<benefit_chart filter="chart" parser="chart">

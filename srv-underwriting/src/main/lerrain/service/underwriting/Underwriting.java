@@ -12,8 +12,10 @@ public class Underwriting
     public static final char RESULT_CONTINUE = 'C';
 
     public static final int STEP_APPLY       = 1;
-    public static final int STEP_HEALTH1     = 101;
-    public static final int STEP_HEALTH2     = 102;
+    public static final int STEP_HEALTH1     = 201;
+    public static final int STEP_HEALTH2     = 202;
+    public static final int STEP_DISEASE1    = 301;
+    public static final int STEP_DISEASE2    = 302;
 
     Long id;
 
@@ -42,6 +44,16 @@ public class Underwriting
             return RESULT_NULL;
 
         return res.get(step);
+    }
+
+    public List<Quest> getQuests(int step)
+    {
+        return quest.get(step);
+    }
+
+    public Map<String, Object> getAnswer(int step)
+    {
+        return val.get(step);
     }
 
     public Long getId()

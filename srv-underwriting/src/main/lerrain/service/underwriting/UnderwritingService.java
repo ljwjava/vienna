@@ -18,7 +18,7 @@ public class UnderwritingService
     UnderwritingDao uwDao;
 
     @Autowired
-    MsgQueue msgQueue;
+    WriteQueue msgQueue;
 
     @Autowired
     ServiceTools tools;
@@ -55,8 +55,11 @@ public class UnderwritingService
     {
         synchronized (temp)
         {
-            return temp.get(uwId);
+            if (temp.containsKey(uwId))
+                return temp.get(uwId);
         }
+
+        throw new RuntimeException("underwriting: " + uwId + " not found");
     }
 
     public List<Quest> find(Long uwId, int step, JSONObject val)

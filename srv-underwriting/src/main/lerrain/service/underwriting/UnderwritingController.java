@@ -1,7 +1,9 @@
 package lerrain.service.underwriting;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UnderwritingController
@@ -33,6 +36,8 @@ public class UnderwritingController
 	@ResponseBody
 	public JSONObject query(@RequestBody JSONObject p)
 	{
+		Log.info(p);
+
 		Long uwId = p.getLong("uwId");
 
 		String step = p.getString("step");
@@ -57,6 +62,7 @@ public class UnderwritingController
 		JSONObject j = new JSONObject();
 		j.put("code", q.getCode());
 		j.put("widget", widgetOf(q.getWidget()));
+		j.put("feature", q.getFeature());
 		j.put("text", q.getText());
 		j.put("detail", q.getAnswer());
 		j.put("sn", 1);
@@ -88,7 +94,7 @@ public class UnderwritingController
 
 	private int stepOf(String step)
 	{
-		if (step == "apply")
+		if (step.equalsIgnoreCase("apply"))
 			return Underwriting.STEP_APPLY;
 
 		throw new RuntimeException("step invalid");
@@ -104,5 +110,36 @@ public class UnderwritingController
 			return "input";
 
 		throw new RuntimeException("widget invalid");
+	}
+
+	@RequestMapping("/overall.json")
+	@ResponseBody
+	public JSONObject overall(@RequestBody JSONObject p)
+	{
+		JSONArray r = new JSONArray();
+
+		Long uwId = p.getLong("uwId");
+		Underwriting uw = uwSrv.getUnderwriting(uwId);
+
+		for (int step : new int[] {Underwriting.STEP_APPLY, Underwriting.STEP_HEALTH1, Underwriting.STEP_HEALTH2, Underwriting.STEP_DISEASE1, Underwriting.STEP_DISEASE2})
+		{
+			List<Quest> list = uw.getQuests(step);
+			Map<String, Object> ans = uw.getAnswer(Underwriting.STEP_APPLY);
+
+			for (Quest q : list)
+			{
+				JSONObject qj = new JSONObject();
+				qj.put("quest", q.getCode());
+				qj.put("answer", ans.get(q.getCode()));
+
+				r.add(qj);
+			}
+		}
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", r);
+
+		return res;
 	}
 }

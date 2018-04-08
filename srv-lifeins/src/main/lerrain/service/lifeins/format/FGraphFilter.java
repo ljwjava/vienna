@@ -38,7 +38,7 @@ public class FGraphFilter implements FilterPlan
 		list.add(new Category("轻症保障", "MILD", new int[] {0,20000,50000,100000,200000},
 			new Item(null, "'罹患所保障的轻症疾病，保险公司给付轻症保险金最高'+format('%.2f', MILD/10000)+'万。'", "MILD > 0"),
 			new Item("被保险人轻症豁免", "'被保险人罹患所保障的轻症疾病，免缴部分剩余保费'", "MILD_EXEMPT > 0"),
-			new Item("投保人轻症豁免", "'被保险人罹患所保障的轻症疾病，免缴部分剩余保费'", "A_MILD_EXEMPT > 0")
+			new Item("投保人轻症豁免", "'投保人罹患所保障的轻症疾病，免缴部分剩余保费'", "A_MILD_EXEMPT > 0")
 		));
 		list.add(new Category("身故保障", "max(ACCIDENT_DEATH, OTHER_DEATH)", new int[] {0,100000,500000,1000000,2000000},
 			new Item("意外身故", "'被保人因意外伤害原因导致身故，保险公司给付将身故保险金，最高为'+format('%.2f', ACCIDENT_DEATH/10000)+'万。'", "ACCIDENT_DEATH > 0"),
