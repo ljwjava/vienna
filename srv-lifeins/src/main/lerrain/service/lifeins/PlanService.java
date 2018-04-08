@@ -163,14 +163,17 @@ public class PlanService
 		stack.declare("self", vals);
 
 		Plan plan = getPlan(planId, stack);
-		reset(plan, vals);
+		synchronized (plan)
+		{
+			reset(plan, vals);
 
-		if (f == null)
-			return LifeinsUtil.jsonOf(plan);
+			if (f == null)
+				return LifeinsUtil.jsonOf(plan);
 
-		stack.declare("plan", plan);
-		stack.declare("PLAN", plan.getFactors());
-		return f.run(stack);
+			stack.declare("plan", plan);
+			stack.declare("PLAN", plan.getFactors());
+			return f.run(stack);
+		}
 	}
 
 	public Plan getPlan(String planId)
@@ -215,17 +218,20 @@ public class PlanService
 	{
 		List<Insurance> r = new ArrayList<>();
 
-		if (plan.isEmpty())
-			return r;
-
-		Company company = plan.primaryCommodity().getCompany();
-		if ("iyb".equals(company.getId()))
+		synchronized (plan)
 		{
-			if (plan.getCommodityByProductId("IYB00002") == null)
+			if (plan.isEmpty())
+				return r;
+
+			Company company = plan.primaryCommodity().getCompany();
+			if ("iyb".equals(company.getId()))
 			{
-				Insurance ins = company.getProduct("IYB00002");
-				if (ins != null)
-					r.add(ins);
+				if (plan.getCommodityByProductId("IYB00002") == null)
+				{
+					Insurance ins = company.getProduct("IYB00002");
+					if (ins != null)
+						r.add(ins);
+				}
 			}
 		}
 

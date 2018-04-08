@@ -35,7 +35,12 @@ public class PlanDao
     public void save(Plan plan)
     {
         Date now = new Date();
-        JSONObject json = LifeinsUtil.toSaveJson(plan);
+        JSONObject json;
+
+        synchronized (plan)
+        {
+            json = LifeinsUtil.toSaveJson(plan);
+        }
 
         String sql = "replace into t_ins_plan(id, plan, update_time) values(?, ?, ?)";
         jdbc.update(sql, plan.getId(), json.toJSONString(), now);

@@ -18,6 +18,9 @@ public class UnderwritingService
     UnderwritingDao uwDao;
 
     @Autowired
+    MsgQueue msgQueue;
+
+    @Autowired
     ServiceTools tools;
 
     Map<String, Quest> map = new LinkedHashMap<>();
@@ -31,6 +34,8 @@ public class UnderwritingService
 
         for (Quest q : list)
             map.put(q.getCode(), q);
+
+        msgQueue.start();
     }
 
     public Underwriting create()
@@ -80,7 +85,12 @@ public class UnderwritingService
             }
         }
 
-        uw.setQuestList(step, r);
+        synchronized (uw)
+        {
+            uw.setQuests(step, r);
+        }
+
+        msgQueue.add(uw);
 
         return r;
     }
@@ -105,7 +115,13 @@ public class UnderwritingService
                 r = Underwriting.RESULT_CONTINUE;
         }
 
-        uw.setAnswer(step, ans, r);
+        synchronized (uw)
+        {
+            uw.setAnswer(step, ans);
+            uw.setResult(step, r);
+        }
+
+        msgQueue.add(uw);
 
         return r;
     }
@@ -158,7 +174,6 @@ public class UnderwritingService
 
             return Underwriting.RESULT_PASS;
         }
-
 
         return Underwriting.RESULT_NULL;
     }

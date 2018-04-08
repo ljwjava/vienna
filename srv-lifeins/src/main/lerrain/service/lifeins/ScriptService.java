@@ -218,7 +218,7 @@ public class ScriptService
 		}
 	}
 
-	public Plan getPlan(Long scriptId, List prds, Factors f)
+	private Plan getPlan(Long scriptId, List prds, Factors f)
 	{
 		Formula s = scriptId == null ? null : map.get(scriptId);
 

@@ -11,7 +11,9 @@ public class Underwriting
     public static final char RESULT_FAIL     = 'F';
     public static final char RESULT_CONTINUE = 'C';
 
-    public static final int STEP_APPLY = 1;
+    public static final int STEP_APPLY       = 1;
+    public static final int STEP_HEALTH1     = 101;
+    public static final int STEP_HEALTH2     = 102;
 
     Long id;
 
@@ -19,13 +21,17 @@ public class Underwriting
     Map<Integer, Character> res = new HashMap<>();
     Map<Integer, List<Quest>> quest = new HashMap<>();
 
-    public void setAnswer(int step, Map<String, Object> answer, char result)
+    public void setAnswer(int step, Map<String, Object> answer)
     {
         val.put(step, answer);
+    }
+
+    public void setResult(int step, char result)
+    {
         res.put(step, result);
     }
 
-    public void setQuestList(int step, List<Quest> list)
+    public void setQuests(int step, List<Quest> list)
     {
         quest.put(step, list);
     }
