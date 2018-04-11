@@ -73,6 +73,7 @@ public class UnderwritingController
 		j.put("feature", q.getFeature());
 		j.put("text", q.getText());
 		j.put("detail", q.getAnswer());
+		j.put("disease", q.getDisease());
 		j.put("sn", 1);
 
 		return j;
