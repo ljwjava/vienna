@@ -13,5 +13,15 @@
 		<if condition="PAY_PERIOD > INSURE_PERIOD" type="product">
 			交费期间不得大于保障期间
 		</if>
+		<if type="plan">
+			var t;
+			for (var x : PRODUCTS) {
+				t += try(x.PREMIUM * x.PAY_PERIOD, 0);
+			}
+			if (t > 200000) {
+				return "根据金融机构发洗钱的相关规定，累计应交保费≥20万元的单张保单需进行客户身份的识别，因此请重新调整保额后分别进行投保！";
+			}
+			return null;
+		</if>
 	</rule>
 </declare>

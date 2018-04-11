@@ -92,6 +92,9 @@
 			<if condition="AGE >= 51 and AGE le 55 and AMOUNT > 50000">
 				51~55周岁，保额最高5万
 			</if>
+			<if condition="AGE le 50 and AMOUNT lt 100000">
+				出生满30天~50周岁，保额最低为10万
+			</if>
 
 			<if condition="ZONE == null" level="alert">
 				未确定地区，该产品销售限以下地区：北京、上海、天津、广东、江苏、湖北、河北、山东、四川、福建

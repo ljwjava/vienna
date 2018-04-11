@@ -35,8 +35,7 @@ var Main = React.createClass({
 	},
 	render() {
 		return (
-			<div className="form-horizontal">
-				<br/>
+			<div className="container-fluid mt-3 mb-3 form-horizontal">
 				<div className="form-row mb-3">
 					<div className="col-sm-3">
 						<select className="form-control" ref="envList" onChange={this.setEnv}>{this.state.envList}</select>

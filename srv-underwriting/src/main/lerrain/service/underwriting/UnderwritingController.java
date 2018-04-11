@@ -19,6 +19,14 @@ public class UnderwritingController
 	@Autowired
 	UnderwritingService uwSrv;
 
+	@RequestMapping("/reset")
+	@ResponseBody
+	public String reset()
+	{
+		uwSrv.reset();
+		return "success";
+	}
+
 	@RequestMapping("/create.json")
 	@ResponseBody
 	public JSONObject create(@RequestBody JSONObject p)
@@ -106,6 +114,18 @@ public class UnderwritingController
 	{
 		if (step.equalsIgnoreCase("apply"))
 			return Underwriting.STEP_APPLY;
+		if (step.equalsIgnoreCase("health1"))
+			return Underwriting.STEP_HEALTH1;
+		if (step.equalsIgnoreCase("health2"))
+			return Underwriting.STEP_HEALTH2;
+		if (step.equalsIgnoreCase("disease"))
+			return Underwriting.STEP_DISEASE;
+		if (step.equalsIgnoreCase("disease1"))
+			return Underwriting.STEP_DISEASE1;
+		if (step.equalsIgnoreCase("disease2"))
+			return Underwriting.STEP_DISEASE2;
+		if (step.equalsIgnoreCase("disease3"))
+			return Underwriting.STEP_DISEASE3;
 
 		throw new RuntimeException("step invalid");
 	}

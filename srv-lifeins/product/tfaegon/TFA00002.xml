@@ -61,6 +61,9 @@
 			<if condition="AGE > 50 and PARENT.PAY_PERIOD == 15">
 				投保人豁免，缴费期间为15年，投保人年龄应在18至50周岁之间
 			</if>
+			<if condition="PARENT.PAY_PERIOD > 20">
+				投保人豁免，主险缴费期间应在20年或20年以下
+			</if>
 		</rule>
 	</product>
 </declare>

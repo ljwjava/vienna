@@ -94,7 +94,8 @@ public class UnderwritingService
                 }
                 else
                 {
-                    if (Value.booleanOf(q.getCondition(), stack))
+                    Object res = q.getCondition().run(stack);
+                    if (res != null && !res.equals(false) && !res.equals("N") && !res.equals("n"))
                         r.add(q);
                 }
             }
@@ -151,9 +152,13 @@ public class UnderwritingService
             {
                 return next.charAt((Boolean)ans ? 0 : 1);
             }
+            else if (ans instanceof Number)
+            {
+                return next.charAt(1 - ((Number)ans).intValue());
+            }
             else if (ans instanceof String)
             {
-                int index = "Y".equalsIgnoreCase((String)ans) ? 0 : "N".equalsIgnoreCase((String)ans) ? 1 : -1;
+                int index = "Y".equalsIgnoreCase((String)ans) || "1".equals(ans) ? 0 : "N".equalsIgnoreCase((String)ans) || "0".equals(ans) ? 1 : -1;
                 if (index < 0)
                     throw new RuntimeException("Quest<" + q.getCode() + "> answer invalid");
 
@@ -175,6 +180,8 @@ public class UnderwritingService
                     index = c - 'A';
                 else if (c >= 'a' && c <= 'z')
                     index = c - 'a';
+                else if (c >= '1' && c <= '9')
+                    index = c - '1';
 
                 if (index < 0)
                     throw new RuntimeException("Quest<" + q.getCode() + "> answer invalid");

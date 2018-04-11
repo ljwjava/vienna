@@ -12,10 +12,12 @@ public class Underwriting
     public static final char RESULT_CONTINUE = 'C';
 
     public static final int STEP_APPLY       = 1;
-    public static final int STEP_HEALTH1     = 201;
-    public static final int STEP_HEALTH2     = 202;
-    public static final int STEP_DISEASE1    = 301;
-    public static final int STEP_DISEASE2    = 302;
+    public static final int STEP_HEALTH1     = 2;
+    public static final int STEP_HEALTH2     = 3;
+    public static final int STEP_DISEASE     = 4;
+    public static final int STEP_DISEASE1    = 5;
+    public static final int STEP_DISEASE2    = 6;
+    public static final int STEP_DISEASE3    = 7;
 
     Long id;
 
@@ -25,7 +27,8 @@ public class Underwriting
 
     public void putAnswer(Map<String, Object> answer)
     {
-        val.putAll(answer);
+        if (answer != null)
+            val.putAll(answer);
     }
 
     public void setResult(int step, char result)
