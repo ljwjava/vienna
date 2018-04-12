@@ -70,19 +70,6 @@ var Main = React.createClass({
 			});
 		}
 	},
-	replace() {
-		var req = null;
-		if (ENV.gatewayId != null) {
-			req = {
-				type: 1,
-				gatewayId: ENV.gatewayId,
-				script: this.refs.script.value
-			}
-		}
-		if (req != null) common.req("develop/replace.json", req, r => {
-			this.test();
-		});
-	},
 	getUrl() {
 		if (ENV.gatewayId == null) return null;
 		var reqUrl = ENV.gatewayMap[ENV.gatewayId].uri;
@@ -153,8 +140,6 @@ var Main = React.createClass({
 				<div className="form-row mt-3">
 					<div className="col-sm-8">
 						<input type="button" className="btn btn-primary btn-lg" value="请求 >>>>" onClick={this.test}/>
-						&nbsp;&nbsp;
-						<input type="button" className="btn btn-primary btn-lg" value="测试 >>>>" onClick={this.replace}/>
 						&nbsp;&nbsp;
 						<input type="button" className="btn btn-primary btn-lg" value="重置 >>>>" onClick={this.reset}/>
 					</div>
