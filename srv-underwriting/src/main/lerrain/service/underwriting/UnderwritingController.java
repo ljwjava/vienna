@@ -1,6 +1,5 @@
 package lerrain.service.underwriting;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
@@ -51,7 +50,7 @@ public class UnderwritingController
 		String step = p.getString("step");
 		JSONObject val = p.getJSONObject("answer");
 
-		List<Quest> list = uwSrv.find(uwId, stepOf(step), val);
+		List<Quest> list = uwSrv.list(uwId, stepOf(step), val);
 
 		JSONArray r = new JSONArray();
 		for (Quest q : list)
@@ -91,10 +90,24 @@ public class UnderwritingController
 	{
 		Long uwId = p.getLong("uwId");
 
-		String step = p.getString("step");
+		int step = stepOf(p.getString("step"));
 		JSONObject val = p.getJSONObject("answer");
 
-		char r = uwSrv.verify(uwId, stepOf(step), val);
+		if (val == null || val.isEmpty())
+		{
+			String ans = p.getString("reply");
+
+			Underwriting uw = uwSrv.getUnderwriting(uwId);
+			List<Quest> list = uw.getQuests(step);
+
+			if (list != null) for (Quest q : list)
+			{
+				val = new JSONObject();
+				val.put(q.getCode(), ans);
+			}
+		}
+
+		char r = uwSrv.verify(uwId, step, val);
 
 		JSONObject cnt = new JSONObject();
 		if (r == Underwriting.RESULT_PASS)

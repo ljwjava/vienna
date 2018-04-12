@@ -77,7 +77,7 @@ public class UnderwritingService
         return uw;
     }
 
-    public List<Quest> find(Long uwId, int step, JSONObject val)
+    public List<Quest> list(Long uwId, int step, JSONObject val)
     {
         Underwriting uw = getUnderwriting(uwId);
 
@@ -132,7 +132,7 @@ public class UnderwritingService
         if (step == Underwriting.STEP_APPLY)
             r = Underwriting.RESULT_CONTINUE;
 
-        for (Map.Entry<String, Object> e : ans.entrySet())
+        if (ans != null) for (Map.Entry<String, Object> e : ans.entrySet())
         {
             Quest q = map.get(e.getKey());
             int res = result(q, Common.trimStringOf(e.getValue()));
