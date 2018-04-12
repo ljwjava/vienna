@@ -50,7 +50,6 @@ public class UnderwritingController
 
 		String step = p.getString("step");
 		JSONObject val = p.getJSONObject("answer");
-		JSONArray disease = p.getJSONArray("disease");
 
 		List<Quest> list = uwSrv.find(uwId, stepOf(step), val);
 
@@ -75,6 +74,13 @@ public class UnderwritingController
 		j.put("detail", q.getAnswer());
 		j.put("disease", q.getDisease());
 		j.put("sn", 1);
+
+		if (q.getDisease() != null)
+		{
+			Quest d = uwSrv.getQuest(q.getDisease());
+			if (d != null)
+				j.put("diseaseName", d.getText());
+		}
 
 		return j;
 	}

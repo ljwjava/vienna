@@ -71,7 +71,7 @@ var Main = React.createClass({
         });
     },
     addItem() {
-        this.state.feeRate.push({factors: {pay: "ALL", insure: "ALL"}, freeze: 19, unit: 3});
+        this.state.feeRate.push({factors: {pay: "ALL", insure: "ALL"}, productId: this.state.productId, freeze: 19, unit: 3});
         this.forceUpdate();
     },
     removeItem(i) {
@@ -80,6 +80,12 @@ var Main = React.createClass({
     },
     showFee(v) {
         common.req("product/query_rate.json", {productId: v.id, platformId: 2}, r => {
+            r.map(v => {
+                if (v.factors.pay == null)
+                    v.factors.pay = "ALL";
+                if (v.factors.insure == null)
+                    v.factors.insure = "ALL";
+            });
             this.setState({productId: v.id, feeRate: r});
         });
     },

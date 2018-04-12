@@ -54,6 +54,11 @@ public class Underwriting
         return quest.get(step);
     }
 
+    public Object getAnswer(String key)
+    {
+        return val.get(key);
+    }
+
     public Map<String, Object> getAnswer()
     {
         return val;

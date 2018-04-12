@@ -38,6 +38,11 @@ public class UnderwritingService
         msgQueue.start();
     }
 
+    public Quest getQuest(String code)
+    {
+        return map.get(code);
+    }
+
     public Underwriting create(Map v)
     {
         Underwriting uw = new Underwriting();
@@ -88,6 +93,13 @@ public class UnderwritingService
         {
             if (q.getType() == step)
             {
+                if (q.getType() == Underwriting.STEP_DISEASE1)
+                {
+                    Boolean bool = boolOf(uw.getAnswer(q.getDisease()));
+                    if (bool == null || !bool)
+                        continue;
+                }
+
                 if (q.getCondition() == null)
                 {
                     r.add(q);
@@ -140,6 +152,24 @@ public class UnderwritingService
         msgQueue.add(uw);
 
         return r;
+    }
+
+    private Boolean boolOf(Object ans)
+    {
+        if (ans instanceof Boolean)
+        {
+            return (Boolean)ans;
+        }
+        else if (ans instanceof Number)
+        {
+            return ((Number)ans).intValue() != 0;
+        }
+        else if (ans instanceof String)
+        {
+            return "Y".equalsIgnoreCase((String)ans) || "1".equals(ans) ? true : "N".equalsIgnoreCase((String)ans) || "0".equals(ans) ? false : null;
+        }
+
+        return null;
     }
 
     private char result(Quest q, Object ans)
