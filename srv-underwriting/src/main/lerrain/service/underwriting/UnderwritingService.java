@@ -3,6 +3,7 @@ package lerrain.service.underwriting;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceTools;
 import lerrain.tool.Common;
+import lerrain.tool.formula.Formula;
 import lerrain.tool.formula.Value;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,8 +108,17 @@ public class UnderwritingService
                 else
                 {
                     Object res = q.getCondition().run(stack);
-                    if (res != null && !res.equals(false) && !res.equals("N") && !res.equals("n"))
-                        r.add(q);
+                    if (res instanceof Boolean)
+                    {
+                        if ((Boolean)res)
+                            r.add(q);
+                    }
+                    else
+                    {
+                        char x = result(q, res);
+                        if (x == 'C')
+                            r.add(q);
+                    }
                 }
             }
         }
@@ -188,7 +198,7 @@ public class UnderwritingService
             }
             else if (ans instanceof String)
             {
-                int index = "Y".equalsIgnoreCase((String)ans) || "1".equals(ans) ? 0 : "N".equalsIgnoreCase((String)ans) || "0".equals(ans) ? 1 : -1;
+                int index = "Y".equalsIgnoreCase((String)ans) || "1".equals(ans) || "2".equals(ans) ? 0 : "N".equalsIgnoreCase((String)ans) || "0".equals(ans) ? 1 : -1;
                 if (index < 0)
                     throw new RuntimeException("Quest<" + q.getCode() + "> answer invalid");
 
@@ -223,6 +233,16 @@ public class UnderwritingService
         {
             Stack s = new Stack();
             s.set("self", ans);
+
+            Formula f = (Formula)q.getAnswer();
+            if (f != null)
+            {
+                Boolean b = boolOf(f.run(s));
+                if (b == null)
+                    throw new RuntimeException("Quest<" + q.getCode() + "> answer invalid");
+
+                return next.charAt(b ? 0 : 1);
+            }
 
             return Underwriting.RESULT_PASS;
         }

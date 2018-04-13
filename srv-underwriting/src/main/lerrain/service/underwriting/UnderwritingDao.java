@@ -42,8 +42,12 @@ public class UnderwritingDao
         p.setText(m.getString("text"));
         p.setWidget(m.getInt("widget"));
         p.setFeature(m.getString("feature"));
-        p.setAnswer(JSON.parse(m.getString("answer")));
         p.setNext(m.getString("next"));
+
+        if (p.getWidget() == Quest.WIDGET_SELECT)
+            p.setAnswer(JSON.parse(m.getString("answer")));
+        else if (p.getWidget() == Quest.WIDGET_INPUT)
+            p.setAnswer(Script.scriptOf(m.getString("answer")));
 
         return p;
     }
