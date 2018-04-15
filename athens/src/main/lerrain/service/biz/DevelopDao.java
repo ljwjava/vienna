@@ -50,28 +50,19 @@ public class DevelopDao
                 map.put("id", rs.getLong("id"));
                 map.put("uri", rs.getString("uri"));
                 map.put("script", rs.getString("script"));
+                map.put("envId", rs.getLong("env_id"));
 
                 return map;
             }
         });
     }
 
-    public Map loadTesting(String url)
+    public String loadTesting(String url)
     {
         try
         {
-            String sql = "select * from t_test where url = ?";
-            return jdbc.queryForObject(sql, new Object[]{url}, new RowMapper<Map>()
-            {
-                @Override
-                public Map mapRow(ResultSet rs, int rowNum) throws SQLException
-                {
-                    Map map = new HashMap();
-                    map.put("param", rs.getString("param"));
-
-                    return map;
-                }
-            });
+            String sql = "select `value` from t_test where `key` = ?";
+            return jdbc.queryForObject(sql, new Object[]{url}, String.class);
         }
         catch (Exception e)
         {
@@ -125,6 +116,7 @@ public class DevelopDao
         });
     }
 
+    /*
     public void save(Long functionId, String name, String params, String script, String reqUrl, String reqJson)
     {
         if (jdbc.queryForObject("select exists(select id from t_env_function_test where function_id = ?) from dual", new Object[] {functionId}, Integer.TYPE) > 0)
@@ -132,12 +124,10 @@ public class DevelopDao
         else
             jdbc.update("insert into t_env_function_test(function_id, name, params, script, url, post_json) values(?,?,?,?,?,?)", new Object[] {functionId, name, params, script, reqUrl, reqJson});
     }
+    */
 
     public void save(String url, String param)
     {
-        if (jdbc.queryForObject("select exists(select id from t_test where url = ?) from dual", new Object[] {url}, Integer.TYPE) > 0)
-            jdbc.update("update t_test set param = ? where url = ?", new Object[] {param, url});
-        else
-            jdbc.update("insert into t_test(url, param) values(?, ?)", new Object[] {url, param});
+        jdbc.update("replace into t_test(`key`, `value`) values(?, ?)", new Object[] {url, param});
     }
 }

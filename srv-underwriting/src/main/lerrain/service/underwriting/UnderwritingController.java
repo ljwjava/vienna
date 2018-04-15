@@ -30,7 +30,7 @@ public class UnderwritingController
 	@ResponseBody
 	public JSONObject create(@RequestBody JSONObject p)
 	{
-		Underwriting uw = uwSrv.create(p);
+		Underwriting uw = uwSrv.create(p.getJSONObject("answer"));
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");

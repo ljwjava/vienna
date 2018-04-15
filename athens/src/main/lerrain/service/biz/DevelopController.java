@@ -1,5 +1,6 @@
 package lerrain.service.biz;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
@@ -162,11 +163,11 @@ public class DevelopController
     @CrossOrigin
     public JSONObject reqParam(@RequestBody JSONObject req)
     {
-        String url = req.getString("url");
+        String url = req.getString("key");
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", developDao.loadTesting(url));
+        res.put("content", JSON.parseObject(developDao.loadTesting(url)));
 
         return res;
     }
@@ -176,8 +177,8 @@ public class DevelopController
     @CrossOrigin
     public JSONObject save(@RequestBody JSONObject req)
     {
-        String url = req.getString("url");
-        String param = req.getString("param");
+        String url = req.getString("key");
+        String param = req.getJSONObject("value").toJSONString();
 
         developDao.save(url, param);
 

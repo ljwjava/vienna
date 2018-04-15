@@ -101,7 +101,7 @@
 				var amt1 = age>=18?amt:min((age>=10?500000:200000),amt);
 				var amt2 = age>=18?max(amt,0.6*IT.ACT(A3,A4)):amt;
 				var p = DS.RATE[age][0]*amt1/UNIT+DS.RATE[age][1]*amt2/UNIT;
-				//print(age + " = " + amt1 + ", " + amt2) + ", " + p;
+				//print(age + " = " + amt1 + ", " + amt2 + ", " + p);
 				for (var x : RD) {
 					if (x != null) {
 						var prm = x.IT.PRM_ACT(age);

@@ -31,7 +31,14 @@ var Ware = React.createClass({
 		}
 	},
 	openQuest() {
-		this.quest();
+        if (env.pack.uwUrl) {
+            let factors = this.refs.plan.val();
+        	common.req("underwriting/create.json", {productId:this.state.detail.target, answer:factors}, v => {
+                document.location.href = env.pack.uwUrl + "?uwId=" + v;
+			});
+        } else {
+            this.quest();
+        }
 	},
 	quest() {
 		this.setState({quest: true, alertQuest: false});
@@ -313,7 +320,7 @@ var Ware = React.createClass({
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
                             {env.frame == "iyb" && !!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
 							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
-							<div className="col right" onClick={(!!env.docs && !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>去投保</div>
+							<div className="col right" onClick={!!env.docs && (env.docs.underwriting != null || !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>去投保</div>
 						</div>
 					</div>
 				</div>
