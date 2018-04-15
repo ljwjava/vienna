@@ -62,6 +62,19 @@ public class GatewayController
         if (gateway == null)
             throw new RuntimeException(uri + " not found");
 
+        // TODO: 此处需要对open开头的uri进行签名验证
+        if(uri.startsWith("open/")) {
+            String key = (String) param.get("key");
+            String code = (String) param.get("code");
+
+            if(key == null || code == null || gateway.getEnv() == null || gateway.getEnv().getStack() == null || gateway.getEnv().getStack().get("SIGN_CODE") == null)
+                throw new RuntimeException(uri + " unauthorized access");
+
+            JSONObject signCode = JSONObject.parseObject(JSONObject.toJSONString(gateway.getEnv().getStack().get("SIGN_CODE")));
+            if(signCode.getJSONObject(key) == null || !code.equals(signCode.getJSONObject(key).getString(uri)))
+                throw new RuntimeException(uri + " unauthorized access");
+        }
+
         Stack root = gateway.getEnv().getStack();
 
         if (gateway.isLogin())
