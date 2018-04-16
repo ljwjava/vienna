@@ -3,7 +3,9 @@ package lerrain.service.underwriting;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceTools;
 import lerrain.tool.Common;
+import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Formula;
+import lerrain.tool.formula.Function;
 import lerrain.tool.formula.Value;
 import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class UnderwritingService
     Map<String, Quest> map = new LinkedHashMap<>();
 
     Map<Long, Underwriting> temp = new HashMap<>();
+
+    Function fr = new QuestResult();
 
     @PostConstruct
     public void reset()
@@ -88,7 +92,9 @@ public class UnderwritingService
         List<Quest> r = new ArrayList<>();
 
         uw.putAnswer(val);
+
         Stack stack = new Stack(uw.getAnswer());
+        stack.declare("R", fr);
 
         for (Quest q : map.values())
         {
@@ -107,6 +113,16 @@ public class UnderwritingService
                 }
                 else
                 {
+                    try
+                    {
+                        if (Value.booleanOf(q.getCondition(), stack))
+                            r.add(q);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+
+                    /*
                     Object res = q.getCondition().run(stack);
                     if (res instanceof Boolean)
                     {
@@ -119,6 +135,7 @@ public class UnderwritingService
                         if (x == 'C')
                             r.add(q);
                     }
+                    */
                 }
             }
         }
@@ -248,5 +265,19 @@ public class UnderwritingService
         }
 
         return Underwriting.RESULT_NULL;
+    }
+
+    public class QuestResult implements Function
+    {
+        @Override
+        public Object run(Object[] objects, Factors factors)
+        {
+            String code = objects[0].toString();
+            Quest q = map.get(code);
+            Object res = factors.get(code);
+
+            char c = result(q, res);
+            return c == 'C';
+        }
     }
 }
