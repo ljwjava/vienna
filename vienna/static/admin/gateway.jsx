@@ -15,7 +15,7 @@ var Main = React.createClass({
 	getInitialState() {
 		return {envList:[], gatewayList:[], modify:false};
 	},
-	componentWillMount() {
+	componentDidMount() {
 		common.req("develop/list_gateway.json", {}, r => {
 			var gatewayList = r.map(x => {
 				ENV.gatewayMap[x.id + ""] = x;
@@ -32,6 +32,18 @@ var Main = React.createClass({
 			}
 			this.setState({envList:envList});
 		});
+
+        var sct = [document.getElementById("script"), document.getElementById("reqParams")];
+        for (var x in sct) sct[x].onkeydown = function(e) {
+            if (e.keyCode === 9){
+                var position = this.selectionStart + 4;
+                this.value = this.value.substr(0, this.selectionStart) + '    ' + this.value.substr(this.selectionStart);
+                this.selectionStart = position;
+                this.selectionEnd = position;
+                this.focus();
+                e.preventDefault();
+            }
+        };
 	},
 	save() {
 		let url = this.getUrl();
@@ -136,10 +148,10 @@ var Main = React.createClass({
 				</div>
 				<div className="form-row">
 					<div className="col-sm-8">
-						<textarea ref="script" className={"form-control" + (this.state.modify ? " border-danger" : "")} style={{height:"600px"}}></textarea>
+						<textarea id="script" ref="script" className={"form-control" + (this.state.modify ? " border-danger" : "")} style={{height:"600px"}}></textarea>
 					</div>
 					<div className="col-sm-4">
-						<textarea ref="reqParams" className="form-control" style={{height:"600px"}}></textarea>
+						<textarea id="reqParams" ref="reqParams" className="form-control" style={{height:"600px"}}></textarea>
 					</div>
 				</div>
 				<div className="form-row mt-3">
