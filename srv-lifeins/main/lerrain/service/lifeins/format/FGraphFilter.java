@@ -27,7 +27,8 @@ public class FGraphFilter implements FilterPlan {
                 new Item("癌症医疗保险金", "'罹患癌症，在二级及以上医院普通部发生需个人支付，必须且合理的住院或特殊门诊费用最高可报销'+format('%.2f', CANCER_MEDICAL/10000)+'万。无免赔。'", "COMMON_MEDICAL > 0")
         ));
         list.add(new Category("伤残保障", "max(ACCIDENT_DISABILITY, OTHER_DISABILITY, TOTAL_DISABILITY[1])", new int[]{0, 100000, 500000, 1000000, 2000000},
-                new Item("全残保障", "'若被保人不幸全残，给付全残保险金，最高首年'+format('%.2f', TOTAL_DISABILITY[0]/10000)+'万，次年及以后'+format('%.2f', TOTAL_DISABILITY[1]/10000)+'万。'", "TOTAL_DISABILITY != null && TOTAL_DISABILITY[0] > 0")
+                new Item("全残保障", "'若被保人不幸全残，给付全残保险金，最高首年'+format('%.2f', TOTAL_DISABILITY[0]/10000)+'万，次年及以后'+format('%.2f', TOTAL_DISABILITY[1]/10000)+'万。'", "TOTAL_DISABILITY != null && TOTAL_DISABILITY[0] > 0"),
+                new Item("意外伤残", "'若被保人因意外伤害造成伤残，按照伤残评定标准对应等级的给付比例乘以伤残保额，将给付伤残保险金，最高为'+format('%.2f', OTHER_DISABILITY/10000)+'万。'", "OTHER_DISABILITY != null && OTHER_DISABILITY > 0")
         ));
         list.add(new Category("重疾保障", "max(THUNDER[0], THUNDER[1])", new int[]{0, 100000, 200000, 500000, 1000000},
                 new Item(null, "'罹患所保障的重大疾病，保险公司给付重疾保险金，最高首年'+format('%.2f', THUNDER[0]/10000)+'万，次年及以后'+format('%.2f', THUNDER[1]/10000)+'万。'", "THUNDER != null && THUNDER[0] > 0"),
