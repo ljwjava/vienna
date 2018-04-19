@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="YGL02001" corporation_id="yglife" code="5302" name="阳光人寿附加i保轻症疾病保险" name_abbr="附加i保轻症疾" unit="1000" amount="PARENT.AMOUNT" input="none"
+		is_main="no" is_rider="yes" type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="YGL02001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="parent" />
+			</pay>none
+			<insure>
+				<item code="parent" />
+			</insure>
+		</param>
+		
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>
+		</interest>
+
+		<attachment>
+		</attachment>
+
+		<rule>
+		</rule>
+	</product>
+</declare>
+

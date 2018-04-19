@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="YGL02002" corporation_id="yglife" code="TCIR20" name="阳光人寿附加豁免保险费轻症疾病保险" name_abbr="附加豁免保险费" unit="1000" amount="PARENT.PREMIUM+try(PARENT.RIDER('YGL02001').PREMIUM,0)" input="none"
+		is_main="no" is_rider="yes" type_code="exempt" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2017-04-07">
+
+		<data>
+			<item parser="dds" value="YGL02002" />
+		</data>
+
+		<init>
+		</init>
+
+		<param>
+			<pay>
+				<item code="exempt" />
+			</pay>
+			<insure>
+				<item code="exempt" />
+			</insure>
+		</param>
+
+		<attachment>
+		</attachment>
+
+		<rule>
+			<if condition="PARENT.PAY_PERIOD lt 5">
+				缴费期间为最少为5年才可以选择豁免
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="YGL01001" corporation_id="yglife" code="5301" name="阳光人寿i保B款终身重大疾病保险" name_abbr="i保终身" unit="1000"
+		type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
+
+		<data>
+			<item parser="dds" value="YGL01001" />
+			<item parser="dds" value="OCCUPATION" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" />
+				<item code="term_25" />
+				<item code="term_30" />
+				<item code="to_60" />
+			</pay>
+			<insure>
+				<item code="to_full" />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="YGL02001"/>
+			<product id="YGL02002"/>
+		</rider>
+
+		<init>
+			<item name="R1" value="RIDER('YGL02001')"/>
+			<item name="R2" value="RIDER('YGL02002')"/>
+			<item name="A_CITY" value="['1101','1102','1201','1202','1301','3101','3102','4401','4403','3201','3202','3205','4201','3701','3702','5101','3501','3502']"/>
+			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
+		</init>
+		
+		<interest>
+			<var name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY" />
+		</interest>
+
+		<attachment>
+		</attachment>
+
+		<rule>
+			<if condition="DAY lt 30 or AGE > 50">
+				被保险人年龄要求出生满30天~50周岁。
+			</if>
+			<if condition="AMOUNT lt 100000 or AMOUNT % 10000 > 0">
+				保额最低为10万，且必须为10000元的整数倍。
+			</if>
+			<if condition="AGE lt 18 and AMOUNT > 500000">
+				被保人年龄在30天-17周岁，基本保额可选范围为10～50万
+			</if>
+			<if condition="AGE >= 18 and AGE le 40 and AMOUNT > 500000">
+				被保人年龄在18~40周岁，最高保额为50万
+			</if>
+			<if condition="AGE >= 41 and AGE le 50 and AMOUNT > 200000">
+				被保人年龄在41周岁～50周岁，基本保额可选范围为10～20万。
+			</if>
+			<if condition="PAY_PERIOD + AGE > 70">
+				投保年龄+交费期限需要≤70
+			</if>
+			<if condition="ZONE == null and AGE >= 18 and AGE le 40 and AMOUNT > 300000 and AMOUNT le 500000" level="alert">
+				请选择地区确认所在地保额上限。
+			</if>
+			<if condition="AGE lt 18 and RELATIVE != 'lineal'" level="alert">
+				未成年人只能由其父母投保
+			</if>
+			<if condition="OCCUPATION_CODE != null and DS.OCC_RANK[0][0] > 4">
+				被保险人因职业限制无法投保，仅1～4类职业可投保
+			</if>
+			<if>
+				if (ZONE == null)
+					return null;
+				var bcity = find(A_CITY, str(ZONE,0,4)) == null;
+				if (bcity) {
+					if (AGE >= 18 and AGE le 40 and AMOUNT > 300000 and AMOUNT le 500000) {
+						return '除北京、上海、深圳、广州、成都、杭州、武汉、重庆、天津、南京、苏州、长沙、青岛、佛山、西安、济南、东莞、厦门、福州、无锡、合肥、郑州、宁波、大连、石家庄、南宁、南昌、昆明、烟台、泉州、珠海、惠州、温州、太原外，18~40岁最高保额为30万';
+					}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>
