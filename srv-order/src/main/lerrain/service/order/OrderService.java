@@ -2,6 +2,7 @@ package lerrain.service.order;
 
 import lerrain.service.common.ServiceTools;
 import lerrain.tool.Cache;
+import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class OrderService
 	OrderDaoJdbc pd;
 
 	Cache cache = new Cache();
+	Cache cacheByCode = new Cache();
 
 	public Order newOrder()
 	{
@@ -26,6 +28,23 @@ public class OrderService
 
 		cache.put(order.getId(), order);
 		
+		return order;
+	}
+
+	public Order newChannelOrder(String code, String ownerCompany)
+	{
+		if(Common.isEmpty(code) || Common.isEmpty(ownerCompany)){
+			return null;
+		}
+		Order order = new Order();
+		order.setId(tools.nextId("order"));
+		order.setCode(code);
+		order.setOwnerCompany(ownerCompany);
+		order.setCreateTime(new Date());
+
+		cache.put(order.getId(), order);
+		cacheByCode.put(ownerCompany + "_" + code, order);
+
 		return order;
 	}
 
@@ -53,6 +72,19 @@ public class OrderService
 			cache.put(order.getId(), order);
 		}
 		
+		return order;
+	}
+
+	public Order getOrder(String code, String ownerCompany)
+	{
+		Order order = cacheByCode.get(ownerCompany + "_" + code);
+
+		if (order == null)
+		{
+//			order = pd.load(orderId);
+//			cache.put(order.getId(), order);
+		}
+
 		return order;
 	}
 

@@ -74,10 +74,10 @@ public class GatewayController
             if(signCode.getJSONObject(key) == null || !code.equals(signCode.getJSONObject(key).getString(uri)))
                 throw new RuntimeException(uri + " unauthorized access");
 
-            JSONObject requestBody = param.getJSONObject("requestBody");
+            /*JSONObject requestBody = param.getJSONObject("requestBody");
             param.remove("requestBody");
             if(requestBody != null)
-                param.putAll(requestBody);
+                param.putAll(requestBody);*/
         }
 
         Stack root = gateway.getEnv().getStack();

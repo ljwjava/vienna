@@ -28,10 +28,11 @@ public class OrderDaoJdbc
 
 		if (!exists(order.getId()))
 		{
-			jdbc.update("insert into t_order(id,parent_id,biz_id,apply_no,biz_no,product_id,product_code,product_type,product_name,consumer,vendor_id,platform_id,owner,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
-					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+			jdbc.update("insert into t_order(id,parent_id,code,biz_id,apply_no,biz_no,product_id,product_code,product_type,product_name,consumer,vendor_id,platform_id,owner,owner_company,price,pay,type,status,detail,extra,create_time,creator,update_time,updater) " +
+					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				order.getId(),
 				order.getParentId(),
+				order.getCode(),
 				order.getBizId(),
 				order.getApplyNo(),
 				order.getBizNo(),
@@ -43,6 +44,7 @@ public class OrderDaoJdbc
 				order.getVendorId(),
 				order.getPlatformId(),
 				order.getOwner(),
+				order.getOwnerCompany(),
 				order.getPrice(),
 				order.getPay(),
 				order.getType(),
@@ -57,13 +59,13 @@ public class OrderDaoJdbc
 		}
 		else
 		{
-			jdbc.update("update t_order set biz_id=?, apply_no=?, biz_no=?, type=?, product_id=?, product_code=?, product_type=?, product_name=?, consumer=?, vendor_id=?, price=?, pay=?, status=?, detail=?, extra=?, update_time=? where id=?", order.getBizId(), order.getApplyNo(), order.getBizNo(), order.getType(), order.getProductId(), order.getProductCode(), order.getProductType(), order.getProductName(), order.getConsumer(), order.getVendorId(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), order.getDetail() != null ? JSON.toJSONString(order.getDetail()) : null, order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
+			jdbc.update("update t_order set code=?, biz_id=?, apply_no=?, biz_no=?, type=?, product_id=?, product_code=?, product_type=?, product_name=?, consumer=?, vendor_id=?, owner_company=?, price=?, pay=?, status=?, detail=?, extra=?, update_time=? where id=?", order.getCode(), order.getBizId(), order.getApplyNo(), order.getBizNo(), order.getType(), order.getProductId(), order.getProductCode(), order.getProductType(), order.getProductName(), order.getConsumer(), order.getVendorId(), order.getOwnerCompany(), order.getPrice(), order.getPay(), order.getDetail() == null ? null : order.getStatus(), order.getDetail() != null ? JSON.toJSONString(order.getDetail()) : null, order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
 		}
 	}
 
 	public void update(Order order)
 	{
-		jdbc.update("update t_order set biz_id=?, apply_no=?, biz_no=?, pay=?, status=?, extra=?, update_time=? where id=?", order.getBizId(), order.getApplyNo(), order.getBizNo(), order.getPay(), order.getStatus(), order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
+		jdbc.update("update t_order set code=?, biz_id=?, apply_no=?, biz_no=?, pay=?, status=?, owner_company=?, extra=?, update_time=? where id=?", order.getCode(), order.getBizId(), order.getApplyNo(), order.getBizNo(), order.getPay(), order.getStatus(), order.getOwnerCompany(), order.getExtra() != null ? JSON.toJSONString(order.getExtra()) : null, order.getModifyTime(), order.getId());
 	}
 
 	public boolean exists(Long orderId)
@@ -114,6 +116,7 @@ public class OrderDaoJdbc
 			{
 				Order order = new Order();
 				order.setId(m.getLong("id"));
+				order.setCode(m.getString("code"));
 				order.setBizId(m.getLong("biz_id"));
 				order.setApplyNo(m.getString("apply_no"));
 				order.setBizNo(m.getString("biz_no"));
@@ -128,6 +131,7 @@ public class OrderDaoJdbc
 				order.setModifyTime(m.getTimestamp("update_time"));
 				order.setPlatformId(m.getLong("platform_id"));
 				order.setOwner(m.getString("owner"));
+				order.setOwnerCompany(m.getString("owner_company"));
 				order.setPrice(m.getBigDecimal("price"));
 				order.setPay(m.getInt("pay"));
 				order.setStatus(m.getInt("status"));
@@ -141,6 +145,7 @@ public class OrderDaoJdbc
 	{
 		Order order = new Order();
 		order.setId(m.getLong("id"));
+		order.setCode(m.getString("code"));
 		order.setBizId(m.getLong("biz_id"));
 		order.setApplyNo(m.getString("apply_no"));
 		order.setBizNo(m.getString("biz_no"));
@@ -155,6 +160,7 @@ public class OrderDaoJdbc
 		order.setModifyTime(m.getTimestamp("update_time"));
 		order.setPlatformId(m.getLong("platform_id"));
 		order.setOwner(m.getString("owner"));
+		order.setOwnerCompany(m.getString("owner_company"));
 		order.setPrice(m.getBigDecimal("price"));
 		order.setPay(m.getInt("pay"));
 		order.setStatus(m.getInt("status"));
