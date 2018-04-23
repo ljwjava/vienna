@@ -32,6 +32,30 @@ public class OrderController
         return res;
     }
 
+    @RequestMapping("/channel_create.json")
+    @ResponseBody
+    public synchronized JSONObject channelCreate(@RequestBody JSONObject p)
+    {
+        String code = p.getString("code");
+        String ownerCompany = p.getString("ownerCompany");
+        if(Common.isEmpty(code) || Common.isEmpty(ownerCompany)) {
+            throw new RuntimeException("缺少code和ownerCompany");
+        }
+
+        Order order = orderSrv.getOrder(code, ownerCompany);
+        if(order == null){
+            order = orderSrv.newChannelOrder(p.getString("code"), p.getString("ownerCompany"));
+            fill(order, p, false);
+        } else {
+            order = null;
+        }
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", order);
+        return res;
+    }
+
     @RequestMapping("/children.json")
     @ResponseBody
     public JSONObject children(@RequestBody JSONObject p)
@@ -297,6 +321,8 @@ public class OrderController
             order.setProductType(p.getIntValue("productType"));
         if (p.containsKey("bizId"))
             order.setBizId(p.getLong("bizId"));
+        if (p.containsKey("code"))
+            order.setCode(p.getString("code"));
         if (p.containsKey("applyNo"))
             order.setApplyNo(p.getString("applyNo"));
         if (p.containsKey("bizNo"))
@@ -309,6 +335,8 @@ public class OrderController
             order.setPlatformId(p.getLong("platformId"));
         if (p.containsKey("owner"))
             order.setOwner(p.getString("owner"));
+        if (p.containsKey("ownerCompany"))
+            order.setOwnerCompany(p.getString("ownerCompany"));
 
         if (p.containsKey("detail"))
             order.setDetail(fill(order.getDetail(), p.getJSONObject("detail"), isReset));

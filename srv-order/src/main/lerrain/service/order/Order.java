@@ -12,6 +12,7 @@ public class Order
 {
     Long id;
     Long parentId;
+    String code;
 
     String productId;
     String productCode;
@@ -30,6 +31,7 @@ public class Order
     String bizMsg;
 
     String owner;
+    String ownerCompany;
 
     BigDecimal price;
 
@@ -281,5 +283,21 @@ public class Order
     public void setType(int type)
     {
         this.type = type;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getOwnerCompany() {
+        return ownerCompany;
+    }
+
+    public void setOwnerCompany(String ownerCompany) {
+        this.ownerCompany = ownerCompany;
     }
 }
