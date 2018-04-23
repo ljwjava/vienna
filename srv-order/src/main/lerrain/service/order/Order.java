@@ -18,7 +18,7 @@ public class Order
     String productCode;
     String productName;
 
-    int productType; //1长期寿险 2短期健康险 3驾乘险 4建议书订单
+    int productType; //1长期寿险 2短期健康险 3驾乘险 4建议书订单 5团险
 
     String consumer;
 
@@ -43,7 +43,7 @@ public class Order
     Map<String, Object> detail;
     Map<String, Object> extra;
 
-    int type;           //2保险 3组合
+    int type;           //2保险 3组合 4团单
     int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 6部分付款 9支付异常 0无状态
     int status  = 1;    //1填写中 2已提交 3成功 4失败退回 5终止 6失败并失效 8转至其他系统处理 9异常
 

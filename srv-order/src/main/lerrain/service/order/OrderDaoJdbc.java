@@ -102,6 +102,22 @@ public class OrderDaoJdbc
 		return order;
 	}
 
+	public Order load(String code, String ownerCompany)
+	{
+		Order order = jdbc.queryForObject("select * from t_order where code = ? and owner_company = ?", new Object[]{code, ownerCompany}, new RowMapper<Order>()
+		{
+			@Override
+			public Order mapRow(ResultSet rs, int rowNum) throws SQLException
+			{
+				return orderOf(rs);
+			}
+
+		});
+
+		order.setChildren(jdbc.queryForList("select id from t_order where parent_id = ?", new Object[]{order.getId()}, Long.class));
+		return order;
+	}
+
 	public int count(int type, Long platformId, Integer productType, Long owner)
 	{
 		return jdbc.queryForObject("select count(*) from t_order where valid is null and parent_id is null and type = ? and owner = ? and platform_id = ?", new Object[]{type, owner, platformId}, Integer.class);
