@@ -393,7 +393,7 @@ public class ScriptService
 					else
 						insurant.set(var, value);
 				}
-				else if ("applicant".equals(v) && !forSelf)
+				else if ("applicant".equals(v)) // && !forSelf)   有时候由于页面的缘故，本人的信息是applicant和insurant各有一部分的，即使是forself也不能跳过
 				{
 					if ("AGE".equals(var))
 						applicant.setAge(Common.intOf(value, 0));

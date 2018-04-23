@@ -33,6 +33,7 @@ var Ware = React.createClass({
 	openQuest() {
         if (env.pack.uwUrl) {
             let factors = this.refs.plan.val();
+            factors.url = this.getApplyUrl();
         	common.req("underwriting/create.json", {productId:this.state.detail.target, answer:factors}, v => {
                 document.location.href = env.pack.uwUrl + "?uwId=" + v;
 			});
@@ -48,6 +49,29 @@ var Ware = React.createClass({
 	},
 	back() {
 		this.setState({quest: false, alertQuest: false});
+	},
+	getApplyUrl() {
+        let plus = window.location.search;
+        if (plus != null && plus != "")
+            plus = "&" + plus.substring(1);
+
+        var nextUrl = null;
+        if (env.packType == 1)
+            nextUrl = "life_apply.mobile";
+        else if (env.packType == 3)
+            nextUrl = "vac_apply.mobile";
+
+        if (nextUrl != null) {
+            if(plus.indexOf("packId=") >= 0) {
+                nextUrl = nextUrl + "?" + (plus.replace(/(packId=)([^&]*)/gi, "packId=" + env.packId));
+            } else {
+                nextUrl = nextUrl + "?packId=" + env.packId + plus;
+            }
+        } else {
+        	nextUrl = null;
+		}
+
+        return nextUrl;
 	},
     apply() {
 		let plus = window.location.search;

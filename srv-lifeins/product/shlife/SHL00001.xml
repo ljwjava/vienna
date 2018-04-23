@@ -61,14 +61,14 @@
 			<if condition="ZONE == null" level="alert">
 				请选择所在地区
 			</if>
-			<if condition="PAY_PERIOD * PREMIUM >= 200000">
+			<!-- if condition="PAY_PERIOD * PREMIUM >= 200000">
 				累计总保费不能超过20万
-			</if>
+			</if -->
 			<if condition="INSURANT.SOCIAL_INS == false">
 				本产品仅支持有社保身份投保
 			</if>
 			<if>
-				if (ZONE == null || INSURANT.INCOME != null)
+				if (ZONE == null || APPLICANT.INCOME != null)
 					return null;
 				var lv = try(DS.ZONE_LEVEL[0][0], 3);
 				if (lv == 1) {
@@ -91,7 +91,7 @@
 				return null;
 			</if>
 			<if>
-				if (ZONE == null || INSURANT.INCOME == null)
+				if (ZONE == null || APPLICANT.INCOME == null)
 					return null;
 				var lv = try(DS.ZONE_LEVEL[0][0], 3);
 				var max = INSURANT.INCOME ? [300, 200, 100] : [200, 100, 50];

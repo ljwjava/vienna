@@ -39,7 +39,7 @@ public class TaskFX extends HashMap<String, Object>
                             Function f = (Function) objects[0];
                             Object val = f.run((Object[]) (objects.length > 1 ? objects[1] : null), factors);
 
-                            Log.info("TASK -- " + val);
+                            Log.info("TASK -- " + f.toString() + " -- " + val);
                         }
                         catch (ScriptErrorException e1)
                         {

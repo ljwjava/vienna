@@ -157,6 +157,9 @@ class ApplicantForm extends Form {
             v.push({name:'年收入(万元)', code:"income", type:"number", req:"yes", mistake:"只能输入数字", desc:"请输入年收入"});
             v.push({name:'收入来源', code:"incomeSource", type:"switch", req:"yes", options:env.formOpt.applicant.income});
         }
+        if (env.formOpt.applicant.income12) {
+            v.push({name:'劳动性年收入', code:"income12", type:"switch", refresh:"yes", options:[["N","小于12万"],["Y","12万或以上"]]});
+        }
         return this.buildForm(v);
     }
     verify(code, val) {
@@ -483,6 +486,8 @@ var Ground = React.createClass({
                 factors["SMOKE"] = this.refs.more.refs.smoke.val();
             }
         }
+        if (env.formOpt.applicant.income12)
+            factors["INCOME"] = this.refs.applicant.refs.income12.val();
         factors["A_GENDER"] = this.refs.applicant.refs.gender.val();
         factors["A_BIRTHDAY"] = this.refs.applicant.refs.birthday.val();
         if (env.formOpt.applicant.occupation) {
@@ -710,6 +715,7 @@ var Ground = React.createClass({
             tips: env.pack.extra.tips,
             pay: this.props.defVal.pay,
             vendor: env.vendor,
+            uwId: env.uwId,
             packName: (env.pack.extra.productName != null && env.pack.extra.productName != "" ? env.pack.extra.productName : orderName)
         };
         let order = {
@@ -935,6 +941,7 @@ $(document).ready( function() {
     if (env.orderId == null || env.orderId == "") {
         env.packId = common.param("packId");
         env.brokerId = common.param("accountId");
+        env.uwId = common.param("uwId");
         common.req("order/create.json", {}, r => {
             env.orderId = r.id;
             let planFactors = JSON.parse(common.load("iyb/temp", 600000));
@@ -958,6 +965,7 @@ $(document).ready( function() {
             env.packId = r.productId;
             env.brokerId = r.owner;
             if (r.detail != null) {
+                env.uwId = r.detail.uwId;
                 draw(r.detail);
             } else {
                 draw({});

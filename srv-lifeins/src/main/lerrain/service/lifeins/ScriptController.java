@@ -40,6 +40,8 @@ public class ScriptController
     @ResponseBody
     public JSONObject perform(@RequestBody JSONObject p)
     {
+//        Log.info(p);
+
         Long scriptId = p.getLong("scriptId");
         JSONArray productId = p.getJSONArray("productId");
         String opt = p.getString("opt");
