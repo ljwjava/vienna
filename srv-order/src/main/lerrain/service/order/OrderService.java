@@ -81,8 +81,9 @@ public class OrderService
 
 		if (order == null)
 		{
-//			order = pd.load(orderId);
-//			cache.put(order.getId(), order);
+			order = pd.load(code, ownerCompany);
+			cache.put(order.getId(), order);
+			cacheByCode.put(ownerCompany + "_" + code, order);
 		}
 
 		return order;
