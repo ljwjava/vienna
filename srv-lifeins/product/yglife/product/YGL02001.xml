@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="YGL02001" corporation_id="yglife" code="5302" name="阳光人寿附加i保轻症疾病保险" name_abbr="附加i保轻症疾" unit="1000" amount="PARENT.AMOUNT" input="none"
+	<product id="YGL02001" corporation_id="yglife" code="WSDA" name="阳光人寿附加i保轻症疾病保险" name_abbr="附加i保轻症疾" unit="1000" amount="PARENT.AMOUNT/5" input="none"
 		is_main="no" is_rider="yes" type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
 
 		<data>

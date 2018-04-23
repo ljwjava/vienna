@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="YGL01001" corporation_id="yglife" code="5301" name="阳光人寿i保B款终身重大疾病保险" name_abbr="i保终身" unit="1000"
+	<product id="YGL01001" corporation_id="yglife" code="WDDG" name="阳光人寿i保B款终身重大疾病保险" name_abbr="i保终身" unit="1000"
 		type_code="thunder" sequence="1000" sale_begin_date="2018-01-01" sale_end_date="" last_modify_date="2018-01-01">
 
 		<data>
