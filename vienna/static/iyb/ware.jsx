@@ -40,6 +40,7 @@ var Ware = React.createClass({
         } else {
             this.quest();
         }
+        this.setState({isShowActBanner: false});
 	},
 	quest() {
 		this.setState({quest: true, alertQuest: false});
@@ -48,7 +49,7 @@ var Ware = React.createClass({
 		this.setState({quest: true, alertQuest: true});
 	},
 	back() {
-		this.setState({quest: false, alertQuest: false});
+		this.setState({quest: false, alertQuest: false, isShowActBanner: true});
 	},
 	getApplyUrl() {
         let plus = window.location.search;
@@ -129,6 +130,7 @@ var Ware = React.createClass({
 					if(r.t == "fixed"){
 						$(this.refs.top_banner).css('margin-top',$(this.refs.top_activity_banner).find("div:first-child").css('height'));
 					}
+                    this.setState({isShowActBanner: true});
                 }, function(r){console.log(r);});
         }catch(e){
             console.log(e);
@@ -268,6 +270,7 @@ var Ware = React.createClass({
 			}
 			return (
 				<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
+					<div style={{display: "none"}}></div>
 					<div className="title">健康及财务告知（{questTitle}）</div>
 					<div className="text" style={{overflow:"auto"}}>
 						<Summary content={quests}/>
