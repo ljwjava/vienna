@@ -1,6 +1,7 @@
 package lerrain.service.underwriting;
 
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import lerrain.service.common.ServiceTools;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
@@ -120,6 +121,7 @@ public class UnderwritingService
                     }
                     catch (Exception e)
                     {
+                        Log.alert(e);
                     }
 
                     /*

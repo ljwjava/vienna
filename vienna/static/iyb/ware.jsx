@@ -35,7 +35,7 @@ var Ware = React.createClass({
             let factors = this.refs.plan.val();
             factors.url = this.getApplyUrl();
         	common.req("underwriting/create.json", {productId:this.state.detail.target, answer:factors}, v => {
-                document.location.href = env.pack.uwUrl + "?uwId=" + v;
+                document.location.href = env.pack.uwUrl + "?uwId=" + v + "&accountId=" + common.param("accountId");
 			});
         } else {
             this.quest();
