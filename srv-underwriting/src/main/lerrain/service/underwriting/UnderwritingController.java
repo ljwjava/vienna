@@ -187,9 +187,12 @@ public class UnderwritingController
 			}
 		}
 
+		JSONObject q = new JSONObject();
+		q.put("insurant", r);
+
 		JSONObject res = new JSONObject();
 		res.put("result", "success");
-		res.put("content", r);
+		res.put("content", q);
 
 		return res;
 	}

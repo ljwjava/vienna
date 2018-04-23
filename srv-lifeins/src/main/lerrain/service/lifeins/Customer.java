@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lerrain.project.insurance.plan.InsuranceCustomer;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 
 public class Customer implements InsuranceCustomer
