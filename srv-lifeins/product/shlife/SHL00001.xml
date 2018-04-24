@@ -34,6 +34,7 @@
 
 		<init>
 			<item name="ZONE_CITY" value="str(ZONE,0,4)+'00'"/>
+			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
 		</init>
 
 		<rule>
@@ -55,57 +56,57 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不能长于保障期间
 			</if>
-			<if condition="INSURANT.OCCUPATION_L != null and (INSURANT.OCCUPATION_L lt 1 or INSURANT.OCCUPATION_L > 5)">
-				职业要求必填且为1~5类
-			</if>
 			<if condition="ZONE == null" level="alert">
 				请选择所在地区
 			</if>
-			<!-- if condition="PAY_PERIOD * PREMIUM >= 200000">
+			<!--
+			<if condition="INSURANT.OCCUPATION_L != null and (INSURANT.OCCUPATION_L lt 1 or INSURANT.OCCUPATION_L > 5)">
+				职业要求必填且为1~5类
+			</if>
+			<if condition="PAY_PERIOD * PREMIUM >= 200000">
 				累计总保费不能超过20万
-			</if -->
+			</if>
 			<if condition="INSURANT.SOCIAL_INS == false">
 				本产品仅支持有社保身份投保
 			</if>
+			-->
 			<if>
-				if (ZONE == null || APPLICANT.INCOME != null)
+				if (ZONE == null)
 					return null;
 				var lv = try(DS.ZONE_LEVEL[0][0], 3);
-				if (lv == 1) {
-					if (AGE le 40 and AMOUNT > 1500000) {
-						return '18~40周岁，一类城市最高150万有效保额';
-					} else if (AGE >= 41 and AMOUNT > 1000000) {
-						return '41~50周岁，一类城市最高100万有效保额';
+				if (OCCUPATION_CODE != '9901001' and INSURANT.SOCIAL_INS) {
+					var max = APPLICANT.INCOME ? [300, 200, 100] : [200, 100, 50];
+					if (lv == 1) {
+						if (AMOUNT > 10000 * max[0]) {
+							return '当前条件下，一类城市最高' + max[0] + '万有效保额';
+						}
+					} else if (lv == 2) {
+						if (AMOUNT > 10000 * max[1]) {
+							return '当前条件下，二类城市最高' + max[1] + '万有效保额';
+						}
+					} else {
+						if (AMOUNT > 10000 * max[2]) {
+							return '当前条件下，普通地区最高' + max[2] + '万有效保额';
+						}
 					}
-				} else if (lv == 2) {
-					if (AGE le 40 and AMOUNT > 1000000) {
-						return '18~40周岁，二类城市最高100万有效保额';
-					} else if (AGE >= 41 and AMOUNT > 500000) {
-						return '41~50周岁，二类城市最高50万有效保额';
-					}
-				} else {
-					if (AMOUNT > 500000) {
-						return '普通地区最高50万有效保额';
-					}
-				}
-				return null;
-			</if>
-			<if>
-				if (ZONE == null || APPLICANT.INCOME == null)
 					return null;
-				var lv = try(DS.ZONE_LEVEL[0][0], 3);
-				var max = INSURANT.INCOME ? [300, 200, 100] : [200, 100, 50];
-				if (lv == 1) {
-					if (AMOUNT > 10000 * max[0]) {
-						return '一类城市最高' + max[0] + '万有效保额';
-					}
-				} else if (lv == 2) {
-					if (AMOUNT > 10000 * max[1]) {
-						return '二类城市最高' + max[1] + '万有效保额';
-					}
 				} else {
-					if (AMOUNT > 10000 * max[2]) {
-						return '普通地区最高' + max[2] + '万有效保额';
+					if (lv == 1) {
+						if (AGE le 40 and AMOUNT > 1500000) {
+							return '当前条件下，一类城市最高150万有效保额';
+						} else if (AGE >= 41 and AMOUNT > 1000000) {
+							return '当前条件下，一类城市最高100万有效保额';
+						}
+					} else if (lv == 2) {
+						if (AGE le 40 and AMOUNT > 1000000) {
+							return '当前条件下，二类城市最高100万有效保额';
+						} else if (AGE >= 41 and AMOUNT > 500000) {
+							return '当前条件下，二类城市最高50万有效保额';
+						}
+					} else {
+						if (AMOUNT > 500000) {
+							return '当前条件下，普通地区最高50万有效保额';
+						}
 					}
 				}
 				return null;
