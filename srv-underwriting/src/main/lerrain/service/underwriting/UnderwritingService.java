@@ -167,13 +167,30 @@ public class UnderwritingService
             int res = result(q, Common.trimStringOf(e.getValue()));
 
             if (res == Underwriting.RESULT_FAIL || res == Underwriting.RESULT_NULL)
-                return Underwriting.RESULT_FAIL;
-            else if (res == Underwriting.RESULT_CONTINUE)
+            {
+                r = Underwriting.RESULT_FAIL;
+                break;
+            }
+
+            if (res == Underwriting.RESULT_CONTINUE)
+            {
                 r = Underwriting.RESULT_CONTINUE;
+            }
         }
 
         synchronized (uw)
         {
+            if (step == Underwriting.STEP_DISEASE)
+            {
+                Map<String, Object> vals = uw.getAnswer();
+
+                for (Quest q : map.values())
+                {
+                    if (q.getType() == Underwriting.STEP_DISEASE)
+                        vals.remove(q.getCode());
+                }
+            }
+
             uw.putAnswer(ans);
             uw.setResult(step, r);
         }

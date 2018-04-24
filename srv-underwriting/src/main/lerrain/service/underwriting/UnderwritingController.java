@@ -176,8 +176,7 @@ public class UnderwritingController
 		for (int step : new int[] {Underwriting.STEP_APPLY, Underwriting.STEP_HEALTH1, Underwriting.STEP_HEALTH2, Underwriting.STEP_DISEASE1, Underwriting.STEP_DISEASE2})
 		{
 			List<Quest> list = uw.getQuests(step);
-
-			for (Quest q : list)
+			if (list != null) for (Quest q : list)
 			{
 				JSONObject qj = new JSONObject();
 				qj.put("quest", q.getCode());
