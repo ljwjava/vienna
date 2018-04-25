@@ -22,7 +22,7 @@ public class UnderwritingDao
 
     public List<Quest> listAll()
     {
-        return jdbc.query("select * from t_uw_quest order by code", new RowMapper<Quest>()
+        return jdbc.query("select * from t_uw_quest order by `type`, sequence, code", new RowMapper<Quest>()
         {
             @Override
             public Quest mapRow(ResultSet m, int arg1) throws SQLException

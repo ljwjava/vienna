@@ -31,8 +31,6 @@ public class UnderwritingService
 
     Map<Long, Underwriting> temp = new HashMap<>();
 
-    Function fr = new QuestResult();
-
     @PostConstruct
     public void reset()
     {
@@ -95,7 +93,7 @@ public class UnderwritingService
         uw.putAnswer(val);
 
         Stack stack = new Stack(uw.getAnswer());
-        stack.declare("R", fr);
+        stack.declare("R", new QuestResult(uw));
 
         for (Quest q : map.values())
         {
@@ -161,23 +159,6 @@ public class UnderwritingService
         if (step == Underwriting.STEP_APPLY)
             r = Underwriting.RESULT_CONTINUE;
 
-        if (ans != null) for (Map.Entry<String, Object> e : ans.entrySet())
-        {
-            Quest q = map.get(e.getKey());
-            int res = result(q, Common.trimStringOf(e.getValue()));
-
-            if (res == Underwriting.RESULT_FAIL || res == Underwriting.RESULT_NULL)
-            {
-                r = Underwriting.RESULT_FAIL;
-                break;
-            }
-
-            if (res == Underwriting.RESULT_CONTINUE)
-            {
-                r = Underwriting.RESULT_CONTINUE;
-            }
-        }
-
         synchronized (uw)
         {
             if (step == Underwriting.STEP_DISEASE)
@@ -192,6 +173,24 @@ public class UnderwritingService
             }
 
             uw.putAnswer(ans);
+
+            if (ans != null) for (Map.Entry<String, Object> e : ans.entrySet())
+            {
+                Quest q = map.get(e.getKey());
+                int res = result(uw, q, Common.trimStringOf(e.getValue()));
+
+                if (res == Underwriting.RESULT_FAIL || res == Underwriting.RESULT_NULL)
+                {
+                    r = Underwriting.RESULT_FAIL;
+                    break;
+                }
+
+                if (res == Underwriting.RESULT_CONTINUE)
+                {
+                    r = Underwriting.RESULT_CONTINUE;
+                }
+            }
+
             uw.setResult(step, r);
         }
 
@@ -218,7 +217,7 @@ public class UnderwritingService
         return null;
     }
 
-    private char result(Quest q, Object ans)
+    private char result(Underwriting uw, Quest q, Object ans)
     {
         String next = q.getNext();
 
@@ -267,7 +266,7 @@ public class UnderwritingService
         }
         else if (q.getWidget() == Quest.WIDGET_INPUT)
         {
-            Stack s = new Stack();
+            Stack s = new Stack(uw.getAnswer());
             s.set("self", ans);
 
             Formula f = (Formula)q.getAnswer();
@@ -288,6 +287,13 @@ public class UnderwritingService
 
     public class QuestResult implements Function
     {
+        Underwriting uw;
+
+        public QuestResult(Underwriting uw)
+        {
+            this.uw = uw;
+        }
+
         @Override
         public Object run(Object[] objects, Factors factors)
         {
@@ -295,7 +301,7 @@ public class UnderwritingService
             Quest q = map.get(code);
             Object res = factors.get(code);
 
-            char c = result(q, res);
+            char c = result(uw, q, res);
             return c == 'C';
         }
     }

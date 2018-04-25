@@ -7,6 +7,9 @@ public class Quest
     public static final int WIDGET_SWITCH   = 1;
     public static final int WIDGET_SELECT   = 2;
     public static final int WIDGET_INPUT    = 3;
+    public static final int WIDGET_TITLE    = 4;
+    public static final int WIDGET_TEXT     = 5;
+    public static final int WIDGET_SPACE    = 6;
 
     String code;
 

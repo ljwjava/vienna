@@ -50,16 +50,19 @@ public class PackUtil
         {
             for (InputField field : packIns.getInputForm())
             {
-                JSONObject json = new JSONObject();
-                json.put("name", field.getName());
-                json.put("var", field.getVar());
-                json.put("label", field.getLabel());
-                json.put("type", field.getType());
-                json.put("widget", !packIns.isDynamicForm() || field.getCondition() == null || Common.boolOf(field.getCondition().run(stack), false) ? field.getWidget() : "hidden");
-                json.put("scope", field.getScope());
-                json.put("detail", field.getDetail() == null ? null : field.getDetail().run(stack));
-                json.put("value", field.getValue());
-                factors.add(json);
+                if (!packIns.isDynamicForm() || field.getCondition() == null || Common.boolOf(field.getCondition().run(stack), false))
+                {
+                    JSONObject json = new JSONObject();
+                    json.put("name", field.getName());
+                    json.put("var", field.getVar());
+                    json.put("label", field.getLabel());
+                    json.put("type", field.getType());
+                    //json.put("widget", !packIns.isDynamicForm() || field.getCondition() == null || Common.boolOf(field.getCondition().run(stack), false) ? field.getWidget() : "hidden");
+                    json.put("scope", field.getScope());
+                    json.put("detail", field.getDetail() == null ? null : field.getDetail().run(stack));
+                    json.put("value", field.getValue());
+                    factors.add(json);
+                }
 
                 if (w == null)
                     stack.set(field.getVar(), field.getValue());
