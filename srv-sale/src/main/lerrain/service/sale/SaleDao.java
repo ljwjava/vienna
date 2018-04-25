@@ -202,6 +202,16 @@ public class SaleDao
                 c.setVar(m.getString("var"));
                 c.setValue(m.getString("value"));
 
+                try
+                {
+                    Formula f = Script.scriptOf((String)c.getLabel());
+                    if (f != null)
+                        c.setLabel(f);
+                }
+                catch (Exception e)
+                {
+                }
+
                 if (Common.isEmpty(c.getVar()))
                     c.setVar(c.getName());
 

@@ -3,6 +3,7 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
+	return "https://api-test.iyb.tm/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {

@@ -9,10 +9,10 @@ public class InputField
 {
     String name;
     String var;
-    String label;
     String type;
     String widget;
 
+    Object label;
     String[] scope;
 
     Formula condition;
@@ -30,12 +30,12 @@ public class InputField
         this.detail = detail;
     }
 
-    public String getLabel()
+    public Object getLabel()
     {
         return label;
     }
 
-    public void setLabel(String label)
+    public void setLabel(Object label)
     {
         this.label = label;
     }
