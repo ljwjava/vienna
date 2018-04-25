@@ -167,7 +167,7 @@ public class UnderwritingService
 
                 for (Quest q : map.values())
                 {
-                    if (q.getType() == Underwriting.STEP_DISEASE)
+                    if (q.getType() >= Underwriting.STEP_DISEASE)
                         vals.remove(q.getCode());
                 }
             }
