@@ -458,6 +458,11 @@ var Ground = React.createClass({
     },
     getPlanFactors() {
         let factors = this.refs.plan.val();
+        if (factors.SOCIAL_ZONE != null && factors.SOCIAL_ZONE.code != null) {
+            factors.SOCIAL_ZONE = factors.SOCIAL_ZONE.code;
+        } else {
+            factors.SOCIAL_ZONE = null;
+        }
         factors.packId = env.packId;
         if (this.state.insurant) {
             factors["GENDER"] = this.refs.insurant.refs.gender.val();
@@ -506,8 +511,8 @@ var Ground = React.createClass({
                 let c = self.refs[v.name];
                 r.push({
                     name: v.label,
-                    val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : c.val(),
-                    text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (c.text ? c.text() : c.val())
+                    val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : v.widget == 'city' ? c.val().code : c.val(),
+                    text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : v.widget == 'city' ? c.val().text : (c.text ? c.text() : c.val())
                 });
             }
         });
@@ -956,8 +961,6 @@ $(document).ready( function() {
                     init.applicant.gender = planFactors.GENDER;
                 if (planFactors.OCCUPATION_C)
                     init.applicant.occupation = planFactors.OCCUPATION_C;
-                if (planFactors.INCOME)
-                    init.applicant.income12 = planFactors.INCOME;
                 init.factors = planFactors;
             }
             draw(init);
