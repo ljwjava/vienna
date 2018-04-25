@@ -158,7 +158,7 @@ class ApplicantForm extends Form {
             v.push({name:'收入来源', code:"incomeSource", type:"switch", req:"yes", options:env.formOpt.applicant.income});
         }
         if (env.formOpt.applicant.income12) {
-            v.push({name:'劳动性年收入', code:"income12", type:"switch", refresh:"yes", options:[["N","小于12万"],["Y","12万或以上"]]});
+            v.push({name:'劳动年收入', code:"income12", type:"switch", refresh:"yes", options:[["N","小于12万"],["Y","12万或以上"]]});
         }
         return this.buildForm(v);
     }
@@ -956,6 +956,8 @@ $(document).ready( function() {
                     init.applicant.gender = planFactors.GENDER;
                 if (planFactors.OCCUPATION_C)
                     init.applicant.occupation = planFactors.OCCUPATION_C;
+                if (planFactors.INCOME)
+                    init.applicant.income12 = planFactors.INCOME;
                 init.factors = planFactors;
             }
             draw(init);

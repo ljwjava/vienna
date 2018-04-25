@@ -45,6 +45,12 @@ var Main = React.createClass({
             }
         };
 	},
+	create() {
+
+	},
+    delete() {
+
+    },
 	save() {
 		let url = this.getUrl();
 		if (url != null) {
@@ -156,13 +162,12 @@ var Main = React.createClass({
 				</div>
 				<div className="form-row mt-3">
 					<div className="col-sm-8">
-						<input type="button" className="btn btn-primary btn-lg" value="请求 >>>>" onClick={this.test}/>
-						&nbsp;&nbsp;
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="请求 >>>>" onClick={this.test}/>
 						<input type="button" className="btn btn-primary btn-lg" value="重置 >>>>" onClick={this.reset}/>
 					</div>
 					<div className="col-sm-4" style={{textAlign:"right"}}>
-						<input type="button" className="btn btn-primary btn-lg" value="暂存 >>>>" onClick={this.save}/>
-						&nbsp;&nbsp;
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="新建 >>>>" onClick={this.create}/>
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="暂存 >>>>" onClick={this.save}/>
 						<input type="button" className="btn btn-primary btn-lg" value="生效 >>>>" onClick={this.apply}/>
 					</div>
 				</div>
