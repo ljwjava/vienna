@@ -3,6 +3,7 @@ package lerrain.service.underwriting;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -190,7 +191,15 @@ public class UnderwritingController
 			{
 				JSONObject qj = new JSONObject();
 				qj.put("quest", q.getCode());
-				qj.put("answer", ans.get(q.getCode()));
+				qj.put("widget", q.getWidget());
+				Object answer = ans.get(q.getCode());
+				if(q.getWidget() == Quest.WIDGET_SELECT && answer != null && answer instanceof Number) {
+					answer = (char) ('A' - 1 + Integer.parseInt(String.valueOf(answer)));
+				}
+//				if(q.getWidget() == Quest.WIDGET_SWITCH && Common.isEmpty(answer)) {
+//					answer = "N";
+//				}
+				qj.put("answer", answer);
 
 				r.add(qj);
 			}
