@@ -129,6 +129,8 @@ public class UnderwritingController
 		res.put("result", "success");
 		res.put("content", cnt);
 
+		Log.info(res);
+
 		return res;
 	}
 
