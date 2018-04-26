@@ -34,6 +34,7 @@
 
 		<init>
 			<item name="ZONE_CITY" value="str(ZONE,0,4)+'00'"/>
+			<item name="ZONE" value="try(SOCIAL_ZONE.code, SOCIAL_ZONE)"/>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
 		</init>
 
@@ -71,11 +72,12 @@
 			</if>
 			-->
 			<if>
+				print(SOCIAL_ZONE);
 				if (ZONE == null)
 					return null;
 				var lv = try(DS.ZONE_LEVEL[0][0], 3);
-				if (OCCUPATION_CODE != '9901001' and INSURANT.SOCIAL_INS) {
-					var max = APPLICANT.INCOME ? [300, 200, 100] : [200, 100, 50];
+				if (OCCUPATION_CODE != '9901001' and SOCIAL_INS) {
+					var max = INCOME ? [300, 200, 100] : [200, 100, 50];
 					if (lv == 1) {
 						if (AMOUNT > 10000 * max[0]) {
 							return '当前条件下，一类城市最高' + max[0] + '万有效保额';

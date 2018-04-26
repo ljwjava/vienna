@@ -3,6 +3,7 @@ package lerrain.service.sale;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.tool.Common;
+import lerrain.tool.formula.Formula;
 import lerrain.tool.formula.Value;
 import lerrain.tool.script.Stack;
 
@@ -50,16 +51,25 @@ public class PackUtil
         {
             for (InputField field : packIns.getInputForm())
             {
-                JSONObject json = new JSONObject();
-                json.put("name", field.getName());
-                json.put("var", field.getVar());
-                json.put("label", field.getLabel());
-                json.put("type", field.getType());
-                json.put("widget", !packIns.isDynamicForm() || field.getCondition() == null || Common.boolOf(field.getCondition().run(stack), false) ? field.getWidget() : "hidden");
-                json.put("scope", field.getScope());
-                json.put("detail", field.getDetail() == null ? null : field.getDetail().run(stack));
-                json.put("value", field.getValue());
-                factors.add(json);
+                if (!packIns.isDynamicForm() || field.getCondition() == null || Common.boolOf(field.getCondition().run(stack), false))
+                {
+                    JSONObject json = new JSONObject();
+                    json.put("name", field.getName());
+                    json.put("var", field.getVar());
+                    json.put("type", field.getType());
+                    json.put("widget", field.getWidget());
+                    //json.put("widget", !packIns.isDynamicForm() || field.getCondition() == null || Common.boolOf(field.getCondition().run(stack), false) ? field.getWidget() : "hidden");
+                    json.put("scope", field.getScope());
+                    json.put("detail", field.getDetail() == null ? null : field.getDetail().run(stack));
+                    json.put("value", field.getValue());
+
+                    if (field.getLabel() instanceof Formula)
+                        json.put("label", Value.stringOf((Formula)field.getLabel(), stack));
+                    else
+                        json.put("label", field.getLabel());
+
+                    factors.add(json);
+                }
 
                 if (w == null)
                     stack.set(field.getVar(), field.getValue());

@@ -158,7 +158,7 @@ class ApplicantForm extends Form {
             v.push({name:'收入来源', code:"incomeSource", type:"switch", req:"yes", options:env.formOpt.applicant.income});
         }
         if (env.formOpt.applicant.income12) {
-            v.push({name:'劳动性年收入', code:"income12", type:"switch", refresh:"yes", options:[["N","小于12万"],["Y","12万或以上"]]});
+            v.push({name:'劳动年收入', code:"income12", type:"switch", refresh:"yes", options:[["N","小于12万"],["Y","12万或以上"]]});
         }
         return this.buildForm(v);
     }
@@ -458,6 +458,11 @@ var Ground = React.createClass({
     },
     getPlanFactors() {
         let factors = this.refs.plan.val();
+        if (factors.SOCIAL_ZONE != null && factors.SOCIAL_ZONE.code != null) {
+            factors.SOCIAL_ZONE = factors.SOCIAL_ZONE.code;
+        } else {
+            factors.SOCIAL_ZONE = null;
+        }
         factors.packId = env.packId;
         if (this.state.insurant) {
             factors["GENDER"] = this.refs.insurant.refs.gender.val();
@@ -506,8 +511,8 @@ var Ground = React.createClass({
                 let c = self.refs[v.name];
                 r.push({
                     name: v.label,
-                    val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : c.val(),
-                    text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (c.text ? c.text() : c.val())
+                    val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : v.widget == 'city' ? c.val().code : c.val(),
+                    text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : v.widget == 'city' ? c.val().text : (c.text ? c.text() : c.val())
                 });
             }
         });

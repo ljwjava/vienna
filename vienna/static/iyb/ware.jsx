@@ -220,6 +220,11 @@ var Ware = React.createClass({
 		} else {
             factors.ZONE = null;
 		}
+        if (factors.SOCIAL_ZONE != null && factors.SOCIAL_ZONE.code != null) {
+            factors.SOCIAL_ZONE = factors.SOCIAL_ZONE.code;
+        } else {
+            factors.SOCIAL_ZONE = null;
+        }
 		if(factors.OCCUPATION_C != null) {
             factors.OCCUPATION_L = factors.OCCUPATION_C.level != null ? factors.OCCUPATION_C.level : null;
             factors.OCCUPATION_C = factors.OCCUPATION_C.code != null ? factors.OCCUPATION_C.code : null;

@@ -88,6 +88,8 @@ public class UnderwritingController
 	@ResponseBody
 	public JSONObject next(@RequestBody JSONObject p)
 	{
+		Log.info(p);
+
 		Long uwId = p.getLong("uwId");
 
 		int step = stepOf(p.getString("step"));
@@ -127,6 +129,8 @@ public class UnderwritingController
 		res.put("result", "success");
 		res.put("content", cnt);
 
+		Log.info(res);
+
 		return res;
 	}
 
@@ -158,6 +162,12 @@ public class UnderwritingController
 			return "select";
 		if (widget == Quest.WIDGET_INPUT)
 			return "input";
+		if (widget == Quest.WIDGET_TITLE)
+			return "title";
+		if (widget == Quest.WIDGET_TEXT)
+			return "text";
+		if (widget == Quest.WIDGET_SPACE)
+			return "space";
 
 		throw new RuntimeException("widget invalid");
 	}

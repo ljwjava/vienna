@@ -52,8 +52,8 @@
 			<item code="insure" mode="1" value="THIS.INSURE_VALUE" show="至保障" />
 			<item code="none" value="0" show="-" />
 			<item code="input" value="THIS.YEAR" desc="'交'+THIS.YEAR+'年'" show="自定义" />
-			<item code="exempt" value="PARENT.PAY_PERIOD-1" desc="'交'+round(PARENT.PAY_PERIOD-1)+'年'" show="豁免期间" />
 			<item code="draw" mode="1" value="THIS.DRAW_AGE" desc="'交至'+DRAW_AGE+'岁'" show="交至领取" />
+			<item code="exempt" mode="PARENT.PAY_MODE" value="PARENT.PAY_VALUE-1" desc="'交'+round(PARENT.PAY_PERIOD-1)+'年'" show="豁免期间" />
 			<item code="parent" mode="PARENT.PAY_MODE" value="PARENT.PAY_VALUE" desc="PARENT.PAY_DESC" show="同主险" />
 		</pay>
 

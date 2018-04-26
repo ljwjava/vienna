@@ -6,6 +6,7 @@
 		<data>
 			<item parser="dds" value="YGL01001" />
 			<item parser="dds" value="OCCUPATION" />
+			<item parser="dds" value="CITY_SALE" />
 		</data>
 
 		<param>
@@ -33,8 +34,9 @@
 		<init>
 			<item name="R1" value="RIDER('YGL02001')"/>
 			<item name="R2" value="RIDER('YGL02002')"/>
-			<item name="A_CITY" value="['1101','1102','1201','1202','1301','3101','3102','4401','4403','3201','3202','3205','4201','3701','3702','5101','3501','3502']"/>
+			<item name="A_CITY" value="['1101','1102','3101','3102','4403','4401','5101','3301','4201','5001','5002','1201','1202','3201','3205','4301','3702','4406','6101','3701','4419','3502','3501','3202','3401','4101','3302','2102','1301','4501','3601','5301','3706','3505','4404','4413','3303','1401']"/>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
+			<item name="CITY" value="str(ZONE,0,4)"/>
 		</init>
 		
 		<interest>
@@ -75,6 +77,8 @@
 			<if>
 				if (ZONE == null)
 					return null;
+				if (try(DS.CITY_SALE[0][0], null) == null)
+					return "您所在的城市不在销售区域中";
 				var bcity = find(A_CITY, str(ZONE,0,4)) == null;
 				if (bcity) {
 					if (AGE >= 18 and AGE le 40 and AMOUNT > 300000 and AMOUNT le 500000) {

@@ -202,6 +202,13 @@ public class SaleDao
                 c.setVar(m.getString("var"));
                 c.setValue(m.getString("value"));
 
+                String scr = m.getString("label_f");
+                if (scr != null)
+                {
+                    Formula f = Script.scriptOf((String) scr);
+                    c.setLabel(f);
+                }
+
                 if (Common.isEmpty(c.getVar()))
                     c.setVar(c.getName());
 
@@ -215,7 +222,7 @@ public class SaleDao
                 Formula condition = Script.scriptOf(m.getString("condition"));
                 c.setCondition(condition);
 
-                if (c.getCondition() != null)
+                if (c.getCondition() != null || scr != null)
                     packIns.setDynamicForm(true);
 
                 return c;

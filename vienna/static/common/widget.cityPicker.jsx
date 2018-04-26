@@ -8,6 +8,7 @@ var CityPicker = React.createClass({
 	getInitialState() {
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
+	    if (typeof v == "string") v = {code: v};
 		return {value: v.value||v.code, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[]};
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state

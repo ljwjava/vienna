@@ -16,13 +16,6 @@ var Main = React.createClass({
 		return {envList:[], gatewayList:[], modify:false};
 	},
 	componentDidMount() {
-		common.req("develop/list_gateway.json", {}, r => {
-			var gatewayList = r.map(x => {
-				ENV.gatewayMap[x.id + ""] = x;
-				return <option value={x.id}>{x.uri}</option>;
-			});
-			this.setState({gatewayList:gatewayList});
-		});
 		common.req("develop/list_env.json", {}, r => {
 			var envList = [];
 			for (var envId in r) {
@@ -142,14 +135,8 @@ var Main = React.createClass({
 		return (
 			<div className="container-fluid mt-3 mb-3 form-horizontal">
 				<div className="form-row mb-3">
-					<div className="col-sm-6">
-						<select className="form-control" ref="gatewayList" onChange={this.setGateway}><option value="">请选择</option>{this.state.gatewayList}</select>
-					</div>
 					<div className="col-sm-3">
-						<input className="form-control" ref="reqSupply" placeholder="URL补充"></input>
-					</div>
-					<div className="col-sm-3">
-						<select className="form-control" ref="envList"><option value=""></option>{this.state.envList}</select>
+						<select className="form-control" ref="envList"><option value="">请选择</option>{this.state.envList}</select>
 					</div>
 				</div>
 				<div className="form-row">
@@ -170,12 +157,6 @@ var Main = React.createClass({
 						<input type="button" className="btn btn-primary btn-lg mr-3" value="暂存 >>>>" onClick={this.save}/>
 						<input type="button" className="btn btn-primary btn-lg" value="生效 >>>>" onClick={this.apply}/>
 					</div>
-				</div>
-				<div className="form-row mt-3">
-					<div className="col-sm-12"><pre id="result">{this.state.exception != null ? this.state.exception : JSON.stringify(this.state.result)}</pre></div>
-				</div>
-				<div className="form-row mt-3">
-					<div className="col-sm-12"><pre id="console">{this.state.console}</pre></div>
 				</div>
 			</div>
 		);
