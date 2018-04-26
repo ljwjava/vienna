@@ -344,7 +344,7 @@ var Ground = React.createClass({
 					<div><span>　出生日期</span>{env.order.detail.applicant.birthday}</div>
                     {env.order.detail.applicant.height == null ? null : <div><span>　身高</span>{env.order.detail.applicant.height}(厘米)</div>}
                     {env.order.detail.applicant.weight == null ? null : <div><span>　体重</span>{env.order.detail.applicant.weight}(公斤)</div>}
-					<div><span>　所在地区</span>{env.order.detail.applicant.cityName}</div>
+                    {env.order.detail.applicant.cityName == null ? null : <div><span>　所在地区</span>{env.order.detail.applicant.cityName}</div>}
 					<div><span>　通讯地址</span>{env.order.detail.applicant.address}</div>
 					{ env.order.detail.applicant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.applicant.occupation.text}({env.order.detail.applicant.occupation.level}类)</div>}
 				</div>
@@ -372,7 +372,11 @@ var Ground = React.createClass({
 				<div className="view">
 					<div><span>{env.order.productName}</span></div>
 					{ env.order.detail.packDesc.map(v => {
-						return (<div><span>　{v.name}</span>{v.text}</div>);
+						var txtshow = v.text;
+						if(v.text instanceof Object) {
+							txtshow = txtshow.text;
+						}
+						return (<div><span>　{v.name}</span>{txtshow}</div>);
 					})}
 					{ env.order.detail.factors.effectiveTime == null ? null : <div><span>　保单生效日</span>{env.order.detail.factors.effectiveTime}</div> }
 				</div>
