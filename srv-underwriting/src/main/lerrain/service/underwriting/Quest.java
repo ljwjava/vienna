@@ -24,6 +24,10 @@ public class Quest
     int widget;
     String feature;
 
+    public boolean needValue(){
+        return this.getWidget() == this.WIDGET_SWITCH || this.getWidget() == this.WIDGET_SELECT || this.getWidget() == this.WIDGET_INPUT;
+    }
+
     public String getCode()
     {
         return code;

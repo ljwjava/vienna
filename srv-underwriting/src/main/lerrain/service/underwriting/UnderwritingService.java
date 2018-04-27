@@ -235,7 +235,7 @@ public class UnderwritingService
             }
             else if (ans instanceof String)
             {
-                int index = "Y".equalsIgnoreCase((String)ans) || "1".equals(ans) || "2".equals(ans) ? 0 : "N".equalsIgnoreCase((String)ans) || "0".equals(ans) ? 1 : -1;
+                int index = "Y".equalsIgnoreCase((String)ans) || "O".equalsIgnoreCase((String)ans) || "1".equals(ans) || "2".equals(ans) ? 0 : "N".equalsIgnoreCase((String)ans) || "0".equals(ans) ? 1 : -1;
                 if (index < 0)
                     throw new RuntimeException("Quest<" + q.getCode() + "> answer invalid");
 

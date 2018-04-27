@@ -105,8 +105,11 @@ public class UnderwritingController
 
 			if (list != null) for (Quest q : list)
 			{
-				val = new JSONObject();
-				val.put(q.getCode(), ans);
+				if(q.needValue()){
+					if(val == null)
+						val = new JSONObject();
+					val.put(q.getCode(), ans);
+				}
 			}
 		}
 
