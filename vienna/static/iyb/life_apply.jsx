@@ -591,6 +591,7 @@ var Ground = React.createClass({
         }
         env.relation = this.refs.relation.val();
         env.applicant = this.refs.applicant.val();
+
         // 处理证件有效起期
         env.applicant.certName = this.refs.applicant.refs.certType.text();
         env.applicant.genderName = this.refs.applicant.refs.gender.text();
@@ -624,7 +625,9 @@ var Ground = React.createClass({
         } else {
             env.insurant = env.applicant;
             if (m != null) {
-                env.applicant.occupation = m.occupation;
+                if(env.applicant.occupation == null && m.occupation != null) {
+                    env.applicant.occupation = m.occupation;
+                }
                 env.applicant.height = m.height;
                 env.applicant.weight = m.weight;
                 env.applicant.smoke = m.smoke;
