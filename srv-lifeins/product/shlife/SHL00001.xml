@@ -80,37 +80,38 @@
 					var max = INCOME ? [300, 200, 100] : [200, 100, 50];
 					if (lv == 1) {
 						if (AMOUNT > 10000 * max[0]) {
-							return '当前条件下，一类城市最高' + max[0] + '万有效保额';
+							return '根据您提供的基本信息，适合于您的保额范围是30万至' + max[0] + '万';
 						}
 					} else if (lv == 2) {
 						if (AMOUNT > 10000 * max[1]) {
-							return '当前条件下，二类城市最高' + max[1] + '万有效保额';
+							return '根据您提供的基本信息，适合于您的保额范围是30万至' + max[1] + '万';
 						}
 					} else {
 						if (AMOUNT > 10000 * max[2]) {
-							return '当前条件下，普通地区最高' + max[2] + '万有效保额';
+							return '根据您提供的基本信息，适合于您的保额范围是30万至' + max[2] + '万';
 						}
 					}
 					return null;
 				} else {
 					if (lv == 1) {
 						if (AGE le 40 and AMOUNT > 1500000) {
-							return '当前条件下，一类城市最高150万有效保额';
+							return '根据您提供的基本信息，适合于您的保额范围是30万至150万';
 						} else if (AGE >= 41 and AMOUNT > 1000000) {
-							return '当前条件下，一类城市最高100万有效保额';
+							return '根据您提供的基本信息，适合于您的保额范围是30万至100万';
 						}
 					} else if (lv == 2) {
 						if (AGE le 40 and AMOUNT > 1000000) {
 							return '当前条件下，二类城市最高100万有效保额';
 						} else if (AGE >= 41 and AMOUNT > 500000) {
-							return '当前条件下，二类城市最高50万有效保额';
+							return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
 						}
 					} else {
 						if (AMOUNT > 500000) {
-							return '当前条件下，普通地区最高50万有效保额';
+							return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
 						}
 					}
 				}
+				// 根据您提供的基本信息，适合于您的保额范围是30万 - ？
 				return null;
 			</if>
 		</rule>
