@@ -146,7 +146,7 @@ var Customer = React.createClass({
 		});
 	},
 	render() {
-		let ages = this.ages.map(v => (<li className="dropdown-item" key={v}><a onClick={this.setAge.bind(this, v)}>{v}</a></li>));
+		let ages = this.ages.map(v => (<li className="dropdown-item" key={v} onClick={this.setAge.bind(this, v)}>{v}</li>));
 		return (
 			<div>
 				<div className="collapse navbar-collapse mr-4">

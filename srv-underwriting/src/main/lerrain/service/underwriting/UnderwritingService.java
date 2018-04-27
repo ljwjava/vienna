@@ -196,8 +196,6 @@ public class UnderwritingService
 
         msgQueue.add(uw);
 
-        Log.info(step + "： " + r);
-
         return r;
     }
 
