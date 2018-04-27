@@ -43,7 +43,7 @@ public class Lifeins implements Function
         else
         {
             r.put("RELATIVE", vals.get("RELATIVE"));
-            r.put("EFFECTIVE_DATE", vals.get("EFFECTIVE_DATE"));
+            r.put("EFFECTIVE_DATE", PackUtil.translate("date", vals.get("EFFECTIVE_DATE")));
             if (vals.get("EFFECTIVE_DAYS") != null)
                 r.put("EFFECTIVE_DAYS", vals.get("EFFECTIVE_DAYS"));
         }

@@ -158,7 +158,7 @@ class ApplicantForm extends Form {
             v.push({name:'收入来源', code:"incomeSource", type:"switch", req:"yes", options:env.formOpt.applicant.income});
         }
         if (env.formOpt.applicant.income12) {
-            v.push({name:'劳动年收入', code:"income12", type:"switch", refresh:"yes", options:[["N","小于12万"],["Y","12万或以上"]]});
+            v.push({name:'劳动性年收入', code:"income12", type:"switch", refresh:"yes", options:[["N","小于12万"],["Y","12万或以上"]]});
         }
         return this.buildForm(v);
     }
@@ -458,12 +458,17 @@ var Ground = React.createClass({
     },
     getPlanFactors() {
         let factors = this.refs.plan.val();
+        factors.packId = env.packId;
+        if (factors.ZONE != null && factors.ZONE.code != null) {
+            factors.ZONE = factors.ZONE.code;
+        } else {
+            factors.ZONE = null;
+        }
         if (factors.SOCIAL_ZONE != null && factors.SOCIAL_ZONE.code != null) {
             factors.SOCIAL_ZONE = factors.SOCIAL_ZONE.code;
         } else {
             factors.SOCIAL_ZONE = null;
         }
-        factors.packId = env.packId;
         if (this.state.insurant) {
             factors["GENDER"] = this.refs.insurant.refs.gender.val();
             factors["BIRTHDAY"] = this.refs.insurant.refs.birthday.val();
@@ -507,12 +512,12 @@ var Ground = React.createClass({
         let self = this.refs.plan;
         let r = [];
         self.props.fields.map(v => {
-            if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0)) {
+            if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0 && v.var != "EFFECTIVE_DATE")) {
                 let c = self.refs[v.name];
                 r.push({
                     name: v.label,
-                    val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : v.widget == 'city' ? c.val().code : c.val(),
-                    text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : v.widget == 'city' ? c.val().text : (c.text ? c.text() : c.val())
+                    val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : c.val(),
+                    text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (c.text ? c.text() : c.val())
                 });
             }
         });
@@ -586,6 +591,7 @@ var Ground = React.createClass({
         }
         env.relation = this.refs.relation.val();
         env.applicant = this.refs.applicant.val();
+
         // 处理证件有效起期
         env.applicant.certName = this.refs.applicant.refs.certType.text();
         env.applicant.genderName = this.refs.applicant.refs.gender.text();
@@ -619,7 +625,9 @@ var Ground = React.createClass({
         } else {
             env.insurant = env.applicant;
             if (m != null) {
-                env.applicant.occupation = m.occupation;
+                if(env.applicant.occupation == null && m.occupation != null) {
+                    env.applicant.occupation = m.occupation;
+                }
                 env.applicant.height = m.height;
                 env.applicant.weight = m.weight;
                 env.applicant.smoke = m.smoke;
