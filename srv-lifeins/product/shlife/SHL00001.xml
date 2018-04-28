@@ -33,8 +33,8 @@
 		</param>
 
 		<init>
-			<item name="ZONE_CITY" value="str(ZONE,0,4)+'00'"/>
-			<item name="ZONE" value="try(SOCIAL_ZONE.code, SOCIAL_ZONE)"/>
+			<item name="ZONE_CITY" value="str(ZONE2,0,4)+'00'"/>
+			<item name="ZONE2" value="var a = try(ZONE.code, ZONE); if(a == null){a = try(SOCIAL_ZONE.code, SOCIAL_ZONE);} return a;"/>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
 		</init>
 
@@ -57,7 +57,7 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不能长于保障期间
 			</if>
-			<if condition="ZONE == null" level="alert">
+			<if condition="ZONE2 == null" level="alert">
 				请选择所在地区
 			</if>
 			<!--
@@ -72,8 +72,8 @@
 			</if>
 			-->
 			<if>
-				print(SOCIAL_ZONE);
-				if (ZONE == null)
+				print(ZONE2);
+				if (ZONE2 == null)
 					return null;
 				var lv = try(DS.ZONE_LEVEL[0][0], 3);
 				if (OCCUPATION_CODE != '9901001' and SOCIAL_INS) {
