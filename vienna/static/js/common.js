@@ -3,12 +3,13 @@ var env = {};
 var common = {};
 
 common.url = function(url) {
-	//return "https://api-test.iyb.tm/" + url;
 	var host = location.host;
 	var server;
 	if (host.startsWith("sv")) {
-		host = "api" + host.substr(2);
-		server = location.protocol + "//" + host;
+        host = "api" + host.substr(2);
+        server = location.protocol + "//" + host;
+    } else if (host.startsWith("localhost")) {
+        return "https://api-test.iyb.tm/" + url;
 	} else if (host.startsWith("lifeins")) {
         server = location.protocol + "//";
         if (location.pathname.startsWith("/rel/"))

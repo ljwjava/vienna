@@ -54,14 +54,14 @@ var SimDraw = React.createClass({
 		// });
 		// return (<div>{list}</div>)
 		let list = this.state.sim.map(v => {
-			return <tr style={{textAlign:"center"}}>
-				<td><input style={{width:"60px"}} ref={"age"+v}/> 周岁</td>
-				<td><input style={{width:"120px"}} ref={"apd"+v}/> 元</td>
-				<td><input style={{width:"120px"}} ref={"draw"+v}/> 元</td>
-				<td><input style={{width:"120px"}} ref={"amt"+v}/> 元</td>
+			return <tr>
+				<td><input className="form-control" ref={"age"+v}/></td>
+				<td><input className="form-control" ref={"apd"+v}/></td>
+				<td><input className="form-control" ref={"draw"+v}/></td>
+				<td><input className="form-control" ref={"amt"+v}/></td>
 			</tr>
 		});
-		return (<table className="bordered"><thead><th>年龄</th><th>追加保费</th><th>部分领取</th><th>调整保额</th></thead><tbody>{list}</tbody></table>);
+		return (<table className="bordered text-center"><thead><th>年龄(周岁)</th><th>追加保费</th><th>部分领取</th><th>调整保额</th></thead><tbody>{list}</tbody></table>);
 	}
 });
 

@@ -34,7 +34,7 @@
 
 		<init>
 			<item name="ZONE_CITY" value="str(ZONE,0,4)+'00'"/>
-			<item name="ZONE" value="try(SOCIAL_ZONE.code, SOCIAL_ZONE)"/>
+			<item name="ZONE2" value="var x = try(ZONE.code, ZONE); if (x == null) { x = try(SOCIAL_ZONE.code, SOCIAL_ZONE); } return x;"/>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
 		</init>
 
