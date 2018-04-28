@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="ZAH00005" corporation_id="zhongan" code="AD34" name="尊享e生2016" name_abbr="尊享e生2016" unit="3000000" input="quantity" premium="R * QUANTITY"
+			 type="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2018-04-28">
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+		<input>
+			<item name="SOCIAL_INS" label="社保" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+		</input>
+
+		<init>
+			<item name="SOCIAL_INS" value="true" type="boolean"/>
+			<item name="RS">return [[594,1247],[277,535],[95,200],[186,388],[237,499],[297,663],[364,920],[403,1180],[679,2215],[807,2712],[1079,3520]];</item>
+			<item name="R">
+				var btwn = function(mi, ma, v){
+					if(v lt mi or v > ma)
+						return false;
+
+					return true;
+				};
+				var a = -1;
+				if(btwn(0, 4, AGE)) {
+					a = 0;
+				} else if(btwn(5, 10, AGE)) {
+					a = 1;
+				} else if(btwn(11, 20, AGE)) {
+					a = 2;
+				} else {
+					a = ceil(AGE / 5) - 2;
+				}
+
+				if(!btwn(0, 10, a)) {
+					return null;
+				}
+
+				return RS[a][SOCIAL_INS ? 0 : 1];
+			</item>
+		</init>
+
+		<rule>
+			<if condition="DAY lt 30 or AGE > 60">
+				被保险人年龄要求出生满30天~60周岁。
+			</if>
+		</rule>
+
+	</product>
+</declare>
