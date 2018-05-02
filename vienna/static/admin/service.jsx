@@ -42,11 +42,12 @@ var Main = React.createClass({
 						</select>
 					</div>
 					<div className="col-sm-6">
-						<input className="form-control" placeholder="URL"></input>
+						<input className="form-control" placeholder="URL">http://www.lerrain.com:7011</input>
 					</div>
 				</div>
 				<div className="form-row">
 					<div className="col-sm-3">
+						fee/test.json
 					</div>
 					<div className="col-sm-6">
 					</div>
