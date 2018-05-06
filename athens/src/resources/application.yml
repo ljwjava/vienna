@@ -17,16 +17,13 @@ datasource:
   url: jdbc:mysql://101.37.72.72:5306/athens_t?useUnicode=true&characterEncoding=UTF-8
   username: iyb
   password: Abcd2017
-#  url: jdbc:mysql://www.lerrain.com:3307/athens?useUnicode=true&characterEncoding=UTF-8
-#  username: root
-#  password: ftp123
 
 service:
   lifeins: http://localhost:7777
   proposal: http://localhost:7776
   customer: http://localhost:7602
   dict: http://localhost:7773
-  order: http://localhost:7770
+  order: http://localhost:7570
   user: http://localhost:7501
   printer: http://localhost:7511
   rome: http://localhost:7766
@@ -45,4 +42,3 @@ path:
   temp: x:/temp/1/
 
 gatedir:
-

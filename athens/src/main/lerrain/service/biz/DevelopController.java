@@ -7,6 +7,7 @@ import lerrain.service.common.ServiceMgr;
 import lerrain.service.env.EnvDao;
 import lerrain.service.env.EnvService;
 import lerrain.service.env.Environment;
+import lerrain.service.env.KeyValService;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
@@ -35,6 +36,9 @@ public class DevelopController
     GatewayService gatewaySrv;
 
     @Autowired
+    KeyValService keyValSrv;
+
+    @Autowired
     DevelopDao developDao;
 
     @Autowired
@@ -58,6 +62,14 @@ public class DevelopController
     public String reset()
     {
         athensSrv.reset();
+        return "success";
+    }
+
+    @RequestMapping("/admin/onclose")
+    @ResponseBody
+    public String onClose()
+    {
+        keyValSrv.store();
         return "success";
     }
 

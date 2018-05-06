@@ -1,5 +1,5 @@
 server:
-  port: 7770
+  port: 7570
 
 datasource:
   url: jdbc:mysql://101.37.72.72:5306/vie_biz_test?useUnicode=true&characterEncoding=UTF-8
