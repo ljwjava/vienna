@@ -4,26 +4,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 var ENV = {
-    script: "",
+    current: {},
+	test: {},
     reqParams: "",
     reqSupply: "",
-    gatewayMap: {},
     envMap: {}
 };
 
 var Main = React.createClass({
 	getInitialState() {
-		return {envList:[], gatewayList:[], modify:false};
+		return {envList:[], modify:false};
 	},
 	componentDidMount() {
-		common.req("develop/list_gateway.json", {}, r => {
-			var gatewayList = r.map(x => {
-				ENV.gatewayMap[x.id + ""] = x;
-				return <option value={x.id}>{x.uri}</option>;
-			});
-			this.setState({gatewayList:gatewayList});
+		common.req("develop/view_gateway.json", {gatewayId: common.param("gatewayId")}, r => {
+			ENV.current = r;
+            common.req("develop/req_testing.json", {key: "gateway/" + common.param("gatewayId")}, r => {
+                ENV.test = r == null ? {} : r;
+                this.refresh();
+            });
 		});
-		common.req("develop/list_env.json", {}, r => {
+		common.req("develop/query_env.json", {}, r => {
 			var envList = [];
 			for (var envId in r) {
 				var x = r[envId];
@@ -45,9 +45,6 @@ var Main = React.createClass({
             }
         };
 	},
-	create() {
-
-	},
     delete() {
 
     },
@@ -55,12 +52,13 @@ var Main = React.createClass({
 		let url = this.getUrl();
 		if (url != null) {
 			let s = this.refs.script.value.replace(/[\r]/g, "");
-			if (s == ENV.gatewayMap[ENV.gatewayId].script.replace(/[\r]/g, ""))
+			if (s == ENV.current.script.replace(/[\r]/g, ""))
 				s = null;
 			common.req("develop/save.json", {
-                key: url,
+                key: "gateway/" + ENV.current.id,
                 value: {
                     script: s,
+					uri: this.refs.gatewayUri.value,
                     param: this.refs.reqParams.value
                 }
             }, r => {
@@ -70,35 +68,51 @@ var Main = React.createClass({
 	},
 	apply() {
 		var req = null;
-		if (ENV.gatewayId != null) {
+		if (ENV.current != null) {
 			req = {
 				type: 1,
-				gatewayId: ENV.gatewayId,
+				gatewayId: ENV.current.id,
+                uri: this.refs.gatewayUri.value,
 				script: this.refs.script.value
 			};
-			ENV.gatewayMap[ENV.gatewayId].script = req.script;
+			ENV.current.script = req.script;
 		}
 		if (req != null) common.req("develop/apply.json", req, r => {
 			alert("success");
 		});
 	},
+	request() {
+        var url = this.getUrl();
+        if (url != null) {
+            var jsonStr = this.refs.reqParams.value;
+            var req = jsonStr == null || jsonStr == "" ? {} : JSON.parse(jsonStr);
+            common.req("test/" + url, req, r => {
+                this.setState({
+                    result: r.result,
+                    exception: r.exception,
+                    console: r.console
+                });
+            });
+        }
+    },
 	test() {
-		var url = this.getUrl();
-		if (url != null) {
-			var jsonStr = this.refs.reqParams.value;
-			var req = jsonStr == null || jsonStr == "" ? {} : JSON.parse(jsonStr);
-			common.req("test/" + url, req, r => {
-				this.setState({
-					result: r.result,
-					exception: r.exception,
-					console: r.console
-				});
-			});
-		}
+		var rpm = this.refs.reqParams.value;
+		var req = {
+			envId: ENV.current.envId,
+			script: this.refs.script.value,
+			param: rpm == null || rpm == "" ? null : JSON.parse(rpm)
+		};
+		common.req("develop/test.json", req, r => {
+            this.setState({
+                result: r.result,
+                exception: r.exception,
+                console: r.console
+            });
+        });
 	},
 	getUrl() {
-		if (ENV.gatewayId == null) return null;
-		var reqUrl = ENV.gatewayMap[ENV.gatewayId].uri;
+		if (ENV.current == null) return null;
+		var reqUrl = ENV.current.uri;
 		var reqSupply = this.refs.reqSupply.value;
 		if (reqSupply != null && reqSupply != "")
 			reqUrl = reqUrl.replace("[*]", reqSupply);
@@ -106,50 +120,62 @@ var Main = React.createClass({
 			return null;
 		return reqUrl;
 	},
-	setGateway() {
-		ENV.gatewayId = this.refs.gatewayList.value;
-		if (ENV.gatewayId == "") ENV.gatewayId = null;
-
-		ENV.reqSupply = "";
-		this.refs.reqSupply.value = ENV.reqSupply;
-		this.refs.envList.value = ENV.gatewayMap[ENV.gatewayId].envId;
-
-		var url = this.getUrl();
-		if (url != null) common.req("develop/req_testing.json", {key: url}, r => {
-            ENV.script = r != null ? r.script : null;
-			ENV.reqParams = r != null ? r.param : null;
-			this.refresh();
-		});
-	},
 	reset() {
-		if (ENV.gatewayId != null) {
-			var reqUrl = ENV.gatewayMap[ENV.gatewayId].uri;
-			var reqSupply = this.refs.reqSupply.value;
-			if (reqSupply != null && reqSupply != "")
-				reqUrl = reqUrl.replace("[*]", reqSupply);
-            ENV.script = null;
-            this.refresh();
-		}
+		ENV.test = {};
+		this.refresh();
 	},
 	refresh() {
+		this.refs.envList.value = ENV.current.envId;
+        this.refs.remark.value = ENV.current.remark;
+        this.refs.sequence.value = ENV.current.sequence == null ? "" : ENV.current.sequence;
+        this.refs.login.value = ENV.current.login;
 		this.refs.reqParams.value = ENV.reqParams;
 		this.refs.reqSupply.value = ENV.reqSupply;
 
-		this.refs.script.value = ENV.script != null ? ENV.script : ENV.gatewayMap[ENV.gatewayId].script;
-		this.setState({modify: ENV.script != null});
+        this.refs.gatewayUri.value = ENV.test.uri != null ? ENV.test.uri : ENV.current.uri;
+		this.refs.script.value = ENV.test.script != null ? ENV.test.script : ENV.current.script;
+
+		this.setState({modify: ENV.test.script != null});
 	},
 	render() {
 		return (
 			<div className="container-fluid mt-3 mb-3 form-horizontal">
 				<div className="form-row mb-3">
-					<div className="col-sm-6">
-						<select className="form-control" ref="gatewayList" onChange={this.setGateway}><option value="">请选择</option>{this.state.gatewayList}</select>
+					<div className="col-sm-3">
+						<input className="form-control" ref="gatewayUri"/>
 					</div>
 					<div className="col-sm-3">
-						<input className="form-control" ref="reqSupply" placeholder="URL补充"></input>
+						<input className="form-control" ref="reqSupply" placeholder="URL补充"/>
 					</div>
 					<div className="col-sm-3">
 						<select className="form-control" ref="envList"><option value=""></option>{this.state.envList}</select>
+					</div>
+					<div className="col-sm-3">
+						<select className="form-control" ref="rtnType">
+							<option value="1">返回类型：文本</option>
+							<option value="2">返回类型：HTML</option>
+							<option value="3">返回类型：Action</option>
+						</select>
+					</div>
+				</div>
+				<div className="form-row mb-3">
+					<div className="col-sm-6">
+						<input className="form-control" ref="remark"/>
+					</div>
+					<div className="col-sm-3">
+						<select className="form-control" ref="login">
+							<option value="N">登录：不需要</option>
+							<option value="Y">登录：需要</option>
+						</select>
+					</div>
+					<div className="col-sm-3">
+						<select className="form-control" ref="sequence">
+							<option value="">优先级：最低</option>
+							<option value="1000">优先级：低</option>
+							<option value="5000">优先级：中</option>
+							<option value="10000">优先级：高</option>
+							<option value="20000">优先级：最高</option>
+						</select>
 					</div>
 				</div>
 				<div className="form-row">
@@ -162,17 +188,20 @@ var Main = React.createClass({
 				</div>
 				<div className="form-row mt-3">
 					<div className="col-sm-8">
-						<input type="button" className="btn btn-primary btn-lg mr-3" value="请求 >>>>" onClick={this.test}/>
-						<input type="button" className="btn btn-primary btn-lg" value="重置 >>>>" onClick={this.reset}/>
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="测试 >>>>" onClick={this.test}/>
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="请求 >>>>" onClick={this.request}/>
 					</div>
 					<div className="col-sm-4" style={{textAlign:"right"}}>
-						<input type="button" className="btn btn-primary btn-lg mr-3" value="新建 >>>>" onClick={this.create}/>
-						<input type="button" className="btn btn-primary btn-lg mr-3" value="暂存 >>>>" onClick={this.save}/>
-						<input type="button" className="btn btn-primary btn-lg" value="生效 >>>>" onClick={this.apply}/>
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="刷新" onClick={this.refresh}/>
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="重置" onClick={this.reset}/>
+						<input type="button" className="btn btn-primary btn-lg mr-3" value="暂存" onClick={this.save}/>
+						<input type="button" className="btn btn-danger btn-lg" value="生效" onClick={this.apply}/>
 					</div>
 				</div>
 				<div className="form-row mt-3">
-					<div className="col-sm-12"><pre id="result">{this.state.exception != null ? this.state.exception : JSON.stringify(this.state.result)}</pre></div>
+					<div className="col-sm-12">
+						<textarea id="result" style={{width:"100%", height:"300px"}} value={this.state.exception != null ? this.state.exception : JSON.stringify(this.state.result)}></textarea>
+					</div>
 				</div>
 				<div className="form-row mt-3">
 					<div className="col-sm-12"><pre id="console">{this.state.console}</pre></div>
