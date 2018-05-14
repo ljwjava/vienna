@@ -400,6 +400,7 @@ env.getShareObj = function(shareObj){
 	}else{
         env.shareObj.link = env.newShareUrl;
 	}
+    env.shareObj.productId = env.ware.code;
     return env.shareObj;
 };
 
