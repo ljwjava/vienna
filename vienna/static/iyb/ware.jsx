@@ -311,7 +311,7 @@ var Ware = React.createClass({
         if (isInApp) {
             env.frame = "iyb";
             window.IYB.setTitle(document.title);
-            env.shareApp(shareObj);
+            this.shareApp(shareObj);
         } else {
             window.wxReady(env.getShareObj(shareObj), null);
         }
