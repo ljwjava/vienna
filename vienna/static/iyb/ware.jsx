@@ -52,7 +52,7 @@ var QualificationTest = React.createClass({
     },
     componentDidMount(){
         let cmdurl = getUrl('commodity');
-        common.postOther(cmdurl + "/open/v1/question/checkQuestion/" + common.param("accountId"), null, sr => {
+        common.postOther(cmdurl + "open/v1/question/checkQuestion/" + common.param("accountId"), null, sr => {
             if(sr.code == 0){
                 try{this.setState({isConfirmAnswer: sr.result == true});}catch(e){}
             }else{
@@ -71,7 +71,7 @@ var QualificationTest = React.createClass({
             this.state.callback(this);
         }
         let cmdurl = getUrl('commodity');
-        common.postOther(cmdurl + "/open/v1/question/recordQuestionResult/" + common.param("accountId"), null, sr => {
+        common.postOther(cmdurl + "open/v1/question/recordQuestionResult/" + common.param("accountId"), null, sr => {
             if(sr.code == 0){
                 ToastIt(sr.message);
                 this.setState({isShow: false});
@@ -259,7 +259,7 @@ var Ware = React.createClass({
     componentWillMount(){
         /** GPO 埋点 **/
         if(!common.param("accountId") || !this.props.detail.code) return;
-        let gpourl = getUrl('club');
+        let gpourl = getUrl('gpo');
         try{common.post(gpourl + "stat/action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
 	},
     /** 初始化顶层活动banner  **/
@@ -285,24 +285,31 @@ var Ware = React.createClass({
         this.qualifAndNext(()=>{
             var shareObj = env.getShareObj();
             // iHealthBridge.doAction("share", JSON.stringify(shareObj));
-            JSBridge.share(shareObj, callback);
+            window.JSBridge.share(shareObj, null);
         });
     },
     shareApp(shareObj){
+        let _this = this;
         // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
-        if (window.iHealthBridge) {
-            try{
-                // window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
-                JSBridge.setRightButton({
-                    imageUrl: 'https://cdn.iyb.tm/app/config/img/share_btn.png'
-                }, this.sharePrd);
+        if (window.iHealthBridge && typeof window.JSBridge !== 'undefined') {
+            // window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
+            window.JSBridge.ready(()=>{
+                window.JSBridge.setTitle(document.title);
+                // window.IYB.setTitle(document.title);
+                window.JSBridge.register('regShare', () => {
+                    _this.sharePrd();
+                });
+                window.JSBridge.setRightButton({
+                    imageUrl: 'https://cdn.iyb.tm/app/config/img/share_btn.png',
+                    action: window.JSBridge.getRegMethod('regShare')
+                });
                 env.getShareObj(shareObj);
-            }catch(e){}
+            });
             if(timer) {clearTimeout(timer);}
             return;
         }
-        timer = setTimeout(function(){
-            this.shareApp(shareObj);
+        timer = setTimeout(()=>{
+            _this.shareApp(shareObj);
         }, 200);
     },
     readyShare(shareObj){
@@ -311,11 +318,7 @@ var Ware = React.createClass({
 
         if (isInApp) {
             env.frame = "iyb";
-            JSBridge.ready(()=>{
-                JSBridge.setTitle(document.title);
-                // window.IYB.setTitle(document.title);
-                this.shareApp(shareObj);
-            });
+            this.shareApp(shareObj);
         } else {
             window.wxReady(env.getShareObj(shareObj), null);
         }
@@ -614,13 +617,14 @@ $(document).ready( function() {
 
 	common.req("sale/view.json", {wareId:common.param("wareId"), packIds: common.param("packIds")}, function (r) {
 		env.ware = r;
+        try{
+            document.title = r.name;
+        }catch(e){}
+
 		ReactDOM.render(
 			<Ware detail={r}/>, document.getElementById("content")
 		);
 
-        try{
-            document.title = r.name;
-        }catch(e){}
         // this.readyShare();
 	});
 
