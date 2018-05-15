@@ -51,7 +51,7 @@ var Form = React.createClass({
 			} else if (v.type == "label") {
                 comp = (<div style={{textAlign: "right", paddingRight: "5px"}}>{v.value}</div>);
 			} else if (v.type == "labelvalue") {
-                comp = (<div style={{textAlign: "right", paddingRight: "5px"}}>{v.options[0]}<div style={{display: "none"}}><input ref={v.code} type="text" readOnly="true" value={v.value}/></div></div>);
+                comp = (<div style={{textAlign: "right", paddingRight: "5px"}}><div dangerouslySetInnerHTML={{__html:v.options[0]}}></div><div style={{display: "none"}}><input ref={v.code} type="text" readOnly="true" value={v.value}/></div></div>);
             } else if (v.type == "hidden") {
                 comp = (<div style={{display: "none"}}><input readOnly="true" ref={v.code} value={v.value}/></div>);
             } else {
