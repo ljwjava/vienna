@@ -38,7 +38,70 @@ public class DevelopDao
         jdbc.update(sql, seek, table, column, seek);
     }
 
-    public List<Map> loadGatewayList()
+    public Long saveGateway(Map m)
+    {
+        Long gatewayId = Common.toLong(m.get("gatewayId"));
+        return null;
+    }
+
+    public Long nextGatewayId()
+    {
+        String sql = "select max(id) from t_gateway";
+        return jdbc.queryForObject(sql, Long.class);
+    }
+
+    public Map viewGateway(Long gatewayId)
+    {
+        String sql = "select t.* from t_gateway t where t.id = ?";
+        return jdbc.queryForObject(sql, new RowMapper<Map>()
+        {
+            @Override
+            public Map mapRow(ResultSet rs, int rowNum) throws SQLException
+            {
+                Map map = new HashMap();
+                map.put("id", rs.getLong("id"));
+                map.put("envId", rs.getLong("env_id"));
+                map.put("uri", rs.getString("uri"));
+                map.put("type", Common.intOf(rs.getInt("type"), 0));
+                map.put("login", rs.getString("login"));
+                map.put("remark", rs.getString("remark"));
+                map.put("sequence", rs.getString("seq"));
+                map.put("script", rs.getString("script"));
+
+                return map;
+            }
+        }, gatewayId);
+    }
+
+    public List<Map> listGateway(int from, int number)
+    {
+        String sql = "select t.* from t_gateway t where t.valid is null order by t.uri limit ?, ?";
+        return jdbc.query(sql, new RowMapper<Map>()
+        {
+            @Override
+            public Map mapRow(ResultSet rs, int rowNum) throws SQLException
+            {
+                Map map = new HashMap();
+                map.put("id", rs.getLong("id"));
+                map.put("envId", rs.getLong("env_id"));
+                map.put("uri", rs.getString("uri"));
+                map.put("type", Common.intOf(rs.getInt("type"), 0));
+                map.put("login", rs.getString("login"));
+                map.put("remark", rs.getString("remark"));
+                //map.put("script", rs.getString("script"));
+
+                return map;
+            }
+        }, from, number);
+    }
+
+    public int count()
+    {
+        String sql = "select count(*) from t_gateway where valid is null";
+        return jdbc.queryForObject(sql, Integer.class);
+    }
+
+    public List<Map> queryGateway()
     {
         String sql = "select * from t_gateway where valid is null order by uri";
         return jdbc.query(sql, new RowMapper<Map>()

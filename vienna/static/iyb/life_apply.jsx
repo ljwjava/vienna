@@ -692,13 +692,22 @@ var Ground = React.createClass({
             return;
         }
         if (env.smsKey == null) {
-            //ToastIt("请获取并输入验证码");
-            //return;
+            ToastIt("请获取并输入验证码");
+            return;
         }
         let contact = this.refs.contact.val();
         let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");
         env.applicant.mobile = contact.mobile;
         env.applicant.email = contact.email;
+
+        let factors = this.getPlanFactors();
+        let factors2 = this.refs.plan.val();
+        if (factors2.SOCIAL_ZONE != null && factors2.SOCIAL_ZONE.code != null) {
+            factors.SOCIAL_ZONE = factors2.SOCIAL_ZONE;
+        } else {
+            factors.SOCIAL_ZONE = null;
+        }
+
         let apply = {
             wareId: env.pack.wareId,
             wareCode: env.pack.wareCode,
@@ -711,7 +720,7 @@ var Ground = React.createClass({
             partnerTag: this.props.defVal.partnerTag || common.param("partnerTag"),
             shareType: this.props.defVal.shareType || common.param("shareType"),
             couponCode: this.props.defVal.couponCode || common.param("couponCode"),
-            factors: this.getPlanFactors(),
+            factors: factors,
             applicant: env.applicant,
             insurant: this.state.insurant ? env.insurant : null,
             beneficiaryLiveType: this.state.benefitLiveType,

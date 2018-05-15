@@ -420,5 +420,37 @@ public class GatewayController
 
         return res;
     }
+
+    @RequestMapping("/${gatedir}t/{linkId}")
+    @CrossOrigin
+    public String callLink(HttpServletRequest req, @PathVariable String linkId)
+    {
+        Gateway gateway = gatewaySrv.getGateway("util/t.do");
+        Stack root = gateway.getEnv().getStack();
+
+        Script script = gateway.getScript();
+        Stack stack = new Stack(root);
+        stack.set("linkId", linkId);
+        stack.set("append", req.getQueryString());
+
+        try
+        {
+            return lerrain.tool.formula.Value.stringOf(script, stack);
+        }
+        catch (ScriptRuntimeException e1)
+        {
+            if (gateway.isMonitor())
+                gatewaySrv.onError(e1.getFactors(), e1.toStackString(), req.getRequestURL().toString(), e1);
+
+            throw e1;
+        }
+        catch (Exception e)
+        {
+            if (gateway.isMonitor())
+                gatewaySrv.onError(null, e.getMessage(), req.getRequestURL().toString(), e);
+
+            throw e;
+        }
+    }
 }
 

@@ -1,14 +1,15 @@
 package lerrain.service.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceMgr;
 import lerrain.service.env.EnvDao;
 import lerrain.service.env.EnvService;
 import lerrain.service.env.Environment;
+import lerrain.service.env.KeyValService;
 import lerrain.tool.Common;
-import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 import lerrain.tool.script.Script;
 import lerrain.tool.script.ScriptRuntimeException;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -35,6 +37,9 @@ public class DevelopController
     GatewayService gatewaySrv;
 
     @Autowired
+    KeyValService keyValSrv;
+
+    @Autowired
     DevelopDao developDao;
 
     @Autowired
@@ -44,6 +49,8 @@ public class DevelopController
     ServiceMgr serviceMgr;
 
     Map config = new HashMap();
+
+    Long gatewayId;
 
     @RequestMapping("/admin/address")
     @ResponseBody
@@ -58,6 +65,14 @@ public class DevelopController
     public String reset()
     {
         athensSrv.reset();
+        return "success";
+    }
+
+    @RequestMapping("/admin/onclose")
+    @ResponseBody
+    public String onClose()
+    {
+        keyValSrv.store();
         return "success";
     }
 
@@ -87,19 +102,79 @@ public class DevelopController
         return res;
     }
 
-    @RequestMapping("/develop/list_gateway.json")
+    @RequestMapping("/develop/create_gateway.json")
     @ResponseBody
     @CrossOrigin
-    public JSONObject listGateway(@RequestBody JSONObject req)
+    public JSONObject createGateway(@RequestBody JSONObject req)
     {
+        if (gatewayId == null)
+            gatewayId = developDao.nextGatewayId();
+
+        gatewayId++;
+
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", developDao.loadGatewayList());
+        res.put("content", gatewayId);
 
         return res;
     }
 
-    @RequestMapping("/develop/list_env.json")
+    @RequestMapping("/develop/list_gateway.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject listGateway(@RequestBody JSONObject p)
+    {
+        int from = Common.intOf(p.get("from"), 0);
+        int num = Common.intOf(p.get("num"), 20);
+
+        JSONObject r = new JSONObject();
+        r.put("list", developDao.listGateway(from, num));
+        r.put("total", developDao.count());
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
+    @RequestMapping("/develop/view_gateway.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject viewGateway(@RequestBody JSONObject req)
+    {
+        Long gatewayId = req.getLong("gatewayId");
+
+        Map m;
+        try
+        {
+            m = developDao.viewGateway(gatewayId);
+        }
+        catch (Exception e)
+        {
+            m = null;
+        }
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", m);
+
+        return res;
+    }
+
+    @RequestMapping("/develop/query_gateway.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject queryGateway(@RequestBody JSONObject req)
+    {
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", developDao.queryGateway());
+
+        return res;
+    }
+
+    @RequestMapping("/develop/query_env.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject listEnv()
@@ -109,7 +184,7 @@ public class DevelopController
         Map l = new LinkedHashMap<>();
         for (Environment env : list)
         {
-            l.put(env.getId(), env.getCode());
+            l.put(env.getId(), "" + env.getCode() + " / " + env.getName());
         }
 
         JSONObject res = new JSONObject();
@@ -123,6 +198,18 @@ public class DevelopController
     @ResponseBody
     @CrossOrigin
     public JSONObject listFunction(@RequestBody JSONObject req)
+    {
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", developDao.loadFunctionList(req.getLong("envId")));
+
+        return res;
+    }
+
+    @RequestMapping("/develop/query_function.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject queryFunction(@RequestBody JSONObject req)
     {
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -146,16 +233,56 @@ public class DevelopController
     @RequestMapping("/develop/test.json")
     @ResponseBody
     @CrossOrigin
-    public JSONObject test(@RequestBody JSONObject req)
+    public JSONObject test(HttpServletRequest reqs, @RequestBody JSONObject req)
     {
         Long envId = req.getLong("envId");
         String script = req.getString("script");
 
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", Script.scriptOf(script).run(envSrv.getEnv(envId).getStack()));
+        JSONObject v = req.getJSONObject("param");
+        Stack f = new Stack(envSrv.getEnv(envId).getStack());
+        f.set("self", v);
+        f.set("SESSION", new SessionAdapter(reqs.getSession()));
 
-        return res;
+        PrintStream oldPs = System.out;
+        try (ByteArrayOutputStream sysOs = new ByteArrayOutputStream(); PrintStream sysPs = new PrintStream(sysOs))
+        {
+            System.setOut(sysPs);
+
+            JSONObject res = new JSONObject();
+            res.put("result", "success");
+
+            JSONObject val = new JSONObject();
+
+            try
+            {
+                val.put("result", Script.scriptOf(script).run(f));
+            }
+            catch(Exception e)
+            {
+                try (ByteArrayOutputStream exOs = new ByteArrayOutputStream(); PrintStream exPs = new PrintStream(exOs))
+                {
+                    e.printStackTrace(exPs);
+                    val.put("exception", exOs.toString());
+                }
+                catch (Exception e1)
+                {
+                    Log.error(e1);
+                }
+            }
+
+            val.put("console", sysOs.toString());
+            res.put("content", val);
+
+            return res;
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            System.setOut(oldPs);
+        }
     }
 
     @RequestMapping("/develop/req_testing.json")

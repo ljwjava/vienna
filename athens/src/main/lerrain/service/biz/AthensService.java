@@ -58,8 +58,6 @@ public class AthensService
 		gatewaySrv.reset(envSrv);
 
 		taskSrv.reset(envSrv);
-
-		kvSrv.restore();
 	}
 
 	public void onClose()
