@@ -13,15 +13,21 @@ import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Summary from './summary.jsx';
 import ToastIt from '../common/widget.toast.jsx';
+import BenefitCharts from '../common/widget.charts.benefit.jsx';
 
 class PlanForm extends Form {
 	form() {
 		if (this.props.fields == null)
 			return [];
-		var company = this.props.company;
-		return this.buildForm(this.props.fields.map(function(v) {
-			return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
-		}));
+		let company = this.props.company;
+		let forms = this.props.fields.map(function(v) {
+            return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
+        });
+		if(this.props.summary != null && this.props.summary.chart != null){
+		    forms.push({name:null, code:null, company: company, type:'benefitCharts', refresh:"yes", options:this.props.summary.chart, value:null});
+        }
+
+		return this.buildForm(forms);
 	}
 }
 
@@ -525,7 +531,7 @@ var Ware = React.createClass({
                     }
 					{ this.state.form == null ? null :
 						<div className="form">
-							<PlanForm ref="plan" parent={this} fields={this.state.form} company={this.state.company} onRefresh={this.refreshPremium}/>
+							<PlanForm ref="plan" parent={this} fields={this.state.form} company={this.state.company} summary={this.state.vals == null ? null : this.state.vals.summary} onRefresh={this.refreshPremium}/>
 							<div style={{paddingTop:"10px"}}>{r1}{r2}</div>
 						</div>
 					}
@@ -540,7 +546,7 @@ var Ware = React.createClass({
 				{ this.state.summary == null ? null :
 					<Summary content={this.state.summary} vals={this.state.vals == null ? null : this.state.vals.summary}/>
 				}
-				<div className="console">
+				<div className="console" style={{zIndex: 99999999}}>
 					<div className="tab">
 						<div className="row">
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
