@@ -190,7 +190,7 @@ var BenefitCharts = React.createClass({
 	render() {
         return (<div style={{backgroundColor: '#ffffff'}}>
 					{/*<div className="row">*/}
-						<div className="col line" style={{display: 'grid'}}>
+						<div className="col line" style={{display: '-webkit-box'}}>
 							<div className="tab">
 								<div className="row">
 									<div className="col left" style={{width: "60%"}}>账户价值演示(单位：万元)</div>
