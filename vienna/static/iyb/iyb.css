@@ -231,12 +231,12 @@ input[type="checkbox"]
 	border-radius:4px;
 	display: block;
 	text-align:left;
-	line-height:30px;
+	/*line-height:30px;*/
 	min-width:60px;
-	height:32px;
+	/*height:32px;*/
 	color:#FFF;
 	background-color:#666;
-	padding: 0 12px 0 12px;
+	padding: 6px 12px 6px 12px;
 	margin: 2px 0 2px 5px;
 }
 
@@ -246,12 +246,12 @@ input[type="checkbox"]
 	border-radius:4px;
 	display: block;
 	text-align:left;
-	line-height:30px;
+	/*line-height:30px;*/
 	min-width:60px;
-	height:32px;
+	/*height:32px;*/
 	color:#FFF;
 	background-color:#1AE;
-	padding: 0 12px 0 12px;
+	padding: 6px 12px 6px 12px;
 	margin: 2px 0 2px 5px;
 }
 
@@ -261,12 +261,12 @@ input[type="checkbox"]
 	border-radius:4px;
 	display: block;
 	text-align:left;
-	line-height:30px;
+	/*line-height:30px;*/
 	min-width:60px;
-	height:32px;
+	/*height:32px;*/
 	color:#FFF;
 	background-color:#2a750b;
-	padding: 0 12px 0 12px;
+	padding: 6px 12px 6px 12px;
 	margin: 2px 0 2px 5px;
 }
 
@@ -276,12 +276,12 @@ input[type="checkbox"]
 	border-radius:4px;
 	display: block;
 	text-align:left;
-	line-height:30px;
+	/*line-height:30px;*/
 	min-width:60px;
-	height:32px;
+	/*height:32px;*/
 	color:#FFF;
 	background-color:#750b0b;
-	padding: 0 12px 0 12px;
+	padding: 6px 12px 6px 12px;
 	margin: 2px 0 2px 5px;
 }
 
