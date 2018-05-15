@@ -8,16 +8,18 @@ common.url = function(url) {
 	if (host.startsWith("sv")) {
         host = "api" + host.substr(2);
         server = location.protocol + "//" + host;
-    } else if (host.startsWith("localhost")) {
-        return "https://api-test.iyb.tm/" + url;
+    // } else if (host.startsWith("localhost")) {
+    //     return "https://api-test.iyb.tm/" + url;
 	} else if (host.startsWith("lifeins")) {
         server = location.protocol + "//";
         if (location.pathname.startsWith("/rel/"))
             server += "api.iyb.tm";
         else if (location.pathname.startsWith("/uat/"))
             server += "api-uat.iyb.tm";
-    } else if (host.indexOf("lerrain") >= 0 || host.indexOf("local") >= 0) {
+    } else if (host.indexOf("lerrain") >= 0) {
         return "http://www.lerrain.com:7666/" + url;
+	} else if (host.indexOf("local") >= 0) {
+        return "http://localhost:7666/" + url;
 	} else if (host.indexOf("dingl") >= 0) {
         return "http://dingl.51vip.biz:60004/" + url;
     }
@@ -31,6 +33,14 @@ common.link = function(link) {
 	else if (location.pathname.startsWith("/uat/"))
 		server += "/uat";
 	return server + "/" + link;
+};
+
+common.postOther = function(url, val, callback, failback) {
+    $.ajax({url:url, type:"POST", data:JSON.stringify(val), xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
+        if(callback)callback(r);
+    }, fail: function(r) {
+        if(failback)failback(r.reason);
+    }, dataType:"json"});
 };
 
 common.post = function(url, val, callback, failback) {
