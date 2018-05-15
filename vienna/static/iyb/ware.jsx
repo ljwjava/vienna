@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import Tabs from '../common/widget.tabs.jsx';
 import Form from '../common/widget.form2.jsx';
 import Switcher from '../common/widget.switcher.jsx';
+import Inputer from '../common/widget.inputer.jsx';
 import QuestionBox from '../common/widget.question.jsx';
 import Selecter from '../common/widget.selecter.jsx';
 import DateEditor from '../common/widget.date.jsx';
