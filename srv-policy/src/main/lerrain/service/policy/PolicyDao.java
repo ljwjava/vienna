@@ -1,6 +1,7 @@
 package lerrain.service.policy;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceTools;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,5 +257,22 @@ public class PolicyDao
                 p.getOwner(),
                 p.getId()
         );
+    }
+
+
+    public Long savePolicyExtra(Long id, Long policyId, Integer type, JSONObject detail, double premium)
+    {
+        if (id == null)
+        {
+            id = tools.nextId("policyExtra");
+            jdbc.update("insert into t_policy_extra(id, policy_id, type, detail, premium, create_time,creator,update_time,updater,valid) " +
+                    "value(?, ?, ?, ?, ?,?, ?,?,?,?)", id, policyId, type, detail.toJSONString(), premium,new Date(),"systme",new Date(),"system","N");
+        }
+        else
+        {
+            jdbc.update("update t_policy_extra set type=?, detail=?, premium=? where id=?", type, detail, premium, id);
+        }
+
+        return id;
     }
 }
