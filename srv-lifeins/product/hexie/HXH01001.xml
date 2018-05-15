@@ -18,10 +18,15 @@
 		<data>
 			<item parser="dds" value="HXH01001" />
 		</data>
-
+		<duty>
+			<item name="和谐附加健康宝贝意外伤害保险" code="902300" premium="PREMIUM">AMOUNT</item>
+		</duty>
 		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
 			<insure>
-				<item code="parent"/>
+				<item code="term_1" />
 			</insure>
 		</param>
 

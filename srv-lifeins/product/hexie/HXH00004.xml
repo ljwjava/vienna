@@ -27,12 +27,17 @@
 			</insure>
 		</param>
 
-		<init premium="6000" amount="80000">
+		<init premium="6000" amount="50000">
 			<item name="PRM_APD" value="0"/>
 			<item name="RATE" value="0.053"/>
 			<item name="RM" value="pow(1+RATE,1/12)"/>
 			<item name="RD" value="[RIDER('HXH01001'),RIDER('HXH01002'),RIDER('HXH01003'),RIDER('HXH01004')]"/>
 		</init>
+
+		<duty>
+			<item name="和谐健康宝贝护理保险（万能型）" code="906100" premium="PREMIUM">AMOUNT</item>
+			<item name="和谐健康宝贝护理保险（追加型）" code="906101" premium="PRM_APD">AMOUNT</item>
+		</duty>
 
 		<interest>
 			<item name="FEE" param="A1" value="(A1==0?PREMIUM*0.05:PremiumYear(A1)*0.02)+IT.PLS(A1,1)*0.01"/>
@@ -172,6 +177,16 @@
 			<if condition="AGE == null or AGE > 17 or 28 > DAY" type="customer">
 				被保人年龄要求年龄未满18周岁，且出生满28天。
 			</if>
+
+
+			<if condition = "APPLICANT.AGE lt 18" type="plan">
+				投保人要求18周岁或以上
+			</if>
+
+			<if condition = "PRM_APD >0 and PRM_APD % 1000 !=0 or  (PRM_APD >0 and  PRM_APD lt 1000)">
+				追加保费最低为1000元,且须为1000的整数倍
+			</if>
+
 		</rule>
 	</product>
 </declare>
