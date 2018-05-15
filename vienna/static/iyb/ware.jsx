@@ -147,22 +147,28 @@ var QualificationTest = React.createClass({
     }
 });
 
+var timer;
 var Ware = React.createClass({
-    saveAndNext(func){
+    qualifAndNext(func){
         if(this.refs.qualifQuests != null && this.refs.qualifQuests.state.isConfirmAnswer == false) {
             this.refs.qualifQuests.setState({isShow: true, callback: ()=> {
-                console.log('cb', this.refs.plan.val());
-                common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
                 if(func){
                     func();
                 }
             }});
         } else {
-            common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
             if(func){
                 func();
             }
         }
+    },
+    saveAndNext(func){
+        this.qualifAndNext(()=>{
+            common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
+            if(func){
+                func();
+            }
+        });
     },
     next(){
         if(!!env.docs && (env.docs.underwriting != null || !!env.docs.quests && env.docs.quests.length > 0)){
@@ -274,6 +280,30 @@ var Ware = React.createClass({
         }
 	},
     /** 准备分享数据 **/
+    sharePrd() {
+        this.qualifAndNext(()=>{
+            var shareObj = env.getShareObj();
+            // iHealthBridge.doAction("share", JSON.stringify(shareObj));
+            JSBridge.share(shareObj, callback);
+        });
+    },
+    shareApp(shareObj){
+        // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
+        if (window.iHealthBridge) {
+            try{
+                // window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
+                JSBridge.setRightButton({
+                    imageUrl: 'https://cdn.iyb.tm/app/config/img/share_btn.png'
+                }, this.sharePrd);
+                env.getShareObj(shareObj);
+            }catch(e){}
+            if(timer) {clearTimeout(timer);}
+            return;
+        }
+        timer = setTimeout(function(){
+            this.shareApp(shareObj);
+        }, 200);
+    },
     readyShare(shareObj){
         var UA = window.navigator.userAgent.toLowerCase();
         var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
@@ -555,10 +585,6 @@ env.getShareObj = function(shareObj){
     return env.shareObj;
 };
 
-env.sharePrd = function() {
-    var shareObj = env.getShareObj();
-    iHealthBridge.doAction("share", JSON.stringify(shareObj));
-};
 
 var getUrl = function(key){
     if(!env.url){
@@ -574,23 +600,6 @@ var getUrl = function(key){
         return env.url[key];
     }
 };
-
-var timer;
-env.shareApp = function(shareObj){
-    // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
-    if (window.iHealthBridge) {
-        try{
-            window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
-            env.getShareObj(shareObj);
-        }catch(e){}
-        if(timer) {clearTimeout(timer);}
-        return;
-    }
-    timer = setTimeout(function(){
-        env.shareApp(shareObj);
-	}, 200);
-};
-
 
 $(document).ready( function() {
 	if(common.param("wareId") == 8) {
