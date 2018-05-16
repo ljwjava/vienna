@@ -520,7 +520,7 @@ var Ground = React.createClass({
                     r.push({
                         name: v.label,
                         val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' || v.widget == 'labelvalue' ? v.value : c.val(),
-                        text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (v.widget == 'labelvalue' ? c.text() : (c.text ? c.text() : c.val()))
+                        text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (v.widget == 'labelvalue' ? c.text() : (c.text && !!c.text() ? c.text() : c.val()))
                     });
                 }
             }
