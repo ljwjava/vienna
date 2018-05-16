@@ -56,7 +56,7 @@ var Form = React.createClass({
             } else if (v.type == "hidden") {
                 comp = (<div style={{display: "none"}}><input readOnly="true" ref={v.code} value={v.value}/></div>);
             } else if (v.type == "benefitCharts") {
-				comp = (<BenefitCharts ref={v.code} valCode={v.code} valDetail={v.options} onChange={opt}></BenefitCharts>);
+				comp = (<BenefitCharts ref={v.code} valCode={v.code} valName={v.name} options={v.options} valDetail={v.valCharts} onChange={opt} value={v.value}></BenefitCharts>);
 			} else {
 				return null;
 			}

@@ -4,7 +4,13 @@ import React from 'react';
 
 var BenefitCharts = React.createClass({
 	getInitialState() {
-        return {detail: this.props.valDetail, selfChart: null};
+	    let desc = null;
+	    let options = this.props.options;
+	    if(options != null){
+	        desc = options.length > 0 ? options[0] : null;
+            options = options.length > 1 ? options[1] : null;
+        }
+        return {detail: this.props.valDetail, selfChart: null, value: this.props.value, titleName: this.props.valName, options: options, desc: desc};
     },
 	/** 组件渲染之前 **/
     componentWillMount(){
@@ -171,7 +177,7 @@ var BenefitCharts = React.createClass({
         };
 	},
 	val() {
-		return null;
+		return this.state.value;
 	},
 	text() {
 		return null;
@@ -181,7 +187,6 @@ var BenefitCharts = React.createClass({
 	},
 	change(code) {
     	code = this.refs.chartsGrade.val();
-    	console.log(code);
 		this.state.value = code; //setState是异步方法
 		if (this.props.onChange)
 			this.props.onChange(this, code);
@@ -189,20 +194,20 @@ var BenefitCharts = React.createClass({
 	},
 	render() {
         return (<div style={{backgroundColor: '#ffffff'}}>
-					{/*<div className="row">*/}
-						<div className="col line" style={{display: '-webkit-box'}}>
-							<div className="tab">
-								<div className="row">
-									<div className="col left" style={{width: "60%"}}>账户价值演示(单位：万元)</div>
-									<div className="col right" style={{width: "40%"}}><Selecter ref="chartsGrade" valCode="chartsGrade" onChange={this.change} options={[["0.035","低:保底3.5%"],["0.045","中:4.5%"],["0.053","高:5.3%"]]} value={0.053}/></div>
-								</div>
-							</div>
-						</div>
-					{/*</div>*/}
+                    {
+                        (this.state.options != null && this.state.options.length > 0) ? (
+                            <div className="col line" style={{display: '-webkit-box'}}>
+                                <div className="tab">
+                                    <div className="row">
+                                        <div className="col left" style={{width: "60%"}}>{this.state.titleName}</div>
+                                        <div className="col right" style={{width: "40%"}}><Selecter ref="chartsGrade" valCode="chartsGrade" onChange={this.change} options={this.state.options} value={this.state.value}/></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null
+                    }
 					<div ref="self" style={{width: "100%", height: "200px"}}></div>
-					<div className="benefitChartsDesc">
-						温馨提示：首年追加保费能极大提升本产品账户价值，若您选择4000元计划，并首次追加20万，按现有利率5.3%，从0岁开始投保，您的万能账户价值将比不追加提高70万。追加越多价值越高
-					</div>
+					<div className="benefitChartsDesc">{this.state.desc}</div>
 				</div>);
 	}
 });

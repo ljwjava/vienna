@@ -20,12 +20,18 @@ class PlanForm extends Form {
 		if (this.props.fields == null)
 			return [];
 		let company = this.props.company;
-		let forms = this.props.fields.map(function(v) {
-            return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
+		let summary = this.props.summary;
+		let forms = this.props.fields.map((v) => {
+		    if(v.widget == "benefitCharts") {
+                if(summary != null && summary.chart != null){
+                    return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value, valCharts: summary.chart};
+                }else{
+                    return null;
+                }
+            }else{
+                return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
+            }
         });
-		if(this.props.summary != null && this.props.summary.chart != null){
-		    forms.push({name:null, code:null, company: company, type:'benefitCharts', refresh:"yes", options:this.props.summary.chart, value:null});
-        }
 
 		return this.buildForm(forms);
 	}
