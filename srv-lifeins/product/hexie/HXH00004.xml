@@ -137,9 +137,9 @@
 
 		<attachment>
 			<benefit_chart filter="chart" parser="chart">
-			    <chart from="0" to="INSURE_PERIOD-1" name="I">
-					<line name="累计保费" color="#00AA00">IT.PRMT(I)</line>
-					<line name="账户价值" color="#00AAFF">IT.ACE(I)</line>
+			    <chart from="1" to="INSURE_PERIOD" name="I">
+					<line name="累计保费" color="#00AA00">IT.PRMT(I-1)</line>
+					<line name="账户价值" color="#00AAFF">IT.ACE(I-1)</line>
 					<!--<bar name="部分领取" color="#FF0000">IT.PLS(I,0)</bar>-->
 				</chart>
 			</benefit_chart>
