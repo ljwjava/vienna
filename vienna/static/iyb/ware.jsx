@@ -556,7 +556,7 @@ var Ware = React.createClass({
 						</div>
 					</div>
 				</div>
-                {env.pack != null && env.pack.extra != null ? <QualificationTest ref="qualifQuests" quests={env.pack.extra.qualifQuests}></QualificationTest> : null}
+                {env.pack != null && env.pack.extra != null && env.pack.extra.qualifQuests != null ? <QualificationTest ref="qualifQuests" quests={env.pack.extra.qualifQuests}></QualificationTest> : null}
 			</div>
 		);
 	}
