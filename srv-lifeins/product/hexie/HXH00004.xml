@@ -30,7 +30,7 @@
 		<init premium="6000" amount="50000">
 			<item name="PRM_APD" value="0"/>
 			<item name="RATE" value="0.053"/>
-			<item name="RM" value="pow(1+RATE,1/12)"/>
+			<item name="RM" value="pow(1+val(RATE),1/12)"/>
 			<item name="RD" value="[RIDER('HXH01001'),RIDER('HXH01002'),RIDER('HXH01003'),RIDER('HXH01004')]"/>
 		</init>
 
@@ -40,9 +40,13 @@
 		</duty>
 
 		<interest>
+			<!--初始费用-->
 			<item name="FEE" param="A1" value="(A1==0?PREMIUM*0.05:PremiumYear(A1)*0.02)+IT.PLS(A1,1)*0.01"/>
+			<!--现金价值-->
 			<item name="CSV" param="A1" value="A1>4?IT.ACE(A1):IT.ACE(A1)*(1-(5-A1)*0.01)"/>
+			<!--账户价值-->
 			<item name="ACE" param="A1" value="IT.ACT(A1,11)"/>
+			<!--每年保额-->
 			<item name="AMT" param="A1">
 				var r = IT.PLS(A1,2);
 				if (r > 0)
@@ -51,8 +55,11 @@
 					return AMOUNT;
 				return IT.AMT(A1-1);
 			</item>
+			<!--持续交费奖金-->
 			<item name="BONUS" param="A1" value="A1 == INSURE_PERIOD - 1 ? IT.PRMT(A1) * 0.03 : 0"/>
+			<!--累计保费-->
 			<item name="PRMT" param="A1" value="(A1==0?0:IT.PRMT(A1-1))+PremiumYear(A1)+IT.PLS(A1,1)"/>
+			<!--追加保费-->
 			<item name="PLS" param="A1,A2">
 				var APP = ((A1==0 and A2==1) ? PRM_APD : 0);
 				if (SIM != null) {
@@ -74,6 +81,7 @@
 				}
 				return APP;
 			</item>
+			<!--账户价值 保单年度, 月份-->
 			<item name="ACT" param="A1,A2">
 				var r;
 				if (A2 == 0) {
@@ -91,6 +99,7 @@
 				//print(A1 + " : " + A2 + " = " + r);
 				return r > 0 ? r : 0;
 			</item>
+			<!--风险保费-->
 			<item name="PRMY" param="A1">
 				var x = 0;
 				for (var i=0;12>i;i++)
@@ -103,10 +112,11 @@
 				var A3=(A2==0?A1-1:A1);
 				var A4=(A2==0?11:A2-1);
 				var amt = IT.AMT(A1);
-				var amt1 = age>=18?amt:min((age>=10?500000:200000),amt);
-				var amt2 = age>=18?max(amt,0.6*IT.ACT(A3,A4)):amt;
-				var p = DS.RATE[age][0]*amt1/UNIT+DS.RATE[age][1]*amt2/UNIT;
-				//print(age + " = " + amt1 + ", " + amt2 + ", " + p);
+				<!--print(age + " = " + RATE + " " + A1 + " " + A2 + " " + A3 + " " + A4 + " " + amt + " " + UNIT + " " + DS.RATE[age][0] + " " + DS.RATE[age][1]);-->
+				var amt1 = age >= 18 ? amt : min((age >= 10 ? 500000 : 200000), amt);
+				var amt2 = age >= 18 ? max(amt, 0.6 * IT.ACT(A3, A4)) : amt;
+				var p = DS.RATE[age][0] * amt1 / UNIT + DS.RATE[age][1] * amt2 / UNIT;
+				//print(age + " = " + amt1 + ", " + amt2) + ", " + p;
 				for (var x : RD) {
 					if (x != null) {
 						var prm = x.IT.PRM_ACT(age);
@@ -130,7 +140,7 @@
 			    <chart from="0" to="INSURE_PERIOD-1" name="I">
 					<line name="累计保费" color="#00AA00">IT.PRMT(I)</line>
 					<line name="账户价值" color="#00AAFF">IT.ACE(I)</line>
-					<bar name="部分领取" color="#FF0000">IT.PLS(I,0)</bar>
+					<!--<bar name="部分领取" color="#FF0000">IT.PLS(I,0)</bar>-->
 				</chart>
 			</benefit_chart>
 
