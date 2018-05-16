@@ -3,6 +3,7 @@ package lerrain.service.order;
 import com.alibaba.fastjson.JSON;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -104,18 +105,21 @@ public class OrderDaoJdbc
 
 	public Order load(String code, String ownerCompany)
 	{
-		Order order = jdbc.queryForObject("select * from t_order where code = ? and owner_company = ?", new Object[]{code, ownerCompany}, new RowMapper<Order>()
-		{
-			@Override
-			public Order mapRow(ResultSet rs, int rowNum) throws SQLException
+		try{
+			Order order = jdbc.queryForObject("select * from t_order where code = ? and owner_company = ?", new Object[]{code, ownerCompany}, new RowMapper<Order>()
 			{
-				return orderOf(rs);
-			}
+				@Override
+				public Order mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					return orderOf(rs);
+				}
+			});
 
-		});
-
-		order.setChildren(jdbc.queryForList("select id from t_order where parent_id = ?", new Object[]{order.getId()}, Long.class));
-		return order;
+			order.setChildren(jdbc.queryForList("select id from t_order where parent_id = ?", new Object[]{order.getId()}, Long.class));
+			return order;
+		}catch(EmptyResultDataAccessException emptyExc){
+			return null;
+		}
 	}
 
 	public int count(int type, Long platformId, Integer productType, Long owner)
