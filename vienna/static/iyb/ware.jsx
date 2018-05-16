@@ -80,7 +80,7 @@ var QualificationTest = React.createClass({
         common.req("util/routing.json" , {service: 'commodity', srvPath: 'open/v1/question/recordQuestionResult/' + common.param("accountId"), params: null}, sr => {
             if(sr.code == 0){
                 ToastIt(sr.message);
-                this.setState({isShow: false});
+                this.setState({isShow: false, isConfirmAnswer: true});
             }else{
                 console.log('succ',sr);
                 ToastIt(sr.message);
