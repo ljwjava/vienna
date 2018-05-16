@@ -759,3 +759,15 @@ input[type="checkbox"]
 {
 	color: #2BF;
 }
+
+.benefitChartsDesc {
+	width: 100%;
+	background-color: #00aff9;
+	background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+	background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+	border-radius: 10px;
+	color: #fff;
+	padding: 10px 12px;
+	-webkit-box-shadow: 0 0 5px #00aff9;
+	box-shadow: 0 0 5px #00aff9;
+}

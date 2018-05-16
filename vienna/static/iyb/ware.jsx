@@ -13,7 +13,6 @@ import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Summary from './summary.jsx';
 import ToastIt from '../common/widget.toast.jsx';
-import Inputer from '../common/widget.inputer.jsx';
 
 class PlanForm extends Form {
 	form() {
