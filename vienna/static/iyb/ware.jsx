@@ -59,8 +59,7 @@ var QualificationTest = React.createClass({
         return res;
     },
     componentDidMount(){
-        let cmdurl = getUrl('commodity');
-        common.postOther(cmdurl + "open/v1/question/checkQuestion/" + common.param("accountId"), null, sr => {
+        common.req("util/routing.json" , {service: 'commodity', srvPath: 'open/v1/question/checkQuestion/' + common.param("accountId"), params: null}, sr => {
             if(sr.code == 0){
                 try{this.setState({isConfirmAnswer: sr.result == true});}catch(e){}
             }else{
@@ -78,8 +77,7 @@ var QualificationTest = React.createClass({
         if(this.state.callback && !this.state.isConfirmAnswer) {
             this.state.callback(this);
         }
-        let cmdurl = getUrl('commodity');
-        common.postOther(cmdurl + "open/v1/question/recordQuestionResult/" + common.param("accountId"), null, sr => {
+        common.req("util/routing.json" , {service: 'commodity', srvPath: 'open/v1/question/recordQuestionResult/' + common.param("accountId"), params: null}, sr => {
             if(sr.code == 0){
                 ToastIt(sr.message);
                 this.setState({isShow: false});
@@ -118,7 +116,7 @@ var QualificationTest = React.createClass({
     },
     render(){
         if (!this.state.isConfirmAnswer && !!this.state.quests && this.state.quests.length > 0) {
-            return (<div style={{animationDuration: "300ms", display: this.state.isShow ? "" : "none", position: "fixed", zIndex: 2, top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#fff", textAlign: "left"}}>
+            return (<div style={{animationDuration: "300ms", display: this.state.isShow ? "" : "none", position: "fixed", zIndex: 10000002, top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#fff", textAlign: "left"}}>
 				<div className="common">
 					<div className="title">销售资格考试</div>
 					<div className="text" style={{padding:"5px 10px 95px 10px", overflowY: "scroll", height: "100%"}}>
@@ -475,7 +473,7 @@ var Ware = React.createClass({
 				}
 			}
 			return (
-				<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
+				<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto", zIndex: 10000002}}>
 					<div style={{display: "none"}}></div>
 					<div className="title">健康及财务告知（{questTitle}）</div>
 					<div className="text" style={{overflow:"auto"}}>
@@ -519,7 +517,7 @@ var Ware = React.createClass({
 
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
-				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none"}}></div>
+				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none", zIndex: 10000001}}></div>
 				<div ref="top_banner" style={{marginTop: this.state.bannerTop || 0}}>
 					<div style={{position: "relative"}}>
 						<img src={env.banner} style={{width:"100%", height:"auto"}}/>
@@ -548,7 +546,7 @@ var Ware = React.createClass({
 				{ this.state.summary == null ? null :
 					<Summary content={this.state.summary} vals={this.state.vals == null ? null : this.state.vals.summary}/>
 				}
-                <div className="console" style={{zIndex: 99999999}}>
+                <div className="console" style={{zIndex: 10000000}}>
 					<div className="tab">
 						<div className="row">
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
