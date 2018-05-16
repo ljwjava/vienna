@@ -23,11 +23,7 @@ class PlanForm extends Form {
 		let summary = this.props.summary;
 		let forms = this.props.fields.map((v) => {
 		    if(v.widget == "benefitCharts") {
-                if(summary != null && summary.chart != null){
-                    return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value, valCharts: summary.chart};
-                }else{
-                    return null;
-                }
+                return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value, valCharts: summary != null ? summary.chart : null};
             }else{
                 return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
             }
