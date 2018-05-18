@@ -306,7 +306,8 @@ var Ware = React.createClass({
                     _this.sharePrd();
                 });
                 window.JSBridge.setRightButton({
-                    imageUrl: 'https://cdn.iyb.tm/app/config/img/share_btn.png',
+                    // imageUrl: 'https://cdn.iyb.tm/app/config/img/share_btn.png',
+                    title: '分享',
                     action: window.JSBridge.getRegMethod('regShare')
                 });
                 env.getShareObj(shareObj);
