@@ -9,7 +9,7 @@ import java.util.Map;
 public class FeeDefine
 {
     Long id;
-    Long platformId;
+    Long schemeId;
     Long productId;
 
     Map factors;
@@ -25,16 +25,6 @@ public class FeeDefine
 
     String memo;
 
-    public Long getPlatformId()
-    {
-        return platformId;
-    }
-
-    public void setPlatformId(Long platformId)
-    {
-        this.platformId = platformId;
-    }
-
     public Long getProductId()
     {
         return productId;
@@ -43,6 +33,16 @@ public class FeeDefine
     public void setProductId(Long productId)
     {
         this.productId = productId;
+    }
+
+    public Long getSchemeId()
+    {
+        return schemeId;
+    }
+
+    public void setSchemeId(Long schemeId)
+    {
+        this.schemeId = schemeId;
     }
 
     public Map getFactors()

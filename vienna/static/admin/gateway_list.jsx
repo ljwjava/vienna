@@ -70,16 +70,9 @@ var Main = React.createClass({
 			login: this.refs.login.value,
 			sequence: this.refs.sequence.value
 		}
-
-		if (req.envId == null || req.envId == "") {
-            alert("请选择执行环境");
-        } else if (req.uri == null || req.uri == "") {
-			alert("请输入链接地址");
-        } else {
-            common.req("develop/save_gateway.json", {}, r => {
-            	document.location.href = "gateway.web?gatewayId=" + r;
-            });
-		}
+		common.req("develop/create_gateway.json", req, r => {
+			document.location.href = "gateway.web?gatewayId=" + r;
+		});
     },
     render() {
         return (

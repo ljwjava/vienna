@@ -20,10 +20,9 @@ public class DevelopDao
 {
     @Autowired JdbcTemplate jdbc;
 
-    public void apply(Long gatewayId, String script)
+    public void save(Long gatewayId, Long envId, String uri, int type, String forwardTo, String script, boolean login, String with, Integer seq, String remark)
     {
-        backup("t_gateway", "script", gatewayId);
-        jdbc.update("update t_gateway set script = ? where id = ?", script, gatewayId);
+        jdbc.update("replace into t_gateway (id, env_id, uri, `type`, support_get, support_post, forward, forward_to, script, login, `with`, seq, remark) values(?, ?, ?, ?, 'Y', 'Y', ?, ?, ?, ?, ?, ?, ?)", gatewayId, envId, uri, type, forwardTo == null ? 0 : 1, forwardTo, script, login ? "Y" : "N", with, seq, remark);
     }
 
     public void apply(Long functionId, String name, String params, String script)

@@ -79,7 +79,7 @@ var Main = React.createClass({
         this.forceUpdate();
     },
     showFee(v) {
-        common.req("product/query_rate.json", {productId: v.id, platformId: 2}, r => {
+        common.req("product/query_rate.json", {productId: v.id}, r => {
             r.map(v => {
                 if (v.factors.pay == null)
                     v.factors.pay = "ALL";
@@ -90,7 +90,7 @@ var Main = React.createClass({
         });
     },
     saveFeeRate() {
-        common.req("product/save_rate.json", {productId: this.state.productId, platformId: 2, detail: this.state.feeRate}, r => {
+        common.req("product/save_rate.json", {productId: this.state.productId, detail: this.state.feeRate}, r => {
             console.log(r);
         });
     },
