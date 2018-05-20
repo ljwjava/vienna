@@ -110,12 +110,12 @@ public class FeeController
     @ResponseBody
     public JSONObject listFeeDef(@RequestBody JSONObject c)
     {
-        Long platformId = c.getLong("platformId");
+        Long schemeId = c.getLong("schemeId");
         Long productId = c.getLong("productId");
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", cs.listFeeDefine(platformId, productId));
+        res.put("content", cs.listFeeDefine(schemeId, productId));
 
         return res;
     }
@@ -126,7 +126,7 @@ public class FeeController
     {
         Log.info(c);
 
-        Long platformId = c.getLong("platformId");
+        Long schemeId = c.getLong("schemeId");
         Long productId = c.getLong("productId");
 
         List<FeeDefine> list = new ArrayList<>();
@@ -136,11 +136,11 @@ public class FeeController
         {
             FeeDefine fd = detail.getObject(i, FeeDefine.class);
             fd.setProductId(productId);
-            fd.setPlatformId(platformId);
+            fd.setSchemeId(schemeId);
             list.add(fd);
         }
 
-        cs.saveFeeDefine(platformId, productId, list);
+        cs.saveFeeDefine(schemeId, productId, list);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -195,9 +195,10 @@ public class FeeController
     @ResponseBody
     public JSONObject fee(@RequestBody JSONObject c)
     {
-        Long platformId = c.getLong("platformId");
+//        Long platformId = c.getLong("platformId");
         Long productId = c.getLong("productId");
         //Long vendorId = c.getLong("vendorId");
+        Long schemeId = c.getLong("schemeId");
 
         Map factors = c.getJSONObject("factors");
 
@@ -207,7 +208,7 @@ public class FeeController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", cs.getFeeDefine(platformId, productId, factors, time));
+        res.put("content", cs.getFeeDefine(schemeId, productId, factors, time));
 
         return res;
     }

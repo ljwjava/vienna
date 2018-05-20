@@ -6,9 +6,10 @@ import ReactDOM from 'react-dom';
 var ENV = {
     current: {},
 	test: {},
-    reqParams: "",
-    reqSupply: "",
-    envMap: {}
+    envMap: {},
+	t: t => {
+    	return t == null ? "" : t;
+    }
 };
 
 var Main = React.createClass({
@@ -19,7 +20,7 @@ var Main = React.createClass({
 		common.req("develop/view_gateway.json", {gatewayId: common.param("gatewayId")}, r => {
 			ENV.current = r;
             common.req("develop/req_testing.json", {key: "gateway/" + common.param("gatewayId")}, r => {
-                ENV.test = r == null ? {} : r;
+                ENV.test = r;
                 this.refresh();
             });
 		});
@@ -49,52 +50,54 @@ var Main = React.createClass({
 
     },
 	save() {
-		let url = this.getUrl();
-		if (url != null) {
-			let s = this.refs.script.value.replace(/[\r]/g, "");
-			if (s == ENV.current.script.replace(/[\r]/g, ""))
-				s = null;
-			common.req("develop/save.json", {
-                key: "gateway/" + ENV.current.id,
-                value: {
-                    script: s,
-					uri: this.refs.gatewayUri.value,
-                    param: this.refs.reqParams.value
-                }
-            }, r => {
-                alert("success");
-            });
-        }
+		let s = this.refs.script.value.replace(/[\r]/g, "");
+		if (s == ENV.current.script.replace(/[\r]/g, ""))
+			s = null;
+		common.req("develop/save.json", {
+			key: "gateway/" + ENV.current.id,
+			value: {
+                gatewayId: ENV.current.id,
+                envId: this.refs.envList.value,
+                type: this.refs.rtnType.value,
+                forward: this.refs.forward.value,
+                with: this.refs.with.value,
+                remark: this.refs.remark.value,
+                sequence: this.refs.sequence.value,
+				script: s,
+				uri: this.refs.gatewayUri.value,
+				param: this.refs.reqParams.value
+			}
+		}, r => {
+			alert("success");
+		});
 	},
 	apply() {
 		var req = null;
 		if (ENV.current != null) {
 			req = {
-				type: 1,
 				gatewayId: ENV.current.id,
+				envId: this.refs.envList.value,
+				type: this.refs.rtnType.value,
+				forward: this.refs.forward.value,
+                with: this.refs.with.value,
+                remark: this.refs.remark.value,
+                login: this.refs.login.value,
                 uri: this.refs.gatewayUri.value,
+                sequence: this.refs.sequence.value,
 				script: this.refs.script.value
 			};
 			ENV.current.script = req.script;
 		}
-		if (req != null) common.req("develop/apply.json", req, r => {
-			alert("success");
-		});
-	},
-	request() {
-        var url = this.getUrl();
-        if (url != null) {
-            var jsonStr = this.refs.reqParams.value;
-            var req = jsonStr == null || jsonStr == "" ? {} : JSON.parse(jsonStr);
-            common.req("test/" + url, req, r => {
-                this.setState({
-                    result: r.result,
-                    exception: r.exception,
-                    console: r.console
-                });
+		if (req != null) {
+			common.req("develop/apply.json", req, r => {
+                common.req("develop/save.json", {
+                    key: "gateway/" + ENV.current.id,
+                    value: null
+                }, r => {});
+                alert("success");
             });
         }
-    },
+	},
 	test() {
 		var rpm = this.refs.reqParams.value;
 		var req = {
@@ -110,32 +113,23 @@ var Main = React.createClass({
             });
         });
 	},
-	getUrl() {
-		if (ENV.current == null) return null;
-		var reqUrl = ENV.current.uri;
-		var reqSupply = this.refs.reqSupply.value;
-		if (reqSupply != null && reqSupply != "")
-			reqUrl = reqUrl.replace("[*]", reqSupply);
-		if (reqUrl.indexOf("*") >= 0)
-			return null;
-		return reqUrl;
-	},
 	reset() {
-		ENV.test = {};
+		ENV.test = null;
 		this.refresh();
 	},
 	refresh() {
-		this.refs.envList.value = ENV.current.envId;
-        this.refs.remark.value = ENV.current.remark;
-        this.refs.sequence.value = ENV.current.sequence == null ? "" : ENV.current.sequence;
-        this.refs.login.value = ENV.current.login;
-		this.refs.reqParams.value = ENV.reqParams;
-		this.refs.reqSupply.value = ENV.reqSupply;
+		let vals = ENV.test ? ENV.test : ENV.current;
 
-        this.refs.gatewayUri.value = ENV.test.uri != null ? ENV.test.uri : ENV.current.uri;
-		this.refs.script.value = ENV.test.script != null ? ENV.test.script : ENV.current.script;
+        this.refs.envList.value = ENV.t(vals.envId);
+        this.refs.remark.value = ENV.t(vals.remark);
+        this.refs.sequence.value = ENV.t(vals.sequence);
+        this.refs.login.value = ENV.t(vals.login);
+        this.refs.reqParams.value = ENV.t(vals.param);
 
-		this.setState({modify: ENV.test.script != null});
+        this.refs.gatewayUri.value = ENV.t(vals.uri);
+        this.refs.script.value = ENV.t(vals.script);
+
+		this.setState({modify: ENV.test != null});
 	},
 	render() {
 		return (
@@ -145,7 +139,7 @@ var Main = React.createClass({
 						<input className="form-control" ref="gatewayUri"/>
 					</div>
 					<div className="col-sm-3">
-						<input className="form-control" ref="reqSupply" placeholder="URL补充"/>
+						<input className="form-control" ref="with" placeholder="参数补充"/>
 					</div>
 					<div className="col-sm-3">
 						<select className="form-control" ref="envList"><option value=""></option>{this.state.envList}</select>
@@ -159,8 +153,11 @@ var Main = React.createClass({
 					</div>
 				</div>
 				<div className="form-row mb-3">
-					<div className="col-sm-6">
+					<div className="col-sm-3">
 						<input className="form-control" ref="remark"/>
+					</div>
+					<div className="col-sm-3">
+						<input className="form-control" ref="forward" placeholder="转发至"/>
 					</div>
 					<div className="col-sm-3">
 						<select className="form-control" ref="login">
@@ -189,7 +186,6 @@ var Main = React.createClass({
 				<div className="form-row mt-3">
 					<div className="col-sm-8">
 						<input type="button" className="btn btn-primary btn-lg mr-3" value="测试 >>>>" onClick={this.test}/>
-						<input type="button" className="btn btn-primary btn-lg mr-3" value="请求 >>>>" onClick={this.request}/>
 					</div>
 					<div className="col-sm-4" style={{textAlign:"right"}}>
 						<input type="button" className="btn btn-primary btn-lg mr-3" value="刷新" onClick={this.refresh}/>

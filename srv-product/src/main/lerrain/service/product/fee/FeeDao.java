@@ -47,9 +47,9 @@ public class FeeDao
 		return new Object[] {Common.doubleOf(str, 0)};
 	}
 
-	public List<FeeDefine> listFeeRate(Long platformId, Long productId)
+	public List<FeeDefine> listFeeRate(Long schemeId, Long productId)
 	{
-		String sql = "select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ? order by begin, end, pay, insure";
+		String sql = "select * from t_product_fee_define where valid is null and product_id = ? and scheme_id = ? order by begin, end, pay, insure";
 
 		return jdbc.query(sql, new RowMapper<FeeDefine>()
 		{
@@ -59,13 +59,13 @@ public class FeeDao
 				return feeRateOf(rs, false);
 			}
 
-		}, productId, platformId);
+		}, productId, schemeId);
 	}
 
-	public void saveFeeRate(Long platformId, Long productId, List<FeeDefine> list)
+	public void saveFeeRate(Long schemeId, Long productId, List<FeeDefine> list)
 	{
-		String insert = "insert into t_product_fee_define(platform_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		String update = "replace into t_product_fee_define(id, platform_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String insert = "insert into t_product_fee_define(scheme_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String update = "replace into t_product_fee_define(id, scheme_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		for (FeeDefine fd : list)
 		{
@@ -84,9 +84,9 @@ public class FeeDao
 			{
 				Map map = fd.getFactors();
 				if (fd == null)
-					jdbc.update(insert, platformId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
+					jdbc.update(insert, schemeId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
 				else
-					jdbc.update(update, fd.getId(), platformId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
+					jdbc.update(update, fd.getId(), schemeId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
 			}
 			else if (fd.getId() != null)
 			{
@@ -95,10 +95,10 @@ public class FeeDao
 		}
 	}
 
-	public List<FeeDefine> listFeeRate(Long platformId, Long productId, Map rs)
+	public List<FeeDefine> listFeeRate(Long schemeId, Long productId, Map rs)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("select * from t_product_fee_define where valid is null and product_id = ? and platform_id = ?");
+		sql.append("select * from t_product_fee_define where valid is null and product_id = ? and scheme_id = ?");
 
 		String pay = Common.trimStringOf(rs.get("pay"));
 		String insure = Common.trimStringOf(rs.get("insure"));
@@ -114,12 +114,12 @@ public class FeeDao
 				return feeRateOf(rs, true);
 			}
 
-		}, productId, platformId);
+		}, productId, schemeId);
 	}
 
 	private FeeDefine feeRateOf(ResultSet rs, boolean tran) throws SQLException
 	{
-		Long platformId = rs.getLong("platform_id");
+		Long schemeId = rs.getLong("scheme_id");
 		Long productId = rs.getLong("product_id");
 
 		String pay = rs.getString("pay");
@@ -133,7 +133,7 @@ public class FeeDao
 
 		FeeDefine pc = new FeeDefine();
 		pc.id = rs.getLong("id");
-		pc.platformId = platformId;
+		pc.schemeId = schemeId;
 		pc.productId = productId;
 		pc.begin = begin;
 		pc.end = end;

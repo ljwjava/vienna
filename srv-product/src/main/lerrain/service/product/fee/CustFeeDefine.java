@@ -1,22 +1,21 @@
 package lerrain.service.product.fee;
 
+import lerrain.tool.Common;
+
 import java.util.Date;
 import java.util.Map;
 
 /**
  * Created by lerrain on 2017/9/9.
  */
-public class FeeDefine
+public class CustFeeDefine
 {
-    Long id;
     Long schemeId;
     Long productId;
 
-    Map factors;
+    Map<String, Object> factors;
 
-    Object saleFee;
-    Object saleBonus;
-    Object upperBonus;
+    Object rate;
 
     Date begin, end;
 
@@ -24,16 +23,6 @@ public class FeeDefine
     int unit;
 
     String memo;
-
-    public Long getProductId()
-    {
-        return productId;
-    }
-
-    public void setProductId(Long productId)
-    {
-        this.productId = productId;
-    }
 
     public Long getSchemeId()
     {
@@ -45,14 +34,34 @@ public class FeeDefine
         this.schemeId = schemeId;
     }
 
-    public Map getFactors()
+    public Long getProductId()
+    {
+        return productId;
+    }
+
+    public void setProductId(Long productId)
+    {
+        this.productId = productId;
+    }
+
+    public Map<String, Object> getFactors()
     {
         return factors;
     }
 
-    public void setFactors(Map factors)
+    public void setFactors(Map<String, Object> factors)
     {
         this.factors = factors;
+    }
+
+    public Object getRate()
+    {
+        return rate;
+    }
+
+    public void setRate(Object rate)
+    {
+        this.rate = rate;
     }
 
     public Date getBegin()
@@ -105,53 +114,35 @@ public class FeeDefine
         this.memo = memo;
     }
 
-    public Object getSaleFee()
-    {
-        return saleFee;
-    }
-
-    public void setSaleFee(Object saleFee)
-    {
-        this.saleFee = saleFee;
-    }
-
-    public Object getSaleBonus()
-    {
-        return saleBonus;
-    }
-
-    public void setSaleBonus(Object saleBonus)
-    {
-        this.saleBonus = saleBonus;
-    }
-
-    public Object getUpperBonus()
-    {
-        return upperBonus;
-    }
-
-    public void setUpperBonus(Object upperBonus)
-    {
-        this.upperBonus = upperBonus;
-    }
-
-    public Long getId()
-    {
-        return id;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public boolean match(Date now)
+    public boolean match(Date now, Map<String, Object> factors)
     {
         if (begin != null && begin.after(now))
             return false;
 
         if (end != null && end.before(now))
             return false;
+
+        for (Map.Entry<String, Object> e : this.factors.entrySet())
+        {
+            Object v1 = e.getValue();
+            Object v2 = factors.get(e.getKey());
+
+            if (v1 == null)
+                continue;
+            if (v2 == null)
+                return false;
+
+            if (v1 instanceof Number)
+            {
+                if (Common.doubleOf(v1, -1) != Common.doubleOf(v2, -2))
+                    return false;
+            }
+            else
+            {
+                if (!v1.toString().equals(v2.toString()))
+                    return false;
+            }
+        }
 
         return true;
     }

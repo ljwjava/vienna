@@ -50,6 +50,8 @@ public class DevelopController
 
     Map config = new HashMap();
 
+    Map<Long, JSONObject> temp = new HashMap();
+
     Long gatewayId;
 
     @RequestMapping("/admin/address")
@@ -112,6 +114,13 @@ public class DevelopController
 
         gatewayId++;
 
+        JSONObject m = new JSONObject();
+        if (req != null)
+            m.putAll(req);
+        m.put("id", gatewayId);
+
+        temp.put(gatewayId, m);
+
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", gatewayId);
@@ -152,7 +161,7 @@ public class DevelopController
         }
         catch (Exception e)
         {
-            m = null;
+            m = temp.get(gatewayId);
         }
 
         JSONObject res = new JSONObject();
@@ -320,30 +329,74 @@ public class DevelopController
     @CrossOrigin
     public JSONObject apply(@RequestBody JSONObject req)
     {
-        int type = req.getIntValue("type");
-        String script = req.getString("script");
-
-        if (type == 1)
+        try
         {
             Long gatewayId = req.getLong("gatewayId");
-            developDao.apply(gatewayId, script);
-
-            Gateway p = gatewaySrv.getGateway(gatewayId);
-            p.setScript(Script.scriptOf(script));
-        }
-        else if (type == 2)
-        {
-            Long functionId = req.getLong("functionId");
-            String name = req.getString("name");
-            String params = req.getString("params");
-
-            developDao.apply(functionId, name, params, script);
-
             Long envId = req.getLong("envId");
-            Environment p = envSrv.getEnv(envId);
-            Function f = new EnvDao.InnerFunction(null, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
-            p.putVar(name, f);
+            int type = req.getIntValue("type");
 
+            String forwardTo = Common.trimStringOf(req.getString("forward"));
+            String script = req.getString("script");
+            String with = Common.trimStringOf(req.getString("with"));
+            String remark = Common.trimStringOf(req.getString("remark"));
+            String seq = req.getString("sequence");
+
+            String uri = Common.trimStringOf(req.getString("uri"));
+
+            boolean login = Common.boolOf(req.getString("login"), true);
+
+            if (Common.isEmpty(forwardTo))
+                forwardTo = null;
+            if (Common.isEmpty(with))
+                with = null;
+
+            if (gatewayId == null || envId == null)
+                throw new RuntimeException("gatewayId or envId is null");
+
+            developDao.save(gatewayId, envId, uri, type, forwardTo, script, login, with, Common.isEmpty(seq) ? null : Common.intOf(seq, 10000), remark);
+            athensSrv.reset();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();;
+            throw e;
+        }
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/develop/apply_function.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject applyFunction(@RequestBody JSONObject req)
+    {
+        try
+        {
+            int type = req.getIntValue("type");
+            String script = req.getString("script");
+
+            if (type == 2)
+            {
+                Long functionId = req.getLong("functionId");
+                String name = req.getString("name");
+                String params = req.getString("params");
+
+                developDao.apply(functionId, name, params, script);
+
+                Long envId = req.getLong("envId");
+                Environment p = envSrv.getEnv(envId);
+                Function f = new EnvDao.InnerFunction(null, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
+                p.putVar(name, f);
+
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();;
+            throw e;
         }
 
         JSONObject res = new JSONObject();

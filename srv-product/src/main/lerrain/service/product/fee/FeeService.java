@@ -22,21 +22,21 @@ public class FeeService
 	@Autowired
 	IybPushMsg iyPush;
 
-	public List<FeeDefine> listFeeDefine(Long platformId, Long productId)
+	public List<FeeDefine> listFeeDefine(Long schemeId, Long productId)
 	{
-		return feeDao.listFeeRate(platformId, productId);
+		return feeDao.listFeeRate(schemeId, productId);
 	}
 
-	public void saveFeeDefine(Long platformId, Long productId, List<FeeDefine> list)
+	public void saveFeeDefine(Long schemeId, Long productId, List<FeeDefine> list)
 	{
-		feeDao.saveFeeRate(platformId, productId, list);
+		feeDao.saveFeeRate(schemeId, productId, list);
 	}
 
-	public List<FeeDefine> getFeeDefine(Long platformId, Long productId, Map factors, Date time)
+	public List<FeeDefine> getFeeDefine(Long schemeId, Long productId, Map factors, Date time)
 	{
 		List<FeeDefine> r = new ArrayList<>();
 
-		List<FeeDefine> list = feeDao.listFeeRate(platformId, productId, factors);
+		List<FeeDefine> list = feeDao.listFeeRate(schemeId, productId, factors);
 		for (FeeDefine fd : list)
 		{
 			if (fd.match(time))
