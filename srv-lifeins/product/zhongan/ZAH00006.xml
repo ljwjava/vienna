@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="ZAH00005" corporation_id="zhongan" code="AD34" name="尊享e生·医疗险（2017版）" name_abbr="尊享e生2017" unit="3000000" input="quantity" premium="R * QUANTITY"
+			 type="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2018-04-28">
+
+		<param>
+			<pay>
+				<item code="term_1" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+		</param>
+
+		<input>
+			<item name="SOCIAL_INS" label="社保" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+			<item name="SHARE_DEDUCTIBLE" label="共享免赔" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+			<item name="PROTON_HEAVY_ION" label="质子重离子治疗(100%赔付)" widget="select" type="boolean">[['Y', '有'],['N', '无']]</item>
+		</input>
+
+		<init>
+			<item name="SOCIAL_INS" value="true" type="boolean"/>
+			<!--计划一-->
+			<item name="RS1">return [[756,1576],[336,666],[136,286],[166,326],[226,466],[286,616],[376,856],[466,1206],[556,1666],[866,2616],[1066,3506],[1426,4386],[1906,5696],[2816,8136],[3566,10296],[4326,12766]];</item>
+			<!--计划二+免赔额豁免-->
+			<item name="RS2">return [[866,1816],[386,766],[156,326],[196,376],[256,536],[326,706],[436,986],[536,1386],[636,1916],[996,3006],[1226,4036],[1636,5046],[2196,6556],[3236,9356],[4106,11846],[4976,14686]];</item>
+			<item name="R">
+				var btwn = function(mi, ma, v){
+					if(v lt mi or v > ma)
+						return false;
+
+					return true;
+				};
+				var a = -1;
+				if(btwn(0, 4, AGE)) {
+					a = 0;
+				} else if(btwn(5, 10, AGE)) {
+					a = 1;
+				} else {
+					a = ceil(AGE / 5) - 1;
+				}
+				if(!btwn(0, 15, a)) {
+					return null;
+				}
+
+				var rs = (SHARE_DEDUCTIBLE == 'Y' ? RS2 : RS1);
+				return rs[a][SOCIAL_INS ? 0 : 1];
+			</item>
+		</init>
+
+		<rule>
+			<if condition="DAY lt 30 or AGE > 60">
+				被保险人年龄要求出生满30天~60周岁。
+			</if>
+		</rule>
+
+	</product>
+</declare>
