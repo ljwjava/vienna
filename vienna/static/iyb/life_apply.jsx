@@ -234,7 +234,7 @@ class ContactForm extends Form {
         try{
             env.slider = new ClickIdentifyControl({
                 container: "#sliderBox", //必填 容器id
-                sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID
+                sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID pre-prd
                 host: "https://af.zhongan.io", //https://test-af.zhongan.io  或者 https://af.zhongan.io
                 placeholdLabel: "智能检测中",  // 可选， loading时显示内容 可以根据业务场景更改内容
                 onSuccess: (did, token, sId) => {
@@ -356,21 +356,23 @@ class PlanForm extends Form {
         let form = this.props.fields.map(v => {
             if (v.var == "EFFECTIVE_DAYS" || v.var == "EFFECTIVE_DATE" || v.var == "EFFECTIVE_STR")
                 effDays = true;
-            if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0)) {
-                return {
-                    name: v.label,
-                    code: v.name,
-                    type: v.widget,
-                    refresh: "yes",
-                    options: v.detail,
-                    value: v.value,
-                    onChange: v.name != "A_EXEMPT" && v.name != "EXEMPT" ? null : (comp, code) => {
-                        if (code == "Y") {
-                            this.props.parent.popQuest();
+            if(v.widget != 'benefitCharts') {
+                if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0)) {
+                    return {
+                        name: v.label,
+                        code: v.name,
+                        type: v.widget,
+                        refresh: "yes",
+                        options: v.detail,
+                        value: v.value,
+                        onChange: v.name != "A_EXEMPT" && v.name != "EXEMPT" ? null : (comp, code) => {
+                            if (code == "Y") {
+                                this.props.parent.popQuest();
+                            }
+                            this.onRefresh(comp);
                         }
-                        this.onRefresh(comp);
-                    }
-                };
+                    };
+                }
             }
         });
         if (!effDays)
@@ -512,13 +514,15 @@ var Ground = React.createClass({
         let self = this.refs.plan;
         let r = [];
         self.props.fields.map(v => {
-            if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0 && v.var != "EFFECTIVE_DATE")) {
-                let c = self.refs[v.name];
-                r.push({
-                    name: v.label,
-                    val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : c.val(),
-                    text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (c.text ? c.text() : c.val())
-                });
+            if(v.widget != 'benefitCharts') {
+                if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0 && v.var != "EFFECTIVE_DATE")) {
+                    let c = self.refs[v.name];
+                    r.push({
+                        name: v.label,
+                        val: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' || v.widget == 'labelvalue' ? v.value : c.val(),
+                        text: v.widget == 'static' || v.widget == 'hidden' || v.widget == 'label' ? v.value : (v.widget == 'labelvalue' ? c.text() : (c.text && !!c.text() ? c.text() : c.val()))
+                    });
+                }
             }
         });
         return r;

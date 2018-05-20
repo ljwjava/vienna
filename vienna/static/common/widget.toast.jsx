@@ -24,7 +24,7 @@ var ToastIt = function (text, timeout, options) {
         toast.style[prop] = options[prop];
     }
     //别被挡住了
-    toast.style['z-index'] = 9999999;
+    toast.style['z-index'] = 99999999;
     toast.onclick = function(){
         document.body.removeChild(this);
     };

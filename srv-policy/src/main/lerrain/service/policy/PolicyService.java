@@ -1,5 +1,6 @@
 package lerrain.service.policy;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +41,9 @@ public class PolicyService
     public void updatePolicy(Policy policy)
     {
         policyDao.updatePolicy(policy);
+    }
+
+    public Long savePolicyExtra(Long id, Long policyId, Integer type, JSONObject detail, double premium){
+        return policyDao.savePolicyExtra( id, policyId,  type,  detail,  premium);
     }
 }

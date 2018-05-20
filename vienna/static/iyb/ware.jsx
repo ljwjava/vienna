@@ -5,31 +5,185 @@ import ReactDOM from 'react-dom';
 import Tabs from '../common/widget.tabs.jsx';
 import Form from '../common/widget.form2.jsx';
 import Switcher from '../common/widget.switcher.jsx';
+import Inputer from '../common/widget.inputer.jsx';
+import QuestionBox from '../common/widget.question.jsx';
 import Selecter from '../common/widget.selecter.jsx';
 import DateEditor from '../common/widget.date.jsx';
 import OccupationPicker from '../common/widget.occupationPicker.jsx';
 import CityPicker from '../common/widget.cityPicker.jsx';
 import Summary from './summary.jsx';
 import ToastIt from '../common/widget.toast.jsx';
+import BenefitCharts from '../common/widget.charts.benefit.jsx';
 
 class PlanForm extends Form {
-	form() {
-		if (this.props.fields == null)
-			return [];
-		var company = this.props.company;
-		return this.buildForm(this.props.fields.map(function(v) {
-			return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
-		}));
-	}
+    form() {
+        if (this.props.fields == null)
+            return [];
+        let company = this.props.company;
+        let summary = this.props.summary;
+        let forms = this.props.fields.map((v) => {
+            if(v.widget == "benefitCharts") {
+                return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value, valCharts: summary != null ? summary.chart : null};
+            }else{
+                return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
+            }
+        });
+
+        return this.buildForm(forms);
+    }
 }
 
+/** 销售资格考试 **/
+var QualificationTest = React.createClass({
+    getInitialState(){
+        let quests = this.props.quests;
+        return {isShow: false, quests: quests, callback: this.props.cb, isConfirmAnswer: true};
+    },
+    val() {
+        let res = [];
+        if(this.refs != null) {
+            for(var qq in this.refs) {
+                if(this.refs[qq].props != null && this.refs[qq].props.addtData != null) {
+                    let ddd = this.refs[qq].props.addtData;
+                    ddd.value = this.refs[qq].val();
+                    ddd.qKey = qq;
+                    res.push(ddd);
+                } else {
+                    res.push({
+                        qKey: qq,
+                        value: this.refs[qq].val()
+                    });
+                }
+            }
+        }
+        return res;
+    },
+    componentDidMount(){
+        common.req("util/routing.json" , {service: 'commodity', srvPath: 'open/v1/question/checkQuestion/' + common.param("accountId"), params: null}, sr => {
+            if(sr.code == 0){
+                try{this.setState({isConfirmAnswer: sr.result == true});}catch(e){}
+            }else{
+                console.log('succ',sr);
+            }
+        }, er => {
+            console.log('err', er);
+        });
+    },
+    confirmAnswer(){
+        if(this.isCorrect() == false) {
+            ToastIt("请正确回答所有试题");
+            return false;
+        }
+        if(this.state.callback && !this.state.isConfirmAnswer) {
+            this.state.callback(this);
+        }
+        common.req("util/routing.json" , {service: 'commodity', srvPath: 'open/v1/question/recordQuestionResult/' + common.param("accountId"), params: null}, sr => {
+            if(sr.code == 0){
+                ToastIt(sr.message);
+                this.setState({isShow: false, isConfirmAnswer: true});
+            }else{
+                console.log('succ',sr);
+                ToastIt(sr.message);
+            }
+        }, er => {
+            console.log('err', er);
+            ToastIt("提交失败，请稍后重试");
+        });
+    },
+    close(){
+        this.setState({isShow: false});
+    },
+    isCorrect(){
+        let hasRes = false;
+        let res = null;
+        if(this.refs != null) {
+            for(var qq in this.refs) {
+                if(this.refs[qq].props != null) {
+                    let ic = this.refs[qq].isCorrect();
+                    if(ic != null && ic == false){
+                        res = false;
+                    }
+                    if(ic != null){
+                        hasRes = true;
+                    }
+                }
+            }
+            if(hasRes && res == null){
+                res = true;
+            }
+        }
+        return res;
+    },
+    render(){
+        if (!this.state.isConfirmAnswer && !!this.state.quests && this.state.quests.length > 0) {
+            return (<div style={{animationDuration: "300ms", display: this.state.isShow ? "" : "none", position: "fixed", zIndex: 10000002, top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#fff", textAlign: "left"}}>
+				<div className="common">
+					<div className="title">销售资格考试</div>
+					<div className="text" style={{padding:"5px 10px 95px 10px", overflowY: "scroll", height: "100%"}}>
+                        {this.state.quests.map(v => {
+                            let content = v.content;
+                            if(v.type == "html") {
+                                return <div className="html" dangerouslySetInnerHTML={{__html:content}}></div>;
+                            } else if (v.type == "quest"){
+                                let qIdx = content.seqIdx;
+                                let qCode = content.code;
+                                let qType = content.type;
+                                let qIsReq = content.isReq;
+                                let addtData = {
+                                    seqIdx: qIdx,
+                                    code: qCode,
+                                    type: qType,
+                                    isReq: qIsReq
+                                };
+
+                                return <QuestionBox ref={qCode} code={content.code} options={content.options} answer={content.answer} autoAlert={content.autoAlert} isReq={content.isReq} type={content.type} title={content.title} seqIdx={content.seqIdx} addtData={addtData}/>;
+                            }
+                        })}
+					</div>
+					<div className="console">
+						<div className="tab">
+							<div className="row">
+								<div className="col right" onClick={this.confirmAnswer.bind(this)}>完成并提交</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>);
+        }
+        return <div></div>;
+    }
+});
+
+var timer;
 var Ware = React.createClass({
-	saveAndNext(func){
-        common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
-        if(func){
-            func();
-		}
-	},
+    qualifAndNext(func){
+        if(this.refs.qualifQuests != null && this.refs.qualifQuests.state.isConfirmAnswer == false) {
+            this.refs.qualifQuests.setState({isShow: true, callback: ()=> {
+                if(func){
+                    func();
+                }
+            }});
+        } else {
+            if(func){
+                func();
+            }
+        }
+    },
+    saveAndNext(func){
+        this.qualifAndNext(()=>{
+            common.save("iyb/temp", JSON.stringify(this.refs.plan.val()));
+            if(func){
+                func();
+            }
+        });
+    },
+    next(){
+        if(!!env.docs && (env.docs.underwriting != null || !!env.docs.quests && env.docs.quests.length > 0)){
+            this.saveAndNext(this.openQuest);
+        } else {
+            this.saveAndNext(this.apply);
+        }
+    },
 	openQuest() {
         if (env.pack.uwUrl) {
             let factors = this.refs.plan.val();
@@ -111,12 +265,8 @@ var Ware = React.createClass({
     componentWillMount(){
         /** GPO 埋点 **/
         if(!common.param("accountId") || !this.props.detail.code) return;
-		common.reqSync("util/env_conf.json", {}, r => {
-            if(!!r && !!r.url) {
-                env.url = r.url;
-			}
-		}, r => {});
-        try{common.post(env.url.gpo + "stat/action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
+        let gpourl = getUrl('gpo');
+        try{common.post(gpourl + "stat/action.json", {action:'PRODUCT/ESTIMATE', plus:{productId: this.props.detail.code}, accountId: common.param("accountId"), url:document.location.href}, function(r){}, function(r){});}catch(e){}
 	},
     /** 初始化顶层活动banner  **/
     initTopActivityBanner(accountId, productId, productCode){
@@ -136,9 +286,54 @@ var Ware = React.createClass({
             console.log(e);
         }
 	},
+    /** 准备分享数据 **/
+    sharePrd() {
+        this.qualifAndNext(()=>{
+            var shareObj = env.getShareObj();
+            // iHealthBridge.doAction("share", JSON.stringify(shareObj));
+            window.JSBridge.share(shareObj, null);
+        });
+    },
+    shareApp(shareObj){
+        let _this = this;
+        // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
+        if (window.iHealthBridge && typeof window.JSBridge !== 'undefined') {
+            // window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
+            window.JSBridge.ready(()=>{
+                window.JSBridge.setTitle(document.title);
+                // window.IYB.setTitle(document.title);
+                window.JSBridge.register('regShare', () => {
+                    _this.sharePrd();
+                });
+                window.JSBridge.setRightButton({
+                    // imageUrl: 'https://cdn.iyb.tm/app/config/img/share_btn.png',
+                    title: '分享',
+                    action: window.JSBridge.getRegMethod('regShare')
+                });
+                env.getShareObj(shareObj);
+            });
+            if(timer) {clearTimeout(timer);}
+            return;
+        }
+        timer = setTimeout(()=>{
+            _this.shareApp(shareObj);
+        }, 200);
+    },
+    readyShare(shareObj){
+        var UA = window.navigator.userAgent.toLowerCase();
+        var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
+
+        if (isInApp) {
+            env.frame = "iyb";
+            this.shareApp(shareObj);
+        } else {
+            window.wxReady(env.getShareObj(shareObj), null);
+        }
+    },
     componentDidMount() {
 		this.changePlan(0);
 		this.initTopActivityBanner(common.param("accountId"), this.props.detail.code, null);
+        try{this.readyShare();}catch(e){}
     },
 	changePlan(i) {
         let v = this.props.detail;
@@ -194,7 +389,7 @@ var Ware = React.createClass({
                             link: env.shareObj.link
                         };
                     }
-                    readyShare(env.shareObj);
+                    this.readyShare(env.shareObj);
 				}
 				if(s.extra.banner != null) {
 					env.banner = s.extra.banner;
@@ -251,6 +446,11 @@ var Ware = React.createClass({
     openKF() {
 		document.location.href = env.kefuUrl;
 	},
+    /* 销售资质问卷答案 */
+    /*onConfirmQualifQests(){
+        // QualificationTest
+        // this.refs.qualifQuests.confirmAnswer();
+    },*/
    	render() {
 		if (this.state.quest && !!env.docs && !!env.docs.quests && env.docs.quests.length > 0) {
 			var exempt = env.factors.EXEMPT;	// 轻症豁免
@@ -274,7 +474,7 @@ var Ware = React.createClass({
 				}
 			}
 			return (
-				<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
+				<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto", zIndex: 10000002}}>
 					<div style={{display: "none"}}></div>
 					<div className="title">健康及财务告知（{questTitle}）</div>
 					<div className="text" style={{overflow:"auto"}}>
@@ -315,9 +515,10 @@ var Ware = React.createClass({
 		let v = this.props.detail;
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
+
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
-				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none"}}></div>
+				<div className="top-activity-banner" ref="top_activity_banner" style={{display: this.state.isShowActBanner ? "block" : "none", zIndex: 10000001}}></div>
 				<div ref="top_banner" style={{marginTop: this.state.bannerTop || 0}}>
 					<div style={{position: "relative"}}>
 						<img src={env.banner} style={{width:"100%", height:"auto"}}/>
@@ -331,7 +532,7 @@ var Ware = React.createClass({
                     }
 					{ this.state.form == null ? null :
 						<div className="form">
-							<PlanForm ref="plan" parent={this} fields={this.state.form} company={this.state.company} onRefresh={this.refreshPremium}/>
+                            <PlanForm ref="plan" parent={this} fields={this.state.form} company={this.state.company} summary={this.state.vals == null ? null : this.state.vals.summary} onRefresh={this.refreshPremium}/>
 							<div style={{paddingTop:"10px"}}>{r1}{r2}</div>
 						</div>
 					}
@@ -346,16 +547,17 @@ var Ware = React.createClass({
 				{ this.state.summary == null ? null :
 					<Summary content={this.state.summary} vals={this.state.vals == null ? null : this.state.vals.summary}/>
 				}
-				<div className="console">
+                <div className="console" style={{zIndex: 10000000}}>
 					<div className="tab">
 						<div className="row">
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
                             {env.frame == "iyb" && !!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
 							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
-							<div className="col right" onClick={!!env.docs && (env.docs.underwriting != null || !!env.docs.quests && env.docs.quests.length > 0) ? this.saveAndNext.bind(this, this.openQuest) : this.saveAndNext.bind(this, this.apply)}>去投保</div>
+							<div className="col right" onClick={this.next.bind(this)}>去投保</div>
 						</div>
 					</div>
 				</div>
+                {env.pack != null && env.pack.extra != null && env.pack.extra.qualifQuests != null ? <QualificationTest ref="qualifQuests" quests={env.pack.extra.qualifQuests}></QualificationTest> : null}
 			</div>
 		);
 	}
@@ -375,16 +577,9 @@ env.getShareObj = function(shareObj){
 		env.shareObj = shareObj;
 	}
 
-    if(!env.url){
-        common.reqSync("util/env_conf.json", {}, r => {
-            if(!!r && !!r.url) {
-                env.url = r.url;
-            }
-        }, r => {});
-	}
-
-	if(!!env.url && !!env.url.club && !env.newShareUrl){
-        $.ajax({url:env.url.club + "open/v2/reception/link/newShareLink", type:"POST", data:JSON.stringify({originalLink: env.shareObj.link, pageCode: 'cp', pageId: env.ware.code, pageTitle: env.shareObj.title, accountId: common.param("accountId"), pageIcon: env.shareObj.imgUrl}), async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8',
+	var cluburl = getUrl('club');
+	if(!!cluburl && !env.newShareUrl){
+        $.ajax({url:cluburl + "open/v2/reception/link/newShareLink", type:"POST", data:JSON.stringify({originalLink: env.shareObj.link, pageCode: 'cp', pageId: env.ware.code, pageTitle: env.shareObj.title, accountId: common.param("accountId"), pageIcon: env.shareObj.imgUrl}), async: false, xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8',
 			success: (r)=> {
             if (r.isSuccess+"" == "true") {
                 if(!!r.result.shareLink){
@@ -404,37 +599,19 @@ env.getShareObj = function(shareObj){
     return env.shareObj;
 };
 
-env.sharePrd = function() {
-    var shareObj = env.getShareObj();
-    iHealthBridge.doAction("share", JSON.stringify(shareObj));
-};
 
-var timer;
-env.shareApp = function(shareObj){
-    // window.iHealthBridge.doAction("setRightButton", JSON.stringify({title: "分享", action: "javascript:env.sharePrd();", color: "#ffffff", font: "17"}));
-    if (window.iHealthBridge) {
-        try{
-            window.IYB.setRightButton(JSON.stringify([{img: 'https://cdn.iyb.tm/app/config/img/share_btn.png', func: 'javascript:env.sharePrd();'}]));
-            env.getShareObj(shareObj);
-        }catch(e){}
-        if(timer) {clearTimeout(timer);}
-        return;
+var getUrl = function(key){
+    if(!env.url){
+        common.reqSync("util/env_conf.json", {}, r => {
+            if(!!r && !!r.url) {
+                env.url = r.url;
+            }
+        }, r => {});
     }
-    timer = setTimeout(function(){
-        env.shareApp(shareObj);
-	}, 200);
-};
-
-var readyShare = function(shareObj){
-    var UA = window.navigator.userAgent.toLowerCase();
-    var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
-
-    if (isInApp) {
-        env.frame = "iyb";
-        window.IYB.setTitle(document.title);
-        env.shareApp(shareObj);
-    } else {
-        window.wxReady(env.getShareObj(shareObj), null);
+    if(key == null || key == ""){
+        return env.url;
+    }else{
+        return env.url[key];
     }
 };
 
@@ -447,14 +624,15 @@ $(document).ready( function() {
 
 	common.req("sale/view.json", {wareId:common.param("wareId"), packIds: common.param("packIds")}, function (r) {
 		env.ware = r;
+        try{
+            document.title = r.name;
+        }catch(e){}
+
 		ReactDOM.render(
 			<Ware detail={r}/>, document.getElementById("content")
 		);
 
-        try{
-            document.title = r.name;
-        }catch(e){}
-        readyShare();
+        // this.readyShare();
 	});
 
 });

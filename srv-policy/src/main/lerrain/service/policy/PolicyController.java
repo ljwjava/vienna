@@ -192,4 +192,24 @@ public class PolicyController
 
         return policy;
     }
+
+    @RequestMapping("/savePolicyExtra.json")
+    @ResponseBody
+    public JSONObject savePolicyExtra(@RequestBody JSONObject p)
+    {
+        Log.info(p);
+
+        Long policyExtraId = p.getLong("id");
+        Long policyId = p.getLong("policyId");
+        JSONObject detail = p.getJSONObject("detail");
+        double premium = p.getDoubleValue("premium")                ;
+        int type = p.getIntValue("type");
+        policyId = policySrv.savePolicyExtra(policyExtraId,policyId,type,detail,premium);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", policyId);
+
+        return res;
+    }
 }

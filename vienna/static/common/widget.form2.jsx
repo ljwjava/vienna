@@ -9,6 +9,7 @@ import DateEditor from './widget.date.jsx';
 import Inputer from './widget.inputer.jsx';
 import OccupationPicker from './widget.occupationPicker.jsx';
 import CityPicker from './widget.cityPicker.jsx';
+import BenefitCharts from '../common/widget.charts.benefit.jsx';
 
 
 var Form = React.createClass({
@@ -50,12 +51,16 @@ var Form = React.createClass({
                 comp = (<input ref={v.code} type="text" readOnly="true" value={v.value}/>);
 			} else if (v.type == "label") {
                 comp = (<div style={{textAlign: "right", paddingRight: "5px"}}>{v.value}</div>);
+			} else if (v.type == "labelvalue") {
+                comp = (<div style={{textAlign: "right", paddingRight: "5px"}}><div dangerouslySetInnerHTML={{__html:v.options[0]}}></div><div style={{display: "none"}}><Inputer ref={v.code} valType="text" readOnly="true" value={v.value} text={v.options[0]}/></div></div>);
             } else if (v.type == "hidden") {
                 comp = (<div style={{display: "none"}}><input readOnly="true" ref={v.code} value={v.value}/></div>);
-            } else {
+            } else if (v.type == "benefitCharts") {
+				comp = (<BenefitCharts ref={v.code} valCode={v.code} valName={v.name} options={v.options} valDetail={v.valCharts} onChange={opt} value={v.value}></BenefitCharts>);
+			} else {
 				return null;
 			}
-			return [v.name, comp, v.code, v.type != "hidden"];
+			return [v.name, comp, v.code, v.type];
 		});
 	},
 	verifyAll() {
@@ -96,20 +101,25 @@ var Form = React.createClass({
 		let r = this.form().map(v => {
 			if (v == null) return null;
 			let txt = this.state.alert[v[2]];
-			let canShow = v.length < 4 || v[3] ? "" : "none";
+			let canShow = (v.length < 4 || v[3] != "hidden") ? "" : "none";
+			let isNoName = (v.length >= 4 && v[3] == "benefitCharts") ? true : false;
 			return (
 				<div className="row" key={v[2]} style={{display: canShow}}>
-					<div className="col line">
-						<div className="tab">
-							<div className="row">
-								<div className="col left">{v[0]}</div>
-								<div className="col right">{v[1]}</div>
+					{
+						isNoName ? (<div className="col line">{v[1]}</div>) : (
+							<div className="col line">
+								<div className="tab">
+									<div className="row">
+										<div className="col left">{v[0]}</div>
+										<div className="col right">{v[1]}</div>
+									</div>
+								</div>
+								{ txt == null || txt == "" ? null :
+									<div className="error">{txt}</div>
+								}
 							</div>
-						</div>
-						{ txt == null || txt == "" ? null :
-							<div className="error">{txt}</div>
-						}
-					</div>
+						)
+					}
 				</div>
 			);
 		});
