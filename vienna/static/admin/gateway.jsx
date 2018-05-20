@@ -6,7 +6,10 @@ import ReactDOM from 'react-dom';
 var ENV = {
     current: {},
 	test: {},
-    envMap: {}
+    envMap: {},
+	t: t => {
+    	return t == null ? "" : t;
+    }
 };
 
 var Main = React.createClass({
@@ -117,14 +120,14 @@ var Main = React.createClass({
 	refresh() {
 		let vals = ENV.test ? ENV.test : ENV.current;
 
-        this.refs.envList.value = vals.envId;
-        this.refs.remark.value = vals.remark;
-        this.refs.sequence.value = vals.sequence == null ? "" : vals.sequence;
-        this.refs.login.value = vals.login;
-        this.refs.reqParams.value = vals.param;
+        this.refs.envList.value = ENV.t(vals.envId);
+        this.refs.remark.value = ENV.t(vals.remark);
+        this.refs.sequence.value = ENV.t(vals.sequence);
+        this.refs.login.value = ENV.t(vals.login);
+        this.refs.reqParams.value = ENV.t(vals.param);
 
-        this.refs.gatewayUri.value = vals.uri;
-        this.refs.script.value = vals.script;
+        this.refs.gatewayUri.value = ENV.t(vals.uri);
+        this.refs.script.value = ENV.t(vals.script);
 
 		this.setState({modify: ENV.test != null});
 	},
