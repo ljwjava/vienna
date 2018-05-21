@@ -473,6 +473,8 @@ public class LifeinsUtil
 			return Common.intOf(value, 0);
 		else if ("string".equals(type))
 			return value == null ? null : value.toString();
+		else if ("array".equals(type))
+			return value == null ? null : JSONArray.parse(value.toString());
 		else if ("date".equals(type))
 		{
 			if ("today".equals(value))
