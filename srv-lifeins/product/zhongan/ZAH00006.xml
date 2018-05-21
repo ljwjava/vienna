@@ -22,14 +22,16 @@
 		</input>
 
 		<init>
-			<item name="SHARE_DEDUCTIBLE" value="var a = try(INSURANT.ADDIT_SERVICE, null); if(a == null) {return GXMP;} else if(str_index(a, 'GXMP') >= 0){return true;} else {return false;}"/>
-			<item name="PROTON_HEAVY_ION" value="var a = try(INSURANT.ADDIT_SERVICE, null); if(a == null) {return ZZZLZ;} else if(str_index(a, 'ZZZLZ') >= 0){return true;} else {return false;}"/>
+			<item name="SHARE_DEDUCTIBLE" value="var a = try(INSURANT.ADDIT_SERVICE, null); if(a == null) {return (GXMP == null ? false : GXMP);} else if(find(INSURANT.ADDIT_SERVICE, 'GXMP') != null){return true;} else {return false;}"/>
+			<item name="PROTON_HEAVY_ION" value="var a = try(INSURANT.ADDIT_SERVICE, null); if(a == null) {return (ZZZLZ == null ? false : ZZZLZ);} else if(find(INSURANT.ADDIT_SERVICE, 'ZZZLZ') != null){return true;} else {return false;}"/>
 			<item name="SOCIAL_INS" value="true" type="boolean"/>
 			<!--计划一 AA31-->
 			<item name="RS1">return [[756,1576],[336,666],[136,286],[166,326],[226,466],[286,616],[376,856],[466,1206],[556,1666],[866,2616],[1066,3506],[1426,4386],[1906,5696],[2816,8136],[3566,10296],[4326,12766]];</item>
 			<!--计划二+免赔额豁免 AA32-->
 			<item name="RS2">return [[866,1816],[386,766],[156,326],[196,376],[256,536],[326,706],[436,986],[536,1386],[636,1916],[996,3006],[1226,4036],[1636,5046],[2196,6556],[3236,9356],[4106,11846],[4976,14686]];</item>
 			<item name="R">
+				<!--print('insure===>' + size(INSURANT.ADDIT_SERVICE));-->
+				<!--print('insure===>' + find(INSURANT.ADDIT_SERVICE, 'GXMP'));-->
 				<!--print('insure===>' + INSURANT.ADDIT_SERVICE);-->
 				<!--print('insure===>' + SHARE_DEDUCTIBLE);-->
 				<!--print('insure===>' + PROTON_HEAVY_ION);-->
