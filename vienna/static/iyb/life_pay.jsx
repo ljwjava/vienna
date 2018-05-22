@@ -351,7 +351,7 @@ var Ground = React.createClass({
 				{ env.order.detail.insurant == null ? null :
 					<div className="view">
 						<div><span>被保险人</span></div>
-						<div><span>　姓名</span>{env.order.detail.insurant.name}[{env.dict.relation[env.order.detail.insurant.relation]}]</div>
+						<div><span>　姓名</span>{env.order.detail.insurant.name}{env.dict.relation[env.order.detail.insurant.relation] != null ? "["+env.dict.relation[env.order.detail.insurant.relation]+"]" : ""}</div>
 						<div><span>　证件</span>{env.order.detail.insurant.certName} {env.order.detail.insurant.certNo}</div>
                         { env.order.detail.insurant.certValidateBegin == null ? null : <div><span>　证件有效起期</span> {env.order.detail.insurant.certValidateBegin}</div>}
                         { env.order.detail.insurant.certValidate == null ? null : <div><span>　证件有效止期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>}
