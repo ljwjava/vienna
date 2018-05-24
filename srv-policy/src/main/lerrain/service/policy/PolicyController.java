@@ -62,7 +62,7 @@ public class PolicyController
     @ResponseBody
     public JSONObject find(@RequestBody JSONObject p)
     {
-        String policyNo = p.getString("policyNo");
+            String policyNo = p.getString("policyNo");
         Long vendorId = p.getLong("vendorId");
 
         JSONObject res = new JSONObject();
@@ -209,6 +209,34 @@ public class PolicyController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", policyId);
+
+        return res;
+    }
+
+    @RequestMapping("/savePolicyRecord.json")
+    @ResponseBody
+    public JSONObject savePolicyRecord(@RequestBody JSONObject p)
+    {
+        Log.info(p);
+
+        Long id = p.getLong("id");
+        JSONObject detail = p.getJSONObject("detail");
+        double premium = p.getDoubleValue("premium")                ;
+        int type = p.getIntValue("type");
+        int status = p.getIntValue("status");
+
+        String packageName = p.getString("packageName");
+        String partnerName = p.getString("partnerName");
+
+        String msg = p.getString("msg");
+        String policyNo = p.getString("policyNo");
+
+
+        id = policySrv.savePolicyRecord(id, policyNo, packageName, status,  partnerName,  type,  detail,  msg, premium);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", id);
 
         return res;
     }

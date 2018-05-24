@@ -46,4 +46,10 @@ public class PolicyService
     public Long savePolicyExtra(Long id, Long policyId, Integer type, JSONObject detail, double premium){
         return policyDao.savePolicyExtra( id, policyId,  type,  detail,  premium);
     }
+
+
+    public Long savePolicyRecord(Long id,String policyNo,String packageName,Integer status, String partnerName, Integer type, JSONObject detail, String msg,double premium){
+        return policyDao.savePolicyRecord( id, policyNo, packageName, status,  partnerName,  type,  detail,  msg, premium);
+    }
+
 }

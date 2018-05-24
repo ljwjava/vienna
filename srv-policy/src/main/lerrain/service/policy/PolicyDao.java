@@ -275,4 +275,21 @@ public class PolicyDao
 
         return id;
     }
+
+
+    public Long savePolicyRecord(Long id,String policyNo,String packageName,Integer status, String partnerName, Integer type, JSONObject detail, String msg,double premium)
+    {
+        if (id == null)
+        {
+            id = tools.nextId("PolicyRecord");
+            jdbc.update("insert into t_policy_record(id, policy_no,package_name, partner_name,type,msg,status, detail, premium, create_time,creator,update_time,updater,valid) " +
+                    "value(?, ?, ?, ?, ?,?, ?,?,?,?, ?,?,?,?)", id, policyNo,packageName,partnerName,type,msg,status,detail.toJSONString(), premium,new Date(),"systme",new Date(),"system","N");
+        }
+        else
+        {
+            jdbc.update("update t_policy_record set status=?, detail=?, msg=? where id=?", status, detail, msg, id);
+        }
+
+        return id;
+    }
 }
