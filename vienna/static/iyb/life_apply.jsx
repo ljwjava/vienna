@@ -51,6 +51,7 @@ env.def = {
         certValidate: true,
         relation: [["4","父母"],["2","配偶"],["3","子女"]],
     },
+    studentOccuValue: null,
     certTypeId: "1",    // 身份证
     familyCertTypeId: "888",    // 户口本
     birthCertTypeId: "999", // 出生证
@@ -528,6 +529,7 @@ var Ground = React.createClass({
         return r;
     },
     refreshPremium() {
+        try{this.resetDefInsureOccupation();}catch(e){}
         let factors = this.getPlanFactors();
         if (factors["BIRTHDAY"] == null || factors["BIRTHDAY"] == "") {
             this.setState({premium: -1, rules: null});
@@ -542,6 +544,19 @@ var Ground = React.createClass({
                 env.photo = r.photo;
                 this.setState({premium:r.total, rules:r.rules, alert:r.alert, form:form});
             });
+        }
+    },
+    // 设置默认学生职业
+    resetDefInsureOccupation(){
+        if(env.formOpt.studentOccuValue != null && env.formOpt.studentOccuValue != "" && this.refs.more != null && this.refs.more.refs.occupation != null){
+            let birth = this.refs.insurant.refs.birthday.val()
+            if (birth) {
+                let year = 1000 * 60 * 60 * 24 * 365;
+                let birthday = new Date(Date.parse(birth.replace('/-/g', "/")));
+                let age = parseInt((new Date() - birthday) / year);
+                if(this.refs.more.refs.occupation.val().value == null && age <= 17)
+                    this.refs.more.refs.occupation.setState({value: env.formOpt.studentOccuValue, reset: true});
+            }
         }
     },
     changeRelation() {
