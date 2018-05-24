@@ -106,6 +106,8 @@ public class FeeService
 			String productName = null;
 			String fromUserName = null;
 
+			String isRenewal = "N";
+
 			Map map = fee.getExtra();
 			if (map != null)
 			{
@@ -115,14 +117,15 @@ public class FeeService
 				premium = Common.toDouble(map.get("premium"));
 				productName = Common.trimStringOf(map.get("productName"));
 				fromUserName = Common.trimStringOf(map.get("fromUserName"));
+				isRenewal = Common.trimStringOf(map.get("isRenewal"));
 			}
 
 			if (premium > 0 && fee.getAmount() > premium)
 				throw new RuntimeException("发放佣金["+fee.getAmount()+"]应小于保费["+premium+"]");
 
-			r = iybPay.pay(fee.getDrawer(), fee.getType(), fee.getAmount(), productName, fee.getFreeze(), fee.getMemo(), iybPolicyId, fee.getBizNo(), fromUserId, productId, premium);
-			if (r)
-			{
+				r = iybPay.pay(fee.getDrawer(), fee.getType(), fee.getAmount(), productName, fee.getFreeze(), fee.getMemo(), iybPolicyId, fee.getBizNo(), fromUserId, productId, premium,isRenewal);
+				if (r)
+				{
 				if (fee.getType() == 1)
 					iyPush.send(fee.getDrawer(), "tips", "self","提醒", "一笔热腾腾的推广费到账啦！点击这里，加油赚云宝！", String.format("您有%.2f元推广费已到云宝账户，还有更多高推广费产品，再接再厉！封神之日可待！独乐乐不如众乐乐，邀请好友分享云宝赚钱秘籍！", fee.getAmount()), null);
 				else if (fee.getType() == 2)

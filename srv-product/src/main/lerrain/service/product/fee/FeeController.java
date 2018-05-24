@@ -86,14 +86,14 @@ public class FeeController
             r.payTime = null;
             r.createTime = new Date();
 
-            if (temp.indexOf(r.bizType + "/" + r.bizId) < 0)
-            {
-                List<Fee> x = cs.findFee(r.bizType, r.bizId);
-                if (x != null && !x.isEmpty())
-                    throw new RuntimeException(r.bizId + "<" + r.bizType + "> exists");
-
-                temp.add(r.bizType + "/" + r.bizId);
-            }
+//            if (temp.indexOf(r.bizType + "/" + r.bizId) < 0)
+//            {
+//                List<Fee> x = cs.findFee(r.bizType, r.bizId);
+//                if (x != null && !x.isEmpty())
+//                    throw new RuntimeException(r.bizId + "<" + r.bizType + "> exists");
+//
+//                temp.add(r.bizType + "/" + r.bizId);
+//            }
 
             bills.add(r);
         }

@@ -97,7 +97,7 @@ public class IybPay
 		}
 	}
 
-	public boolean pay(Long userId, int type, double bonus, String productName, int day, String messageTitle, Long bizId, String bizNo, Long fromUserId, Long productId, double premium)
+	public boolean pay(Long userId, int type, double bonus, String productName, int day, String messageTitle, Long bizId, String bizNo, Long fromUserId, Long productId, double premium,String isRenewal)
 	{
 		JSONObject content = new JSONObject();
 		content.put("accountId", userId);
@@ -108,6 +108,7 @@ public class IybPay
 		content.put("activityDetail", null);
 		content.put("messageTitle", messageTitle);
 		content.put("commType", "D");	// 默认直佣
+		content.put("isRenewal",isRenewal);	//是否续期
 
 		if (bizId != null && bizId > 0)
 			content.put("bizId", bizId);	// 保单ID
