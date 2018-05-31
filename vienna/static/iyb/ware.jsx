@@ -154,6 +154,32 @@ var QualificationTest = React.createClass({
     }
 });
 
+/** 渠道logo **/
+var ChannelLogo = React.createClass({
+    getInitialState(){
+        return {imgurl: null, accId: this.props.accId, wareId: this.props.wareId, packId: this.props.packId};
+    },
+    componentDidMount(){
+        common.req("util/channel_logo.json" , {owner: this.state.accId, wareId: this.state.wareId, packId: this.state.packId}, sr => {
+            try{this.setState({imgurl: sr.imgurl});}catch(e){}
+            console.log('succ',sr);
+        }, er => {
+            console.log('err', er);
+        });
+    },
+    render(){
+        console.log(this.state.imgurl);
+        if (!!this.state.imgurl) {
+            return (<div>
+                <div className="font-bm" style={{height:"30px", lineHeight:"30px", textAlign:"center"}}>
+                    <img src={this.state.imgurl} style={{height:"30px", verticalAlign:"middle", padding:"5px"}}/>
+                </div>
+			</div>);
+        }
+        return <div></div>;
+    }
+});
+
 var timer;
 var Ware = React.createClass({
     qualifAndNext(func){
@@ -515,6 +541,7 @@ var Ware = React.createClass({
 		let v = this.props.detail;
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
+        let accId = common.param("accountId");
 
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
@@ -527,6 +554,7 @@ var Ware = React.createClass({
 							<div className="font-wm">{v.remark}</div>
 						</div>
 					</div>
+                    {accId == null || accId == "" || env.pack == null || env.pack.id == null ? null : <ChannelLogo accId={accId} wareId={v.id} packId={env.pack.id} ></ChannelLogo>}
                     { this.state.packs == null ? null :
 						<Tabs onChange={this.changePlan} options={this.state.packs}/>
                     }
