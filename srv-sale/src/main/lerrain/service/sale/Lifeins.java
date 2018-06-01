@@ -5,6 +5,7 @@ import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
+import lerrain.tool.script.Stack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -63,6 +64,7 @@ public class Lifeins implements Function
         ins.put("OCCUPATION_L", vals.get("OCCUPATION_L"));
         r.put("insurant", ins);
 
+        Stack stack = new Stack(vals);
         if (packIns.getInputForm() != null) for (InputField field : packIns.getInputForm())
         {
             if (field.getScope() != null) for (String scope : field.getScope())
@@ -75,8 +77,11 @@ public class Lifeins implements Function
                 }
 
                 Object value = vals.get(field.getName());
-                if (value != null)
+                if (value != null) {
                     v.put(field.getVar(), PackUtil.translate(field.getType(), value));
+                } else if(field.getCondition() != null && Common.boolOf(field.getCondition().run(stack), false)) {  // 若前端未传值，但condition需要展示的，则直接使用默认值选项
+                    v.put(field.getVar(), PackUtil.translate(field.getType(), field.getValue()));
+                }
             }
         }
 
