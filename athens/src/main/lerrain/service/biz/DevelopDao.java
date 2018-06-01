@@ -119,7 +119,7 @@ public class DevelopDao
         });
     }
 
-    public String loadTesting(String url)
+    public String loadCache(String url)
     {
         try
         {
@@ -188,8 +188,13 @@ public class DevelopDao
     }
     */
 
-    public void save(String url, String param)
+    public void saveCache(String url, String param)
     {
         jdbc.update("replace into t_test(`key`, `value`) values(?, ?)", new Object[] {url, param});
+    }
+
+    public void removeCache(String url)
+    {
+        jdbc.update("delete from t_test where `key` = ?", url);
     }
 }

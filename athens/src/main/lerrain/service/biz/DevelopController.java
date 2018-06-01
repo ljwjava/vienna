@@ -294,7 +294,7 @@ public class DevelopController
         }
     }
 
-    @RequestMapping("/develop/req_testing.json")
+    @RequestMapping("/develop/load_cache.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject reqParam(@RequestBody JSONObject req)
@@ -303,12 +303,12 @@ public class DevelopController
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", JSON.parseObject(developDao.loadTesting(url)));
+        res.put("content", JSON.parseObject(developDao.loadCache(url)));
 
         return res;
     }
 
-    @RequestMapping("/develop/save.json")
+    @RequestMapping("/develop/save_cache.json")
     @ResponseBody
     @CrossOrigin
     public JSONObject save(@RequestBody JSONObject req)
@@ -316,7 +316,22 @@ public class DevelopController
         String url = req.getString("key");
         String param = req.getJSONObject("value").toJSONString();
 
-        developDao.save(url, param);
+        developDao.saveCache(url, param);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    @RequestMapping("/develop/remove_cache.json")
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject remove(@RequestBody JSONObject req)
+    {
+        String url = req.getString("key");
+
+        developDao.removeCache(url);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");

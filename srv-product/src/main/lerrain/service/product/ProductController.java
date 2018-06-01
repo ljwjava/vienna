@@ -2,6 +2,7 @@ package lerrain.service.product;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.service.product.fee.CustFeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,10 +19,15 @@ public class ProductController
     @Autowired
     ProductService productSrv;
 
+    @Autowired
+    CustFeeService custFeeService;
+
+    @PostConstruct
     @RequestMapping("/reset")
     @ResponseBody
     public String reset()
     {
+        custFeeService.reset();
         return "success";
     }
 

@@ -19,7 +19,7 @@ var Main = React.createClass({
 	componentDidMount() {
 		common.req("develop/view_gateway.json", {gatewayId: common.param("gatewayId")}, r => {
 			ENV.current = r;
-            common.req("develop/req_testing.json", {key: "gateway/" + common.param("gatewayId")}, r => {
+            common.req("develop/load_cache.json", {key: "gateway/" + common.param("gatewayId")}, r => {
                 ENV.test = r;
                 this.refresh();
             });
@@ -53,7 +53,7 @@ var Main = React.createClass({
 		let s = this.refs.script.value.replace(/[\r]/g, "");
 		if (s == ENV.current.script.replace(/[\r]/g, ""))
 			s = null;
-		common.req("develop/save.json", {
+		common.req("develop/save_cache.json", {
 			key: "gateway/" + ENV.current.id,
 			value: {
                 gatewayId: ENV.current.id,
@@ -90,9 +90,8 @@ var Main = React.createClass({
 		}
 		if (req != null) {
 			common.req("develop/apply.json", req, r => {
-                common.req("develop/save.json", {
-                    key: "gateway/" + ENV.current.id,
-                    value: null
+                common.req("develop/remove_cache.json", {
+                    key: "gateway/" + ENV.current.id
                 }, r => {});
                 alert("success");
             });
