@@ -99,6 +99,24 @@ var OccupationPicker = React.createClass({
         },() => this.props.onChange(this));
         return [];
     },
+    changeStateValue() {
+        var v = this.state.value;
+        v = v == null ? "" : this.state.value;
+        if(this.state.reset && this.state.occupation != null && this.state.occupation.length > 0 && v != null && v != ''){
+            this.setState({
+                proPickerVal: this.unzipPack(v, this.state.occupation, [], 1),
+                reset: false
+            });
+        }
+    },
+    // props改变
+    // componentWillReceiveProps(){
+    //     this.changeStateValue();
+    // },
+    // props和state任意一个改变
+    componentWillUpdate(){
+        this.changeStateValue();
+    },
     /**
 	 * 必选的方法，创建虚拟DOM，该方法具有特殊的规则：
 	 * 1.可以返回null、false或任何React组件

@@ -1,0 +1,13 @@
+
+.thead-light tr th label input[type='checkbox'] { width: 20px; height: 20px; }
+.thead-light tr th label { height: 20px; }
+
+.tbody-light tr td label input[type='checkbox'] { width: 20px; height: 20px; }
+.tbody-light tr td label { height: 20px; }
+
+
+.page-product-list h1 {
+    font-weight: 400;
+    font-size: 20px;
+    padding: 20px
+}

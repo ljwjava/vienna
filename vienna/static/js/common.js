@@ -322,7 +322,7 @@ common.dateStr = function(t) {
 };
 
 common.round = function(v, s) {
-	return v == null || v == "" ? null : Number(v).toFixed(s);
+	return v == null || v === "" ? null : Number(v).toFixed(s);
 };
 
 common.timeStr = function(t) {

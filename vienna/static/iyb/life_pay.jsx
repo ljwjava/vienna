@@ -331,6 +331,12 @@ var Ground = React.createClass({
                 docs.push(<a onClick={this.openDivDispute.bind(this)}>《广东纠纷调节处信息》</a>);
             }
 		}catch(e){console.log("添加广东纠纷调节处信息失败");}
+
+		let preShow = "";
+		if(env.company == "fosun" && common.isWeixin()){
+            preShow = "续期";
+		}
+
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="title">投保信息</div>
@@ -346,7 +352,7 @@ var Ground = React.createClass({
                     {env.order.detail.applicant.weight == null ? null : <div><span>　体重</span>{env.order.detail.applicant.weight}(公斤)</div>}
                     {env.order.detail.applicant.cityName == null ? null : <div><span>　所在地区</span>{env.order.detail.applicant.cityName}</div>}
 					<div><span>　通讯地址</span>{env.order.detail.applicant.address}</div>
-					{ env.order.detail.applicant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.applicant.occupation.text}({env.order.detail.applicant.occupation.level}类)</div>}
+					{ env.order.detail.applicant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.applicant.occupation.text}{env.order.detail.applicant.occupation.level != null ? "("+env.order.detail.applicant.occupation.level+"类)" : ""}</div>}
 				</div>
 				{ env.order.detail.insurant == null ? null :
 					<div className="view">
@@ -361,7 +367,7 @@ var Ground = React.createClass({
                         {env.order.detail.insurant.weight == null ? null : <div><span>　体重</span>{env.order.detail.insurant.weight}(公斤)</div>}
 						{env.order.detail.insurant.cityName == null ? null : <div><span>　所在地区</span>{env.order.detail.insurant.cityName}</div>}
 						{env.order.detail.insurant.address == null ? null : <div><span>　通讯地址</span>{env.order.detail.insurant.address}</div>}
-                        {env.order.detail.insurant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.insurant.occupation.text}({env.order.detail.insurant.occupation.level}类)</div>}
+                        {env.order.detail.insurant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.insurant.occupation.text}{env.order.detail.insurant.occupation.level != null ? "("+env.order.detail.insurant.occupation.level+"类)" : ""}</div>}
 					</div>
 				}
 				<div className="view">
@@ -387,11 +393,11 @@ var Ground = React.createClass({
 						env.order.detail.beneficiaryDeath.map(v => {
 							return (
 								<div>
-									<span>　姓名</span>{v.name} [{env.dict.relation[v.relation]}]
+									<span>　姓名</span>{v.name} {env.dict.relation[v.relation] != null ? "["+env.dict.relation[v.relation]+"]" : ""}
 									<br/>
 									<span>　{v.certName}</span>{v.certNo}
-                                    { v.certValidateBegin == null ? null : [<br/>, <span> 证件有效起期{v.certValidateBegin}</span>]}
-									{ v.certValidate == null ? null : [<br/>, <span> 证件有效止期{v.certValidate.certLong ? '长期' : v.certValidate.certExpire}</span>]}
+                                    { v.certValidateBegin == null ? null : [<br/>, <span>　证件有效起期</span>, <font>{v.certValidateBegin}</font>]}
+									{ v.certValidate == null ? null : [<br/>, <span>　证件有效止期</span>, <font>{v.certValidate.certLong ? '长期' : v.certValidate.certExpire}</font>]}
 									<br/>
 									<span>　受益比例</span>{v.scale}% (第{v.order}顺位)
 								</div>
@@ -400,13 +406,13 @@ var Ground = React.createClass({
 					}
 				</div>
                 { env.order.detail.applyMode == 2 && !env.order.extra.hasPay ? null :
-					<div className="title">支付信息</div>
+					<div className="title">{preShow}支付信息</div>
                 }
                 { env.order.detail.applyMode == 2 && !env.order.extra.hasPay ? null :
 					<div className="form">
 						<PayForm ref="pay"/>
 						{
-							(env.company != "fosun" || !common.isWeixin()) ? null : <div style={{color: "#FF0000", paddingTop: "5px"}}>☞ 保费超过10000万元，会受到微信支付额度的限制而导致支付失败，请点击<a onClick={this.openDoc.bind(this, "https://static.zhongan.com/website/health/iyb/resource/product/fosunkangle/pay_tips/pay_tips.html")} style={{color: "blue"}}>微信单笔支付额度提示</a>查阅支付额度规则，请在微信中先完成相关设置，再进行支付。<br/><br/><font>☞ 若您通过微信支付扣款成功，请在等待页面耐心等待，<b>切勿退回此页面重复提交支付</b>。</font></div>
+							(env.company != "fosun" || !common.isWeixin()) ? null : <div style={{color: "#FF0000", paddingTop: "5px"}}>☞ 保费超过10000元，会受到微信支付额度的限制而导致支付失败，请点击<a onClick={this.openDoc.bind(this, "https://static.zhongan.com/website/health/iyb/resource/product/fosunkangle/pay_tips/pay_tips.html")} style={{color: "blue"}}>微信单笔支付额度提示</a>查阅支付额度规则，请在微信中先完成相关设置，再进行支付。<br/><font>☞ 请确认微信零钱足够支付首期保费，若未成功支付，保险公司将<b>锁定未支付订单1小时</b>，过后才可重新操作。</font><br/><br/><font>☞ 若您通过微信支付扣款成功，请在等待页面耐心等待，<b>切勿退回此页面重复提交支付</b>。</font></div>
 						}
 					</div>
                 }
