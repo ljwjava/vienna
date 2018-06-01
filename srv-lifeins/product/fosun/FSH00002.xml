@@ -35,7 +35,7 @@
 		</param>
 
 		<input>
-			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万']]</item>
+			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万'],[600000,'60万']]</item>
 			<item name="PAY" label="缴费年期" widget="select">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>
 			<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>
 		</input>
@@ -87,14 +87,14 @@
 				交费期满时，投保人年龄要求小于70周岁
 			</if>
 
-			<if condition="DAY >= 30 and 1 >= AGE and AMOUNT > 200000">
-				出生满30天~1岁保额不得超过20万
+			<if condition="DAY >= 30 and 1 >= AGE and AMOUNT > 300000">
+				出生满30天~1岁保额不得超过30万
 			</if>
-			<if condition="AGE >= 2 and 17 >= AGE and AMOUNT > 200000">
-				2~17岁保额不得超过20万
+			<if condition="AGE >= 2 and 17 >= AGE and AMOUNT > 300000">
+				2~17岁保额不得超过30万
 			</if>
-			<if condition="AGE >= 18 and 40 >= AGE and AMOUNT > 500000">
-				18~40岁保额不得超过50万
+			<if condition="AGE >= 18 and 40 >= AGE and AMOUNT > 600000">
+				18~40岁保额不得超过60万
 			</if>
 			<if condition="AGE >= 41 and 45 >= AGE and AMOUNT > 400000">
 				41~45岁保额不得超过40万
