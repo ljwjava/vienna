@@ -44,7 +44,7 @@ public class AthensService
 		sv.setLog("commission", 2);
 
 		Script.STACK_MESSAGE = true; //!("prd".equalsIgnoreCase(srvEnv));
-		Log.EXCEPTION_STACK = false;
+		Log.EXCEPTION_STACK = true;
 		Log.info("ENV: " + srvEnv + ", log of formula stack: " + Script.STACK_MESSAGE);
 
 		if ("prd".equalsIgnoreCase(srvEnv))

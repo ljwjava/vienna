@@ -6,7 +6,6 @@ import ReactDOM from 'react-dom';
 var ENV = {
     current: {},
 	test: {},
-    envMap: {},
 	t: t => {
     	return t == null ? "" : t;
     }
@@ -26,11 +25,8 @@ var Main = React.createClass({
 		});
 		common.req("develop/query_env.json", {}, r => {
 			var envList = [];
-			for (var envId in r) {
-				var x = r[envId];
-				ENV.envMap[envId + ""] = x;
-				envList.push(<option value={envId}>{"环境：" + x}</option>);
-			}
+			for (var envId in r)
+				envList.push(<option value={envId}>{"环境：" + r[envId]}</option>);
 			this.setState({envList:envList});
 		});
 
@@ -51,7 +47,7 @@ var Main = React.createClass({
     },
 	save() {
 		let s = this.refs.script.value.replace(/[\r]/g, "");
-		if (s == ENV.current.script.replace(/[\r]/g, ""))
+		if (ENV.current.script != null && s == ENV.current.script.replace(/[\r]/g, ""))
 			s = null;
 		common.req("develop/save_cache.json", {
 			key: "gateway/" + ENV.current.id,
@@ -90,17 +86,14 @@ var Main = React.createClass({
 		}
 		if (req != null) {
 			common.req("develop/apply.json", req, r => {
-                common.req("develop/remove_cache.json", {
-                    key: "gateway/" + ENV.current.id
-                }, r => {});
-                alert("success");
+                this.save();
             });
         }
 	},
 	test() {
 		var rpm = this.refs.reqParams.value;
 		var req = {
-			envId: ENV.current.envId,
+			envId: this.refs.envList.value,
 			script: this.refs.script.value,
 			param: rpm == null || rpm == "" ? null : JSON.parse(rpm)
 		};
@@ -126,7 +119,7 @@ var Main = React.createClass({
         this.refs.reqParams.value = ENV.t(vals.param);
 
         this.refs.gatewayUri.value = ENV.t(vals.uri);
-        this.refs.script.value = ENV.t(vals.script);
+        this.refs.script.value = vals.script == null ? ENV.t(ENV.current.script) : ENV.t(vals.script);
 
 		this.setState({modify: ENV.test != null});
 	},

@@ -13,39 +13,37 @@ public class CustFeeService
 	@Autowired
 	CustFeeDao feeDao;
 
-	Map<Long, List<CustFeeFactor>> seekFactorsWare;
-	Map<Long, List<CustFeeFactor>> seekFactorsProduct;
+	Map<Long, List<Map<String, Object>>> seekFactorsProduct;
 
 	public void reset()
 	{
-		List<CustFeeFactor> list = feeDao.loadFeeDefineFactors();
+		seekFactorsProduct = feeDao.loadFeeDefineFactors();
 
-		seekFactorsWare = new HashMap<>();
-		seekFactorsProduct = new HashMap<>();
-
-		for (CustFeeFactor cff : list)
-		{
-			List<CustFeeFactor> c = seekFactorsWare.get(cff.getWareId());
-			if (c == null)
-			{
-				c = new ArrayList<>();
-				seekFactorsWare.put(cff.getWareId(), c);
-			}
-
-			c.add(cff);
-
-			for (Long productId : cff.getProductIds())
-			{
-				List<CustFeeFactor> cc = seekFactorsProduct.get(productId);
-				if (cc == null)
-				{
-					cc = new ArrayList<>();
-					seekFactorsProduct.put(productId, cc);
-				}
-
-				cc.add(cff);
-			}
-		}
+//		seekFactorsProduct = new HashMap<>();
+//
+//		for (Map<String, Object> cff : list)
+//		{
+//			List<CustFeeFactor> c = seekFactorsWare.get(cff.getWareId());
+//			if (c == null)
+//			{
+//				c = new ArrayList<>();
+//				seekFactorsWare.put(cff.getWareId(), c);
+//			}
+//
+//			c.add(cff);
+//
+//			for (Long productId : cff.getProductIds())
+//			{
+//				List<CustFeeFactor> cc = seekFactorsProduct.get(productId);
+//				if (cc == null)
+//				{
+//					cc = new ArrayList<>();
+//					seekFactorsProduct.put(productId, cc);
+//				}
+//
+//				cc.add(cff);
+//			}
+//		}
 	}
 
 	public CustFeeDefine getFeeDefine(Long schemeId, Long productId, Date time, Map seek)
@@ -58,12 +56,7 @@ public class CustFeeService
 		return feeDao.listFeeRate(schemeId, productId);
 	}
 
-	public List<CustFeeFactor> listFeeDefineFactorsByWareId(Long wareId)
-	{
-		return seekFactorsWare.get(wareId);
-	}
-
-	public List<CustFeeFactor> listFeeDefineFactors(Long productId)
+	public List<Map<String, Object>> listFeeDefineFactors(Long productId)
 	{
 		return seekFactorsProduct.get(productId);
 	}

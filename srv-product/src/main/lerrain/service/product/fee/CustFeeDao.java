@@ -13,10 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class CustFeeDao
@@ -45,7 +42,7 @@ public class CustFeeDao
 
 		JSONArray rs = new JSONArray();
 		for (CustFeeDefine fd : list)
-			rs.add(JSON.toJSONString(fd));
+			rs.add(fd);
 
 		jdbc.update(update, schemeId, productId, begin, end, rs.toJSONString());
 	}
@@ -104,35 +101,45 @@ public class CustFeeDao
 		return list;
 	}
 
-	public List<CustFeeFactor> loadFeeDefineFactors()
+	public Map<Long, List<Map<String, Object>>> loadFeeDefineFactors()
 	{
-		final List<CustFeeFactor> r = new ArrayList<>();
+		final Map<Long, List<Map<String, Object>>> res = new HashMap<>();
 
 		jdbc.query("select * from t_product_fee_factors", new RowCallbackHandler()
 		{
 			@Override
 			public void processRow(ResultSet rs) throws SQLException
 			{
-				CustFeeFactor cff = new CustFeeFactor();
-				cff.setWareId(rs.getLong("ware_id"));
-
-				String[] products = rs.getString("products").split(",");
-				List<Long> ids = new ArrayList<>();
-				for (String productId : products)
-					ids.add(Common.toLong(productId));
-				cff.setProductIds(ids);
+				List<Map<String, Object>> r = new ArrayList<Map<String, Object>>();
 
 				JSONArray list = JSON.parseArray(rs.getString("content"));
 				for (int i=0;i<list.size();i++)
 				{
 					JSONObject detail = list.getJSONObject(i);
-					cff.setFactors(detail);
+					r.add(detail);
 				}
 
-				r.add(cff);
+				res.put(rs.getLong("product_id"), r);
+
+//				cff.setWareId(rs.getLong("ware_id"));
+//
+//				String[] products = rs.getString("products").split(",");
+//				List<Long> ids = new ArrayList<>();
+//				for (String productId : products)
+//					ids.add(Common.toLong(productId));
+//				cff.setProductIds(ids);
+//
+//				JSONArray list = JSON.parseArray(rs.getString("content"));
+//				for (int i=0;i<list.size();i++)
+//				{
+//					JSONObject detail = list.getJSONObject(i);
+//					cff.setFactors(detail);
+//				}
+//
+//				r.add(cff);
 			}
 		});
 
-		return r;
+		return res;
 	}
 }

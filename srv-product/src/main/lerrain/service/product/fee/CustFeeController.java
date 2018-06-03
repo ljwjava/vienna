@@ -71,18 +71,7 @@ public class CustFeeController
     {
         Object r = null;
 
-        if (c.containsKey("wares"))
-        {
-            JSONArray wares = c.getJSONArray("ware");
-            JSONObject r1 = new JSONObject();
-            for (int i = 0; i < wares.size(); i++)
-            {
-                Long wareId = wares.getLong(i);
-                r1.put(wareId.toString(), ccs.listFeeDefineFactorsByWareId(wareId));
-            }
-            r = r1;
-        }
-        else if (c.containsKey("products"))
+        if (c.containsKey("products"))
         {
             JSONArray products = c.getJSONArray("product");
             JSONObject r1 = new JSONObject();
