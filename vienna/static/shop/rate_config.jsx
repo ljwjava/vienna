@@ -23,9 +23,104 @@ var Main = React.createClass({
         };
     },
     refresh() {
-        common.req("product/list.json", {typeId: 1, companyId: null, search: env.search, from: env.from, number: env.number}, r => {
-            this.setState({content:r});
+        // common.req("product/list.json", {typeId: 1, companyId: null, search: env.search, from: env.from, number: env.number}, r => {
+        //     this.setState({content:r});
+        // });
+        let resultJson = {
+            "code": "0",
+            "result": {
+                "shopList": [{
+                    "id": 1,
+                    "productType": "健康",
+                    "productName": "众安尊享e生旗舰版",
+                    "insureType": "short",
+                    "years": {"year":"首年"},
+                    "totalRate": "20%+15%",
+                    "subRate": "30%",
+                    "myself": "5%",
+                    "isDeleted": "N",
+                    "modifier": "system",
+                    "creator": "system",
+                    "gmtCreated": "2018-01-12 19:23:09",
+                    "gmtModified": "2018-01-12 19:23:18"
+                }, {
+                    "id": 2,
+                    "productType": "健康",
+                    "productName": "众安尊享e生旗舰版",
+                    "insureType": "short",
+                    "years": {"year":"续期"},
+                    "totalRate": "20%",
+                    "subRate": "15",
+                    "myself": "5%",
+                    "isDeleted": "N",
+                    "modifier": "system",
+                    "creator": "system",
+                    "gmtCreated": "2018-01-12 19:23:09",
+                    "gmtModified": "2018-01-12 19:23:18"
+                }, {
+                    "id": 3,
+                    "productType": "重疾",
+                    "productName": "复星联合康乐e生重疾保险",
+                    "insureType": "long",
+                    "years": {"year":"首年","payWay":"5年交"},
+                    "totalRate": "总费率",
+                    "subRate": "下级费率",
+                    "myself": "我的留存",
+                    "isDeleted": "N",
+                    "modifier": "system",
+                    "creator": "system",
+                    "gmtCreated": "2018-01-12 19:23:09",
+                    "gmtModified": "2018-01-12 19:23:18"
+                }, {
+                    "id": 4,
+                    "productType": "重疾",
+                    "productName": "复星联合康乐e生重疾保险",
+                    "insureType": "long",
+                    "years": {"year":"续期","payWay":"10年交"},
+                    "totalRate": "45%",
+                    "subRate": "35%",
+                    "myself": "10%",
+                    "isDeleted": "N",
+                    "modifier": "system",
+                    "creator": "system",
+                    "gmtCreated": "2018-01-12 19:23:09",
+                    "gmtModified": "2018-01-12 19:23:18"
+                }, {
+                    "id": 5,
+                    "productType": "重疾",
+                    "productName": "复星联合康乐e生重疾保险",
+                    "insureType": "long",
+                    "years": {"year":"续期","payWay":"5年交"},
+                    "totalRate": "总费率",
+                    "subRate": "下级费率",
+                    "myself": "我的留存",
+                    "isDeleted": "N",
+                    "modifier": "system",
+                    "creator": "system",
+                    "gmtCreated": "2018-01-12 19:23:09",
+                    "gmtModified": "2018-01-12 19:23:18"
+                }, {
+                    "id": 6,
+                    "productType": "重疾",
+                    "productName": "复星联合康乐e生重疾保险",
+                    "insureType": "long",
+                    "years": {"year":"续期","payWay":"10年交"},
+                    "totalRate": "45%",
+                    "subRate": "35%",
+                    "myself": "10%",
+                    "isDeleted": "N",
+                    "modifier": "system",
+                    "creator": "system",
+                    "gmtCreated": "2018-01-12 19:23:09",
+                    "gmtModified": "2018-01-12 19:23:18"
+                }]
+            }
+        }
+        this.setState({
+            content:{list:resultJson.result.shopList}
         });
+
+
     },
     componentDidMount() {
         common.req("channel/company.json", {}, r => {
@@ -66,10 +161,12 @@ var Main = React.createClass({
         return([
             {"key":"checkbox","name":"复选框","hidden":true},
             {"key":"id","name":"产品ID"},
-            {"key":"code","name":"产品CODE"},
-            {"key":"companyId","name":"所属公司"},
-            {"key":"name","name":"产品名称"},
-            {"key":"categoryId","name":"类别"},
+            {"key":"productType","name":"产品类型"},
+            {"key":"productName","name":"产品名称"},
+            {"key":"years","name":"年限"},
+            {"key":"totalRate","name":"总费率"},
+            {"key":"subRate","name":"下级费率"},
+            {"key":"myself","name":"我的留存"},
             {"key":"operate","name":"操作"}
         ]);
     },

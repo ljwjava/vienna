@@ -1,6 +1,6 @@
 env: dev
 
-scope: iyb++,agency++,data++,user
+scope: iyb++,agency++,data++,user,clouds++
 
 server:
   port: 7666
@@ -37,6 +37,7 @@ service:
   product: http://localhost:7758
   org: http://localhost:7731
   underwriting: http://localhost:7782
+  shop: http://localhost:7758
 
 path:
   temp: x:/temp/1/
