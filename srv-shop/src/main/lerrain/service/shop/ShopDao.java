@@ -1,6 +1,7 @@
 package lerrain.service.shop;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,13 +33,56 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		sql.append(" AND c.`name` LIKE '%尊享e生%'");
-		sql.append(" AND p.rel_type_code = 'health'");
+		sql.append(" /*AND c.`name` LIKE '%尊享e生%'*/");
+		sql.append(" /*AND p.rel_type_code = 'health'*/");
 
 		return jdbc.queryForObject(sql.toString(), Integer.class);
 	}
 
-	public List<Shop> list(String search, int from, int number)
+	public List<JSONObject> types(String search, int from, int number){
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+        sql.append(" tt.tagId,");
+		sql.append(" tt.tagCode,");
+		sql.append(" tt.tagName,");
+		sql.append(" COUNT(tt.cdCode) as prdNumbers");
+		sql.append(" FROM");
+		sql.append(" (SELECT");
+        sql.append(" t.id AS tagId,");
+		sql.append(" t.`code` AS tagCode,");
+		sql.append(" t.`name` AS tagName,");
+		sql.append(" c.`code` AS cdCode");
+		sql.append(" FROM");
+		sql.append(" `t_cs_commodity_plan` p");
+		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
+		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
+		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
+		sql.append(" WHERE");
+		sql.append(" p.rel_org_id = 1");
+		sql.append(" AND c.online_state = 1");
+		sql.append(" AND t.online_state = 1");
+		sql.append(" /*AND c.`name` LIKE '%尊享e生%'*/");
+		sql.append(" /*AND p.rel_type_code = 'health'*/");
+		sql.append(" limit ?, ?");
+		sql.append(" ) tt");
+		sql.append(" GROUP BY tt.tagCode");
+
+		return jdbc.query(sql.toString(), new Object[] {from, number}, new RowMapper<JSONObject>()
+		{
+			@Override
+			public JSONObject mapRow(ResultSet m, int arg1) throws SQLException
+			{
+				JSONObject j = new JSONObject();
+				j.put("tagId",m.getString("tagId"));
+				j.put("tagCode",m.getString("tagCode"));
+				j.put("tagName", m.getString("tagName"));
+				j.put("prdNumbers",m.getString("prdNumbers"));
+				return j;
+			}
+		});
+	}
+
+	public List<Shop> commoditys(String search, int from, int number)
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
@@ -66,6 +110,11 @@ public class ShopDao
 		sql.append(" c.link_url AS commodityLink,");
 		sql.append(" c.rel_supplier_code AS supplierCode,");
 		sql.append(" c.extra_info AS extraInfo,");
+        sql.append(" c.creator,");
+        sql.append(" c.gmt_created AS gmtCreated,");
+        sql.append(" c.modifier,");
+        sql.append(" c.gmt_modified AS gmtModified,");
+        sql.append(" c.is_deleted AS isDeleted,");
 		sql.append(" c.sort");
 		sql.append(" FROM");
 		sql.append(" `t_cs_commodity_plan` p");
@@ -78,8 +127,8 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		sql.append(" AND c.`name` LIKE '%尊享e生%'");
-		sql.append(" AND p.rel_type_code = 'health'");
+		sql.append(" /*AND c.`name` LIKE '%尊享e生%'*/");
+		sql.append(" /*AND p.rel_type_code = 'health'*/");
 		sql.append(" /*AND l.id IN (1, 2)*/");
 		sql.append(" limit ?, ?");
 //		sql.append("LIMIT 0, 12;");

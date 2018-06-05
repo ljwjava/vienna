@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 public class ShopController
 {
@@ -25,21 +27,32 @@ public class ShopController
 
     @RequestMapping("/commoditys.json")
     @ResponseBody
-    public JSONObject list(@RequestBody JSONObject p)
+    public JSONObject commoditys(@RequestBody JSONObject p)
     {
-        int from = Common.intOf(p.get("from"), 0);
-        int num = Common.intOf(p.get("num"), 10);
+        int currentPage = Common.intOf(p.get("currentPage"), 1);
+        int num = Common.intOf(p.get("pageSize"), 10);
+        int from =  num*(currentPage - 1);
 
         JSONArray list = new JSONArray();
-        for (Shop shop : productSrv.list(null, from, num))
+        for (JSONObject obj : productSrv.commoditys(null, from, num))
         {
-            JSONObject obj = (JSONObject)JSON.toJSON(shop);
             list.add(obj);
+        }
+
+        JSONArray titleList = new JSONArray();
+        for (JSONObject obj : productSrv.types(null, from, num))
+        {
+            titleList.add(obj);
         }
 
         JSONObject r = new JSONObject();
         r.put("list", list);
-        r.put("total", productSrv.count(null));
+        r.put("titleList", titleList);
+        JSONObject page = new JSONObject();
+        page.put("total",productSrv.count(null));
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        r.put("pagination", page);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -47,4 +60,5 @@ public class ShopController
 
         return res;
     }
+
 }
