@@ -135,9 +135,10 @@ public class DevelopController
     {
         int from = Common.intOf(p.get("from"), 0);
         int num = Common.intOf(p.get("num"), 20);
+        String search = p.getString("search");
 
         JSONObject r = new JSONObject();
-        r.put("list", developDao.listGateway(from, num));
+        r.put("list", developDao.listGateway(search, from, num));
         r.put("total", developDao.count());
 
         JSONObject res = new JSONObject();
@@ -390,23 +391,18 @@ public class DevelopController
     {
         try
         {
-            int type = req.getIntValue("type");
+            Long functionId = req.getLong("functionId");
             String script = req.getString("script");
 
-            if (type == 2)
-            {
-                Long functionId = req.getLong("functionId");
-                String name = req.getString("name");
-                String params = req.getString("params");
+            String name = req.getString("name");
+            String params = req.getString("params");
 
-                developDao.apply(functionId, name, params, script);
+            developDao.apply(functionId, name, params, script);
 
-                Long envId = req.getLong("envId");
-                Environment p = envSrv.getEnv(envId);
-                Function f = new EnvDao.InnerFunction(null, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
-                p.putVar(name, f);
-
-            }
+            Long envId = req.getLong("envId");
+            Environment p = envSrv.getEnv(envId);
+            Function f = new EnvDao.InnerFunction(null, Script.scriptOf(script), Common.isEmpty(params) ? null : params.split(","), p.getStack());
+            p.putVar(name, f);
         }
         catch (Exception e)
         {
