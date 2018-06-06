@@ -72,9 +72,22 @@ public class DevelopDao
         }, gatewayId);
     }
 
-    public List<Map> listGateway(int from, int number)
+    public List<Map> listGateway(String search, int from, int number)
     {
-        String sql = "select t.* from t_gateway t where t.valid is null order by t.uri limit ?, ?";
+        String sql;
+        Object[] vals;
+
+        if (Common.isEmpty(search))
+        {
+            sql = "select t.* from t_gateway t where t.valid is null order by t.uri limit ?, ?";
+            vals = new Object[] {from, number};
+        }
+        else
+        {
+            sql = "select t.* from t_gateway t where t.uri like ? and t.valid is null order by t.uri limit ?, ?";
+            vals = new Object[] {"%" + Common.trimStringOf(search) + "%", from, number};
+        }
+
         return jdbc.query(sql, new RowMapper<Map>()
         {
             @Override
@@ -91,7 +104,7 @@ public class DevelopDao
 
                 return map;
             }
-        }, from, number);
+        }, vals);
     }
 
     public int count()
@@ -134,7 +147,7 @@ public class DevelopDao
 
     public List<Map> loadFunctionList(Long envId)
     {
-        return jdbc.query("select a.* from t_env_function a where env_id = ?", new Object[]{envId}, new RowMapper<Map>()
+        return jdbc.query("select a.* from t_env_function a where env_id = ? or env_code = (select code from t_env where id = ?)", new Object[]{envId, envId}, new RowMapper<Map>()
         {
             @Override
             public Map mapRow(ResultSet rs, int rowNum) throws SQLException

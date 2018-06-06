@@ -83,6 +83,10 @@ var Main = React.createClass({
 						<h5 className="mt-sm-1">接口</h5>
 					</div>
 					<div className="form-inline">
+						<input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+						<button className="btn btn-success my-2 my-sm-0" type="submit">搜索</button>
+					</div>
+					<div className="form-inline">
 						<button className="btn btn-primary mr-2" data-toggle="modal" data-target="#editor">新的接口</button>
 					</div>
 				</nav>
