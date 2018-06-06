@@ -61,8 +61,9 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		sql.append(" /*AND c.`name` LIKE '%尊享e生%'*/");
-		sql.append(" /*AND p.rel_type_code = 'health'*/");
+        if (search != null && !"".equals(search)) {
+            sql.append(" AND c.`name` LIKE '%"+ search +"%'");
+        }
 		sql.append(" limit ?, ?");
 		sql.append(" ) tt");
 		sql.append(" GROUP BY tt.tagCode");
@@ -127,8 +128,9 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		sql.append(" /*AND c.`name` LIKE '%尊享e生%'*/");
-		sql.append(" /*AND p.rel_type_code = 'health'*/");
+		if (search != null && null != search) {
+			sql.append(" AND c.`name` LIKE '%"+search+"%'");
+		}
 		sql.append(" /*AND l.id IN (1, 2)*/");
 		sql.append(" limit ?, ?");
 //		sql.append("LIMIT 0, 12;");

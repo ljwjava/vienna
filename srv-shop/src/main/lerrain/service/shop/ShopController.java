@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.tool.Common;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,20 +34,27 @@ public class ShopController
         int num = Common.intOf(p.get("pageSize"), 10);
         int from =  num*(currentPage - 1);
 
-        JSONArray list = new JSONArray();
-        for (JSONObject obj : productSrv.commoditys(null, from, num))
-        {
-            list.add(obj);
-        }
+        String search = p.getString("cdName");
+
+        List<JSONObject> cdList = productSrv.commoditys(search, from, num);
 
         JSONArray titleList = new JSONArray();
-        for (JSONObject obj : productSrv.types(null, from, num))
+        for (JSONObject obj : productSrv.types(search, from, num))
         {
+            JSONArray list = new JSONArray();
+
+            String type = obj.getString("tagCode");
+            for (JSONObject listObj : cdList)
+            {
+                String typeCode = listObj.getString("type");
+                if(StringUtils.equals(type,typeCode)){
+                    list.add(listObj);
+                }
+            }
+            obj.put("list",list);
             titleList.add(obj);
         }
-
         JSONObject r = new JSONObject();
-        r.put("list", list);
         r.put("titleList", titleList);
         JSONObject page = new JSONObject();
         page.put("total",productSrv.count(null));
