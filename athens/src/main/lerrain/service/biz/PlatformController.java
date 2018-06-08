@@ -46,7 +46,9 @@ public class PlatformController
             }
 
             res.put("result", "success");
-            res.put("content", gc.call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
+
+            if (uri.indexOf("login.json") < 0)
+                res.put("content", gc.call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
         }
         catch (Exception e)
         {
