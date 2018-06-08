@@ -67,7 +67,7 @@ public class TemplateDao {
     }
 
     public int count(String name) {
-        StringBuffer sql = new StringBuffer("select count(1) from t_cs_template where 1=1 ");
+        StringBuffer sql = new StringBuffer("select count(1) from t_cs_template where is_deleted='N' ");
         if (StringUtils.isNotBlank(name)) {
             sql.append(" and template_name like '%" + name + "%' ");
         }
@@ -155,7 +155,7 @@ public class TemplateDao {
         if (id == null) {
             return null;
         }
-        String sql = " select * from t_cs_template_product where id=" + id;
+        String sql = " select * from t_cs_template_product where id=" + id + " and is_deleted='N' ";
         List<TemplateProduct> tps = jdbc.query(sql, new Object[]{}, new BeanPropertyRowMapper<>(TemplateProduct.class));
         return (tps != null && tps.size() > 0) ? tps.get(0) : null;
     }

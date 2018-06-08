@@ -52,6 +52,17 @@ public class TemplateController {
         return res;
     }
 
+    @RequestMapping("/delete.json")
+    @ResponseBody
+    public JSONObject delete(@RequestBody JSONObject p) {
+        Long templateId = p.getLong("templateId");
+        templateSrv.delete(templateId);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
 
     @RequestMapping("/savePro.json")
     @ResponseBody
