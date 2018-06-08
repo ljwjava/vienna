@@ -71,6 +71,10 @@ public class TemplateService {
         return dao.saveProTypeRelation(tptr);
     }
 
+    public TemplateUserRelation queryByTUserId(Long templateId, Long userId) {
+        return dao.queryByTUserId(templateId, userId);
+    }
+
     public Long saveTUserRelation(TemplateUserRelation tur) {
         return dao.saveTUserRelation(tur);
     }

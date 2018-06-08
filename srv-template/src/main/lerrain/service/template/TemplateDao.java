@@ -5,6 +5,7 @@ import lerrain.service.common.ServiceTools;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -39,7 +40,7 @@ public class TemplateDao {
 
     public Template get(Long id) {
         String sql = " select * from t_cs_template where id=" + id;
-        List<Template> templates = jdbc.queryForList(sql, Template.class);
+        List<Template> templates = jdbc.query(sql, new Object[]{}, new BeanPropertyRowMapper<>(Template.class));
         return templates != null && templates.size() > 0 ? templates.get(0) : null;
     }
 
@@ -155,7 +156,7 @@ public class TemplateDao {
             return null;
         }
         String sql = " select * from t_cs_template_product where id=" + id;
-        List<TemplateProduct> tps = jdbc.queryForList(sql, TemplateProduct.class);
+        List<TemplateProduct> tps = jdbc.query(sql, new Object[]{}, new BeanPropertyRowMapper<>(TemplateProduct.class));
         return (tps != null && tps.size() > 0) ? tps.get(0) : null;
     }
 
@@ -211,5 +212,11 @@ public class TemplateDao {
                 return tpr.size();
             }
         });
+    }
+
+    public TemplateUserRelation queryByTUserId(Long templateId, Long userId) {
+        String sql = " select * from t_cs_template_user_relation where user_id=" + userId + " and template_id=" + templateId;
+        List<TemplateUserRelation> tps = jdbc.query(sql, new Object[]{}, new BeanPropertyRowMapper<>(TemplateUserRelation.class));
+        return (tps != null && tps.size() > 0) ? tps.get(0) : null;
     }
 }

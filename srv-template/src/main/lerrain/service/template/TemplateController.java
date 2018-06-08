@@ -120,6 +120,7 @@ public class TemplateController {
     @ResponseBody
     public JSONObject save(@RequestBody JSONObject p) {
         Log.info(p);
+        Long userId = p.getLong("userId");
         Long templateId = p.getLong("id");
         String templateName = p.getString("templateName");
         String title = p.getString("title");
@@ -176,7 +177,12 @@ public class TemplateController {
         }
 
         //创建商城模板与用户关系表
-
+        if (templateSrv.queryByTUserId(id, userId) == null) {
+            TemplateUserRelation tur = new TemplateUserRelation();
+            tur.setUserId(userId);
+            tur.setTemplateId(id);
+            templateSrv.saveTUserRelation(tur);
+        }
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", id);
