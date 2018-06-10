@@ -27,7 +27,8 @@ public class UnderwritingService
     @Autowired
     ServiceTools tools;
 
-    Map<String, Quest> map = new LinkedHashMap<>();
+    Map<String, Quest> map = new LinkedHashMap<>(); // 所有题库
+    Map<String, ProductQuest> pqMap = new HashMap<>();    // 产品关联题库
 
     Map<Long, Underwriting> temp = new HashMap<>();
 
@@ -35,9 +36,14 @@ public class UnderwritingService
     public void reset()
     {
         List<Quest> list = uwDao.listAll();
-
         for (Quest q : list)
             map.put(q.getCode(), q);
+
+        List<ProductQuest> pqList = uwDao.listAllProductRela();
+        for (ProductQuest pq : pqList) {
+            pq.resetQuest(this.map);
+            pqMap.put(pq.getProductId(), pq);
+        }
 
         msgQueue.start();
     }
@@ -95,7 +101,12 @@ public class UnderwritingService
         Stack stack = new Stack(uw.getAnswer());
         stack.declare("R", new QuestResult(uw));
 
-        for (Quest q : map.values())
+        ProductQuest pq = this.pqMap.get(uw.getProductId());
+        if(pq == null || Common.isEmpty(pq.getQuests())) {
+            throw new RuntimeException("underwriting: " + uwId + ", productId: "+uw.getProductId()+" not quests");
+        }
+
+        for (Quest q : pq.getQuests().values())
         {
             if (q.getType() == step)
             {
@@ -165,7 +176,12 @@ public class UnderwritingService
             {
                 Map<String, Object> vals = uw.getAnswer();
 
-                for (Quest q : map.values())
+                ProductQuest pq = this.pqMap.get(uw.getProductId());
+                if(pq == null || Common.isEmpty(pq.getQuests())) {
+                    throw new RuntimeException("verify: " + uwId + ", productId: "+uw.getProductId()+" not quests");
+                }
+
+                for (Quest q : pq.getQuests().values())
                 {
                     if (q.getType() >= Underwriting.STEP_DISEASE)
                         vals.remove(q.getCode());
