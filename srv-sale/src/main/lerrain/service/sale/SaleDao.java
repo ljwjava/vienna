@@ -1,5 +1,6 @@
 package lerrain.service.sale;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
@@ -47,8 +48,13 @@ public class SaleDao
                 c.setRemark(m.getString("remark"));
 
                 String banner = m.getString("banner");
-                if (banner != null)
-                    c.setBanner(banner.split(","));
+                if (banner != null) {
+                    if(banner.trim().startsWith("[") && banner.trim().endsWith("]")) {
+                        c.setBanner(JSONArray.parseArray(banner));
+                    } else {
+                        c.setBanner(JSONArray.parseArray(JSONArray.toJSONString(banner.split(","))));
+                    }
+                }
 
 //                String detail = m.getString("detail");
 //                if (detail != null)
@@ -92,6 +98,7 @@ public class SaleDao
                     String extra = m.getString("extra");
                     String price = m.getString("price");
                     String formOpt = m.getString("form_opt");
+                    String opClassify = m.getString("op_classify");
 
                     Long input = Common.toLong(m.getObject("input"));
 
@@ -109,6 +116,8 @@ public class SaleDao
                         packIns.setShow(JSONObject.parseObject(showStr));
                     if (!Common.isEmpty(extra))
                         packIns.setExtra(JSONObject.parseObject(extra));
+                    if (!Common.isEmpty(opClassify))
+                        packIns.setOpClassify(JSONObject.parseObject(opClassify));
 
                     if (input != null)
                     {
