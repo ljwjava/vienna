@@ -267,6 +267,55 @@ public class PlanController
         return res;
     }
 
+    @RequestMapping("/plan/list_riders.json")
+    @ResponseBody
+    public JSONObject listRiders(@RequestBody JSONObject p)
+    {
+        String planId = p.getString("planId");
+        if (Common.isEmpty(planId))
+            throw new RuntimeException("缺少planId");
+
+        Plan plan = planSrv.getPlan(planId);
+        if (plan.isEmpty())
+            throw new RuntimeException("plan为空");
+
+        JSONArray riders = new JSONArray();
+
+        for (Commodity c : (List<Commodity>)plan.toList())
+        {
+            Insurance insurance = c.getProduct();
+            List<String> riderList = insurance.getRiderList();
+
+            JSONArray rm = new JSONArray();
+            if (!Common.isEmpty(riderList)) for (String rs : riderList)
+            {
+                Insurance ins = lifeins.getProduct(rs);
+                if (ins != null)
+                {
+                    JSONObject m = new JSONObject();
+                    m.put("id", ins.getId());
+                    m.put("code", ins.getId());
+                    m.put("vendor", ins.getVendor());
+                    m.put("name", ins.getName());
+                    m.put("abbrName", ins.getAbbrName());
+                    m.put("tag", ins.getAdditional("tag"));
+                    m.put("logo", ins.getAdditional("logo"));
+                    m.put("remark", ins.getAdditional("remark"));
+                    m.put("type", "rider");
+                    rm.add(m);
+                }
+            }
+
+            riders.add(rm);
+        }
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", riders);
+
+        return res;
+    }
+
     @RequestMapping("/plan/list_clause.json")
     @ResponseBody
     public JSONObject listProduct(@RequestBody JSONObject p)
@@ -502,7 +551,8 @@ public class PlanController
             }
         }
 
-        r.put("name", ins.getAbbrName());
+        r.put("name", ins.getName());
+        r.put("abbrName", ins.getAbbrName());
         r.put("factors", items);
 
         JSONObject res = new JSONObject();

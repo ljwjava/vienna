@@ -283,6 +283,7 @@ public class ProposalController
 		if (proposalId == null)
 			throw new RuntimeException("缺少proposalId");
 
+		//dao里触发用proposal保存的plan串重新create plan，所以连计划也全部重新读了
 		Proposal proposal = ps.reload(proposalId);
 
 		JSONObject res = new JSONObject();

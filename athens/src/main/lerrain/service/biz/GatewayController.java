@@ -118,6 +118,20 @@ public class GatewayController
 
         Object val = null;
 
+        //请求服务在前，脚本为整理结果
+        if (gateway.getForward() == Gateway.REQUEST_MICRO_SERVICE)
+        {
+            String forwardTo = gateway.getForwardTo(uri);
+
+            int p2 = forwardTo.indexOf("/");
+            JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
+
+            if (!"success".equals(json.getString("result")))
+                throw new RuntimeException(json.getString("reason"));
+
+            val = param = json.getJSONObject("content");
+        }
+
         Script script = gateway.getScript();
         if (script != null)
         {
@@ -145,6 +159,7 @@ public class GatewayController
             }
         }
 
+        //请求服务在后，脚本为预处理参数
         if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)
         {
             if (val instanceof Map)

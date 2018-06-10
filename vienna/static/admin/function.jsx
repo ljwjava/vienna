@@ -129,7 +129,7 @@ var Main = React.createClass({
 				</div>
 				<div className="form-row">
 					<div className="col-sm-8">
-						<textarea id="script" ref="script" className="form-control" style={{height:"700px"}}></textarea>
+						<textarea id="script" ref="script" className={"form-control" + (this.state.modify ? " border-danger" : "")} style={{height:"700px"}}></textarea>
 					</div>
 					<div className="col-sm-4">
 						<textarea id="reqParams" ref="reqParams" className="form-control" style={{height:"700px"}}></textarea>
