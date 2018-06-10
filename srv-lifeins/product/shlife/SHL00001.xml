@@ -34,7 +34,7 @@
 
 		<init>
 			<item name="ZONE_CITY" value="str(ZONE_CODE,0,4)+'00'"/>
-			<item name="ZONE_CODE" value="var a = try(ZONE.code, ZONE); if(a == null){a = try(SOCIAL_ZONE.code, SOCIAL_ZONE);} return a;"/>
+			<item name="ZONE_CODE" value="var a = try(SOCIAL_ZONE.code, SOCIAL_ZONE); if(a == null){a = try(ZONE.code, ZONE);} return a;"/>
 			<item name="OCCUPATION_CODE" value="INSURANT.OCCUPATION_C"/>
 		</init>
 
@@ -60,10 +60,10 @@
 			<if condition="ZONE_CODE == null" level="alert">
 				请选择所在地区
 			</if>
-			<!--
-			<if condition="INSURANT.OCCUPATION_L != null and (INSURANT.OCCUPATION_L lt 1 or INSURANT.OCCUPATION_L > 5)">
-				职业要求必填且为1~5类
+			<if condition="SOCIAL_INS == null and INSURANT.OCCUPATION_L != null and (INSURANT.OCCUPATION_L lt 1 or INSURANT.OCCUPATION_L > 5)">
+				职业要求为1~5类
 			</if>
+			<!--
 			<if condition="PAY_PERIOD * PREMIUM >= 200000">
 				累计总保费不能超过20万
 			</if>
@@ -74,40 +74,69 @@
 			<if>
 				if (ZONE_CODE == null)
 					return null;
-				var lv = try(DS.ZONE_LEVEL[0][0], 3);
-				if (OCCUPATION_CODE != '9901001' and SOCIAL_INS) {
-					var max = INCOME ? [300, 200, 100] : [200, 100, 50];
-					if (lv == 1) {
-						if (AMOUNT > 10000 * max[0]) {
-							return '根据您提供的基本信息，适合于您的保额范围是30万至' + max[0] + '万';
-						}
-					} else if (lv == 2) {
-						if (AMOUNT > 10000 * max[1]) {
-							return '根据您提供的基本信息，适合于您的保额范围是30万至' + max[1] + '万';
-						}
-					} else {
-						if (AMOUNT > 10000 * max[2]) {
-							return '根据您提供的基本信息，适合于您的保额范围是30万至' + max[2] + '万';
-						}
-					}
-					return null;
-				} else {
+				var lv = try(DS.ZONE_LEVEL[0][SOCIAL_INS == null ? 0 : 1], 3);
+				// 老蘑菇
+				if(SOCIAL_INS == null) {
 					if (lv == 1) {
 						if (AGE le 40 and AMOUNT > 1500000) {
-							return '根据您提供的基本信息，适合于您的保额范围是30万至150万';
+							return '18~40周岁，一类城市最高150万有效保额';
 						} else if (AGE >= 41 and AMOUNT > 1000000) {
-							return '根据您提供的基本信息，适合于您的保额范围是30万至100万';
+							return '41~50周岁，一类城市最高100万有效保额';
 						}
 					} else if (lv == 2) {
 						if (AGE le 40 and AMOUNT > 1000000) {
-							return '当前条件下，二类城市最高100万有效保额';
+							return '18~40周岁，二类城市最高100万有效保额';
 						} else if (AGE >= 41 and AMOUNT > 500000) {
-							return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
+							return '41~50周岁，二类城市最高50万有效保额';
 						}
 					} else {
 						if (AMOUNT > 500000) {
-							return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
+							return '普通地区最高50万有效保额';
 						}
+					}
+				// 新蘑菇（PLUS）
+				} else {
+					if (OCCUPATION_CODE != '9901001' and SOCIAL_INS) {
+						var max = INCOME ? [300, 200, 100] : [200, 100, 50];
+						if(lv >= 2 and !INCOME) {
+							return '根据风险识别，您无法投保小蘑菇PLUS， 请投保保额低于150万的小蘑菇定寿！';
+						}
+						if (lv == 1) {
+							if (AMOUNT > 10000 * max[0]) {
+								return '根据您提供的基本信息，适合于您的保额范围是160万至' + max[0] + '万';
+							}
+						} else if (lv == 2) {
+							if (AMOUNT > 10000 * max[1]) {
+								return '根据您提供的基本信息，适合于您的保额范围是160万至' + max[1] + '万';
+							}
+						} else {
+							if (AMOUNT > 10000 * max[2]) {
+								return '根据风险识别，您无法投保小蘑菇PLUS， 请投保保额低于150万的小蘑菇定寿！';
+								// return '根据您提供的基本信息，适合于您的保额范围是160万至' + max[2] + '万';
+							}
+						}
+						return null;
+					} else {
+						return '根据风险识别，您无法投保小蘑菇PLUS， 请投保保额低于150万的小蘑菇定寿！';
+				/*
+						if (lv == 1) {
+							if (AGE le 40 and AMOUNT > 1500000) {
+								return '根据您提供的基本信息，适合于您的保额范围是30万至150万';
+							} else if (AGE >= 41 and AMOUNT > 1000000) {
+								return '根据您提供的基本信息，适合于您的保额范围是30万至100万';
+							}
+						} else if (lv == 2) {
+							if (AGE le 40 and AMOUNT > 1000000) {
+								return '当前条件下，二类城市最高100万有效保额';
+							} else if (AGE >= 41 and AMOUNT > 500000) {
+								return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
+							}
+						} else {
+							if (AMOUNT > 500000) {
+								return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
+							}
+						}
+				*/
 					}
 				}
 				// 根据您提供的基本信息，适合于您的保额范围是30万 - ？
