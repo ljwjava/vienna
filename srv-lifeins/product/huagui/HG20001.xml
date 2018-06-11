@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HG20001"
+		corporation_id="huigui"
+		code="012B0100"
+		name="华贵擎天柱定期寿险"
+		name_abbr="华贵擎天柱定期寿险"
+		unit="10000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		input="amount"
+		premium="DS.RATE[0][0]*(AMOUNT/1000)"
+		last_modify_date="2018-05-28">
+
+		<data>
+			<item parser="dds" value="HG20001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+				<item code="to_60"/>
+				<item code="to_70"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="A_CITY" value="['1101','3101','4401','4403','3301','3302','3201','3205']"/>
+			<item name="B_CITY" value="['1201','3701','5001','3702','2102','3502','5101','4201','2301','2101','6101','2201','4301','3501','4101','1301','4406','4419','3202','3706','1401','3401','3601','4501','5301','3303','3703','1302','6501','5201','4601','6201','6401','6301','1501','3505','1502','3206','2306','3203','3707','3204','3306','3708','3209','3713','4103','3705','3210','3310','3304','1309','3212','3211','3307','1306','2202','2103','3709','4205','4420','4413','3710','3714','3715','4307','3506','3716','4409','3208','4407','3402','4408','4502','4404','5107','5203','3717']"/>
+		</init>
+
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 50" type="customer">
+				投保年龄须为18~50周岁
+			</if>
+
+			<if condition="ZONE == null" le="alert">
+				请选择所在地区
+			</if>
+
+
+			<if>
+				if(val(PAY_PERIOD)+AGE>70){
+					return '年龄+缴费期限≤70周岁';
+				}
+
+				if(SOCIAL_INS and SOCIAL_ZONE==null){
+					return '请选择社保所在地区';
+				}
+
+				if (ZONE == null) return null;
+				var lv = 3;
+				var code = str(ZONE, 0, 4);
+				if (find(A_CITY, code) != null) {
+					lv = 1;
+				} else if (find(B_CITY, code) != null) {
+					lv = 2;
+				}
+				var slv=3;
+				if(SOCIAL_INS and SOCIAL_ZONE !=null){
+					var code = str(SOCIAL_ZONE, 0, 4);
+					if (find(A_CITY, code) != null) {
+						slv = 1;
+					} else if (find(B_CITY, code) != null) {
+						slv = 2;
+					}
+				}
+
+				lv=(lv lt slv ? lv : slv);
+
+				if (lv == 1) {
+					if(!SOCIAL_INS){
+						if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
+							return '年龄在18-40周岁无社保,一类城市最高150万有效保额';
+						}
+						if (AGE >= 41 and AGE le 50 and AMOUNT > 1000000) {
+							return '年龄在41-50周岁无社保,一类城市最高100万有效保额';
+						}
+					}else{
+						if (AGE >= 18 and AGE le 40 and AMOUNT > 2000000) {
+							return '年龄在18-40周岁有社保,一类城市最高200万有效保额';
+						}
+						if (AGE >= 41 and AGE le 50 and AMOUNT > 1500000) {
+							return '年龄在41-50周岁有社保,一类城市最高150万有效保额';
+						}
+					}
+
+				} else if (lv == 2) {
+					if(!SOCIAL_INS){
+						if (AGE >= 18 and AGE le 40 and AMOUNT > 1000000) {
+							return '年龄在18-40周岁无社保,二类城市最高100万有效保额';
+						}
+						if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
+							return '年龄在41-50周岁无社保,二类城市最高50万有效保额';
+						}
+					}else{
+						if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
+							return '年龄在18-40周岁有社保,二类城市最高150万有效保额';
+						}
+						if (AGE >= 41 and AGE le 50 and AMOUNT > 1000000) {
+							return '年龄在41-50周岁有社保,二类城市最高100万有效保额';
+						}
+					}
+				} else {
+					if(!SOCIAL_INS){
+						if (AGE >= 18 and AGE le 40 and AMOUNT > 500000) {
+							return '年龄在18-40周岁无社保,三类城市最高50万有效保额';
+						}
+						if (AGE >= 41 and AGE le 50 and AMOUNT > 300000) {
+							return '年龄在41-50周岁无社保,三类城市最高30万有效保额';
+						}
+					}else{
+						if (AGE >= 18 and AGE le 40 and AMOUNT > 1000000) {
+							return '年龄在18-40周岁有社保,三类城市最高100万有效保额';
+						}
+						if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
+							return '年龄在41-50周岁有社保,三类城市最高50万有效保额';
+						}
+					}
+				}
+				return null;
+			</if>
+			<if level="alert">
+				if(SOCIAL_INS and SOCIAL_ZONE==null){
+				return null;
+				}
+				if (ZONE == null) return null;
+				var lv = 3;
+				var code = str(ZONE, 0, 4);
+				if (find(A_CITY, code) != null) {
+				lv = 1;
+				} else if (find(B_CITY, code) != null) {
+				lv = 2;
+				}
+
+
+				var slv=3;
+				if(SOCIAL_INS and SOCIAL_ZONE !=null){
+				var code = str(SOCIAL_ZONE, 0, 4);
+				if (find(A_CITY, code) != null) {
+				slv = 1;
+				} else if (find(B_CITY, code) != null) {
+				slv = 2;
+				}
+				}
+
+				lv=(lv lt slv ? lv : slv);
+
+				if(!SOCIAL_INS){
+					slv=lv;
+				}
+				if (slv == 1) {
+					if (AGE >= 18 and AGE le 40 and AMOUNT le 1500000) {
+						return '请确认普通版健康告知';
+					}else{
+						return '请确认高额版健康告知';
+					}
+					if (AGE >= 41 and AGE le 50 and AMOUNT le 1000000) {
+						return '请确认普通版健康告知';
+					}else{
+						return '请确认高额版健康告知';
+					}
+				 }else if (slv == 2) {
+					if (AGE >= 18 and AGE le 40 and AMOUNT le 1000000) {
+						return '请确认普通版健康告知';
+					}else{
+						return '请确认高额版健康告知';
+					}
+					if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
+						return '请确认普通版健康告知';
+					}else{
+						return '请确认高额版健康告知';
+					}
+				 }else{
+					if (AGE >= 18 and AGE le 40 and AMOUNT le 500000) {
+						return '请确认普通版健康告知';
+					}else{
+						return '请确认高额版健康告知';
+					}
+					if (AGE >= 41 and AGE le 50 and AMOUNT le 300000) {
+						return '请确认普通版健康告知';
+					}else{
+						return '请确认高额版健康告知';
+					}
+				}
+
+				return null;
+			</if>
+
+			<if condition="INCOME == null or INCOME == 0 ">
+				请填写收入
+			</if>
+			<if>
+				if (INCOME == null or INCOME == 0) {return null};
+				print(INCOME);
+
+				if (AGE >= 18 and AGE le 35 and  round(AMOUNT/10000/val(INCOME)) > 20) {
+				return  '您的收入不符合可投保保额条件,请您降低保额';
+				}
+				if (AGE >= 36 and AGE le 45 and  round(AMOUNT/10000/val(INCOME)) > 15) {
+				return 	'您的收入不符合可投保保额条件,请您降低保额';
+				}
+				if (AGE >= 46 and AGE le 50 and  round(AMOUNT/10000/val(INCOME)) > 10) {
+				return '您的收入不符合可投保保额条件,请您降低保额';
+				}
+			</if>
+
+
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C)==5040108 || val(INSURANT.OCCUPATION_C)==2099908 || val(INSURANT.OCCUPATION_C)==8000101 || val(INSURANT.OCCUPATION_C)==8000102 || val(INSURANT.OCCUPATION_C)==2111801 || val(INSURANT.OCCUPATION_C)==2111802 || val(INSURANT.OCCUPATION_C)==2113501 || val(INSURANT.OCCUPATION_C)==2113503 || val(INSURANT.OCCUPATION_C)==2113402 || val(INSURANT.OCCUPATION_C)==4040803 || val(INSURANT.OCCUPATION_C)==6010319 )">
+				您的职业属于拒保职业
+			</if>
+
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C) ==2099907 || val(INSURANT.OCCUPATION_C) ==3020110 ||	val(INSURANT.OCCUPATION_C) ==4071203) and AMOUNT>=5000000">
+				您的职业最高选择保额50万,请降低保额
+			</if>
+
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C) ==3020102 || val(INSURANT.OCCUPATION_C) ==3020103 ||	val(INSURANT.OCCUPATION_C) ==3020104 || val(INSURANT.OCCUPATION_C) ==3020108 ||	val(INSURANT.OCCUPATION_C) ==8000001 ||	val(INSURANT.OCCUPATION_C) ==8000002 ||	val(INSURANT.OCCUPATION_C) ==8000003 ) and AMOUNT>=3000000">
+				您的职业最高选择保额30万,请降低保额
+			</if>
+
+		</rule>
+	</product>
+</declare>
