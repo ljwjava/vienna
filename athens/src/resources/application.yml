@@ -37,7 +37,7 @@ service:
   product: http://localhost:7758
   org: http://localhost:7731
   underwriting: http://localhost:7782
-  shop: http://localhost:7758
+  shop: http://localhost:7759
   template: http://localhost:7969
 
 path:
