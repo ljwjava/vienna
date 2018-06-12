@@ -1,6 +1,7 @@
 package lerrain.service.template;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import lerrain.service.common.ServiceTools;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class TemplateDao {
@@ -219,4 +219,36 @@ public class TemplateDao {
         List<TemplateUserRelation> tps = jdbc.query(sql, new Object[]{}, new BeanPropertyRowMapper<>(TemplateUserRelation.class));
         return (tps != null && tps.size() > 0) ? tps.get(0) : null;
     }
+
+    public List<TemplateProductRelation> queryProductIdByTemplateId(Long templateId) {
+        String sql = "select * from t_cs_template_product_relation where is_deleted='N' and template_id=" + templateId;
+        return jdbc.query(sql, new Object[]{}, new BeanPropertyRowMapper<>(TemplateProductRelation.class));
+    }
+
+    public List<TemplateProduct> queryTps(List<Long> ids) {
+        if (ids == null && ids.size() <= 0) {
+            return Lists.newArrayList();
+        }
+        StringBuilder sql = new StringBuilder(" select * from t_cs_template_product where is_deleted='N' and id in ( ");
+        for (Long id : ids) {
+            sql.append(id).append(",");
+        }
+        sql.append(" )");
+        return jdbc.query(sql.replace(sql.lastIndexOf(","), sql.lastIndexOf(",") + 1, "").toString(),
+                new Object[]{}, new BeanPropertyRowMapper<>(TemplateProduct.class));
+    }
+
+    public List<TemplateProductType> queryByProductId(List<Long> pIds) {
+        if (pIds == null && pIds.size() <= 0) {
+            return Lists.newArrayList();
+        }
+        StringBuilder sql = new StringBuilder(" select * from t_cs_template_product_type where is_deleted='N' and id in ( select product_type_id from t_cs_template_product_type_relation where  product_id in( ");
+        for (Long id : pIds) {
+            sql.append(id).append(",");
+        }
+        sql.append(" ))");
+        return jdbc.query(sql.replace(sql.lastIndexOf(","), sql.lastIndexOf(",") + 1, "").toString(),
+                new Object[]{}, new BeanPropertyRowMapper<>(TemplateProductType.class));
+    }
+
 }
