@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HG10001"
+		corporation_id="huigui"
+		code="012C0100"
+		name="华贵擎天柱终身寿险"
+		name_abbr="华贵擎天柱终身寿险"
+		unit="10000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		input="amount"
+		premium="DS.RATE[0][0]*(AMOUNT/1000)"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="HG10001" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+
+			</pay>
+			<insure>
+				<item code="to_full"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="A_CITY" value="['1101','3101','4401','4403','3201','3205','3301','3302']"/>
+			<item name="B_CITY" value="['1201','1301','1302','1306','1309','1401','1501','1502','2101','2102','2103','2201','2202','2301','2306','3202','3203','3204','3206','3208','3209','3210','3211','3212','3303','3304','3306','3307','3310','3401','3402','3501','3502','3505','3506','3601','3701','3702','3703','3705','3706','3707','3708','3709','3710','3713','3714','3715','3716','3717','4101','4103','4201','4205','4301','4307','4404','4406','4407','4408','4409','4413','4419','4420','4501','4502','4601','5001','5002','5107','5201','5203','5301','6101','6201','6301','6401','6501']"/>
+		</init>
+
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 75" type="customer">
+				投保年龄须为18~75周岁
+			</if>
+
+			<if condition="ZONE == null">
+				请选择所在地区
+			</if>
+
+			<if>
+				if (ZONE == null)
+				return null;
+				var lv = 3;
+				var code = str(ZONE, 0, 4);
+				if (find(A_CITY, code) != null) {
+					lv = 1;
+				} else if (find(B_CITY, code) != null) {
+					lv = 2;
+				}
+
+				print(lv);
+				if (lv == 1) {
+					if (AGE >= 18 and AGE le 40 and   AMOUNT > 2000000) {
+						return '年龄在18-40周岁,一类城市最高200万有效保额';
+					}
+					if (AGE >= 41 and AGE le 50 and   AMOUNT > 1500000) {
+						return '年龄在41-50周岁,一类城市最高150万有效保额';
+					}
+					if (AGE >= 51 and AGE le 60 and   AMOUNT > 500000) {
+						return '年龄在51-60周岁,一类城市最高50万有效保额';
+					}
+				} else if (lv == 2) {
+					if (AGE >= 18 and AGE le 40 and   AMOUNT > 1500000) {
+						return '年龄在18-40周岁,二类城市最高150万有效保额';
+					}
+					if (AGE >= 41 and AGE le 50 and   AMOUNT > 1000000) {
+						return '年龄在41-50周岁,二类城市最高100万有效保额';
+					}
+					if (AGE >= 51 and AGE le 60 and   AMOUNT > 500000) {
+						return '年龄在51-60周岁,二类城市最高50万有效保额';
+					}
+				} else {
+					if (AGE >= 18 and AGE le 40 and   AMOUNT > 1000000) {
+						return '年龄在18-40周岁,三类城市最高100万有效保额';
+					}
+					if (AGE >= 41 and AGE le 50 and   AMOUNT > 500000) {
+						return '年龄在41-50周岁,三类城市最高50万有效保额';
+					}
+					if (AGE >= 51 and AGE le 60 and   AMOUNT > 300000) {
+						return '年龄在51-60周岁,三类城市最高30万有效保额';
+					}
+				}
+				if (AGE >= 61 and AGE le 75 and   AMOUNT > 300000) {
+					return '年龄在61-75周岁,最高30万有效保额';
+				}
+
+				if (AGE >= 71 and AGE le 75 and   AMOUNT > 300000) {
+					return '71-75周岁仅支持线下购买,具体可致电i云宝客服。';
+				}
+				return null;
+			</if>
+			<if condition="INCOME == null">
+				请填写收入
+			</if>
+			<if>
+			    if (INCOME == null) return null;
+				if (AGE >= 18 and AGE le 35 and  round(AMOUNT/10000/INCOME) > 20) {
+					return  '您的收入不符合可投保保额条件,请您降低保额';
+				}
+				if (AGE >= 36 and AGE le 45 and  round(AMOUNT/10000/INCOME) > 15) {
+					return 	'您的收入不符合可投保保额条件,请您降低保额';
+				}
+				if (AGE >= 46 and AGE le 55 and  round(AMOUNT/10000/INCOME) > 10) {
+					return '您的收入不符合可投保保额条件,请您降低保额';
+				}
+				if (AGE >= 56 and AGE le 60 and  round(AMOUNT/10000/INCOME) > 5) {
+					return '您的收入不符合可投保保额条件,请您降低保额';
+				}
+				if (AGE >= 61 and AGE le 70 and  round(AMOUNT /10000/INCOME) > 3) {
+					return '您的收入不符合可投保保额条件,请您降低保额';
+				}
+			</if>
+
+			<if condition="INSURANT.OCCUPATION_L != null and (val(INSURANT.OCCUPATION_L) lt 1 or val(INSURANT.OCCUPATION_L) > 4)">
+				职业要求为1~4类
+			</if>
+
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C)==2099908 || val(INSURANT.OCCUPATION_C)==2111801 || val(INSURANT.OCCUPATION_C)==2113501)">
+				您的职业属于拒保职业
+			</if>
+
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C)==2099907 || val(INSURANT.OCCUPATION_C)==3020110 || val(INSURANT.OCCUPATION_C)==4071203) and AMOUNT>500000">
+				您的职业最高选择保额50万,请降低保额
+			</if>
+
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C)==3020102 || val(INSURANT.OCCUPATION_C)==3020103 ||  val(INSURANT.OCCUPATION_C)==3020104 || val(INSURANT.OCCUPATION_C)==3020108 ||	val(INSURANT.OCCUPATION_C)==8000001 ||	val(INSURANT.OCCUPATION_C)==8000002 ||	val(INSURANT.OCCUPATION_C)==8000003) and AMOUNT>300000">
+				您的职业最高选择保额30万,请降低保额
+			</if>
+
+		</rule>
+	</product>
+</declare>

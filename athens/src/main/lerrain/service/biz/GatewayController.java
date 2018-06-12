@@ -53,7 +53,7 @@ public class GatewayController
         return res;
     }
 
-    private Object call(String host, String uri, HttpSession session, JSONObject param)
+    protected Object call(String host, String uri, HttpSession session, JSONObject param)
     {
         Log.debug(host + "/" + uri + " <== " + param.toString());
 
@@ -118,6 +118,20 @@ public class GatewayController
 
         Object val = null;
 
+        //请求服务在前，脚本为整理结果
+        if (gateway.getForward() == Gateway.REQUEST_MICRO_SERVICE)
+        {
+            String forwardTo = gateway.getForwardTo(uri);
+
+            int p2 = forwardTo.indexOf("/");
+            JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
+
+            if (!"success".equals(json.getString("result")))
+                throw new RuntimeException(json.getString("reason"));
+
+            val = param = json.getJSONObject("content");
+        }
+
         Script script = gateway.getScript();
         if (script != null)
         {
@@ -145,6 +159,7 @@ public class GatewayController
             }
         }
 
+        //请求服务在后，脚本为预处理参数
         if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)
         {
             if (val instanceof Map)
@@ -174,7 +189,7 @@ public class GatewayController
         return val;
     }
 
-    private JSONObject getParam(HttpServletRequest req)
+    protected JSONObject getParam(HttpServletRequest req)
     {
         String contentType = req.getContentType();
         if (contentType != null)
@@ -213,95 +228,6 @@ public class GatewayController
         param.put("URL", req.getRequestURL().toString());
 
         return param;
-    }
-
-    @RequestMapping("/iyb/**/*.json")
-    @ResponseBody
-    @CrossOrigin
-    public JSONObject iyb(HttpServletRequest req)
-    {
-        String uri = req.getRequestURI();
-        uri = uri.substring(uri.indexOf("/", 1) + 1);
-
-        JSONObject res = new JSONObject();
-        try
-        {
-            JSONObject param = getParam(req);
-            HttpSession session = req.getSession();
-
-            Long memberId = param.getLong("owner");
-            if (memberId == null)
-                memberId = param.getLong("accountId");
-            if (memberId != null)
-            {
-                session.setAttribute("userId", 2L);
-                session.setAttribute("memberId", memberId);
-            }
-
-            res.put("isSuccess", true);
-            res.put("result", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
-        }
-        catch (Exception e)
-        {
-            res.put("isSuccess", false);
-            res.put("errorCode", 101);
-            res.put("errorMsg", e.getMessage());
-        }
-
-        return res;
-    }
-
-    @RequestMapping("/test/**/*.json")
-    @ResponseBody
-    @CrossOrigin
-    public JSONObject testJson(HttpServletRequest req)
-    {
-        String uri = req.getRequestURI();
-        uri = uri.substring(6);
-
-        JSONObject param = getParam(req);
-        HttpSession session = req.getSession();
-
-        PrintStream oldPs = System.out;
-        try (ByteArrayOutputStream sysOs = new ByteArrayOutputStream(); PrintStream sysPs = new PrintStream(sysOs))
-        {
-            System.setOut(sysPs);
-
-            JSONObject res = new JSONObject();
-            res.put("result", "success");
-
-            JSONObject val = new JSONObject();
-
-            try
-            {
-                val.put("result", call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
-            }
-            catch(Exception e)
-            {
-                try (ByteArrayOutputStream exOs = new ByteArrayOutputStream(); PrintStream exPs = new PrintStream(exOs))
-                {
-                    e.printStackTrace(exPs);
-                    val.put("exception", exOs.toString());
-                }
-                catch (Exception e1)
-                {
-                    Log.error(e1);
-                }
-            }
-
-            val.put("console", sysOs.toString());
-            res.put("content", val);
-
-            return res;
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-        finally
-        {
-            System.setOut(oldPs);
-        }
     }
 
     @RequestMapping("/${gatedir}**/*.json")

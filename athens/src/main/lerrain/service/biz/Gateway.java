@@ -22,6 +22,7 @@ public class Gateway
     public static final int FORWARD_MICRO_SERVICE   = 1;
     public static final int FORWARD_REDIRECT_LOCAL  = 2;
     public static final int FORWARD_REDIRECT_REMOTE = 3;
+    public static final int REQUEST_MICRO_SERVICE   = 4;
 
     Long id;
 

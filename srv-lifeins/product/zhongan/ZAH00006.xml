@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="ZAH00006" corporation_id="zhongan" code="AA31" name="尊享e生·医疗险（2017版）" name_abbr="尊享e生2017" unit="3000000" input="quantity" premium="R * QUANTITY"
+	<product id="ZAH00006" corporation_id="zhongan" code="AA31" name="尊享e生·医疗险旗舰版" name_abbr="尊享e生旗舰版" unit="3000000" input="quantity" premium="R * QUANTITY"
 			 type="medical" sequence="1000" sale_begin_date="2017-01-01" sale_end_date="" last_modify_date="2018-04-28">
 
 		<param>
@@ -26,15 +26,10 @@
 			<item name="PROTON_HEAVY_ION" value="var a = try(INSURANT.ADDIT_SERVICE, null); if(a == null) {return (ZZZLZ == null ? false : ZZZLZ);} else if(find(INSURANT.ADDIT_SERVICE, 'ZZZLZ') != null){return true;} else {return false;}"/>
 			<item name="SOCIAL_INS" value="true" type="boolean"/>
 			<!--计划一 AA31-->
-			<item name="RS1">return [[756,1576],[336,666],[136,286],[166,326],[226,466],[286,616],[376,856],[466,1206],[556,1666],[866,2616],[1066,3506],[1426,4386],[1906,5696],[2816,8136],[3566,10296],[4326,12766]];</item>
+			<item name="RS1">return [[766,1586],[346,676],[146,296],[176,336],[236,476],[296,626],[386,866],[476,1216],[566,1676],[876,2626],[1076,3516],[1436,4396],[1916,5706],[2826,8146],[3576,10306],[4336,12776]];</item>
 			<!--计划二+免赔额豁免 AA32-->
-			<item name="RS2">return [[866,1816],[386,766],[156,326],[196,376],[256,536],[326,706],[436,986],[536,1386],[636,1916],[996,3006],[1226,4036],[1636,5046],[2196,6556],[3236,9356],[4106,11846],[4976,14686]];</item>
+			<item name="RS2">return [[816,1686],[366,716],[156,316],[186,356],[246,506],[306,666],[406,916],[506,1286],[596,1776],[926,2786],[1136,3726],[1526,4656],[2036,6046],[2996,8636],[3786,10926],[4596,13546]];</item>
 			<item name="R">
-				<!--print('insure===>' + size(INSURANT.ADDIT_SERVICE));-->
-				<!--print('insure===>' + find(INSURANT.ADDIT_SERVICE, 'GXMP'));-->
-				<!--print('insure===>' + INSURANT.ADDIT_SERVICE);-->
-				<!--print('insure===>' + SHARE_DEDUCTIBLE);-->
-				<!--print('insure===>' + PROTON_HEAVY_ION);-->
 				var btwn = function(mi, ma, v){
 					if(v lt mi or v > ma)
 						return false;
@@ -53,14 +48,31 @@
 					return null;
 				}
 
+				// 质重加油包
+				var addPrem = 0;
+				if(PROTON_HEAVY_ION){
+					if(btwn(14, 35, AGE)) {
+						addPrem = 10;
+					} else if(btwn(36, 40, AGE)) {
+						addPrem = 20;
+					} else if(btwn(41, 60, AGE)) {
+						addPrem = 30;
+					} else if(btwn(61, 80, AGE)) {
+						addPrem = 50;
+					}
+				}
+
 				var rs = (SHARE_DEDUCTIBLE ? RS2 : RS1);
-				return rs[a][SOCIAL_INS ? 0 : 1];
+				return rs[a][SOCIAL_INS ? 0 : 1] + addPrem;
 			</item>
 		</init>
 
 		<rule>
 			<if condition="DAY lt 30 or AGE > 60">
 				被保险人年龄要求出生满30天~60周岁。
+			</if>
+			<if condition="PROTON_HEAVY_ION and AGE lt 14">
+				质子重离子医院暂不开放14岁以下人员的治疗。
 			</if>
 		</rule>
 

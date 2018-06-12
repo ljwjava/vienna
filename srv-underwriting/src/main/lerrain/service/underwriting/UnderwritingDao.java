@@ -20,6 +20,26 @@ public class UnderwritingDao
 {
     @Autowired JdbcTemplate jdbc;
 
+    public List<ProductQuest> listAllProductRela()
+    {
+        return jdbc.query("select * from t_product_quest", new RowMapper<ProductQuest>()
+        {
+            @Override
+            public ProductQuest mapRow(ResultSet m, int arg1) throws SQLException
+            {
+                return productQuestOf(m);
+            }
+        });
+    }
+
+    private ProductQuest productQuestOf(ResultSet m) throws SQLException
+    {
+        ProductQuest p = new ProductQuest();
+        p.setProductId(m.getString("product_id"));
+        p.setCode(m.getString("code"));
+        return p;
+    }
+
     public List<Quest> listAll()
     {
         return jdbc.query("select * from t_uw_quest order by `type`, sequence, code", new RowMapper<Quest>()

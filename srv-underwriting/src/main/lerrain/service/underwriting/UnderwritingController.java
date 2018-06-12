@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,15 @@ public class UnderwritingController
 	@ResponseBody
 	public JSONObject create(@RequestBody JSONObject p)
 	{
-		Underwriting uw = uwSrv.create(p.getJSONObject("answer"));
+		Integer productId = p.getInteger("productId");
+		if(productId == null || productId <= 0){
+			throw new RuntimeException("productId is null");
+		}
+		Map v = p.getJSONObject("answer");
+		v = v == null ? new HashMap() : v;
+		v.put("productId", String.valueOf(productId));
+
+		Underwriting uw = uwSrv.create(v);
 
 		JSONObject res = new JSONObject();
 		res.put("result", "success");

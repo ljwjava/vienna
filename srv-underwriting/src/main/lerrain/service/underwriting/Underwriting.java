@@ -1,5 +1,7 @@
 package lerrain.service.underwriting;
 
+import lerrain.tool.Common;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,5 +74,16 @@ public class Underwriting
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public String getProductId(){
+        String productId = null;
+        if(!Common.isEmpty(this.val)){
+            productId = String.valueOf(this.val.get("productId"));
+        }
+        if(Common.isEmpty(productId))
+            productId = "33";
+
+        return productId;
     }
 }

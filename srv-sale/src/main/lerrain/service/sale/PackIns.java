@@ -42,6 +42,7 @@ public class PackIns
     Map<String, Object> extra;
     Map<String, Object> vendor;
     Map<String, Object> formOpt;
+    Map<String, Object> opClassify;
 
     public PackIns clone() {
         // TODO: 待处理
@@ -206,5 +207,13 @@ public class PackIns
     public void setCode(String code)
     {
         this.code = code;
+    }
+
+    public Map<String, Object> getOpClassify() {
+        return opClassify;
+    }
+
+    public void setOpClassify(Map<String, Object> opClassify) {
+        this.opClassify = opClassify;
     }
 }
