@@ -6,9 +6,11 @@ import lombok.Data;
 
 @Data
 public class Shop {
+    private Long wareId;                        //产品包id
     private Long orgId;                       //业务员userId,如果是老渠道accountId
     private String companyId;                   //业务员归属公司id
     private String commodityTypeCode;           //商品类型编码
+    private String commodityTypeName;           //商品类型名称
     private Long commodityId;                 //商品ID
     private String commodityCode;               //商品编码
     private String commodityName;               //商品名称

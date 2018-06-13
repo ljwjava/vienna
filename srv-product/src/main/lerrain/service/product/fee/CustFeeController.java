@@ -3,6 +3,7 @@ package lerrain.service.product.fee;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -177,5 +178,35 @@ public class CustFeeController
         }
 
         ccs.saveFeeDefine(schemeId, productId, begin, end, list);
+    }
+
+    @RequestMapping("/fee/rate/queryFeeByScheme.json")
+    @ResponseBody
+    public JSONObject queryFeeByScheme(@RequestBody JSONObject c)
+    {
+        Long schemeId = c.getLong("schemeId");
+        int currentPage = Common.intOf(c.get("currentPage"), 1);
+        int num = Common.intOf(c.get("pageSize"), 10);
+        int from =  num*(currentPage - 1);
+
+//        JSONObject res = new JSONObject();
+//        res.put("result", "success");
+//        res.put("content", ccs.queryFeeByScheme(schemeId));
+
+        List<CustFeeDefine> list = ccs.queryFeeByScheme(schemeId, from, num);
+
+        JSONObject r = new JSONObject();
+        r.put("list", list);
+        JSONObject page = new JSONObject();
+        page.put("total",ccs.countFeeByScheme(schemeId));
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        r.put("pagination", page);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
     }
 }
