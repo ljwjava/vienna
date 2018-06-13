@@ -52,6 +52,42 @@ public class TemplateController {
         return res;
     }
 
+    @RequestMapping("/findById.json")
+    @ResponseBody
+    public JSONObject findById(@RequestBody JSONObject p) {
+        Long templateId = p.getLong("templateId");
+
+        JSONObject result = templateSrv.findByTemplateId(templateId);
+
+        List<TemplateProductRelation> ids = templateSrv.queryProductIdByTemplateId(templateId);
+        List<Long> idList = Lists.newArrayList();
+        for (int i=0;i<ids.size();i++){
+            idList.add(ids.get(i).getProductId());
+        }
+        List<TemplateProduct> tps = templateSrv.queryTps(idList);
+
+        List<TemplateProductType> tpts = templateSrv.queryByProductId(idList);
+
+        result.put("proType", tpts);
+        result.put("product", tps);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", result);
+        return res;
+    }
+
+    @RequestMapping("/delete.json")
+    @ResponseBody
+    public JSONObject delete(@RequestBody JSONObject p) {
+        Long templateId = p.getLong("templateId");
+        templateSrv.delete(templateId);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
 
     @RequestMapping("/savePro.json")
     @ResponseBody
