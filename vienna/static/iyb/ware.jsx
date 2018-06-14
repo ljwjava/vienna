@@ -204,6 +204,10 @@ var Ware = React.createClass({
         });
     },
     next(){
+        if(this.state.salesFlag != 0 && this.state.salesFlagMsg[this.state.salesFlag] != null) {
+            ToastIt(this.state.salesFlagMsg[this.state.salesFlag]);
+            return false;
+        }
         if(!!env.docs && (env.docs.underwriting != null || !!env.docs.quests && env.docs.quests.length > 0)){
             this.saveAndNext(this.openQuest);
         } else {
@@ -278,13 +282,14 @@ var Ware = React.createClass({
         }
     },
     getInitialState() {
-    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false};
+    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false, salesFlagMsg: {0:null, 1:"该产品因披露不完整暂时下架，待披露完整后恢复上架", 2:"该产品已停售"}, salesFlag: 0};
     	let v = this.props.detail;
     	if (v != null && v.detail != null && v.detail.length > 1) {
             r.packs = [];
     		for (var i=0;i<v.detail.length;i++) {
                  r.packs.push([i, v.detail[i].name]);
             }
+            r.salesFlag = v.detail.salesFlag;
     	}
     	return r;
     },
