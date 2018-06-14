@@ -93,6 +93,7 @@ public class SaleController
         r.put("logo", c.getLogo());
         r.put("price", c.getPrice());
         r.put("banner", c.getBanner());
+        r.put("salesFlag", c.getSalesFlag());
 
         r.put("vendor", saleSrv.getVendor(c.getVendorId()));
 
