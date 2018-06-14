@@ -289,8 +289,10 @@ var Ware = React.createClass({
     		for (var i=0;i<v.detail.length;i++) {
                  r.packs.push([i, v.detail[i].name]);
             }
-            r.salesFlag = v.detail.salesFlag;
     	}
+    	if (v != null) {
+            r.salesFlag = v.salesFlag;
+        }
     	return r;
     },
     componentWillMount(){
