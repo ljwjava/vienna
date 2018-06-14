@@ -94,11 +94,9 @@ public class TemplateService {
         dao.batchSaveProTypeRelation(list);
     }
 
-    public JSONObject findByTemplateId(Long templateId) {
-        JSONObject json = null;
+    public Template findByTemplateId(Long templateId) {
         Template template = dao.get(templateId);
-        json = (JSONObject) JSON.toJSON(template);
-        return json;
+        return template;
     }
 
     public List<TemplateProductRelation> queryProductIdByTemplateId(Long templateId) {

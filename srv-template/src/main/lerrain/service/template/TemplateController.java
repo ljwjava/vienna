@@ -1,5 +1,6 @@
 package lerrain.service.template;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -58,8 +59,16 @@ public class TemplateController {
     public JSONObject findById(@RequestBody JSONObject p) {
         Long templateId = p.getLong("templateId");
 
-        JSONObject result = templateSrv.findByTemplateId(templateId);
-
+        Template template = templateSrv.findByTemplateId(templateId);
+        JSONObject result = (JSONObject) JSON.toJSON(template);
+        if (result == null) {
+            result = new JSONObject();
+            return result;
+        }
+        String banner = template.getBanner();
+        String message = template.getMessage();
+        result.put("banner", StringUtils.isNotBlank(banner) ? JSON.parseArray(banner) : null);
+        result.put("message", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : null);
         List<TemplateProductRelation> ids = templateSrv.queryProductIdByTemplateId(templateId);
         List<Long> idList = Lists.newArrayList();
         for (int i = 0; i < ids.size(); i++) {
