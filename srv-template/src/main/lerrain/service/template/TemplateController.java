@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +62,7 @@ public class TemplateController {
 
         List<TemplateProductRelation> ids = templateSrv.queryProductIdByTemplateId(templateId);
         List<Long> idList = Lists.newArrayList();
-        for (int i=0;i<ids.size();i++){
+        for (int i = 0; i < ids.size(); i++) {
             idList.add(ids.get(i).getProductId());
         }
         List<TemplateProduct> tps = templateSrv.queryTps(idList);
@@ -165,14 +166,21 @@ public class TemplateController {
         JSONObject proType = p.getJSONObject("proType");
         JSONArray products = p.getJSONArray("product");
 
-        Long proTypeId = proType.getLong("id");
+        Long proTypeId = proType != null ? proType.getLong("id") : null;
+        if (banner == null) {
+            banner = new JSONArray();
+            JSONObject json = new JSONObject();
+            json.put("picUrl", "111");
+            json.put("launchUrl", "222");
+            banner.add(json);
+        }
 
         //创建模板主表
         Template t = new Template();
         t.setId(templateId);
-        t.setTemplateName(templateName);
-        t.setTitle(title);
-        t.setMessage(message.toJSONString());
+        t.setTemplateName(StringUtils.isNotBlank(templateName) ? templateName : "商城模板");
+        t.setTitle(StringUtils.isNotBlank(title) ? title : "商城");
+        t.setMessage(message != null ? message.toJSONString() : null);
         t.setBanner(banner.toJSONString());
         Long id = templateSrv.saveOpUpdate(t);
 
