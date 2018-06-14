@@ -79,4 +79,14 @@ public class CustFeeService
 
 		return r;
 	}
+
+	public int countFeeByScheme(Long schemeId)
+	{
+		return feeDao.countFeeByScheme(schemeId);
+	}
+
+	public List<CustFeeDefine> queryFeeByScheme(Long schemeId, int from, int num)
+	{
+		return feeDao.queryFeeByScheme(schemeId, from, num);
+	}
 }

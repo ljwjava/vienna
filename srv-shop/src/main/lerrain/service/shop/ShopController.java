@@ -69,4 +69,73 @@ public class ShopController
         return res;
     }
 
+    @RequestMapping("/commodityCombs.json")
+    @ResponseBody
+    public JSONObject commodityCombs(@RequestBody JSONObject p)
+    {
+        int currentPage = Common.intOf(p.get("currentPage"), 1);
+        int num = Common.intOf(p.get("pageSize"), 10);
+        int from =  num*(currentPage - 1);
+
+        String search = p.getString("userId");
+
+        List<JSONObject> rtList = productSrv.rateTemplates(search, from, num);
+
+        JSONObject r = new JSONObject();
+        r.put("list", rtList);
+        JSONObject page = new JSONObject();
+        page.put("total",productSrv.countTemplate(search));
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        r.put("pagination", page);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
+    @RequestMapping("/rateTemplates.json")
+    @ResponseBody
+    public JSONObject rateTemplates(@RequestBody JSONObject p)
+    {
+        int currentPage = Common.intOf(p.get("currentPage"), 1);
+        int num = Common.intOf(p.get("pageSize"), 10);
+        int from =  num*(currentPage - 1);
+
+        String search = p.getString("userId");
+
+        List<JSONObject> rtList = productSrv.rateTemplates(search, from, num);
+
+        JSONObject r = new JSONObject();
+        r.put("list", rtList);
+        JSONObject page = new JSONObject();
+        page.put("total",productSrv.countTemplate(search));
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        r.put("pagination", page);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
+    @RequestMapping("/queryCommodityDetail.json")
+    @ResponseBody
+    public JSONObject queryCommodityDetail(@RequestBody JSONObject p)
+    {
+        Long wareId = p.getLong("wareId");
+
+        Shop shop = productSrv.queryShopById(wareId);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", JSON.toJSON(shop));
+
+        return res;
+    }
+
 }

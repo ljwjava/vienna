@@ -142,4 +142,39 @@ public class CustFeeDao
 
 		return res;
 	}
+
+	public int countFeeByScheme(Long schemeId)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("select count(*) from t_product_fee_cust where valid is null");
+		if (null != schemeId) {
+			sql.append(" and scheme_id = "+schemeId);
+		}
+
+		return jdbc.queryForObject(sql.toString(), Integer.class);
+	}
+
+	public List<CustFeeDefine> queryFeeByScheme(Long schemeId, int from, int num)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("select * from t_product_fee_cust where valid is null");
+		if (null != schemeId) {
+			sql.append(" and scheme_id = "+schemeId);
+		}
+		sql.append(" limit ?, ?");
+
+		return jdbc.query(sql.toString(), new Object[] {from, num}, new RowMapper<CustFeeDefine>()
+		{
+			@Override
+			public CustFeeDefine mapRow(ResultSet rs, int arg1) throws SQLException
+			{
+				CustFeeDefine cfd = new CustFeeDefine();
+				cfd.setSchemeId(rs.getLong("scheme_id"));
+				cfd.setProductId(rs.getLong("product_id"));
+				cfd.setBegin(rs.getDate("begin"));
+				cfd.setEnd(rs.getDate("end"));
+				return cfd;
+			}
+		});
+	}
 }
