@@ -22,7 +22,7 @@ public class Ware
 
     JSONArray banner;
 
-    int salesFlag;  // 销售状态
+    int salesFlag;  // 销售状态（0-在售，1-下架，2-停售）
 
     List<PackIns> detail;
 
