@@ -27,32 +27,24 @@ public class PlatformController
         String uri = req.getRequestURI();
         uri = uri.substring(uri.indexOf("/", 1) + 1);
 
+        JSONObject param = gc.getParam(req);
+        HttpSession session = req.getSession();
+
+        Long userId = (Long)session.getAttribute("userId");
+        if (userId == null)
+        {
+            String userKey = param.getString("userKey");
+            if (userKey != null)
+                userId = 1L;
+
+            session.setAttribute("userId", userId);
+            session.setAttribute("memberId", userId);
+            session.setAttribute("platformId", 9L);
+        }
+
         JSONObject res = new JSONObject();
-        try
-        {
-            JSONObject param = gc.getParam(req);
-            HttpSession session = req.getSession();
-
-            Long userId = (Long)session.getAttribute("userId");
-            if (userId == null)
-            {
-                String jsCode = param.getString("jsCode");
-                if (jsCode != null)
-                    userId = 2L;
-
-                session.setAttribute("userId", userId);
-                session.setAttribute("memberId", userId);
-                session.setAttribute("platformId", 9L);
-            }
-
-            res.put("result", "success");
-            res.put("content", gc.call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
-        }
-        catch (Exception e)
-        {
-            res.put("result", "fail");
-            res.put("reason", e.getMessage());
-        }
+        res.put("result", "success");
+        res.put("content", gc.call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
 
         return res;
     }

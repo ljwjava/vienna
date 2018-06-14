@@ -1,5 +1,7 @@
 package lerrain.service.env;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lerrain.service.env.function.*;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
@@ -38,6 +40,7 @@ public class EnvService
     Function today;
     Function timediff;
     Function reversalStr;
+    Function isList, isMap;
     Function log, err;
 
     @Value("${scope}")
@@ -131,6 +134,34 @@ public class EnvService
             {
                 Log.error(objects[0]);
                 return null;
+            }
+        };
+        isList = new Function()
+        {
+            @Override
+            public Object run(Object[] objects, Factors factors)
+            {
+                if(objects == null || objects.length <= 0){
+                    return false;
+                }
+                if(objects[0] instanceof JSONArray || objects[0] instanceof Object[] || objects[0] instanceof List){
+                    return true;
+                }
+                return false;
+            }
+        };
+        isMap = new Function()
+        {
+            @Override
+            public Object run(Object[] objects, Factors factors)
+            {
+                if(objects == null || objects.length <= 0){
+                    return false;
+                }
+                if(objects[0] instanceof JSONObject || objects[0] instanceof Map){
+                    return true;
+                }
+                return false;
             }
         };
     }

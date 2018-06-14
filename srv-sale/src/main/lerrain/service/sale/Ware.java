@@ -1,5 +1,7 @@
 package lerrain.service.sale;
 
+import com.alibaba.fastjson.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class Ware
     String logo;
     String price;
 
-    String[] banner;
+    JSONArray banner;
 
     List<PackIns> detail;
 
@@ -34,7 +36,7 @@ public class Ware
         w.setLogo(logo);
         w.setPrice(price);
         if(banner != null){
-            w.setBanner(banner.clone());
+            w.setBanner(JSONArray.parseArray(banner.toJSONString()));
         }
 
         List<PackIns> dl = null;
@@ -116,12 +118,12 @@ public class Ware
         this.abbrName = abbrName;
     }
 
-    public String[] getBanner()
+    public JSONArray getBanner()
     {
         return banner;
     }
 
-    public void setBanner(String[] banner)
+    public void setBanner(JSONArray banner)
     {
         this.banner = banner;
     }

@@ -135,7 +135,7 @@ public class EnvDao
             }
         });
 
-        jdbc.query("select * from t_env_const where env_id = ? or env_code = ?", new Object[] {p.getId(), p.getCode()}, new RowCallbackHandler()
+        jdbc.query("select * from t_env_const where env_id = ? or env_code = ? order by id", new Object[] {p.getId(), p.getCode()}, new RowCallbackHandler()
         {
             @Override
             public void processRow(ResultSet rs) throws SQLException

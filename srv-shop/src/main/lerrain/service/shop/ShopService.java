@@ -63,4 +63,22 @@ public class ShopService
         }
         return objs;
     }
+
+    public int countTemplate(String search)
+    {
+        return productDao.countTemplate(search);
+    }
+
+    public List<JSONObject> rateTemplates(String search, int from, int num)
+    {
+        List<JSONObject> rates = productDao.rateTemplates(search, from, num);
+        return rates;
+    }
+
+
+    public Shop queryShopById(Long wareId)
+    {
+        Shop shop = productDao.queryShopById(wareId);
+        return shop;
+    }
 }

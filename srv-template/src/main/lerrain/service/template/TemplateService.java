@@ -1,5 +1,6 @@
 package lerrain.service.template;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,5 +92,23 @@ public class TemplateService {
             return;
         }
         dao.batchSaveProTypeRelation(list);
+    }
+
+    public Template findByTemplateId(Long templateId) {
+        Template template = dao.get(templateId);
+        return template;
+    }
+
+    public List<TemplateProductRelation> queryProductIdByTemplateId(Long templateId) {
+        return dao.queryProductIdByTemplateId(templateId);
+    }
+
+    public List<TemplateProduct> queryTps(List<Long> ids) {
+        return dao.queryTps(ids);
+    }
+
+    public List<TemplateProductType> queryByProductId(List<Long> pIds) {
+        return dao.queryByProductId(pIds);
+
     }
 }

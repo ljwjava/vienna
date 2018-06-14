@@ -1,6 +1,5 @@
 package lerrain.service.shop;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +162,107 @@ public class ShopDao
 				p.setSupplierCode(m.getString("supplierCode"));
 				p.setExtraInfo(m.getString("extraInfo"));
 				p.setSort(m.getString("sort"));
+				return p;
+			}
+		});
+	}
+
+    public int countTemplate(String search)
+    {
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT count(*)");
+        sql.append(" FROM");
+        sql.append(" `t_cs_commodity_rate_template` t");
+        sql.append(" WHERE");
+
+        if (search != null && null != search) {
+            sql.append(" t.rel_user_id = "+search);
+        }
+
+        return jdbc.queryForObject(sql.toString(), Integer.class);
+    }
+
+    public List<JSONObject> rateTemplates(String search, int from, int number){
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT ");
+        sql.append(" *");
+        sql.append(" FROM");
+        sql.append(" `t_cs_commodity_rate_template` t");
+        sql.append(" WHERE");
+        if (search != null && null != search) {
+            sql.append(" t.rel_user_id = "+search);
+        }
+        sql.append(" limit ?, ?");
+
+        return jdbc.query(sql.toString(), new Object[] {from, number}, new RowMapper<JSONObject>()
+        {
+            @Override
+            public JSONObject mapRow(ResultSet m, int arg1) throws SQLException
+            {
+                JSONObject j = new JSONObject();
+                j.put("rel_user_id",m.getString("rel_user_id"));
+                j.put("scheme_id",m.getString("scheme_id"));
+                j.put("code",m.getString("code"));
+                j.put("name", m.getString("name"));
+                j.put("creator",m.getString("creator"));
+                j.put("gmt_created",m.getString("gmt_created"));
+                j.put("modifier",m.getString("modifier"));
+                j.put("gmt_modified",m.getString("gmt_modified"));
+                j.put("is_deleted",m.getString("is_deleted"));
+                return j;
+            }
+        });
+    }
+
+    public int countScheme(String search)
+    {
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT count(*)");
+        sql.append(" FROM");
+        sql.append(" `t_cs_commodity_rate_template` t");
+        sql.append(" WHERE");
+
+        if (search != null && null != search) {
+            sql.append(" t.scheme_id = "+search);
+        }
+
+        return jdbc.queryForObject(sql.toString(), Integer.class);
+    }
+
+	public Shop queryShopById(Long wareId)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT c.*,");
+		sql.append(" t.`name` as rel_type_name,");
+		sql.append(" s.*");
+		sql.append(" FROM t_cs_commodity c");
+		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
+		sql.append(" INNER JOIN t_cs_commodity_share s ON c.id = s.rel_commodity_id");
+		sql.append(" WHERE c.ware_id = ?");
+		return jdbc.queryForObject(sql.toString(), new Object[] {wareId}, new RowMapper<Shop>()
+		{
+			@Override
+			public Shop mapRow(ResultSet rs, int arg1) throws SQLException
+			{
+				Shop p = new Shop();
+				p.setCommodityId(rs.getLong("id"));
+				p.setWareId(rs.getLong("ware_id"));
+				p.setCommodityTypeCode(rs.getString("rel_type_code"));
+				p.setCommodityTypeName(rs.getString("rel_type_name"));
+				p.setCommodityCode(rs.getString("code"));
+				p.setCommodityName(rs.getString("name"));
+				p.setCommodityDesc(rs.getString("desc"));
+				p.setPriceDesc(rs.getString("mini_premium"));
+				p.setHomeImage(rs.getString("home_image"));
+				p.setShareImage(rs.getString("share_logo"));
+				p.setSaleLimit(rs.getString("sale_limit"));
+				p.setShareTitle(rs.getString("share_title"));
+				p.setShareDesc(rs.getString("share_desc"));
+				p.setOnlineStatus(rs.getString("online_state"));
+				p.setSupplierCode(rs.getString("rel_supplier_code"));
+				p.setCommodityLink(rs.getString("link_url"));
+				p.setSort(rs.getLong("sort")+"");
+
 				return p;
 			}
 		});

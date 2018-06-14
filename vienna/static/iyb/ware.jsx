@@ -644,11 +644,11 @@ var getUrl = function(key){
 };
 
 $(document).ready( function() {
-	if(common.param("wareId") == 8) {
+	/*if(common.param("wareId") == 8) {
 		var urlp = document.location.href.split("wareId")[0];
 		var urln = document.location.href.split("wareId")[1];
 		window.location.href = urlp+"wareId=21" + (urln.substr(urln.indexOf("&")));
-	}
+	}*/
 
 	common.req("sale/view.json", {wareId:common.param("wareId"), packIds: common.param("packIds")}, function (r) {
 		env.ware = r;
