@@ -88,13 +88,8 @@ public class ProposalService
 
 	public Proposal reload(Long id)
 	{
-		Proposal proposal;
-
-		synchronized (cache)
-		{
-			proposal = proposalDao.load(id);
-			cache.put(id, proposal);
-		}
+		Proposal proposal = proposalDao.load(id);
+		cache.put(id, proposal);
 
 		return proposal;
 	}
@@ -108,7 +103,7 @@ public class ProposalService
 			proposal = proposalDao.load(id);
 			cache.put(id, proposal);
 		}
-		
+
 		return proposal;
 	}
 
