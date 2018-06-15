@@ -29,6 +29,14 @@
 					<item>在本附加合同有效期内，被保险人于本附加合同持续生效180天（若本附加合同中止后复效，则以最后复效日起持续生效180天为准）以后（不含当日）首次确诊患本附加合同约定的特定疾病中的一种或多种，经公司承认的医疗机构和医师诊断确认，我们将豁免主合同和本附加合同缴费期间内的首次确诊日以后各期保险费，本附加合同终止，主合同继续有效。</item>
 				</paragraph>
 			</coverage>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<text name="轻症疾病" color="#CCAA00">AMOUNT</text>
+					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
 		</attachment>
 
 		<rule>

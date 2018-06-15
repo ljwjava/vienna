@@ -129,14 +129,14 @@ public class GatewayController
             if (!"success".equals(json.getString("result")))
                 throw new RuntimeException(json.getString("reason"));
 
-            val = param = json.getJSONObject("content");
+            val = JSON.toJSON(json.get("content"));
         }
 
         Script script = gateway.getScript();
         if (script != null)
         {
             Stack stack = new Stack(root);
-            stack.set("self", param);
+            stack.set("self", val == null ? param : val);
             stack.set("SESSION", new SessionAdapter(session));
 
             try

@@ -222,9 +222,23 @@ public class PlanController
             throw new RuntimeException("缺少planId");
 
         int productIndex = Common.intOf(p.get("index"), -1);
+        String productId = p.getString("productId");
 
         Plan plan = planSrv.getPlan(planId);
-        plan.remove(productIndex);
+        if (productId == null) //没传productId直接移除index位置的产品
+        {
+            plan.remove(productIndex);
+        }
+        else //传了productId，则移除index的附加险里面该产品
+        {
+            Commodity parent = plan.getCommodity(productIndex);
+            for (int i = plan.size() - 1; i >= 0; i--)
+            {
+                Commodity c = plan.getCommodity(i);
+                if (c.getParent() == parent && productId.equals(c.getProduct().getId()))
+                    plan.remove(i);
+            }
+        }
 
         queue.add(plan);
 
@@ -279,39 +293,34 @@ public class PlanController
         if (plan.isEmpty())
             throw new RuntimeException("plan为空");
 
-        JSONArray riders = new JSONArray();
+        int index = Common.intOf(p.get("index"), -1);
 
-        for (Commodity c : (List<Commodity>)plan.toList())
+        Insurance insurance = plan.getCommodity(index).getProduct();
+        List<String> riderList = insurance.getRiderList();
+
+        JSONArray rm = new JSONArray();
+        if (!Common.isEmpty(riderList)) for (String rs : riderList)
         {
-            Insurance insurance = c.getProduct();
-            List<String> riderList = insurance.getRiderList();
-
-            JSONArray rm = new JSONArray();
-            if (!Common.isEmpty(riderList)) for (String rs : riderList)
+            Insurance ins = lifeins.getProduct(rs);
+            if (ins != null)
             {
-                Insurance ins = lifeins.getProduct(rs);
-                if (ins != null)
-                {
-                    JSONObject m = new JSONObject();
-                    m.put("id", ins.getId());
-                    m.put("code", ins.getId());
-                    m.put("vendor", ins.getVendor());
-                    m.put("name", ins.getName());
-                    m.put("abbrName", ins.getAbbrName());
-                    m.put("tag", ins.getAdditional("tag"));
-                    m.put("logo", ins.getAdditional("logo"));
-                    m.put("remark", ins.getAdditional("remark"));
-                    m.put("type", "rider");
-                    rm.add(m);
-                }
+                JSONObject m = new JSONObject();
+                m.put("id", ins.getId());
+                m.put("code", ins.getId());
+                m.put("vendor", ins.getVendor());
+                m.put("name", ins.getName());
+                m.put("abbrName", ins.getAbbrName());
+                m.put("tag", ins.getAdditional("tag"));
+                m.put("logo", ins.getAdditional("logo"));
+                m.put("remark", ins.getAdditional("remark"));
+                m.put("type", "rider");
+                rm.add(m);
             }
-
-            riders.add(rm);
         }
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
-        res.put("content", riders);
+        res.put("content", rm);
 
         return res;
     }

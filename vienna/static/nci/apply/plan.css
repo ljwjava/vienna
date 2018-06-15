@@ -1,0 +1,116 @@
+.card-title {
+  height: 48rpx;
+  padding: 6rpx 10rpx 6rpx 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+
+.card-title-img {
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 10rpx;
+}
+
+.card-title-text {
+  display: inline-block;
+  font-size: 0.8rem;
+  line-height: 36rpx;
+}
+
+.card-content {
+  line-height: 80rpx;
+}
+
+.card-content-line {
+  background-color: #fff;
+  height: 80rpx;
+  margin-bottom: 1px;
+  display: flex;
+}
+
+.card-content-label {
+  width: 350rpx;
+  margin-left: 30rpx;
+}
+
+.card-content-widget {
+  width: 400rpx;
+  display: flex;
+  flex-direction: row-reverse;
+  margin-right: 30rpx;
+}
+
+.bottom {
+  width: 100%;
+  display: flex;
+  border-top: #ddd solid 1px;
+  height: 100rpx;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  background-color: coral;
+  line-height: 50rpx;
+}
+
+.btn-img {
+  width: 100rpx;
+  height: 100rpx;
+  border-right: #eee solid 1px;
+  line-height: 20rpx;
+  text-align: center;
+  background-color: #fff;
+}
+
+.btn-sky {
+  color: #fff;
+  line-height: 20rpx;
+  background-color: deepskyblue;
+  border-left: #2AD solid 1px;
+  border-right: 0;
+}
+
+.btn-img text {
+  width: 100rpx;
+  font-size: 0.7rem;
+}
+
+.btn-img image {
+  margin-top: 8rpx;
+  margin-left: 20rpx;
+  margin-right: 20rpx;
+  margin-bottom: 1rpx;
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.product {
+  background-color: #fff;
+  margin-bottom: 1px;
+  padding: 0;
+}
+
+.product-main {
+  height: 140rpx;
+  line-height: 60rpx;
+}
+
+.product-rider {
+  display: flex;
+  height: 80rpx;
+  line-height: 80rpx;
+}
+
+.product .left {
+  width: 80rpx; 
+  text-align: center;
+}
+
+.product .middle {
+  width: 500rpx;
+}
+
+.product .right {
+  width: 150rpx;
+  text-align: right;
+}
