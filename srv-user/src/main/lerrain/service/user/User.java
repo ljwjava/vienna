@@ -11,6 +11,9 @@ public class User
 	private Long id;
 
 	private String password;
+	
+    // 类型 1人员 2组织 3管理员
+	private int type;
 
 	private String target;
 
@@ -20,6 +23,8 @@ public class User
 	private List<Role> role;
 
 	private Map<String, Object> extra;
+
+    private Long                companyId;
 
 	public Long getId()
 	{
@@ -100,4 +105,21 @@ public class User
 	{
 		this.extra = extra;
 	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+	
 }
