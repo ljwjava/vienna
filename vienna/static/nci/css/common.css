@@ -1,0 +1,143 @@
+body {
+  justify-content: space-between;
+  background-color: #e6e6e6;
+}
+
+.text40 {
+  font-size: 2rem;
+}
+
+.text20 {
+  font-size: 1.2rem;
+}
+
+.text18 {
+  font-size: 1.1rem;
+}
+
+.text17 {
+  font-size: 1rem;
+}
+
+.text16 {
+  font-size: 0.95rem;
+}
+
+.text15 {
+  font-size: 0.9rem;
+}
+
+.text14 {
+  font-size: 0.85rem;
+}
+
+.text13 {
+  font-size: 0.8rem;
+}
+
+.text12 {
+  font-size: 0.75rem;
+}
+
+.text11 {
+  font-size: 0.7rem;
+}
+
+.text10 {
+  font-size: 0.65rem;
+}
+
+.text9 {
+  font-size: 0.6rem;
+}
+
+.text8 {
+  font-size: 0.55rem;
+}
+
+.text7 {
+  font-size: 0.5rem;
+}
+
+.tab {
+  height: 80rpx;
+  text-align: center;
+  line-height: 60rpx;
+  box-sizing: border-box;
+  padding: 10rpx 10rpx 0 10rpx;
+}
+
+.tab-focus {
+  color: #09bb07;
+  border-bottom: #09bb07 solid 6rpx;
+}
+
+.tab-blur {
+  color: #000;
+}
+
+input {
+  height: 60rpx;
+  box-sizing: border-box;
+  padding: 0 10rpx 0 10rpx;
+  border-bottom: #e6e6e6 solid 1px;
+  font-size: 1rem;
+}
+
+.search {
+  width: 710rpx;
+  height: 60rpx;
+  background-color: #fff;
+  border-radius: 6rpx;
+  font-size: 1rem;
+  display: flex;
+}
+
+.search input {
+  width: 550rpx;
+  height: 60rpx;
+  border: 0;
+  background: transparent;
+  font-size: 1rem;
+}
+
+.search image {
+  opacity: 0.5;
+  width: 48rpx;
+  height: 48rpx;
+  margin: 6rpx 16rpx 6rpx 16rpx;
+}
+
+.eclipse {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.div {
+  display: flex;
+  flex-direction: column;
+}
+
+.divx {
+  display: flex;
+}
+
+.form-item {
+  display: flex;
+  height: 80rpx;
+  line-height: 80rpx;
+  margin-bottom: 1px;
+}
+
+.form-item-label {
+  width: 320rpx;
+  margin-left: 30rpx;
+}
+
+.form-item-widget {
+  width: 380rpx;
+  display: flex;
+  flex-direction: row-reverse;
+  margin-right: 20rpx;
+}

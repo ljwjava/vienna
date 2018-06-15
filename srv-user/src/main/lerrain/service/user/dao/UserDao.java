@@ -1,22 +1,25 @@
 package lerrain.service.user.dao;
 
-import com.alibaba.fastjson.JSON;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import lerrain.service.user.Constant;
+import lerrain.service.user.Login;
 import lerrain.service.user.Role;
 import lerrain.service.user.User;
 import lerrain.service.user.service.RoleService;
 import lerrain.tool.Common;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
 
 @Repository
 public class UserDao
@@ -49,6 +52,7 @@ public class UserDao
 		User user = new User();
 		user.setId(Common.toLong(m.get("user_id")));
 //		user.setPassword((String) m.get("password"));
+		user.setType(Common.intOf(m.get("type"),3));
 		user.setName((String) m.get("user_name"));
 		user.setLoginTime((Date) m.get("login_time"));
 		user.setStatus(Common.intOf(m.get("status"), 0));
@@ -67,12 +71,13 @@ public class UserDao
 		return user;
 	}
 	
-	/**
-	 * 校验用户名密码
-	 * @param account
-	 * @param password
-	 * @return userId
-	 */
+	                                                                                                                        /**
+     * 校验用户名密码
+     * 
+     * @param account
+     * @param password
+     * @return userId
+     */
 	public Long verify(String account, String password)
 	{
 		String sql = "select a.user_id, a.status from t_user a, t_login b where a.user_id = b.user_id and b.login_name = ? and a.password = ?";
@@ -84,7 +89,7 @@ public class UserDao
 		{
 			Map<String, Object> r = jdbc.queryForMap(sql, new Object[] {account, Common.md5Of(password)});
 			if (r == null || r.isEmpty())
-				throw new RuntimeException("用户名或密码错误");
+                throw new RuntimeException("用户名或密码错误");
 			
 			userId = Common.toLong(r.get("user_id"));
 			status = Common.intOf(r.get("status"), 0);
@@ -94,19 +99,19 @@ public class UserDao
 		}
 		catch (EmptyResultDataAccessException e1)
 		{
-			throw new RuntimeException("用户名或密码错误");
+            throw new RuntimeException("用户名或密码错误");
 		}
 		catch (Exception e)
 		{
-			throw new RuntimeException("系统错误", e);
+            throw new RuntimeException("系统错误", e);
 		}
 
 		if (status == Constant.STATUS_INACTIVE)
-			throw new RuntimeException("该用户未激活");
+            throw new RuntimeException("该用户未激活");
 		else if (status == Constant.STATUS_FORBIDDEN)
-			throw new RuntimeException("该用户已被禁用");
+            throw new RuntimeException("该用户已被禁用");
 		else if (status == Constant.STATUS_UNAVAILABLE)
-			throw new RuntimeException("该用户已失效");
+            throw new RuntimeException("该用户已失效");
 		
 		return userId;
 	}
@@ -184,4 +189,24 @@ public class UserDao
 			}
 		});
 	}
+
+    public int save(User user) {
+        return jdbc.update(
+"insert into t_user (user_id, user_name, password, type, status,create_time,update_time) values (?,?,?,?,?,now(),now())",
+                        user.getId(), user.getName(), user.getPassword(), user.getType(), user.getStatus());
+    }
+
+    public int saveLogin(Login login) {
+        return jdbc.update(
+                "insert into t_login (user_id, login_name,status,create_time,update_time) values (?,?,?,now(),now())",
+                login.getUserId(), login.getLoginName(), login.getStatus());
+    }
+
+    public int saveUserRole(Long userId, Long roleId) {
+        return jdbc.update("insert into t_user_role (user_id, role_id) values (?,?)", userId, roleId);
+    }
+
+    public int removeLogin(String loginName) {
+        return jdbc.update("update t_login set valid = 'N' where loginName = ?", loginName);
+    }
 }

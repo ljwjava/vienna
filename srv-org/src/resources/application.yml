@@ -2,6 +2,6 @@ server:
   port: 7731
 
 datasource:
-  url: jdbc:mysql://101.37.72.72:5306/vie_biz_test?useUnicode=true&characterEncoding=UTF-8
+  url: jdbc:mysql://101.37.72.72:5306/vie_user?useUnicode=true&characterEncoding=UTF-8
   username: iyb
   password: Abcd2017

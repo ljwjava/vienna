@@ -17,7 +17,7 @@ public class ShopDao
 	@Autowired JdbcTemplate jdbc;
 	@Autowired ServiceTools tools;
 
-	public int count(String search)
+	public int count(String name, String type)
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT count(*)");
@@ -32,8 +32,33 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		sql.append(" /*AND c.`name` LIKE '%尊享e生%'*/");
-		sql.append(" /*AND p.rel_type_code = 'health'*/");
+		if (null != type && "" != type) {
+			sql.append(" AND t.`code` = '"+type+"'");
+		}
+		if (null != name && "" != name) {
+			sql.append(" AND c.`name` LIKE '%"+name+"%'");
+		}
+
+		return jdbc.queryForObject(sql.toString(), Integer.class);
+	}
+
+	public int countType(String search)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append(" count(t.`code`)");
+		sql.append("FROM");
+		sql.append("`t_cs_commodity_plan` p");
+		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
+		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
+		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
+		sql.append(" WHERE");
+		sql.append(" p.rel_org_id = 1");
+		sql.append(" AND c.online_state = 1");
+		sql.append(" AND t.online_state = 1");
+		if (search != null && !"".equals(search)) {
+			sql.append(" AND c.`name` LIKE '%"+ search +"%'");
+		}
 
 		return jdbc.queryForObject(sql.toString(), Integer.class);
 	}
@@ -82,7 +107,7 @@ public class ShopDao
 		});
 	}
 
-	public List<Shop> commoditys(String search, int from, int number)
+	public List<Shop> commoditys(String name, String type, int from, int number)
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
@@ -127,12 +152,14 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		if (search != null && null != search) {
-			sql.append(" AND c.`name` LIKE '%"+search+"%'");
+		if (null != type && "" != type) {
+			sql.append(" AND t.`code` = '"+type+"'");
+		}
+		if (null != name && "" != name) {
+			sql.append(" AND c.`name` LIKE '%"+name+"%'");
 		}
 		sql.append(" /*AND l.id IN (1, 2)*/");
 		sql.append(" limit ?, ?");
-//		sql.append("LIMIT 0, 12;");
 
 		return jdbc.query(sql.toString(), new Object[] {from, number}, new RowMapper<Shop>()
 		{

@@ -43,9 +43,9 @@
 
 			<benefit_chart filter="chart" parser="chart">
 			    <chart from="0" to="INSURE_PERIOD-1" name="I">
-					<line name="重大疾病保险金" color="#0000FF">AMOUNT</line>
-					<line name="轻症疾病保险金" color="#CCAA00">R==null?0:R02.AMOUNT</line>
-					<line name="现金价值" color="#00AAFF">IT.CSV(I)+(R==null?0:R.IT.CSV(I))</line>
+					<text name="重大疾病" color="#0000FF">AMOUNT</text>
+					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
 				</chart>
 			</benefit_chart>
 		</attachment>
