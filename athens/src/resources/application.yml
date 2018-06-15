@@ -39,6 +39,7 @@ service:
   underwriting: http://localhost:7782
   shop: http://localhost:7759
   template: http://localhost:7969
+  varia: http://localhost:7508
 
 path:
   temp: x:/temp/1/

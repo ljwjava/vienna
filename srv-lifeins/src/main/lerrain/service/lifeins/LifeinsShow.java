@@ -124,8 +124,36 @@ public class LifeinsShow
         return l2;
     }
 
+    public static JSONArray format(Plan plan, String style)
+    {
+        JSONArray r = new JSONArray();
+        for (int i=0;i<plan.size();i++)
+        {
+            Commodity c = plan.getCommodity(i);
+
+            JSONObject json = new JSONObject();
+            json.put("productId", c.getProduct().getId());
+            json.put("productAbbrName", c.getProduct().getAbbrName());
+            json.put("productName", c.getProduct().getName());
+
+            Object content = null;
+            if ("coverage".equals(style))
+                content = formatCoverage(c);
+            else if ("chart".equals(style))
+                content = formatChart(c);
+
+            json.put("content", content);
+            r.add(json);
+        }
+
+        return r;
+    }
+
     public static JSONArray formatCoverage(Commodity c)
     {
+        if (!c.hasFormat("coverage"))
+            return null;
+
         Coverage coverage = (Coverage)c.format("coverage");
 
         JSONArray l2 = new JSONArray();
@@ -164,50 +192,61 @@ public class LifeinsShow
 
     public static JSONObject formatChart(Commodity c)
     {
-        JSONObject r = new JSONObject();
+        if (c.getProduct().isRider())
+            return null;
 
-        List<Chart> list = (List<Chart>)c.format("benefit_chart");
-        Chart chart = list == null || list.isEmpty() ? null : list.get(0);
+        List<Chart> list = new ArrayList<>();
+
+        if (c.hasFormat("benefit_chart"))
+            list.addAll((List<Chart>)c.format("benefit_chart"));
+
+        for (int i = 0; i < c.getPlan().size(); i++)
+        {
+            Commodity rider = c.getPlan().getCommodity(i);
+            if (rider.getParent() == c && rider.hasFormat("benefit_chart"))
+                list.addAll((List<Chart>)rider.format("benefit_chart"));
+        }
 
         int age = Common.intOf(c.getFactor("AGE"), 0);
 
+        Map<String, double[]> temp = new HashMap();
+        List s1 = new ArrayList<>();
+
+        for (Chart chart : list)
+        {
+            int b = chart.getStart();
+            int e = chart.getEnd();
+
+            for (int i = 0; i < chart.size(); i++)
+            {
+                ChartLine line = chart.getLine(i);
+
+                double[] v = temp.get(line.getName());
+                if (v == null)
+                {
+                    v = new double[e - b + 1];
+
+                    Map m = new HashMap<>();
+                    m.put("name", line.getName());
+                    m.put("type", line.getType());
+                    String color = Integer.toHexString(line.getColor() | 0xFF000000);
+                    m.put("color", color.substring(2));
+                    m.put("data", v);
+                    s1.add(m);
+
+                    temp.put(line.getName(), v);
+                }
+
+                //主险的年期总是大于等于附加险的年期，所以不需要判断v的长度
+                for (int j = b; j <= e; j++)
+                    v[j - b] += line.getData()[j];
+            }
+        }
+
+        JSONObject r = new JSONObject();
         r.put("name",  c.getProduct().getName());
         r.put("age", age);
-
-        int b = chart.getStart();
-        int e = chart.getEnd();
-        int s = chart.getStep();
-
-        List s1 = new ArrayList<>();
-        List s3 = new ArrayList<>();
-        String[] s2 = new String[(e-b)/s+1];
-
-        for (int i=0;i<chart.size();i++)
-        {
-            ChartLine line = chart.getLine(i);
-
-            double[] v = new double[(e-b)/s+1];
-            int cc=0;
-            for (int j=b;j<=e;j+=s)
-                v[cc++] = line.getData()[j];
-
-            Map m = new HashMap<>();
-            m.put("name", line.getName());
-            m.put("type", line.getType()==ChartLine.TYPE_BAR ? "bar" : "line");
-            m.put("data", v);
-            s1.add(m);
-            s3.add(line.getName());
-        }
-
-        int cc=0;
-        for (int j=b;j<=e;j+=s)
-        {
-            s2[cc++] = (j+age) +"岁";
-        }
-
         r.put("data", s1);	// value
-        r.put("axis", s2);	// 年龄
-        r.put("sets", s3);	// name
 
         return r;
     }

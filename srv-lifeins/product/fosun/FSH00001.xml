@@ -34,11 +34,11 @@
 			</insure>
 		</param>
 
-		<input>
-			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万'],[600000,'60万']]</item>
-			<item name="PAY" label="缴费年期" widget="select">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>
-			<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>
-		</input>
+		<!--<input>-->
+			<!--<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万'],[600000,'60万']]</item>-->
+			<!--<item name="PAY" label="缴费年期" widget="select" type="string">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>-->
+			<!--<item name="INSURE" label="保障期间" widget="select" type="string">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>-->
+		<!--</input>-->
 
 		<init>
 			<item name="OTHER">return {PLAN_CODE: "JH11002401", PRODUCT_CODE: "110024"}</item>
@@ -59,6 +59,27 @@
 		</rider>
 
 		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="重大疾病">
+					<item>被保险人在保险期间内因意外首次发病，或本合同生效（若曾复效，则自本合同最后复效）之日起180 天后因非意外的原因首次发病，并在本公司指定或认可的医疗机构由专科医生确诊为本合同所列的一种或多种重大疾病，本公司按本合同基本保险金额给付重大疾病保险金，同时本合同终止。</item>
+					<item>被保险人在本合同生效（若曾复效，则自本合同最后复效）之日起180天内因非意外的原因首次发病并在本公司指定或认可的医疗机构由专科医生确诊为本合同列明的一种或多重大疾病，本公司将按投保人已交纳本合同累计保险费数额（不计息）给付重大疾病保险金，同时本合终止。</item>
+				</paragraph>
+				<paragraph title="轻症疾病">
+					<item>被保险人因意外首次发病，或在本合同生效（若曾复效，则自本合同最后复效）之日起180天后因非意外的原因首次发病，并在本公司指定或认可的医疗机构由专科医生确诊为本合同列明的一种或多种轻症疾病，本公司按本合同基本保险金额的30%给付轻症疾病保险金。</item>
+					<item>被保险人在本合同生效（若曾复效，则自本合同最后复效）之日起180天内因非意外的原因首次发病并在本公司指定或认可的医疗机构由专科生确诊为本合同列明的一种或多种轻症疾病，本公司将按投保人已交纳的本合同累计保险费数额（不计息）给付轻症疾病保险金，同时本合同终止。</item>
+					<item>每种轻症疾病限给付一次，给付后该轻症疾病保险责任终止。不同轻症疾病可以多次给付，但本合同的轻症疾病保险金累积给付以三次为限。当累积给付的轻症疾病保险金达到三次时，轻症疾病保险责任终止。</item>
+					<item>如果被保险人因同一原因导致其罹患本合同所定义的两种或两种以上轻症疾病，本公司仅按一种轻症疾病给付轻症疾病保险金。</item>
+				</paragraph>
+				<paragraph title="轻症疾病豁免保险费">
+					<item>被保险人在保险期间内因意外首次发病，或在本合同生效（若曾复效，则自本合同最后复效）之日起180天后因非意外的原因首次发病，并在本公司指定或认可的医疗机构由专科生确诊为本合同列明的一种或多种轻症疾病，则自确诊日后首个本合同的保险费约定交纳日开始，直至本合同最后一次保险费约定交纳日止，本公司豁免前述期间内合同应交纳的保险费。本公司视豁免的保险费为已交纳的保险费，本合同继续有效。</item>
+					<item>被保险人在本合同生效（若曾复效，则自本附加合同最后复效）之日起180天内因非意外的原因首次发病，并在本公司指定或认可的医疗机构由专科生确诊为本合同列明的一种或多种轻症疾病，本公司不承担轻症疾病豁免保险费责任，同时本合同终止。</item>
+				</paragraph>
+				<paragraph title="特别注意事项">
+					<item>（1）被保险人由于同一疾病原因、同次医疗行为或同次意外伤害事故，确诊首次发病一项或多项本合同所指的轻症疾病或重大疾病，公司按轻症疾病保险金或重大疾病保险金规定，仅给付其中金额最高的一项保险金。被保险人所患疾病诊断时已经达到重大疾病标准的，不能追溯轻症赔付。</item>
+					<item>（2）保费豁免开始后，本公司将不再接受关于合同险交方式的变更申请。</item>
+				</paragraph>
+			</coverage>
+
 			<fgraph filter="fgraph" parser="fgraph">
 				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
 				<item name="MILD">AMOUNT*0.9</item>
@@ -70,9 +91,9 @@
 
 			<benefit_chart filter="chart" parser="chart">
 				<chart from="0" to="INSURE_PERIOD-1" name="I">
-					<bar name="保费" color="#00AA00">PremiumYear(I)</bar>
-					<line name="累计保费" color="#0000FF">PremiumSum(I)</line>
-					<line name="现金价值" color="#0000FF">IT.CSV(I)</line>
+					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
+					<line name="现金价值" color="#00BFFF">IT.CSV(I)</line>
+					<text name="保险金额">AMOUNT</text>
 				</chart>
 			</benefit_chart>
 		</attachment>

@@ -22,6 +22,8 @@ public class Ware
 
     JSONArray banner;
 
+    int salesFlag;  // 销售状态（0-在售，1-下架，2-停售）
+
     List<PackIns> detail;
 
     public Ware clone() {
@@ -35,6 +37,7 @@ public class Ware
         w.setRemark(remark);
         w.setLogo(logo);
         w.setPrice(price);
+        w.setSalesFlag(salesFlag);
         if(banner != null){
             w.setBanner(JSONArray.parseArray(banner.toJSONString()));
         }
@@ -186,5 +189,13 @@ public class Ware
     public void setLogo(String logo)
     {
         this.logo = logo;
+    }
+
+    public int getSalesFlag() {
+        return salesFlag;
+    }
+
+    public void setSalesFlag(int salesFlag) {
+        this.salesFlag = salesFlag;
     }
 }

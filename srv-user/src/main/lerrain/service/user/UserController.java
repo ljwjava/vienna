@@ -1,19 +1,24 @@
 package lerrain.service.user;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+
+import lerrain.service.common.Log;
+import lerrain.service.user.enm.RoleTypeEnum;
 import lerrain.service.user.service.ModuleService;
 import lerrain.service.user.service.RoleService;
 import lerrain.service.user.service.UserService;
+import lerrain.service.user.util.PasswordUtil;
 import lerrain.tool.Common;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Controller
 public class UserController
@@ -181,6 +186,96 @@ public class UserController
         JSONObject res = new JSONObject();
         res.put("result", "success");
 
+        return res;
+    }
+
+    // 开通云服账号
+    @RequestMapping({ "/openAccount.json" })
+    @ResponseBody
+    public JSONObject openAccount(@RequestBody JSONObject json) {
+        // 开通类型 1人员 2组织 登录名 密码 类型 手机号
+        Long userId = json.getLong("userId");
+        int type = json.getIntValue("type");
+        List<Long> roleList = new ArrayList<Long>();
+        if (1 == type) {
+            roleList.add(RoleTypeEnum.YUNFUMEMBER.getId());
+        } else if (2 == type) {
+            roleList.add(RoleTypeEnum.YUNFUORG.getId());
+        } else if (3 == type) {
+            roleList.add(RoleTypeEnum.YUNFUORG.getId());
+        }
+        String loginName = json.getString("loginName");
+        String password = json.getString("password");
+        if (password == null) {
+            password = PasswordUtil.createPassword();
+        }
+        password = Common.md5Of(password);
+        boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
+        Log.info("开通账号结果:" + result);
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", result);
+
+        return res;
+    }
+
+    @RequestMapping({ "/removeLogin.json" })
+    @ResponseBody
+    public JSONObject removeLogin(@RequestBody JSONObject json) {
+        String loginName = json.getString("loginName");
+        boolean flag = userSrv.removeLogin(loginName);
+        JSONObject result = new JSONObject();
+        result.put("result", "success");
+        result.put("content", flag);
+        return result;
+    }
+
+    @RequestMapping({ "/freezeUser.json" })
+    @ResponseBody
+    public JSONObject freezeUser(@RequestBody JSONObject json) {
+        long userId = json.getLong("userId");
+        int status = json.getIntValue("status");
+        userSrv.updateStatus(new Long[] { userId }, status);
+        JSONObject result = new JSONObject();
+        result.put("result", "success");
+        result.put("content", true);
+        return result;
+    }
+    
+    @RequestMapping({ "/currentUser.json" })
+    @ResponseBody
+    public JSONObject currentUser(@RequestBody JSONObject json) {
+        String loginName = json.getString("loginName");
+        Log.info("loginName:" + loginName);
+        String userId = userSrv.getUserId(loginName);
+        JSONObject result = new JSONObject();
+        result.put("result", "success");
+        result.put("content", userId);
+        return result;
+    }
+
+    @RequestMapping({ "/cs/login.json" })
+    @ResponseBody
+    public JSONObject csLogin(@RequestBody JSONObject json) {
+        JSONObject res = new JSONObject();
+        JSONObject result = new JSONObject();
+        result.put("type", "account");
+        result.put("status", "notokey");
+        result.put("currentAuthority", "admin");
+        res.put("result", "success");
+        try {
+            String loginName = json.getString("userName");
+            String password = json.getString("password");
+
+            User user = userSrv.csLogin(loginName, password);
+            if (user != null) {
+                result.put("status", "ok");
+            }
+        } catch (Exception e) {
+            result.put("result", "fail");
+            Log.error(e);
+        }
+        res.put("content", result);
         return res;
     }
 }

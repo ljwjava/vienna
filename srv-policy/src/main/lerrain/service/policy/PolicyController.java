@@ -124,6 +124,7 @@ public class PolicyController
     private Policy policyOf(Policy policy, JSONObject p)
     {
         policy.setType(p.getIntValue("type"));
+        policy.setOrderId(p.getLong("orderId"));
         policy.setPlatformId(p.getLong("platformId"));
         policy.setApplyNo(p.getString("applyNo"));
         policy.setPolicyNo(p.getString("policyNo"));

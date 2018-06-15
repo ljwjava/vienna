@@ -8,6 +8,7 @@ import java.util.List;
 public class Policy
 {
     Long id;
+    Long orderId;
     Long platformId;
 
     String applyNo;
@@ -236,6 +237,14 @@ public class Policy
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long getPlatformId()

@@ -105,6 +105,7 @@ public class PolicyDao
     private Policy policyOf(Policy p, ResultSet rs) throws SQLException
     {
         p.setId(rs.getLong("id"));
+        p.setOrderId(rs.getLong("order_id"));
         p.setPlatformId(rs.getLong("platform_id"));
         p.setApplyNo(rs.getString("apply_no"));
         p.setPolicyNo(rs.getString("policy_no"));
@@ -149,12 +150,13 @@ public class PolicyDao
     {
         p.setId(tools.nextId("policy"));
 
-        String sql = "insert into t_policy (id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, status, product_name, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
+        String sql = "insert into t_policy (id, order_id, platform_id, apply_no, policy_no, endorse_no, endorse_time, type, status, product_name, target, detail, fee, extra, premium, insure_time, effective_time, finish_time, vendor_id, agency_id, owner_company, owner_org, owner, period, " +
                 "applicant_name, applicant_mobile, applicant_email, applicant_cert_no, applicant_cert_type, insurant_name, insurant_cert_no, insurant_cert_type, vehicle_engine_no, vehicle_frame_no, vehicle_plate_no, create_time, creator, update_time, updater) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now(), ?)";
 
         jdbc.update(sql,
                 p.getId(),
+                p.getOrderId(),
                 p.getPlatformId(),
                 p.getApplyNo(),
                 p.getPolicyNo(),
@@ -217,11 +219,12 @@ public class PolicyDao
         if (p.getId() == null)
             throw new RuntimeException("更新保单，缺少policyId");
 
-        String sql = "update t_policy set platform_id=?, apply_no=?, policy_no=?, endorse_no=?, endorse_time=?, type=?, product_name = ?, target=?, detail=?, fee=?, extra=?, premium=?, insure_time=?, effective_time=?, finish_time=?, " +
+        String sql = "update t_policy set order_id=?, platform_id=?, apply_no=?, policy_no=?, endorse_no=?, endorse_time=?, type=?, product_name = ?, target=?, detail=?, fee=?, extra=?, premium=?, insure_time=?, effective_time=?, finish_time=?, " +
                 "vendor_id=?, agency_id=?, owner_company=?, owner_org=?, owner=?, period=?, applicant_name=?, applicant_mobile=?, applicant_email=?, applicant_cert_no=?, applicant_cert_type=?, insurant_name=?, insurant_cert_no=?, " +
                 "insurant_cert_type=?, vehicle_engine_no=?, vehicle_frame_no=?, vehicle_plate_no=?, update_time=?, updater=? where id = ?";
 
         jdbc.update(sql,
+                p.getOrderId(),
                 p.getPlatformId(),
                 p.getApplyNo(),
                 p.getPolicyNo(),

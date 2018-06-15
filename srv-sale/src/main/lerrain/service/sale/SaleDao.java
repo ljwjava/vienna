@@ -46,6 +46,7 @@ public class SaleDao
                 c.setPrice(m.getString("price"));
                 c.setLogo(m.getString("logo"));
                 c.setRemark(m.getString("remark"));
+                c.setSalesFlag(m.getInt("sales_flag"));
 
                 String banner = m.getString("banner");
                 if (banner != null) {

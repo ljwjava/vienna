@@ -6,7 +6,11 @@ public class Org
     Long parentId;
 
     String code;
+    int    type;
     String name;
+    Long   companyId;
+    int    level;
+    String mobile;
 
     public Long getParentId()
     {
@@ -47,4 +51,37 @@ public class Org
     {
         this.name = name;
     }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
 }
