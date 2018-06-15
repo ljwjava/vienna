@@ -10,6 +10,7 @@ public class Role implements Serializable
 	Long id;
 
 	String code;
+	String xxx;
 	String name;
 
 	int rank;
