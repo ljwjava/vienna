@@ -19,9 +19,14 @@ public class ShopService
 	{
 	}
 
-    public int count(String search)
+    public int count(String name, String type)
     {
-        return productDao.count(search);
+        return productDao.count(name, type);
+    }
+
+    public int countType(String search)
+    {
+        return productDao.countType(search);
     }
 
     public List<JSONObject> types(String search, int from, int num)
@@ -30,10 +35,10 @@ public class ShopService
         return types;
     }
 
-    public List<JSONObject> commoditys(String search, int from, int num)
+    public List<JSONObject> commoditys(String name, String type, int from, int num)
     {
         List<JSONObject> objs = Lists.newArrayList();
-        List<Shop> shops = productDao.commoditys(search, from, num);
+        List<Shop> shops = productDao.commoditys(name, type, from, num);
         for (int i=0;i<shops.size();i++){
             JSONObject shop = (JSONObject) JSON.toJSON(shops.get(i));
             //shop.setSupplierInfo(); -- to do 获取供应商信息

@@ -3,6 +3,7 @@ package lerrain.service.shop;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import lerrain.tool.Common;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,40 @@ public class ShopController
         return "success";
     }
 
+    @RequestMapping("/commodityTypes.json")
+    @ResponseBody
+    public JSONObject commodityTypes(@RequestBody JSONObject p)
+    {
+        int currentPage = Common.intOf(p.get("currentPage"), 1);
+        int num = Common.intOf(p.get("pageSize"), 20);
+        int from =  num*(currentPage - 1);
+        String name = p.getString("cdName");
+
+        List<JSONObject> typeList = productSrv.types(name,from,num);
+        List<JSONObject> titleList = Lists.newArrayList();
+        JSONObject json = new JSONObject();
+        json.put("tagId","1");
+        json.put("tagCode","all");
+        json.put("tagName","全部");
+        json.put("prdNumbers",productSrv.count(name, null));
+        titleList.add(json);
+        titleList.addAll(typeList);
+
+        JSONObject r = new JSONObject();
+        r.put("titleList", titleList);
+        JSONObject page = new JSONObject();
+        page.put("total",productSrv.countType(name));
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        r.put("pagination", page);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
     @RequestMapping("/commoditys.json")
     @ResponseBody
     public JSONObject commoditys(@RequestBody JSONObject p)
@@ -34,30 +69,15 @@ public class ShopController
         int num = Common.intOf(p.get("pageSize"), 10);
         int from =  num*(currentPage - 1);
 
-        String search = p.getString("cdName");
+        String name = p.getString("cdName");
+        String type = StringUtils.equals("all",p.getString("cdType"))?"":p.getString("cdType");
 
-        List<JSONObject> cdList = productSrv.commoditys(search, from, num);
+        List<JSONObject> cdList = productSrv.commoditys(name, type, from, num);
 
-        JSONArray titleList = new JSONArray();
-        for (JSONObject obj : productSrv.types(search, from, num))
-        {
-            JSONArray list = new JSONArray();
-
-            String type = obj.getString("tagCode");
-            for (JSONObject listObj : cdList)
-            {
-                String typeCode = listObj.getString("type");
-                if(StringUtils.equals(type,typeCode)){
-                    list.add(listObj);
-                }
-            }
-            obj.put("list",list);
-            titleList.add(obj);
-        }
         JSONObject r = new JSONObject();
-        r.put("titleList", titleList);
+        r.put("list", cdList);
         JSONObject page = new JSONObject();
-        page.put("total",productSrv.count(null));
+        page.put("total",productSrv.count(name, type));
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);
