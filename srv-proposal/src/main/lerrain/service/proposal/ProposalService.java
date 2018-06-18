@@ -109,6 +109,7 @@ public class ProposalService
 
 	public void setFavourite(Long proposalId, boolean fav)
 	{
+		this.getProposal(proposalId).setFavourite(fav);
 		proposalDao.setFavourite(proposalId, fav);
 	}
 

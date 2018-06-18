@@ -67,11 +67,13 @@ public class PlatformController
         {
             String userKey = param.getString("userKey");
             if (userKey != null)
+            {
                 userId = 1L;
 
-            session.setAttribute("userId", userId);
-            session.setAttribute("memberId", userId);
-            session.setAttribute("platformId", 9L);
+                session.setAttribute("userId", userId);
+                session.setAttribute("memberId", userId);
+                session.setAttribute("platformId", 9L);
+            }
         }
 
         JSONObject res = new JSONObject();
