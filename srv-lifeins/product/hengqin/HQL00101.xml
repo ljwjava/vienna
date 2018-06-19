@@ -79,6 +79,7 @@
 				<chart from="0" to="INSURE_PERIOD-1" name="I">
 					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
 					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
+					<text name="保险金额">AMOUNT</text>
 				</chart>
 			</benefit_chart>
 		</attachment>

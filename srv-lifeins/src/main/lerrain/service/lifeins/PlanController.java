@@ -580,9 +580,19 @@ public class PlanController
         return null;
     }
 
-    @RequestMapping("/plan/clause.json")
+    @RequestMapping("/plan/fast_clause.json")
     @ResponseBody
-    public JSONObject setProduct(@RequestBody JSONObject p)
+    public JSONObject setProductFast(@RequestBody JSONObject p)
+    {
+        setProductVal(p);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+
+        return res;
+    }
+
+    public Plan setProductVal(@RequestBody JSONObject p)
     {
         String productId = p.getString("productId");
         int parentIndex = Common.intOf(p.get("parentIndex"), -1);
@@ -669,14 +679,23 @@ public class PlanController
                 }
             }
 
-            JSONObject res = new JSONObject();
-            res.put("result", "success");
-            res.put("content", LifeinsUtil.jsonOf(plan));
-
             queue.add(plan);
-
-            return res;
         }
+
+        return plan;
+    }
+
+    @RequestMapping("/plan/clause.json")
+    @ResponseBody
+    public JSONObject setProduct(@RequestBody JSONObject p)
+    {
+        Plan plan = setProductVal(p);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", LifeinsUtil.jsonOf(plan));
+
+        return res;
     }
 
     @RequestMapping({"/plan/fee.json"})
