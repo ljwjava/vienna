@@ -37,6 +37,7 @@ public class TemplateController {
             obj.put("id", template.getId());
             obj.put("templateName", template.getTemplateName());
             obj.put("gmtModified", template.getGmtModified());
+            obj.put("link", template.getLink());
             list.add(obj);
         }
         JSONObject r = new JSONObject();
