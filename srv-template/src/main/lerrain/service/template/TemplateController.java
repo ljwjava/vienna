@@ -30,9 +30,9 @@ public class TemplateController {
         int currentPage = Common.intOf(p.get("currentPage"), 1);
         int num = Common.intOf(p.get("pageSize"), 10);
         int from = num * (currentPage - 1);
-
+        String name = p.getString("name");
         JSONArray list = new JSONArray();
-        for (Template template : templateSrv.list(null, from, num)) {
+        for (Template template : templateSrv.list(name, from, num)) {
             JSONObject obj = new JSONObject();
             obj.put("id", template.getId());
             obj.put("templateName", template.getTemplateName());
@@ -43,7 +43,7 @@ public class TemplateController {
         r.put("list", list);
 
         JSONObject page = new JSONObject();
-        page.put("total", templateSrv.count(null));
+        page.put("total", templateSrv.count(name));
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);
@@ -174,6 +174,7 @@ public class TemplateController {
         JSONArray banner = p.getJSONArray("banner");
         JSONObject proType = p.getJSONObject("proType");
         JSONArray products = p.getJSONArray("product");
+        String link = p.getString("link");
 
         Long proTypeId = proType != null ? proType.getLong("id") : null;
         if (banner == null) {
@@ -191,6 +192,7 @@ public class TemplateController {
         t.setTitle(StringUtils.isNotBlank(title) ? title : "商城");
         t.setMessage(message != null ? message.toJSONString() : null);
         t.setBanner(banner.toJSONString());
+        t.setLink(link);
         Long id = templateSrv.saveOpUpdate(t);
 
         //创建产品

@@ -15,6 +15,7 @@ public class Template {
     String message;
     String banner;
 
+    String link;
     Date gmtModified;
 
     public Long getId() {
@@ -63,5 +64,13 @@ public class Template {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }
