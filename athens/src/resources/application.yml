@@ -14,9 +14,9 @@ endpoints:
     sensitive: false
 
 datasource:
-  url: jdbc:mysql://101.37.72.72:5306/athens_t?useUnicode=true&characterEncoding=UTF-8
-  username: iyb
-  password: Abcd2017
+  url: jdbc:mysql://10.253.116.46:3306/athens?useUnicode=true&characterEncoding=UTF-8
+  username: admin
+  password: Iyunbaotest2018
 
 service:
   lifeins: http://localhost:7777
