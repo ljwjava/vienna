@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class Shop {
     private Long wareId;                        //产品包id
@@ -36,5 +38,11 @@ public class Shop {
     private JSONArray factors;                  //商品展示因子
     private JSONArray rules;                    //商品展示规则
     private String sort;                        //排序
+
+    private String creator;
+    private Date gmtCreated;
+    private String modifier;
+    private Date gmtModified;
+    private String isDeleted;
 
 }
