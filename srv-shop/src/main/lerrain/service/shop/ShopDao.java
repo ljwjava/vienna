@@ -2,6 +2,8 @@ package lerrain.service.shop;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceTools;
+import lerrain.tool.Common;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ShopDao
@@ -17,7 +20,7 @@ public class ShopDao
 	@Autowired JdbcTemplate jdbc;
 	@Autowired ServiceTools tools;
 
-	public int count(String name, String type)
+	public int count(Long userId, String name, String type)
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT count(*)");
@@ -32,10 +35,13 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		if (null != type && "" != type) {
+		if (null != userId) {
+			sql.append(" AND p.rel_org_id = "+userId);
+		}
+		if (StringUtils.isNotBlank(type)) {
 			sql.append(" AND t.`code` = '"+type+"'");
 		}
-		if (null != name && "" != name) {
+		if (StringUtils.isNotBlank(name)) {
 			sql.append(" AND c.`name` LIKE '%"+name+"%'");
 		}
 
@@ -56,7 +62,7 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		if (search != null && !"".equals(search)) {
+		if (StringUtils.isNotBlank(search)) {
 			sql.append(" AND c.`name` LIKE '%"+ search +"%'");
 		}
 
@@ -85,7 +91,7 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-        if (search != null && !"".equals(search)) {
+        if (StringUtils.isNotBlank(search)) {
             sql.append(" AND c.`name` LIKE '%"+ search +"%'");
         }
 		sql.append(" limit ?, ?");
@@ -107,13 +113,14 @@ public class ShopDao
 		});
 	}
 
-	public List<Shop> commoditys(String name, String type, int from, int number)
+	public List<Shop> commoditys(Long userId, String name, String type, int from, int number)
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
 		sql.append(" p.rel_org_id AS orgId,");
 		sql.append(" /*companyId*/");
 		sql.append(" t.`code` AS commodityTypeCode,");
+		sql.append(" t.`name` AS commodityTypeName,");
 		sql.append(" c.id AS commodityId,");
 		sql.append(" c.`code` AS commodityCode,");
 		sql.append(" c.`name` AS commodityName,");
@@ -136,9 +143,9 @@ public class ShopDao
 		sql.append(" c.rel_supplier_code AS supplierCode,");
 		sql.append(" c.extra_info AS extraInfo,");
         sql.append(" c.creator,");
-        sql.append(" c.gmt_created AS gmtCreated,");
+        sql.append(" DATE_FORMAT(c.gmt_created,'%Y-%m-%d %T') AS gmtCreated,");
         sql.append(" c.modifier,");
-        sql.append(" c.gmt_modified AS gmtModified,");
+        sql.append(" DATE_FORMAT(c.gmt_modified,'%Y-%m-%d %T') AS gmtModified,");
         sql.append(" c.is_deleted AS isDeleted,");
 		sql.append(" c.sort");
 		sql.append(" FROM");
@@ -152,10 +159,13 @@ public class ShopDao
 		sql.append(" p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
-		if (null != type && "" != type) {
+		if (null != userId) {
+			sql.append(" AND p.rel_org_id = "+userId);
+		}
+		if (StringUtils.isNotBlank(type)) {
 			sql.append(" AND t.`code` = '"+type+"'");
 		}
-		if (null != name && "" != name) {
+		if (StringUtils.isNotBlank(name)) {
 			sql.append(" AND c.`name` LIKE '%"+name+"%'");
 		}
 		sql.append(" /*AND l.id IN (1, 2)*/");
@@ -169,6 +179,7 @@ public class ShopDao
 				Shop p = new Shop();
 				p.setOrgId(m.getLong("orgId"));
 				p.setCommodityTypeCode(m.getString("commodityTypeCode"));
+				p.setCommodityTypeName(m.getString("commodityTypeName"));
 				p.setCommodityId(m.getLong("commodityId"));
 				p.setCommodityCode(m.getString("commodityCode"));
 				p.setCommodityName(m.getString("commodityName"));
@@ -189,35 +200,46 @@ public class ShopDao
 				p.setSupplierCode(m.getString("supplierCode"));
 				p.setExtraInfo(m.getString("extraInfo"));
 				p.setSort(m.getString("sort"));
+
+				p.setCreator(m.getString("creator"));
+				p.setGmtCreated(m.getDate("gmtCreated"));
+				p.setModifier(m.getString("modifier"));
+				p.setGmtModified(m.getDate("gmtModified"));
+				p.setIsDeleted(m.getString("isDeleted"));
 				return p;
 			}
 		});
 	}
 
-    public int countTemplate(String search)
+    public int countTemplate(Long userId, String name)
     {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT count(*)");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
         sql.append(" WHERE");
-
-        if (search != null && null != search) {
-            sql.append(" t.rel_user_id = "+search);
-        }
+		if (null != userId) {
+			sql.append(" t.rel_user_id = "+userId);
+		}
+		if (StringUtils.isNotBlank(name)) {
+			sql.append(" t.name = "+name);
+		}
 
         return jdbc.queryForObject(sql.toString(), Integer.class);
     }
 
-    public List<JSONObject> rateTemplates(String search, int from, int number){
+    public List<JSONObject> rateTemplates(Long userId, String name, int from, int number){
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
         sql.append(" *");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
         sql.append(" WHERE");
-        if (search != null && null != search) {
-            sql.append(" t.rel_user_id = "+search);
+		if (null != userId) {
+			sql.append(" t.rel_user_id = "+userId);
+		}
+        if (StringUtils.isNotBlank(name)) {
+            sql.append(" t.name = "+name);
         }
         sql.append(" limit ?, ?");
 
@@ -249,7 +271,7 @@ public class ShopDao
         sql.append(" `t_cs_commodity_rate_template` t");
         sql.append(" WHERE");
 
-        if (search != null && null != search) {
+        if (StringUtils.isNotBlank(search)) {
             sql.append(" t.scheme_id = "+search);
         }
 
@@ -293,5 +315,20 @@ public class ShopDao
 				return p;
 			}
 		});
+	}
+
+	public Long saveOrUpdateRateTemplate(RateTemplate rt)
+	{
+		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template` (`rel_user_id`, `scheme_id`, `code`, `name`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?);";
+		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `name`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
+
+		if(null != rt.getId()){
+			jdbc.update(update, rt.getName(), rt.getCreator(), rt.getModifier());
+		}else{
+			rt.setId(tools.nextId("cdRateTemp"));
+			jdbc.update(insert, rt.getId(), rt.getSchemeId(), rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
+		}
+
+		return rt.getId();
 	}
 }
