@@ -4,9 +4,9 @@ server:
   port: 7777
 
 datasource:
-  url: jdbc:mysql://10.253.116.46:3306/vie_biz
-  username: admin
-  password: Iyunbaotest2018
+  url: jdbc:mysql://10.253.116.46:3306/vie_biz?useUnicode=true&characterEncoding=UTF-8
+  username: root
+  password: 123456
 
 path:
   lifeins: ./product/

@@ -58,6 +58,7 @@
 			<item name="SUV_S" param="A1" formula="(A1>0?IT.SUV_S(A1-1):0)+IT.SUV(A1)"/>
 			<item name="F80" param="A1" formula="AGE+A1==80?PREMIUM*PAY_PERIOD:0"/>
 			<item name="DRAW" param="A1" formula="IT.SUV(A1)+IT.F80(A1)"/>
+			<item name="DRAW_S" param="A1" formula="(A1>0?IT.DRAW_S(A1-1):0)+IT.DRAW(A1)"/>
 
 			<item name="CSV" param="A1" formula="A1==0?0:DS.CSV[A1-1][0]*QUANTITY"/>
 			<item name="AMT" param="A1" formula="max(IT.CSV(A1)+IT.DRAW(A1),PremiumSum(A1))"/>
@@ -116,6 +117,15 @@
 					</loop>
 				</table>
 			</benefit_table>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<text name="身故金" color="#0000FF">IT.AMT(I)</text>
+					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
+					<line name="累计领取" color="#FF00FF">IT.DRAW_S(I)</line>
+				</chart>
+			</benefit_chart>
 
 			<coverage filter="coverage" parser="coverage">
 				<paragraph title="年金">

@@ -93,6 +93,16 @@
 				</table>
 			</benefit_table>
 
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<text name="加保保额" color="#006600">IT.AMT(I)</text>
+					<text name="身故金" color="#000BB00">IT.FAMT(I)</text>
+					<line name="累计保费" color="#FF0000">IT.PRM_S(I)</line>
+					<line name="现金价值" color="#00AA00">IT.CV(I)</line>
+					<line name="累计领取" color="#FF00FF">IT.DRAW_S(I)</line>
+				</chart>
+			</benefit_chart>
+
 			<coverage filter="coverage" parser="coverage">
 			</coverage>
 		</attachment>

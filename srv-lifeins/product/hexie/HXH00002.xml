@@ -34,6 +34,14 @@
 					<item>轻症疾病保险金的给付以一次为限。</item>
 				</paragraph>
 			</coverage>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
+					<text name="轻症疾病" color="#CCAA00">AMOUNT</text>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
 		</attachment>
 
 		<rule>
