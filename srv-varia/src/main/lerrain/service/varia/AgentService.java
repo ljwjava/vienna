@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import lerrain.tool.Disk;
+import lerrain.tool.Network;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -31,7 +33,10 @@ public class AgentService
 
 	static int t1 = 0, t2 = 0;
 
-	String url = "http://100.112.33.94:4846/iircirc";
+//	String url = "http://100.112.33.94:4846/iircirc";
+	String url = "http://iir.circ.gov.cn/web";
+	String cookie = "UM_distinctid=163fd40f676288-0c73c58445e894-17356953-1aeaa0-163fd40f678d11; CNZZDATA1619462=cnzz_eid%3D1132355749-1528959915-%26ntime%3D1529476557; AlteonP=ANb/I8gTFAob0dYT/x75SQ$$; JSESSIONID=0000uvrf0eg6ogEZBDyyDtytdg0:148amfs12";
+	String cookie2 = "UM_distinctid=163fd40f676288-1c73c58445e894-17356953-1aeaa0-163fd40f678d11; CNZZDATA1619462=cnzz_eid%3D1132355749-2528959915-%26ntime%3D1529476557; AlteonP=CNb/I8gTFAob0dYT/x75SQ$$; JSESSIONID=0001uvrf0eg6ogEZBDyyDtytdg0:148amfs12";
 
 	public Map find(String certNo, String name)
 	{
@@ -134,16 +139,16 @@ public class AgentService
 		return m;
 	}
 
-	public Map check(String certNo, String name) throws Exception
+	public synchronized Map check(String certNo, String name) throws Exception
 	{
 		Log.info("checking -- <" + certNo + "> " + name + " -- " + t1 + " -- " + String.format("%.2f", t2 * 100.0f / t1) + "%");
 
 		HttpClient client = HttpClients.createDefault();
 
-		HttpPost httpPost = new HttpPost(url + "/servlet/ValidateCode?time=123");
-		httpPost.setHeader("Cookie", "UM_distinctid=163fd40a6ac9e4-053dbfa72ae554-c343567-1aeaa0-163fd40a6ad49e; AlteonP=ArxhTcgTFAqX2roZmBZ4Dg$$; JSESSIONID=0000xYdv733KExpb-SW1EaOb-jO:148amfs12; CNZZDATA1619462=cnzz_eid%3D932756250-1528961309-%26ntime%3D1528982943");
+		HttpGet httpGet = new HttpGet(url + "/servlet/ValidateCode?time=123");
+		httpGet.setHeader("Cookie", cookie);
 
-		HttpResponse response =  client.execute(httpPost);
+		HttpResponse response =  client.execute(httpGet);
 		HttpEntity entity1 = response.getEntity();
 
 		String code = "";
@@ -152,7 +157,7 @@ public class AgentService
 			code = ocr.scan(io1);
 		}
 
-		httpPost = new HttpPost(url + "/baoxyx!searchInfoBaoxyx.html");
+		HttpPost httpPost = new HttpPost(url + "/baoxyx!searchInfoBaoxyx.html");
 		List<NameValuePair> list = new ArrayList<NameValuePair>();
 		list.add(new BasicNameValuePair("id_card", certNo.trim()));
 		list.add(new BasicNameValuePair("name", name.trim()));
@@ -162,7 +167,7 @@ public class AgentService
 
 		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
 		httpPost.setEntity(uyrlEntity);
-		httpPost.setHeader("Cookie", "UM_distinctid=163fd40a6ac9e4-053dbfa72ae554-c343567-1aeaa0-163fd40a6ad49e; AlteonP=ArxhTcgTFAqX2roZmBZ4Dg$$; JSESSIONID=0000xYdv733KExpb-SW1EaOb-jO:148amfs12; CNZZDATA1619462=cnzz_eid%3D932756250-1528961309-%26ntime%3D1528982943");
+		httpPost.setHeader("Cookie", cookie);
 
 		response =  client.execute(httpPost);
 
@@ -267,25 +272,38 @@ public class AgentService
 		return res;
 	}
 
-	public Map check2(String certNo, String name) throws Exception
+	public synchronized Map check2(String certNo, String name) throws Exception
 	{
 		Log.info("checking2 -- <" + certNo + "> " + name + " -- " + t1 + " -- " + String.format("%.2f", t2 * 100.0f / t1) + "%");
 
 		HttpClient client = HttpClients.createDefault();
 
-		HttpPost httpPost = new HttpPost(url + "/web/servlet/ValidateCode?time=123");
-		httpPost.setHeader("Cookie", "UM_distinctid=163fd40a6ac9e4-053dbfa72ae554-c343567-1aeaa0-163fd40a6ad49e; AlteonP=ArxhTcgTFAqX2roZmBZ4Dg$$; JSESSIONID=0000xYdv733KExpb-SW1EaOb-jO:148amfs12; CNZZDATA1619462=cnzz_eid%3D932756250-1528961309-%26ntime%3D1528982943");
+		HttpGet HttpGet = new HttpGet(url + "/servlet/ValidateCode?time=123");
+		HttpGet.setHeader("Cookie", cookie2);
+//		HttpGet.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+//		HttpGet.setHeader("Accept-Encoding", "gzip, deflate");
+//		HttpGet.setHeader("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8");
+//		HttpGet.setHeader("Cache-Control", "max-age=0");
+//		HttpGet.setHeader("Connection", "keep-alive");
+//		HttpGet.setHeader("Host", "iir.circ.gov.cn");
+//		HttpGet.setHeader("Upgrade-Insecure-Requests", "1");
+//		HttpGet.setHeader("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1");
 
-		HttpResponse response =  client.execute(httpPost);
+		HttpResponse response =  client.execute(HttpGet);
 		HttpEntity entity1 = response.getEntity();
+
+//		String str = Network.request(url + "/servlet/ValidateCode?time=123");
+//		System.out.println(str);
 
 		String code = "";
 		try (InputStream io1 =  entity1.getContent())
 		{
+//			byte[] bb = Common.byteOf(io1);
+//			System.out.println(new String(bb));
 			code = ocr.scan(io1);
 		}
 
-		httpPost = new HttpPost(url  + "/web/baoxyx!searchInfo.html");
+		HttpPost httpPost = new HttpPost(url  + "/baoxyx!searchInfo.html?time=" + System.currentTimeMillis());
 		List<NameValuePair> list = new ArrayList<NameValuePair>();
 		list.add(new BasicNameValuePair("id_card", certNo.trim()));
 		list.add(new BasicNameValuePair("name", name.trim()));
@@ -294,7 +312,7 @@ public class AgentService
 
 		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
 		httpPost.setEntity(uyrlEntity);
-		httpPost.setHeader("Cookie", "UM_distinctid=163fd40a6ac9e4-053dbfa72ae554-c343567-1aeaa0-163fd40a6ad49e; AlteonP=ArxhTcgTFAqX2roZmBZ4Dg$$; JSESSIONID=0000xYdv733KExpb-SW1EaOb-jO:148amfs12; CNZZDATA1619462=cnzz_eid%3D932756250-1528961309-%26ntime%3D1528982943");
+		httpPost.setHeader("Cookie", cookie2);
 
 		response =  client.execute(httpPost);
 
@@ -306,6 +324,9 @@ public class AgentService
 		}
 
 		String s = new String(bb, "GB2312");
+
+//		System.out.println(code);
+//		System.out.println(s);
 
 		if (s.indexOf("apologise") >= 0)
 			s = new String(bb, "utf-8");

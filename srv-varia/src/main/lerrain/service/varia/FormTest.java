@@ -24,7 +24,9 @@ public class FormTest
     public static void main(String[] arg) throws Exception
     {
         AgentService as = new AgentService();
-        Map m = as.check2("0627", "宋惠玲");
+        Map m = as.check("0627", "宋惠玲");
+        Map m1 = as.check2("0627", "宋惠玲");
         System.out.println(m);
+        System.out.println(m1);
     }
 }
