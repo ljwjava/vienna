@@ -1,8 +1,19 @@
 package lerrain.service.org;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lerrain.service.common.Log;
+import lerrain.tool.Common;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -233,5 +244,148 @@ public class OrgController
         rJson.put("list", list);
         result.put("content", rJson);
         return result;
+    }
+    
+    /**
+     * 获取上传信息
+     * @param json
+     * @return
+     */
+    @RequestMapping("/upload/excel.json")
+    @ResponseBody
+    public JSONObject upload(@RequestBody JSONObject json) {
+        JSONObject result = new JSONObject();
+        JSONArray array = null;
+        try {
+        	Object[] coll = json.getJSONObject("files").values().toArray();
+            for (Object str : coll)
+            {
+                array = parse((String)str);
+
+                if (!array.isEmpty())
+                {
+                	Log.info("excel info:"+JSON.toJSONString(array));
+                }
+            }
+        } catch (Exception e) {
+        	Log.error(e);
+        }
+        result.put("result", "success");
+        result.put("content", array);
+        return result;
+    }
+    
+    @RequestMapping("/batchSaveEnterpriseInfo.json")
+    @ResponseBody
+    public JSONObject batchSaveEnterpriseInfo(@RequestBody JSONObject json) {
+        JSONObject result = new JSONObject();
+        String orgId = json.getString("URI").substring(json.getString("URI").lastIndexOf("_")+1, json.getString("URI").lastIndexOf("."));
+        int type = json.getIntValue("type");
+        // 邀请码
+        Long inviteCode = json.getLong("inviteCode");
+        JSONArray array = json.getJSONArray("memberInfo");
+        for(int i =0;i<array.size();i++) {
+            Long id = -1l;
+        	JSONObject j = array.getJSONObject(i);
+            String mobile = j.getString("mobile");
+            String name = j.getString("name");
+            if (1 == type || 0 == type) {
+                // 保存渠道/子账户信息
+                Member member = new Member();
+                member.setName(name);
+                member.setMobile(mobile);
+                Long companyId = json.getLong("companyId");
+                member.setOrgId(Long.valueOf(orgId));
+                member.setCompanyId(companyId);
+                member.setStatus(1);
+                id = memberSrv.save(member);
+            } else if (2 == type) {
+                // 保存渠道/部门信息
+                Org org = new Org();
+                org.setName(name);
+                org.setMobile(mobile);
+                org.setType(4);
+                Enterprise enterprise = new Enterprise();
+                enterprise.setCompanyName(name);
+                enterprise.setTelephone(mobile);
+                enterprise.setParentId(inviteCode);
+                Long companyId = enterpriseSrv.save(enterprise);
+                org.setCompanyId(companyId);
+                org.setType(4);
+                id = orgSrv.save(org);
+            } else if (3 == type) { // 保存机构信息
+                // 保存渠道/部门信息
+                Org org = new Org();
+                org.setName(name);
+                org.setMobile(mobile);
+                org.setType(4);
+                Long companyId = json.getLong("companyId");
+                Long parentOrgId = json.getLong("parentOrgId");
+                org.setParentId(parentOrgId);
+                org.setCompanyId(companyId);
+                org.setType(4);
+                id = orgSrv.save(org);
+            }
+            j.put("id", id);
+        }
+        result.put("result", "success");
+        result.put("content", array);
+        return result;
+    }    
+    
+    private JSONArray parse(String str)
+    {
+    	JSONArray array = new JSONArray();
+
+        try (InputStream is = new ByteArrayInputStream(Common.decodeBase64ToByte(str)))
+        {
+            Workbook workbook = WorkbookFactory.create(is);
+            Sheet sheet = workbook.getSheetAt(0);
+
+            int len = sheet.getLastRowNum();
+            for (int i = 0; i < len; i++)
+            {
+                Row row = sheet.getRow(i);
+                if (row == null)
+                    continue;
+
+                int cols = row.getLastCellNum();
+
+                Object[] line = new Object[cols];
+                for (int j = 0; j < cols; j++)
+                {
+                    Cell cell = row.getCell(j);
+                    if (cell != null)
+                    {
+                        cell.setCellType(Cell.CELL_TYPE_STRING);
+                        line[j] = cell.getStringCellValue();
+                    }
+                }
+
+                boolean pass = false;
+                for (int j = 0; j < line.length; j++)
+                {
+                    if (line[j] != null && !"".equals(Common.trimStringOf(line[j])))
+                    {
+                        pass = true;
+                        break;
+                    }
+                }
+
+                if (pass && i > 0) {
+                	JSONObject json = new JSONObject();
+                	json.put("name", line[1]);
+                	json.put("mobile", line[2]);
+                	array.add(json);
+                }
+
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return array;
     }
 }

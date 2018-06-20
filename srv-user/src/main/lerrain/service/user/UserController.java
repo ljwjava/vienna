@@ -233,9 +233,14 @@ public class UserController
     @RequestMapping({ "/freezeUser.json" })
     @ResponseBody
     public JSONObject freezeUser(@RequestBody JSONObject json) {
-        long userId = json.getLong("userId");
+    	JSONArray userId = json.getJSONArray("userId");
+    	Long[] userIds = new Long[userId.size()];
+    	List<Long> userList = JSONObject.parseArray(userId.toJSONString(), Long.class);
+    	for(int i =0;i<userList.size();i++) {
+    		userIds[i] = userList.get(i);
+    	}
         int status = json.getIntValue("status");
-        userSrv.updateStatus(new Long[] { userId }, status);
+        userSrv.updateStatus(userIds, status);
         JSONObject result = new JSONObject();
         result.put("result", "success");
         result.put("content", true);
@@ -259,8 +264,11 @@ public class UserController
     public JSONObject csLogin(@RequestBody JSONObject json) {
         JSONObject res = new JSONObject();
         JSONObject result = new JSONObject();
+   
         result.put("type", "account");
+        
         result.put("status", "notokey");
+        
         result.put("currentAuthority", "admin");
         res.put("result", "success");
         try {
@@ -278,4 +286,46 @@ public class UserController
         res.put("content", result);
         return res;
     }
+    
+    // 开通云服账号
+    @RequestMapping({ "/batchOpenAccount.json" })
+    @ResponseBody
+    public JSONObject batchOpenAccount(@RequestBody JSONObject json) {
+        // 开通类型 1人员 2组织 登录名 密码 类型 手机号
+        JSONObject res = new JSONObject();
+    	try {
+    		JSONArray array = json.getJSONArray("memberInfo");
+    		for(int i =0;i<array.size();i++) {
+    			try {
+        			JSONObject j = array.getJSONObject(i);
+        	        Long userId = j.getLong("id");
+        	        int type = json.getIntValue("type");
+        	        List<Long> roleList = new ArrayList<Long>();
+        	        if (1 == type || 0 == type) {
+        	            roleList.add(RoleTypeEnum.YUNFUMEMBER.getId());
+        	        } else if (2 == type) {
+        	            roleList.add(RoleTypeEnum.YUNFUORG.getId());
+        	        } else if (3 == type) {
+        	            roleList.add(RoleTypeEnum.YUNFUORG.getId());
+        	        }
+        	        String loginName = j.getString("mobile");
+        	        String password = j.getString("password");
+        	        if (password == null) {
+        	            password = PasswordUtil.createPassword();
+        	        }
+        	        password = Common.md5Of(password);
+        	        boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
+        	        Log.info("开通账号结果:" + result);
+    			} catch(Exception e1) {
+    				Log.error(e1);
+    			}
+    		}
+    	} catch (Exception e) {
+    		Log.error(e);
+    	}
+        res.put("result", "success");
+        res.put("content", true);
+
+        return res;
+    }    
 }
