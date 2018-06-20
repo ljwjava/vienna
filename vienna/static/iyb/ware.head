@@ -1,0 +1,61 @@
+
+<style>
+ /* 动画足球旋转 */
+@keyframes kf_ware_open {
+	from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.page_access {
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, .3);
+	top: 0px;
+	z-index: 10000001;
+	padding-top: 20vh;
+	animation: kf_ware_open .3s linear;
+}
+.page_access > .opt_area {
+	width: 300px;
+	min-height: 150px;
+	background: white;
+	margin-left: calc(50% - 150px);
+	position: relative;
+	border-radius: 10px;
+	padding-top: 50px;
+	padding-bottom: 20px;
+}
+.page_access > .opt_area > .close {
+	top: 0px;
+	height: 45px;
+	width: 50px;
+	line-height: 50px;
+	position: absolute;
+	right: 0px;
+	text-align: center;
+	color: gray;
+	font-weight: 300;
+	font-size: 2rem;
+	transform: rotateZ(45deg);
+}
+.page_access > .opt_area > .text_area {
+	padding: 5px 20px;
+	color: #333;
+}
+.page_access > .opt_area > .opt_button {
+	height: 36px;
+	text-align: center;
+	background-color: #057aff;
+	border-radius: 4px;
+	color: white;
+	line-height: 35px;
+	margin-top: 20px;
+	width: 200px;
+	margin-left: calc(50% - 100px)
+}
+
+</style>
