@@ -264,8 +264,9 @@ public class UserController
     public JSONObject csLogin(@RequestBody JSONObject json) {
         JSONObject res = new JSONObject();
         JSONObject result = new JSONObject();
-        
+   
         result.put("type", "account");
+        
         result.put("status", "notokey");
         result.put("currentAuthority", "admin");
         res.put("result", "success");
