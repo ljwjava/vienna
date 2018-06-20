@@ -80,6 +80,15 @@
 				</table>
 			</benefit_table>
 
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="账户进入" color="#FF0000">PremiumSum(I)</line>
+					<line name="账户价值低" color="#00AA00">IT.ACT(I,0)</line>
+					<line name="账户价值中" color="#00AA88">IT.ACT(I,1)</line>
+					<line name="账户价值高" color="#00AAFF">IT.ACT(I,2)</line>
+				</chart>
+			</benefit_chart>
+
 			<coverage filter="coverage" parser="coverage">
 			</coverage>
 		</attachment>
