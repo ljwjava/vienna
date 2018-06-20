@@ -4,7 +4,7 @@ package lerrain.service.user.enm;
 /**
  * 类RoleTypeEnum.java的实现描述：角色类型
  *
- * 
+ *
  * @author iyb-wangguangrong 2018年5月10日 下午2:11:02
  */
 public enum RoleTypeEnum {

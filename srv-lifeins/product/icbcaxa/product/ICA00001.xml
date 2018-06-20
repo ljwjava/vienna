@@ -17,10 +17,10 @@
 		</data>
 		
 		<param>
-			<pay_mode> <!-- 按照parameters.xml的配置，交费方式是pay_mode不是paymode -->
+			<pay_freq> <!-- 按照parameters.xml的配置，交费方式是pay_mode不是paymode -->
 				<item code="year"/>
 				<item code="month"/>
-			</pay_mode>
+			</pay_freq>
 			<pay>
 				<item code="term_5"/>
 				<item code="term_10"/>
@@ -314,7 +314,16 @@
 				    <item>合同终了时可以参与公司分红业务的盈利分配。</item>
 				</paragraph>
 			</benefit_detail>
-			
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<text name="身故累计" color="#0000FF">IT.AD_SGACCOUNT(I,0)</text>
+					<text name="生存累计" color="#0000FF">IT.AD_SCACCOUNT(I,0)</text>
+					<line name="累计保费" color="#FF0000">IT.AD_PRM(I)</line>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
+
 			<benefit_chart filter="chart@axa" parser="chart@axa">
 			    <year_data from="0" to="INSURE_PERIOD-1" name="I" step="1">
 			    	<item mode="add" type="formula" title="生存累计给付总额" code="sc">IT.AD_SCACCOUNT[I,0]</item>

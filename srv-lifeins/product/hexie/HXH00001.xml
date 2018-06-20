@@ -92,10 +92,9 @@
 
 			<benefit_chart filter="chart" parser="chart">
 			    <chart from="0" to="INSURE_PERIOD-1" name="I">
-					<bar name="年交保险费" color="#CC0000">IT.PRM(I)+(R02==null?0:R02.IT.PRM(I))</bar>
-					<line name="重大疾病保险金" color="#0000FF">I==0?AMOUNT:AMOUNT*2</line>
-					<line name="轻症疾病保险金" color="#CCAA00">R02==null?0:R02.AMOUNT</line>
-					<line name="现金价值" color="#00AAFF">IT.CSV(I)+(R02==null?0:R02.IT.CSV(I))</line>
+					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
+					<text name="重大疾病" color="#0000FF">I==0?AMOUNT:AMOUNT*2</text>
+					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
 				</chart>
 			</benefit_chart>
 		</attachment>
