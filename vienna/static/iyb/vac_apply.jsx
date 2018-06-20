@@ -24,7 +24,7 @@ env.mapping = {
 		"103" : "O",
 		"104" : "TY"
 	}
-}
+};
 
 env.translate = function(vals) {
 	for (var k in env.mapping) {
@@ -32,7 +32,7 @@ env.translate = function(vals) {
 			vals["_" + k] = env.mapping[k][vals[k]];
 		}
 	}
-}
+};
 
 env.checkCustomer = function(f) {
 	let r = {};
@@ -53,6 +53,11 @@ env.checkCustomer = function(f) {
 			r.gender = "性别与证件不符";
 	}
 	return r;
+};
+
+// 是否进行身份证验证
+env.isIdCert = function(certType) {
+    return certType == "1";
 };
 
 class ApplicantForm extends Form {
@@ -82,7 +87,7 @@ class ApplicantForm extends Form {
 		];
 		if (cusType == "1") {
 			v.push({name: '证件类型', code: "certType", type: "switch", options: env.certType1});
-			v.push({name: '证件号码', code: "certNo", type: "idcard", req: "yes", succ: this.resetCertNo.bind(this)});
+			v.push({name: '证件号码', code: "certNo", type: "idcard", req: "yes", succ: this.resetCertNo.bind(this), isIdCert:env.isIdCert});
 			v.push({name: '性别', code: "gender", type: "switch", options: [["M", "男"], ["F", "女"]]});
 			v.push({name: '出生日期', code: "birthday", type: "date", req: "yes", desc: "请选择出生日期"});
 		} else if (cusType == "2") {
