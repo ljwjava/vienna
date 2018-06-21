@@ -195,18 +195,20 @@ public class TemplateDao {
 
     public void batchSaveProTypeRelation(List<TemplateProductTypeRelation> list) {
         final List<TemplateProductTypeRelation> tpr = list;
-        String sql = "insert into t_cs_template_product_type_relation(product_type_id,product_id,creator,gmt_created,modifier,gmt_modified,is_deleted) VALUES (?,?,?,?,?,?,?)";
+        String sql = "insert into t_cs_template_product_type_relation(product_type_id,product_id,template_id,creator,gmt_created,modifier,gmt_modified,is_deleted) VALUES (?,?,?,?,?,?,?,?)";
         jdbc.batchUpdate(sql, new BatchPreparedStatementSetter() {
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Long templateId = tpr.get(i).getProductTypeId();
+                Long productTypeId = tpr.get(i).getProductTypeId();
                 Long productId = tpr.get(i).getProductId();
-                ps.setLong(1, templateId);
+                Long templateId = tpr.get(i).getTemplateId();
+                ps.setLong(1, productTypeId);
                 ps.setLong(2, productId);
-                ps.setString(3, "system");
-                ps.setDate(4, new java.sql.Date(new Date().getTime()));
-                ps.setString(5, "system");
-                ps.setDate(6, new java.sql.Date(new Date().getTime()));
-                ps.setString(7, "N");
+                ps.setLong(3, templateId);
+                ps.setString(4, "system");
+                ps.setDate(5, new java.sql.Date(new Date().getTime()));
+                ps.setString(6, "system");
+                ps.setDate(7, new java.sql.Date(new Date().getTime()));
+                ps.setString(8, "N");
             }
 
             public int getBatchSize() {
@@ -252,4 +254,16 @@ public class TemplateDao {
                 new Object[]{}, new BeanPropertyRowMapper<>(TemplateProductType.class));
     }
 
+    public List<TemplateProductTypeRelation> queryTptrsByTemplateIdAndProductId(Long templateId, List<Long> idList) {
+        if (idList == null && idList.size() <= 0) {
+            return Lists.newArrayList();
+        }
+        StringBuilder sql = new StringBuilder(" select * from t_cs_template_product_type_relation where is_deleted='N' and template_id= " + templateId + " and product_id in ( ");
+        for (Long id : idList) {
+            sql.append(id).append(",");
+        }
+        sql.append(" )");
+        return jdbc.query(sql.replace(sql.lastIndexOf(","), sql.lastIndexOf(",") + 1, "").toString(),
+                new Object[]{}, new BeanPropertyRowMapper<>(TemplateProductTypeRelation.class));
+    }
 }
