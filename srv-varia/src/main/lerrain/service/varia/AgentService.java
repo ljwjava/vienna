@@ -9,6 +9,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -18,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AgentService
@@ -35,8 +33,13 @@ public class AgentService
 
 //	String url = "http://100.112.33.94:4846/iircirc";
 	String url = "http://iir.circ.gov.cn/web";
-	String cookie = "UM_distinctid=163fd40f676288-0c73c58445e894-17356953-1aeaa0-163fd40f678d11; CNZZDATA1619462=cnzz_eid%3D1132355749-1528959915-%26ntime%3D1529476557; AlteonP=ANb/I8gTFAob0dYT/x75SQ$$; JSESSIONID=0000uvrf0eg6ogEZBDyyDtytdg0:148amfs12";
-	String cookie2 = "UM_distinctid=163fd40f676288-1c73c58445e894-17356953-1aeaa0-163fd40f678d11; CNZZDATA1619462=cnzz_eid%3D1132355749-2528959915-%26ntime%3D1529476557; AlteonP=CNb/I8gTFAob0dYT/x75SQ$$; JSESSIONID=0001uvrf0eg6ogEZBDyyDtytdg0:148amfs12";
+	String cookie = "UM_distinctid=163fd40f676288-0c73c58445e894-17356953-1aeaa0-163fd40f678d11; CNZZDATA1619462=cnzz_eid%3D1132355749-1528959915-%26ntime%3D1529476557; AlteonP=ANb/I8gTFAob0dYT/x75SQ$$; JSESSIONID=TTTTTT:148amfs12";
+	//String cookie2 = "UM_distinctid=163fd40f676288-1c73c58445e894-17356953-1aeaa0-163fd40f678d11; CNZZDATA1619462=cnzz_eid%3D1132355749-2528959915-%26ntime%3D1529476557; AlteonP=CNb/I8gTFAob0dYT/x75SQ$$; JSESSIONID=0001uvrf0eg6ogEZBDyyDtytdg0:148amfs12";
+
+	RequestConfig requestConfig = RequestConfig.custom()
+			.setConnectTimeout(5000).setConnectionRequestTimeout(5000)
+			.setSocketTimeout(5000).build();
+
 
 	public Map find(String certNo, String name)
 	{
@@ -117,7 +120,7 @@ public class AgentService
 					m.putAll(m1);
 				}
 
-				if (m.get("certfiNo") == null)
+				if (Common.isEmpty(m.get("certfiNo")))
 					m.put("certfiNo", m.get("certfiNo2"));
 			}
 
@@ -139,14 +142,17 @@ public class AgentService
 		return m;
 	}
 
-	public synchronized Map check(String certNo, String name) throws Exception
+	public Map check(String certNo, String name) throws Exception
 	{
+		String cookie = this.cookie.replace("TTTTTT", UUID.randomUUID().toString().replaceAll("-", ""));
 		Log.info("checking -- <" + certNo + "> " + name + " -- " + t1 + " -- " + String.format("%.2f", t2 * 100.0f / t1) + "%");
 
 		HttpClient client = HttpClients.createDefault();
 
 		HttpGet httpGet = new HttpGet(url + "/servlet/ValidateCode?time=123");
 		httpGet.setHeader("Cookie", cookie);
+
+		httpGet.setConfig(requestConfig);
 
 		HttpResponse response =  client.execute(httpGet);
 		HttpEntity entity1 = response.getEntity();
@@ -168,6 +174,8 @@ public class AgentService
 		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
 		httpPost.setEntity(uyrlEntity);
 		httpPost.setHeader("Cookie", cookie);
+
+		httpPost.setConfig(requestConfig);
 
 		response =  client.execute(httpPost);
 
@@ -274,6 +282,7 @@ public class AgentService
 
 	public synchronized Map check2(String certNo, String name) throws Exception
 	{
+		String cookie2 = this.cookie.replace("TTTTTT", UUID.randomUUID().toString().replaceAll("-", ""));
 		Log.info("checking2 -- <" + certNo + "> " + name + " -- " + t1 + " -- " + String.format("%.2f", t2 * 100.0f / t1) + "%");
 
 		HttpClient client = HttpClients.createDefault();
@@ -288,6 +297,8 @@ public class AgentService
 //		HttpGet.setHeader("Host", "iir.circ.gov.cn");
 //		HttpGet.setHeader("Upgrade-Insecure-Requests", "1");
 //		HttpGet.setHeader("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1");
+
+		HttpGet.setConfig(requestConfig);
 
 		HttpResponse response =  client.execute(HttpGet);
 		HttpEntity entity1 = response.getEntity();
@@ -313,6 +324,8 @@ public class AgentService
 		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
 		httpPost.setEntity(uyrlEntity);
 		httpPost.setHeader("Cookie", cookie2);
+
+		httpPost.setConfig(requestConfig);
 
 		response =  client.execute(httpPost);
 

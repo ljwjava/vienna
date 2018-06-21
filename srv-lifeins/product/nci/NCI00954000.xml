@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<!-- 新增字段  -->
+	<!--  magnumJuvenilesRisk ="false" 是否有未成年人死亡风险保额-->
+	<!--  magnumExempt ="0" 投保人豁免责任-->
+	<!--  magnumProductType ="LIFE,CI"    Magnum险种-->
+	<product 
+		code="00954000"
+		corporation_id="nci" 
+		id="NCI00954000"
+		is_main="yes" 
+		is_rider="no"
+		name="新华多倍保障重大疾病保险（A款）"
+		name_abbr="多倍保障A"
+		premium="DS.RATE[0,0]*QUANTITY"
+		unit_amount="10000"
+		amount="50000"
+		type_code="common"
+		sale_begin_date="" 
+		sale_end_date="" 
+		last_modify_date="">
+		
+		<data>
+			<item parser="dds" value="NCI00954000" />
+		</data>
+
+		<param>
+			<!-- 缴费方式：5年，10年，20年-->
+			<pay>
+			    <item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+			</pay>
+			<!-- 保险期间：至被保险人终身。 -->
+			<insure>
+			    <item code="to_full"/>
+			</insure>
+		</param>
+		<interest>
+				<var name="XJJZ" param="A1" type="double" formula="DS.DATA[A1,0]*AMOUNT/10000"/> <!--现金价值-->
+		</interest>
+		<attachment>
+			<!-- 保险利益演示表格 -->
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank col="1" row="3">'保单年度末'</blank>
+						<blank col="1" row="3">'年龄'</blank>
+						<blank col="1" row="3">'当年保费'</blank>
+						<blank col="1" row="3">'累计保费'</blank>
+						<blank col="2" row="1">'第一至五组'</blank>
+						<blank col="1" row="3">'特定严重疾病保险金'</blank>
+						<blank col="1" row="3">'身故保险金'</blank>
+						<blank col="1" row="3">'现金价值'</blank>
+					</row>
+					<row type="title">
+						<blank col="1" row="2">'轻症疾病保险金'</blank>
+						<blank col="1" row="2">'重大疾病保险金'</blank>
+					</row>
+					<loop from="1" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+							<!--AMOUNT 是基本保险金-->
+							<!--PAY_PERIOD 是缴费期时-->
+							<!--PREMIUM 是首年保费-->
+							<!--I 是保单年度末-->
+							<!--AMOUNT是基本保险金-->
+							<blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>	<!--年龄-->
+							<blank align="right" style="########0">I ge PAY_PERIOD ? 0 : PREMIUM</blank>		<!--当年保费-->
+							<blank align="right" style="########0">I ge PAY_PERIOD ? PAY_PERIOD*PREMIUM : PREMIUM*I</blank>	<!--累计保费-->  
+						  	<blank align="right" style="########0">0.2*AMOUNT</blank>	<!--轻症疾病保险金-->
+							<blank align="right" style="########0">AMOUNT</blank>	<!--重大疾病保\n险金-->
+							<blank align="right" style="########0">0.5*AMOUNT</blank>	<!--特定严重疾病保险金-->
+							<blank align="right" style="########0">AMOUNT</blank>	<!--身故保险金-->
+							<blank align="right" style="########0">IT.XJJZ(I)</blank>	<!--现金价值-->
+					    </row>
+					</loop>
+				</table>
+				<text>1.上述演示数据经过四舍五入取整处理。</text>
+			</benefit_table>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="累计保费" color="#FF0000">PremiumSum(I)</line>
+					<line name="现金价值" color="#00BFFF">IT.XJJZ(I)</line>
+					<text name="轻症疾病保险金">0.2*AMOUNT</text>
+					<text name="重大疾病保险金">AMOUNT</text>
+					<text name="身故保险金">AMOUNT</text>
+				</chart>
+			</benefit_chart>
+
+			<!-- 保险责任 -->
+			<coverage filter="coverage" parser="coverage">
+					<paragraph title="疾病保险金">
+						<item>合同疾病保险金包括轻症疾病保险金和重大疾病保险金。疾病保险金保障的疾病范围包括合同所指的轻症疾病和合同所指的重大疾病，所有疾病按照附表分为5组。在合同保险期间内，本公司按下列规定承担给付疾病保险金责任：</item>
+					</paragraph>
+					<paragraph title="（1）疾病保险金单一组别给付限额和累计给付限额"></paragraph>
+					<paragraph title="　　在合同保险期间内，本公司按照合同疾病保险金给付规定，对某一组别内所有疾病（包括该组别中的轻症疾病和重大疾病，下同）累计给付的疾病保险金（包括轻症疾病保险金和重大疾病保险金，下同）以附表所列该组别对应的单一组别给付限额为限；本公司对单一组别内所有疾病累计给付的疾病保险金达到该组别对应的单一组别给付限额时，本公司对该组别内的各项疾病不再承担给付疾病保险金责任。"></paragraph>
+					<paragraph title="　　单一组别给付限额是指在合同保险期间内，本公司按照合同疾病保险金给付规定，对某一组别内所有疾病（包括该组别中的轻症疾病和重大疾病）累计给付的疾病保险金（包括轻症疾病保险金和重大疾病保险金之和）的上限，各组别对应的单一组别给付限额具体见《疾病分组与给付限额表》。"></paragraph>
+					<paragraph title="　　在合同保险期间内，本公司对附表中所有疾病的疾病保险金累计给付限额，按下列规定确定："></paragraph>
+					<paragraph title="　　①被保险人85周岁保单生效对应日（不含）之前，本公司累计给付的疾病保险金以各组别对应的单一组别给付限额之和为限，本公司累计给付的疾病保险金达到各组别对应的单一组别给付限额之和时，合同终止；"></paragraph>
+					<paragraph title="　　②被保险人85周岁保单生效对应日（含）之后，本公司自合同生效之日起累计给付的疾病保险金（包括被保险人85周岁保单生效对应日之前和之后给付金额，下同）以基本保险金额为限，本公司自合同生效之日起累计给付的疾病保险金达到基本保险金额时，合同终止。"></paragraph>
+					<paragraph title="　　被保险人85周岁保单生效对应日零时，如本公司自合同生效之日起累计给付的疾病保险金已达到或超过基本保险金额，合同于被保险人85周岁保单生效对应日零时终止。"></paragraph>
+					<paragraph title="　　（2）轻症疾病保险金"></paragraph>
+					<paragraph title="　　被保险人于合同生效（或合同效力恢复）之日起90日（含）内因疾病原因，由本公司认可医院的专科医生确诊初次发生合同所指的轻症疾病（无论一项或多项），本公司不承担本项保险责任，合同继续有效。"></paragraph>
+					<paragraph title="　　被保险人于合同生效（或合同效力恢复）之日起90日（含）内因意外伤害原因，或于合同生效（或合同效力恢复）之日起90日（不含）后，由本公司认可医院的专科医生确诊初次发生合同所指的轻症疾病（无论一项或多项），本公司按基本保险金额的20%给付轻症疾病保险金，本公司对该项轻症疾病的保险责任终止。"></paragraph>
+					<paragraph title="　　在合同保险期间内，本公司对每项轻症疾病给付轻症疾病保险金次数以一次为限，每项轻症疾病保险金给付金额应符合疾病保险金单一组别给付限额和累计给付限额的规定。"></paragraph>
+					<paragraph title="　　（3）重大疾病保险金"></paragraph>
+					<paragraph title="　　被保险人于合同生效（或合同效力恢复）之日起90日（含）内因疾病原因，由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病（无论一项或多项），本公司给付重大疾病保险金，其金额为本保险实际交纳的保险费的1.1倍，合同终止。"></paragraph>
+					<paragraph title="　　被保险人于合同生效（或合同效力恢复）之日起90日（含）内因意外伤害原因，或于合同生效（或合同效力恢复）之日起90日（不含）后，由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病（无论一项或多项），本公司按下列规定给付重大疾病保险金："></paragraph>
+					<paragraph title="　　①若该项重大疾病确诊初次发生时被保险人处于85周岁保单生效对应日（不含）之前，本公司按基本保险金额与该项重大疾病所属组别对应的单一组别给付限额的余额二者之较小者，给付重大疾病保险金。"></paragraph>
+					<paragraph title="　　单一组别给付限额的余额指单一组别给付限额减去该组别疾病累计已给付的疾病保险金后的余额。"></paragraph>
+					<paragraph title="　　②若该项重大疾病确诊初次发生时被保险人处于85周岁保单生效对应日（含）之后，本公司按基本保险金额减去自合同生效之日起累计给付的疾病保险金后的余额，给付重大疾病保险金，合同终止。"></paragraph>
+					<paragraph title="　　（4）疾病保险金给付特别约定"></paragraph>
+					<paragraph title="　　①在合同保险期间内，被保险人多次确诊初次发生合同所指的重大疾病，对于相邻两次确诊初次发生的重大疾病，当且仅当后项重大疾病确诊初次发生日期自前项重大疾病确诊初次发生日期已届满1年，本公司对后项重大疾病承担给付重大疾病保险金的责任。"></paragraph>
+					<paragraph title="　　被保险人在保险期间内确诊初次发生合同所指的恶性肿瘤之后，再次确诊恶性肿瘤且后次确诊满足3年恶性肿瘤等待期的，则后次确诊恶性肿瘤视同初次发生；如后次确诊恶性肿瘤不满足3年恶性肿瘤等待期，则后次确诊不视同初次发生。"></paragraph>
+					<paragraph title="　　②被保险人由于同一疾病原因、同次医疗行为或同次意外伤害事故，确诊初次发生一项或多项合同所指的轻症疾病或重大疾病，本公司按轻症疾病保险金或重大疾病保险金规定，仅给付其中金额最高的一项保险金。"></paragraph>
+					<paragraph title="　　2、身故保险金"></paragraph>
+					<paragraph title="　　被保险人于合同生效（或合同效力恢复）之日起90日（含）内因疾病原因身故，本公司给付身故保险金，其金额为本保险实际交纳的保险费的1.1倍减去累计已给付的疾病保险金后的余额（如本保险实际交纳的保险费的1.1倍低于累计已给付的疾病保险金，余额视同为零），合同终止。"></paragraph>
+					<paragraph title="　　被保险人于合同生效（或合同效力恢复）之日起90日（含）内因意外伤害原因身故，或于合同生效（或合同效力恢复）之日起90日（不含）后身故，本公司按基本保险金额减去累计已给付的疾病保险金后的余额（如基本保险金额低于累计已给付的疾病保险金，余额视同为零）给付身故保险金，合同终止。"></paragraph>
+					<paragraph title="　　3、特定严重疾病保险金"></paragraph>
+					<paragraph title="　　被保险人于合同生效（或合同效力恢复）之日起90日（含）内因意外伤害原因，或于合同生效（或合同效力恢复）之日起90日（不含）后，由本公司认可医院的专科医生确诊初次发生合同所指的特定严重疾病（无论一项或多项），并按第1条规定给付重大疾病保险金的，本公司在给付重大疾病保险金的同时，按基本保险金额的50%给付特定严重疾病保险金，本项保险责任终止。"></paragraph>
+					<paragraph title="　　在合同保险期间内，特定严重疾病保险金给付次数以一次为限。"></paragraph>
+					<paragraph title="　　4、豁免保险费">
+						<item>在合同交费期间内 ，如本公司累计给付的疾病保险金达到基本保险金额时 ，投保人可免交后续保险费 ，合同继续有效。</item>
+					</paragraph>
+				</coverage>
+		</attachment>
+		
+		<!-- 本险种可附加的附加险 -->
+		<rider>
+			<!--167-->
+			<product id="00205003"/>
+			<!--718-->
+			<product id="00205008"/>
+			<product id="00205009"/>
+			
+			<product id="00378000"/>
+			<product id="00389000"/>
+			<product id="00392000"/>
+			<product id="00425000"/>
+			<product id="00507000"/>
+			<product id="00508000"/>
+			<product id="00519000"/>
+			<product id="00540000"/> 
+			<product id="00541000"/>
+			<product id="00552000"/> 
+			<product id="00553000"/>
+			<product id="00554000"/>
+			<product id="00563100"/>
+			<product id="00570000"/>
+			<product id="00946000"/>
+			<product id="00958100"/>
+		</rider>
+
+		<rule>
+			<if condition="AMOUNT lt 50000" type="amount">
+			    	最低投保保额50000元。
+			</if>
+			<if condition="PAY_VALUE = 5 and (AGE &gt; 50 or AGE &lt; 18) and GENDER_CODE==1">
+					被保险人年龄范围：18周岁(含)- 50周岁(含)。
+			</if>
+			<if condition="PAY_VALUE = 10 and (AGE &gt; 45 or AGE &lt; 18) and GENDER_CODE==1">
+					被保险人年龄范围：18周岁(含)- 45周岁(含)。
+			</if>
+			<if condition="PAY_VALUE = 20 and (AGE &gt; 40 or AGE &lt; 18) and GENDER_CODE==1">
+					被保险人年龄范围：18周岁(含)- 40周岁(含)。
+			</if>
+			<if condition="PAY_VALUE = 5 and (AGE &gt; 50 or AGE &lt; 18) and GENDER_CODE==2">
+					被保险人年龄范围：18周岁(含)- 50周岁(含)。
+			</if>
+			<if condition="PAY_VALUE = 10 and (AGE &gt; 50 or AGE &lt; 18) and GENDER_CODE==2">
+					被保险人年龄范围：18周岁(含)- 50周岁(含)。
+			</if>
+			<if condition="PAY_VALUE = 20 and (AGE &gt; 45 or AGE &lt; 18) and GENDER_CODE==2">
+					被保险人年龄范围：18周岁(含)- 45周岁(含)。
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -11,6 +11,8 @@ import lerrain.project.insurance.plan.Commodity;
 import lerrain.project.insurance.plan.Plan;
 import lerrain.project.insurance.product.*;
 
+import lerrain.project.insurance.product.rule.Rule;
+import lerrain.project.insurance.product.rule.RuleUtil;
 import lerrain.service.common.Log;
 import lerrain.service.common.ServiceTools;
 import lerrain.service.lifeins.manage.EditorService;
@@ -249,6 +251,31 @@ public class PlanController
         return res;
     }
 
+    private JSONObject clauseOf(Insurance ins, Plan plan)
+    {
+        if (plan != null)
+        {
+            List<Rule> list = RuleUtil.precheck(ins, plan);
+            if (list != null)
+            {
+                
+            }
+        }
+
+        JSONObject m = new JSONObject();
+        m.put("id", ins.getId());
+        m.put("code", ins.getId());
+        m.put("vendor", ins.getVendor());
+        m.put("company", ins.getCompany().getId());
+        m.put("name", ins.getName());
+        m.put("classify", ins.getAdditional("classify"));
+        m.put("tag", ins.getAdditional("tag"));
+        m.put("remark", ins.getAdditional("remark"));
+        m.put("type", !ins.isMain() ? "rider" : ins.getType() == Insurance.PACKAGE ? "package" : "clause");
+
+        return m;
+    }
+
     @RequestMapping("/plan/find_clause.json")
     @ResponseBody
     public JSONObject listProduct(@RequestBody JSONArray p)
@@ -260,18 +287,7 @@ public class PlanController
             if (ins == null || !ins.isMain())
                 continue;
 
-            JSONObject m = new JSONObject();
-            m.put("id", ins.getId());
-            m.put("code", ins.getId());
-            m.put("vendor", ins.getVendor());
-            m.put("company", ins.getCompany().getId());
-            m.put("name", ins.getName());
-            m.put("classify", ins.getAdditional("classify"));
-            m.put("tag", ins.getAdditional("tag"));
-            m.put("remark", ins.getAdditional("remark"));
-            m.put("type", !ins.isMain() ? "rider" : ins.getType() == Insurance.PACKAGE ? "package" : "clause");
-
-            r.add(m);
+            r.add(clauseOf(ins, null));
         }
 
         JSONObject res = new JSONObject();
@@ -303,19 +319,7 @@ public class PlanController
         {
             Insurance ins = lifeins.getProduct(rs);
             if (ins != null)
-            {
-                JSONObject m = new JSONObject();
-                m.put("id", ins.getId());
-                m.put("code", ins.getId());
-                m.put("vendor", ins.getVendor());
-                m.put("name", ins.getName());
-                m.put("abbrName", ins.getAbbrName());
-                m.put("tag", ins.getAdditional("tag"));
-                m.put("logo", ins.getAdditional("logo"));
-                m.put("remark", ins.getAdditional("remark"));
-                m.put("type", "rider");
-                rm.add(m);
-            }
+                rm.add(clauseOf(ins, plan));
         }
 
         JSONObject res = new JSONObject();
@@ -332,6 +336,9 @@ public class PlanController
         String productId = p.getString("productId");
         int parentIndex = Common.intOf(p.get("parentIndex"), -1);
 
+        String planId = p.getString("planId");
+        Plan plan = planId == null ? null : planSrv.getPlan(planId);
+
         JSONArray products = new JSONArray();
 
         if (Common.isEmpty(productId) && parentIndex < 0)
@@ -345,21 +352,8 @@ public class PlanController
             List<Insurance> list = insc.getProductList();
             for (Insurance ins : list)
             {
-                if (ins.isMain())
-                {
-                    JSONObject m = new JSONObject();
-                    m.put("id", ins.getId());
-                    m.put("code", ins.getId());
-                    m.put("vendor", ins.getVendor());
-                    m.put("name", ins.getName());
-                    m.put("abbrName", ins.getAbbrName());
-                    m.put("tag", ins.getAdditional("tag"));
-                    m.put("logo", ins.getAdditional("logo"));
-                    m.put("remark", ins.getAdditional("remark"));
-                    m.put("type", ins.getType() == Insurance.PACKAGE ? "package" : "clause");
-
-                    products.add(m);
-                }
+                if (ins != null && ins.isMain())
+                    products.add(clauseOf(ins, plan));
             }
         }
         else
@@ -367,12 +361,7 @@ public class PlanController
             Insurance insurance;
             if (parentIndex >= 0)
             {
-                String planId = p.getString("planId");
-                if (Common.isEmpty(planId))
-                    throw new RuntimeException("缺少planId");
-
-                Plan plan = planSrv.getPlan(planId);
-                if (plan.isEmpty())
+                if (plan == null || plan.isEmpty())
                     throw new RuntimeException("plan为空");
 
                 insurance = plan.getCommodity(parentIndex).getProduct();
@@ -387,21 +376,9 @@ public class PlanController
             {
                 for (String rs : riderList)
                 {
-                    Insurance ins = (Insurance) lifeins.getProduct(rs);
+                    Insurance ins = lifeins.getProduct(rs);
                     if (ins != null)
-                    {
-                        JSONObject m = new JSONObject();
-                        m.put("id", ins.getId());
-                        m.put("code", ins.getId());
-                        m.put("vendor", ins.getVendor());
-                        m.put("name", ins.getName());
-                        m.put("abbrName", ins.getAbbrName());
-                        m.put("tag", ins.getAdditional("tag"));
-                        m.put("logo", ins.getAdditional("logo"));
-                        m.put("remark", ins.getAdditional("remark"));
-                        m.put("type", "rider");
-                        products.add(m);
-                    }
+                        products.add(clauseOf(ins, plan));
                 }
             }
         }
@@ -622,6 +599,9 @@ public class PlanController
                 else
                 {
                     Commodity parent = plan.getCommodity(parentIndex);
+                    if (parent.getRider(product.getId()) != null)
+                        throw new RuntimeException("同一主险下，不可重复添加附加险，请修改原产品");
+
                     c = plan.newCommodity(parent, product);
                 }
             }

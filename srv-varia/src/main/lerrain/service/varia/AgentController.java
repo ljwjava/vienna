@@ -35,6 +35,7 @@ public class AgentController
         else
         {
             m.remove("file");
+            m.remove("file2");
 
             res.put("result", "success");
             res.put("content", m);
