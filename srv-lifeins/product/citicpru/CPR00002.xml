@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="CPR00002"
+		corporation_id="citicpru"
+		code="ZA0002"
+		name="中信保诚「荣耀祯爱」优选定寿增强版"
+		name_abbr="祯爱优选增强版"
+		unit="1000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		last_modify_date="2017-01-01">
+
+		<data>
+			<!--<item parser="dds" value="CPR00002" />-->
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_30"/>
+				<item code="to_60"/>
+				<item code="to_70"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="A_CITY" value="['1101','1102','3101','3102','4401','4403']"/>
+			<item name="B_CITY" value="['1201','1202','5001','5002','5003']"/>
+		</init>
+
+		<interest>
+			<!--<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>-->
+		</interest>
+
+		<!--<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="身故或全残保险金">
+					<item>被保险人因遭遇意外伤害事故或在本主险合同生效日或最后复效日（以较迟者为准）起90天（不含）后因意外伤害事故以外的原因导致身故或全残，我们将按本主险合同的基本保险金额给付身故保险金或全残保险金，给付后本主险合同效力终止。</item>
+					<item>被保险人在本主险合同生效日或最后复效日（以较迟者为准）起90天（含）内因遭遇意外伤害事故以外的原因导致身故或全残，我们将按本主险合同已缴保险费给付身故保险金或全残保险金，给付后本主险合同效力终止。</item>
+				</paragraph>
+			</coverage>
+
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="TOTAL_DISABILITY">[AMOUNT,AMOUNT]</item>
+				<item name="ACCIDENT_DEATH">AMOUNT</item>
+				<item name="OTHER_DEATH">AMOUNT</item>
+			</fgraph>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<bar name="保费" color="#00AA00">PremiumYear(I)</bar>
+					<line name="累计保费" color="#0000FF">PremiumSum(I)</line>
+					<line name="现金价值" color="#0000FF">IT.CSV(I)</line>
+				</chart>
+			</benefit_chart>
+		</attachment>-->
+
+		<rule>
+			<if condition="AGE lt 18 or AGE > 50" type="customer">
+				投保年龄：18~50周岁
+			</if>
+			<if condition="AGE > 40 and PAY_VALUE == 30" type="customer">
+				投保年龄：30年交最高投保年龄为40周岁
+			</if>
+			<if condition="AMOUNT lt 300000 or AMOUNT % 100000 > 0">
+				最低投保基本保险金额：40万元，且需要为10万元的整数倍
+			</if>
+			<if condition="PAY_VALUE != 30 and INSURE_VALUE == 30">
+				选择保30年时，需选择30年交
+			</if>
+			<if condition="PAY_VALUE != 20 and INSURE_VALUE == 20">
+				选择保20年时，需选择20年交
+			</if>
+			<if condition="PAY_PERIOD > INSURE_PERIOD">
+				交费期间不能大于保障期间
+			</if>
+
+			<if condition="ZONE == null and AGE >= 18 and AGE le 45 and AMOUNT lt 600000" level="alert">
+				18~45周岁，北京、上海、广州、深圳，最低投保110万；武汉、成都、南京、郑州，最低投保90万；苏州，最低投保60万。
+			</if>
+			<if condition="ZONE == null and AGE >= 46 and AGE le 50 and AMOUNT lt 400000" level="alert">
+				46~50周岁，北京、上海、广州、深圳，最低投保70万；武汉、成都、南京、郑州，最低投保50万；苏州，最低投保40万。
+			</if>
+			<if>
+				if (AGE >= 18 and AGE le 45 and AMOUNT lt 600000)
+					return "18~45周岁，保额最低60万";
+				if (AGE >= 46 and AGE le 50 and AMOUNT lt 400000)
+					return "46~50周岁，保额最低40万";
+				if (ZONE == null)
+					return null;
+				var city = 3;
+				var code = str(ZONE, 0, 4);
+				if (find(A_CITY, code) != null) {
+					city = 1;
+				} else if (find(B_CITY, code) != null or str(ZONE, 2, 4) == "01") {
+					city = 2;
+				}
+				if (city == 1) {
+					if (AGE >= 18 and AGE le 45 and AMOUNT lt 1100000) {
+						return '省会地区，18~45岁最低保额为110万';
+					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 700000) {
+						return '省会地区，46~50岁最低保额为70万';
+					}
+				} else if (city == 2) {
+					if (AGE >= 18 and AGE le 45 and AMOUNT lt 900000) {
+						return '省会地区，18~45岁最低保额为90万';
+					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 500000) {
+						return '省会地区，46~50岁最低保额为50万';
+					}
+				} else {
+					if (AGE >= 18 and AGE le 45 and AMOUNT lt 600000) {
+						return '普通地区，18~45岁最低保额为60万';
+					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 400000) {
+						return '普通地区，46~50岁最低保额为40万';
+					}
+				}
+				return null;
+			</if>
+		</rule>
+	</product>
+</declare>

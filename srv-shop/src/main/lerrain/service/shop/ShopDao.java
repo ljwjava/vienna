@@ -253,6 +253,7 @@ public class ShopDao
                 j.put("scheme_id",m.getString("scheme_id"));
                 j.put("code",m.getString("code"));
                 j.put("name", m.getString("name"));
+                j.put("used",m.getString("used"));
                 j.put("creator",m.getString("creator"));
                 j.put("gmt_created",m.getString("gmt_created"));
                 j.put("modifier",m.getString("modifier"));

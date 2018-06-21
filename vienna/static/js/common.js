@@ -43,6 +43,14 @@ common.postOther = function(url, val, callback, failback) {
     }, dataType:"json"});
 };
 
+common.getOther = function(url, val, callback, failback) {
+    $.ajax({url:url, type:"GET", xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
+        if(callback)callback(r);
+    }, fail: function(r) {
+        if(failback)failback(r.reason);
+    }, dataType:"json"});
+};
+
 common.post = function(url, val, callback, failback) {
     $.ajax({url:url, type:"POST", data:JSON.stringify(val), xhrFields: { withCredentials: true }, contentType:'application/json;charset=UTF-8', success:function(r) {
         if (r.result == "success") {
@@ -316,8 +324,8 @@ common.isAPP = function() {
 };
 
 common.dateStr = function(t) {
-	if (t == null)
-		return null;
+    if (t == null)
+        return null;
     return new Date(t).format("yyyy-MM-dd");
 };
 

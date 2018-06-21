@@ -180,6 +180,81 @@ var ChannelLogo = React.createClass({
     }
 });
 
+/** 销售资格认证 **/
+var AccessSale = React.createClass({
+    getInitialState(){
+        let isApp = common.isAPP();
+        return {isShow: false, isApp: isApp, cbSucc: this.props.cbSucc, message: "该商品连接暂不可购买", shareMsg: "该商品连接暂不可购买", allow: false, url: null, loadSucc: false, first: true};
+    },
+    componentDidMount(){
+        if(!this.state.loadSucc) {
+            try{
+                let apiurl = getUrl("api");
+                common.getOther(apiurl + "club/open/v1/user/salesQualict/query?accountId="+common.param("accountId"), null,
+                    sr => {
+                        console.log(sr);
+                        let allow = false;
+                        let loadSucc = false;
+                        let url = null;
+                        let msg = this.state.message;
+                        let shareMsg = this.state.shareMsg;
+                        if(sr.code == 0){
+                            allow = sr.result.allow === 'Y';
+                            url = sr.result.authUrl;
+                            msg = sr.result.message;
+                            shareMsg = sr.result.shareMsg;
+                            loadSucc = true;
+                            if(allow && this.state.cbSucc) {
+                                this.state.cbSucc(this);
+                            }
+                        }else{
+                            ToastIt(sr.message);
+                        }
+                        this.setState({isShow: true, loadSucc: loadSucc, allow: allow, url: url, message: msg, shareMsg: shareMsg, first: true});
+                    },
+                    er => {
+                        console.error(er);
+                        ToastIt(this.state.message);
+                    });
+            }catch(e){
+                console.log(e);
+            }
+        }
+    },
+    auth(){
+        return {
+            allow: this.state.allow,
+            msg: this.state.message
+        };
+    },
+    close(){
+        this.setState({isShow: false, first: false});
+    },
+    show(){
+        this.setState({isShow: true, first: false});
+    },
+    jump(){
+        JSBridge.go(this.state.url);
+        this.state({isShow: false});
+    },
+    render(){
+        if(this.state.isShow && !this.state.allow) {
+            if(!this.state.isApp) {
+                ToastIt(this.state.message);
+                return <div></div>;
+            }
+            return <div className = 'page_access'>
+                <div className = 'opt_area'>
+                    <div className='close' onClick = {this.close.bind(this)}>+</div>
+                    <div className='text_area'>{this.state.first ? this.state.shareMsg || this.state.message : this.state.message}</div>
+                    {this.state.loadSucc ? <div className='opt_button' onClick = {this.jump.bind(this)}>去认证</div> : null}
+                </div>
+            </div>;
+        }
+        return <div></div>;
+    }
+});
+
 var timer;
 var Ware = React.createClass({
     qualifAndNext(func){
@@ -204,6 +279,14 @@ var Ware = React.createClass({
         });
     },
     next(){
+        console.log(this.refs.accessSale);
+        // 判断资格认证
+        let authSale = this.refs.accessSale.auth();
+        if(!authSale.allow) {
+            this.refs.accessSale.show();
+            return false;
+        }
+
         if(this.state.salesFlag != 0 && this.state.salesFlagMsg[this.state.salesFlag] != null) {
             ToastIt(this.state.salesFlagMsg[this.state.salesFlag]);
             return false;
@@ -353,20 +436,23 @@ var Ware = React.createClass({
         }, 200);
     },
     readyShare(shareObj){
+        env.getShareObj(shareObj);
+        // this.doReadyShare();
+    },
+    doReadyShare(){
         var UA = window.navigator.userAgent.toLowerCase();
         var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
-
         if (isInApp) {
             env.frame = "iyb";
-            this.shareApp(shareObj);
+            this.shareApp();
         } else {
-            window.wxReady(env.getShareObj(shareObj), null);
+            window.wxReady(env.getShareObj(), null);
         }
     },
     componentDidMount() {
 		this.changePlan(0);
 		this.initTopActivityBanner(common.param("accountId"), this.props.detail.code, null);
-        try{this.readyShare();}catch(e){}
+        try{this.readyShare();}catch(e){}   // 准备分享
     },
 	changePlan(i) {
         let v = this.props.detail;
@@ -593,6 +679,7 @@ var Ware = React.createClass({
 					</div>
 				</div>
                 {env.pack != null && env.pack.extra != null && env.pack.extra.qualifQuests != null ? <QualificationTest ref="qualifQuests" quests={env.pack.extra.qualifQuests}></QualificationTest> : null}
+                <AccessSale ref="accessSale" cbSucc={this.doReadyShare.bind(this)}></AccessSale>
 			</div>
 		);
 	}
