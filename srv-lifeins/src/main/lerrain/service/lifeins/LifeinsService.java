@@ -156,7 +156,7 @@ public class LifeinsService
     public Company getCompany(String vendor)
     {
         if (vendor == null)
-            return company.get("nci");
+            return company.get("insurance");
 
         return company.get(vendor);
     }

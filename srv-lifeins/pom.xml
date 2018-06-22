@@ -20,12 +20,12 @@
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>formula</artifactId>
-			<version>6.6.2</version>
+			<version>6.8</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>finance</artifactId>
-			<version>6.2</version>
+			<version>6.3</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
