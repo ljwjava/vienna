@@ -120,4 +120,8 @@
     <corporation id="huagui" name="华贵人寿" extends="insurance">
         <item src="huagui/*.xml"/>
     </corporation>
+
+    <corporation id="iyb" name="i云保" extends="insurance">
+        <item src="iyb/*.xml"/>
+    </corporation>
 </declare>

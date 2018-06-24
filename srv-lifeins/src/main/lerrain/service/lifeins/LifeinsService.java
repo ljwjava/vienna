@@ -14,9 +14,7 @@ import lerrain.project.insurance.product.InsuranceMgr;
 
 import lerrain.project.insurance.product.rule.Rule;
 import lerrain.service.common.Log;
-import lerrain.service.lifeins.format.BenefitFilter;
-import lerrain.service.lifeins.format.BenefitParser;
-import lerrain.service.lifeins.format.FGraphParser;
+import lerrain.service.lifeins.format.*;
 import lerrain.tool.Common;
 import lerrain.tool.formula.FormulaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +38,11 @@ public class LifeinsService
     {
 //        Config.addFilter("fgraph", new FGraphFilter());
         Config.addFilter("benefit", new BenefitFilter());
+        Config.addFilter("liab_graph", new LiabGraphFilter());
 
         Config.addParser("fgraph", new FGraphParser());
         Config.addParser("benefit", new BenefitParser());
+        Config.addParser("liab_graph", new LiabGraphParser());
 
         try
         {
@@ -156,7 +156,7 @@ public class LifeinsService
     public Company getCompany(String vendor)
     {
         if (vendor == null)
-            return company.get("insurance");
+            return company.get("iyb");
 
         return company.get(vendor);
     }

@@ -76,7 +76,7 @@
 				</paragraph>
 				<paragraph title="特别注意事项">
 					<item>（1）被保险人由于同一疾病原因、同次医疗行为或同次意外伤害事故，确诊首次发病一项或多项本合同所指的轻症疾病或重大疾病，公司按轻症疾病保险金或重大疾病保险金规定，仅给付其中金额最高的一项保险金。被保险人所患疾病诊断时已经达到重大疾病标准的，不能追溯轻症赔付。</item>
-					<item>（2）保费豁免开始后，本公司将不再接受关于合同险交方式的变更申请。</item>
+					<item>（2）保费豁免开始后，本公司将不再接受关于本合同保险费交费方式的变更申请。</item>
 				</paragraph>
 			</coverage>
 
@@ -96,6 +96,12 @@
 					<text name="保险金额">AMOUNT</text>
 				</chart>
 			</benefit_chart>
+
+			<liab_graph parser="liab_graph">
+				<item type="thunder" mode="common" value="AMOUNT">保额{round(AMOUNT/10000,2)}万，确诊即赔</item>
+				<item type="mild" mode="time3" value="AMOUNT*0.9">可保3次（不同疾病），每次{round(AMOUNT*0.3/10000,2)}万，确诊即赔</item>
+				<item type="mild_exempt" mode="common">豁免康乐系列剩余保费</item>
+			</liab_graph>
 		</attachment>
 
 		<rule>
