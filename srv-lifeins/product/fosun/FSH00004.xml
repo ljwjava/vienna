@@ -38,6 +38,23 @@
 					<item>本附加合同不豁免保险期间不超过一年的附加合同（含保险期间不超过一年但提供保证续保的附加合同）的保险费。</item>
 				</paragraph>
 			</coverage>
+
+			<fgraph filter="fgraph" parser="fgraph">
+				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
+				<item name="MILD">RM == null ? 0 : AMOUNT*0.6</item>
+				<item name="MILD_EXEMPT">RM == null ? 0 : 1</item>
+				<item name="ACCIDENT_DEATH">AMOUNT</item>
+				<item name="OTHER_DEATH">AMOUNT</item>
+				<item name="A_DEATH_EXEMPT">RE == null ? 0 : 1</item>
+				<item name="A_MILD_EXEMPT">RE == null ? 0 : 1</item>
+				<item name="A_THUNDER_EXEMPT">RE == null ? 0 : 1</item>
+			</fgraph>
+
+			<liab_graph parser="liab_graph">
+				<item type="a_exempt" mode="common">豁免康乐系列剩余保费</item>
+				<item type="a_mild_exempt" mode="common">豁免康乐系列剩余保费</item>
+				<item type="a_thunder_exempt" mode="common">豁免康乐系列剩余保费</item>
+			</liab_graph>
 		</attachment>
 
 		<rule>

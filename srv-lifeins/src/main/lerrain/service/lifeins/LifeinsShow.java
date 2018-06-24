@@ -1,5 +1,6 @@
 package lerrain.service.lifeins;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
@@ -124,8 +125,11 @@ public class LifeinsShow
         return l2;
     }
 
-    public static JSONArray format(Plan plan, String style)
+    public static JSON format(Plan plan, String style)
     {
+        if (plan.hasFormat(style))
+            return (JSON)JSON.toJSON(plan.format(style));
+
         JSONArray r = new JSONArray();
         for (int i=0;i<plan.size();i++)
         {

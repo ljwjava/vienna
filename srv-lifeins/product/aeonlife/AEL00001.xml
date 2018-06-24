@@ -48,6 +48,11 @@
 					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
 				</chart>
 			</benefit_chart>
+
+			<liab_graph parser="liab_graph">
+				<item type="thunder" mode="common" value="AMOUNT">保额{round(AMOUNT/10000,2)}万，确诊即赔</item>
+				<item type="death_cvback" mode="common">重疾以外原因身故，返还现金价值</item>
+			</liab_graph>
 		</attachment>
 
 		<rule>
