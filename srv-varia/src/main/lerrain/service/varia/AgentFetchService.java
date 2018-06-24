@@ -42,7 +42,7 @@ public class AgentFetchService
 
 	public List<Map> find1(String certNo, String name, String bizCode)
 	{
-		List<Map> m = agentDao.find1(certNo, name, bizCode);
+		List<Map> m = agentDao.find1(certNo, name);
 
 		if (m == null)
 		{
@@ -77,21 +77,21 @@ public class AgentFetchService
 
 			if (m != null)
 				agentDao.save1(m, 1);
+		}
 
-			if (!Common.isEmpty(bizCode))
+		if (m != null && !Common.isEmpty(bizCode))
+		{
+			List<Map> res = new ArrayList<>();
+			for (Map mm : m)
 			{
-				List<Map> res = new ArrayList<>();
-				for (Map mm : m)
-				{
-					String certfiNo = Common.trimStringOf(mm.get("certfiNo"));
-					String bizNo = Common.trimStringOf(mm.get("bizNo"));
+				String certfiNo = Common.trimStringOf(mm.get("certfiNo"));
+				String bizNo = Common.trimStringOf(mm.get("bizNo"));
 
-					if ((certfiNo != null && certfiNo.endsWith(bizCode)) || (bizNo != null && bizNo.endsWith(bizCode)))
-						res.add(mm);
-				}
-
-				m = res;
+				if ((certfiNo != null && certfiNo.endsWith(bizCode)) || (bizNo != null && bizNo.endsWith(bizCode)))
+					res.add(mm);
 			}
+
+			m = res;
 		}
 
 		return m;
@@ -99,7 +99,7 @@ public class AgentFetchService
 
 	public List<Map> find2(String certNo, String name, String bizCode)
 	{
-		List<Map> m = agentDao.find2(certNo, name, bizCode);
+		List<Map> m = agentDao.find2(certNo, name);
 
 		if (m == null)
 		{
@@ -134,19 +134,19 @@ public class AgentFetchService
 
 			if (m != null)
 				agentDao.save2(m, 1);
+		}
 
-			if (!Common.isEmpty(bizCode))
+		if (m != null && !Common.isEmpty(bizCode))
+		{
+			List<Map> res = new ArrayList<>();
+			for (Map mm : m)
 			{
-				List<Map> res = new ArrayList<>();
-				for (Map mm : m)
-				{
-					String certfiNo = Common.trimStringOf(mm.get("certfiNo"));
-					if ((certfiNo != null && certfiNo.endsWith(bizCode)))
-						res.add(mm);
-				}
-
-				m = res;
+				String certfiNo = Common.trimStringOf(mm.get("certfiNo"));
+				if ((certfiNo != null && certfiNo.endsWith(bizCode)))
+					res.add(mm);
 			}
+
+			m = res;
 		}
 
 		return m;

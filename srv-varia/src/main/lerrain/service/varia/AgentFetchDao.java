@@ -2,6 +2,7 @@ package lerrain.service.varia;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,12 +21,11 @@ public class AgentFetchDao
 	@Autowired
 	JdbcTemplate jdbc;
 
-	public List<Map> find1(String certNo, String name, String bizCode)
+	public List<Map> find1(String certNo, String name)
 	{
 		try
 		{
-			String append = Common.isEmpty(bizCode) ? "" : " and (certfi_no like '%" + bizCode + "' or biz_no like '%" + bizCode + "')";
-			List<Map> m = jdbc.query("select * from t_agent_1 where cert_no = ? and `name` = ? and flag = 1" + append + " limit 0, 2", new RowMapper<Map>()
+			List<Map> m = jdbc.query("select * from t_agent_1 where cert_no = ? and `name` = ? and flag = 1 limit 0, 2", new RowMapper<Map>()
 			{
 				@Override
 				public Map mapRow(ResultSet tc, int arg1) throws SQLException
@@ -56,12 +56,11 @@ public class AgentFetchDao
 		}
 	}
 
-	public List<Map> find2(String certNo, String name, String bizCode)
+	public List<Map> find2(String certNo, String name)
 	{
 		try
 		{
-			String append = Common.isEmpty(bizCode) ? "" : " and certfi_no like '%" + bizCode;
-			List<Map> m = jdbc.query("select * from t_agent_2 where cert_no = ? and `name` = ? and flag = 1" + append + " limit 0, 2", new RowMapper<Map>()
+			List<Map> m = jdbc.query("select * from t_agent_2 where cert_no = ? and `name` = ? and flag = 1 limit 0, 2", new RowMapper<Map>()
 			{
 				@Override
 				public Map mapRow(ResultSet tc, int arg1) throws SQLException

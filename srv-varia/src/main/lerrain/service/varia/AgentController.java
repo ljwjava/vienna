@@ -3,6 +3,7 @@ package lerrain.service.varia;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,15 +51,15 @@ public class AgentController
         else
         {
             Map m = null;
-            if (j1 != null && j1.size() > 1)
+            if (j1 != null && !j1.isEmpty())
             {
                 m = j1.get(0);
-                m.put("more", true);
+                m.put("more", j1.size() > 1);
             }
-            else if (j2 != null && j2.size() > 1)
+            else if (j2 != null && !j2.isEmpty())
             {
                 m = j2.get(0);
-                m.put("more", true);
+                m.put("more", j2.size() > 1);
             }
 
             res.put("result", "success");
