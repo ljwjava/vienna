@@ -13,4 +13,5 @@ public class RateTemplate {
     private String used;
     private String creator;
     private String modifier;
+    private String isDeleted;
 }
