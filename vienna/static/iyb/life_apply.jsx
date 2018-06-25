@@ -153,7 +153,7 @@ class ApplicantForm extends Form {
         if (env.formOpt.applicant.city)
             v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.applicant.address)
-            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"学院路37号院1号楼109室"});
+            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"学院路37号院1号楼109室"});
         if (env.formOpt.applicant.hasIncome) {
             v.push({name:'年收入(万元)', code:"income", type:"number", req:"yes", mistake:"只能输入数字", desc:"请输入年收入"});
             v.push({name:'收入来源', code:"incomeSource", type:"switch", req:"yes", options:env.formOpt.applicant.income});
@@ -190,7 +190,7 @@ class InsurantForm extends Form {
         if (env.formOpt.insurant.city)
             v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.insurant.address)
-            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{9,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"学院路37号院1号楼109室"});
+            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"学院路37号院1号楼109室"});
         return this.buildForm(v);
     }
     verify(code, val) {
@@ -237,7 +237,6 @@ class ContactForm extends Form {
                 container: "#sliderBox", //必填 容器id
                 sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID pre-prd
                 host: "https://af.zhongan.io", //https://test-af.zhongan.io  或者 https://af.zhongan.io
-                placeholdLabel: "智能检测中",  // 可选， loading时显示内容 可以根据业务场景更改内容
                 onSuccess: (did, token, sId) => {
                     env.tokenId = token;
                     this.afTicket(sId, did, token);

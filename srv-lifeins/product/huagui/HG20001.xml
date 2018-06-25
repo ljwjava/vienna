@@ -133,75 +133,9 @@
 				}
 				return null;
 			</if>
-			<if level="alert">
-				if(SOCIAL_INS and SOCIAL_ZONE==null){
-				return null;
-				}
-				if (ZONE == null) return null;
-				var lv = 3;
-				var code = str(ZONE, 0, 4);
-				if (find(A_CITY, code) != null) {
-				lv = 1;
-				} else if (find(B_CITY, code) != null) {
-				lv = 2;
-				}
 
-
-				var slv=3;
-				if(SOCIAL_INS and SOCIAL_ZONE !=null){
-				var code = str(SOCIAL_ZONE, 0, 4);
-				if (find(A_CITY, code) != null) {
-				slv = 1;
-				} else if (find(B_CITY, code) != null) {
-				slv = 2;
-				}
-				}
-
-				lv=(lv lt slv ? lv : slv);
-
-				if(!SOCIAL_INS){
-					slv=lv;
-				}
-				if (slv == 1) {
-					if (AGE >= 18 and AGE le 40 and AMOUNT le 1500000) {
-						return '请确认普通版健康告知';
-					}else{
-						return '请确认高额版健康告知';
-					}
-					if (AGE >= 41 and AGE le 50 and AMOUNT le 1000000) {
-						return '请确认普通版健康告知';
-					}else{
-						return '请确认高额版健康告知';
-					}
-				 }else if (slv == 2) {
-					if (AGE >= 18 and AGE le 40 and AMOUNT le 1000000) {
-						return '请确认普通版健康告知';
-					}else{
-						return '请确认高额版健康告知';
-					}
-					if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
-						return '请确认普通版健康告知';
-					}else{
-						return '请确认高额版健康告知';
-					}
-				 }else{
-					if (AGE >= 18 and AGE le 40 and AMOUNT le 500000) {
-						return '请确认普通版健康告知';
-					}else{
-						return '请确认高额版健康告知';
-					}
-					if (AGE >= 41 and AGE le 50 and AMOUNT le 300000) {
-						return '请确认普通版健康告知';
-					}else{
-						return '请确认高额版健康告知';
-					}
-				}
-
-				return null;
-			</if>
-
-			<if condition="INCOME == null or INCOME == 0 ">
-				请填写收入
+			<if condition="INCOME == null or INCOME == 0 or INCOME le 0">
+				请正确填写收入
 			</if>
 			<if>
 				if (INCOME == null or INCOME == 0) {return null};
@@ -223,13 +157,14 @@
 				您的职业属于拒保职业
 			</if>
 
-			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C) ==2099907 || val(INSURANT.OCCUPATION_C) ==3020110 ||	val(INSURANT.OCCUPATION_C) ==4071203) and AMOUNT>=5000000">
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C) ==2099907 || val(INSURANT.OCCUPATION_C) ==3020110 ||	val(INSURANT.OCCUPATION_C) ==4071203) and AMOUNT>500000">
 				您的职业最高选择保额50万,请降低保额
 			</if>
 
-			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C) ==3020102 || val(INSURANT.OCCUPATION_C) ==3020103 ||	val(INSURANT.OCCUPATION_C) ==3020104 || val(INSURANT.OCCUPATION_C) ==3020108 ||	val(INSURANT.OCCUPATION_C) ==8000001 ||	val(INSURANT.OCCUPATION_C) ==8000002 ||	val(INSURANT.OCCUPATION_C) ==8000003 ) and AMOUNT>=3000000">
+			<if condition="val(INSURANT.OCCUPATION_C) != null and (val(INSURANT.OCCUPATION_C) ==3020102 || val(INSURANT.OCCUPATION_C) ==3020103 ||	val(INSURANT.OCCUPATION_C) ==3020104 || val(INSURANT.OCCUPATION_C) ==3020105 ||  val(INSURANT.OCCUPATION_C) ==3020106 || val(INSURANT.OCCUPATION_C) ==3020108 ||	val(INSURANT.OCCUPATION_C) ==8000001 ||	val(INSURANT.OCCUPATION_C) ==8000002 ||	val(INSURANT.OCCUPATION_C) ==8000003 ) and AMOUNT>300000">
 				您的职业最高选择保额30万,请降低保额
 			</if>
+
 
 		</rule>
 	</product>

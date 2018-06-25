@@ -41,14 +41,28 @@
 
 		<rule>
 			<if condition="AGE lt 18 or AGE > 75" type="customer">
-				投保年龄须为18~75周岁
+				被保险人年龄须为18~75周岁
 			</if>
+
+			<if condition = "RELATIVE != 'self' and (APPLICANT.AGE lt 18 or APPLICANT.AGE > 80) " type="plan">
+				投保人年龄须为18~80周岁
+			</if>
+
 
 			<if condition="ZONE == null">
-				请选择所在地区
+				请选择投保所在地区
 			</if>
 
+            <if condition="AGE >=71 and  AGE le 75">
+                71-75周岁仅支持线下购买,具体可致电i云宝客服。
+            </if>
+
+
+
 			<if>
+                 if(val(PAY_PERIOD)+AGE>75){
+                 return '年龄+缴费期限≤75周岁';
+                }
 				if (ZONE == null)
 				return null;
 				var lv = 3;
@@ -70,6 +84,9 @@
 					if (AGE >= 51 and AGE le 60 and   AMOUNT > 500000) {
 						return '年龄在51-60周岁,一类城市最高50万有效保额';
 					}
+					if (AGE >= 61 and AGE le 70 and   AMOUNT > 300000) {
+					return '年龄在61-70周岁,一类城市最高30万有效保额';
+					}
 				} else if (lv == 2) {
 					if (AGE >= 18 and AGE le 40 and   AMOUNT > 1500000) {
 						return '年龄在18-40周岁,二类城市最高150万有效保额';
@@ -80,6 +97,10 @@
 					if (AGE >= 51 and AGE le 60 and   AMOUNT > 500000) {
 						return '年龄在51-60周岁,二类城市最高50万有效保额';
 					}
+					if (AGE >= 61 and AGE le 70 and   AMOUNT > 300000) {
+					return '年龄在61-70周岁,二类城市最高30万有效保额';
+					}
+
 				} else {
 					if (AGE >= 18 and AGE le 40 and   AMOUNT > 1000000) {
 						return '年龄在18-40周岁,三类城市最高100万有效保额';
@@ -87,37 +108,30 @@
 					if (AGE >= 41 and AGE le 50 and   AMOUNT > 500000) {
 						return '年龄在41-50周岁,三类城市最高50万有效保额';
 					}
-					if (AGE >= 51 and AGE le 60 and   AMOUNT > 300000) {
-						return '年龄在51-60周岁,三类城市最高30万有效保额';
+					if (AGE >= 51 and AGE le 70 and   AMOUNT > 300000) {
+						return '年龄在51-70周岁,三类城市最高30万有效保额';
 					}
-				}
-				if (AGE >= 61 and AGE le 75 and   AMOUNT > 300000) {
-					return '年龄在61-75周岁,最高30万有效保额';
-				}
-
-				if (AGE >= 71 and AGE le 75 and   AMOUNT > 300000) {
-					return '71-75周岁仅支持线下购买,具体可致电i云宝客服。';
 				}
 				return null;
 			</if>
-			<if condition="INCOME == null">
-				请填写收入
-			</if>
+            <if condition="INCOME == null or INCOME == 0 or INCOME le 0">
+                请填写收入
+            </if>
 			<if>
 			    if (INCOME == null) return null;
-				if (AGE >= 18 and AGE le 35 and  round(AMOUNT/10000/INCOME) > 20) {
+				if (AGE >= 18 and AGE le 35 and  ceil(AMOUNT/10000/INCOME) > 20) {
 					return  '您的收入不符合可投保保额条件,请您降低保额';
 				}
-				if (AGE >= 36 and AGE le 45 and  round(AMOUNT/10000/INCOME) > 15) {
+				if (AGE >= 36 and AGE le 45 and  ceil(AMOUNT/10000/INCOME) > 15) {
 					return 	'您的收入不符合可投保保额条件,请您降低保额';
 				}
-				if (AGE >= 46 and AGE le 55 and  round(AMOUNT/10000/INCOME) > 10) {
+				if (AGE >= 46 and AGE le 55 and  ceil(AMOUNT/10000/INCOME) > 10) {
 					return '您的收入不符合可投保保额条件,请您降低保额';
 				}
-				if (AGE >= 56 and AGE le 60 and  round(AMOUNT/10000/INCOME) > 5) {
+				if (AGE >= 56 and AGE le 60 and  ceil(AMOUNT/10000/INCOME) > 5) {
 					return '您的收入不符合可投保保额条件,请您降低保额';
 				}
-				if (AGE >= 61 and AGE le 70 and  round(AMOUNT /10000/INCOME) > 3) {
+				if (AGE >= 61 and AGE le 70 and  ceil(AMOUNT /10000/INCOME) > 3) {
 					return '您的收入不符合可投保保额条件,请您降低保额';
 				}
 			</if>
