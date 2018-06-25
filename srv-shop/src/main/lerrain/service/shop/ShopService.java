@@ -84,10 +84,24 @@ public class ShopService
         return rates;
     }
 
-    public Long saveOrUpdateRateTemplate(RateTemplate rt){
-        return productDao.saveOrUpdateRateTemplate(rt);
+    public RateTemplate saveOrUpdateRateTemplate(RateTemplate rt){
+        Long tempId = productDao.saveOrUpdateRateTemplate(rt);
+        rt.setTempId(tempId);
+        Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+        rt.setRelId(relId);
+        return rt;
     }
 
+    public List<RateTemplate> batchOperateRateTemplate(List<RateTemplate> contions){
+        List<RateTemplate> rts = Lists.newArrayList();
+	    for(int i=0;i<contions.size();i++) {
+            RateTemplate rt = contions.get(i);
+            Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+            rt.setRelId(relId);
+            rts.add(rt);
+        }
+        return rts;
+    }
 
     public Shop queryShopById(Long wareId)
     {
