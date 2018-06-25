@@ -81,6 +81,11 @@ public class ShopService
     public List<JSONObject> rateTemplates(Long userId, String cdName, int from, int num)
     {
         List<JSONObject> rates = productDao.rateTemplates(userId, cdName, from, num);
+        for(int i=0;i<rates.size();i++){
+            JSONObject json = rates.get(i);
+            Long tempId = json.getLong("rel_temp_id");
+            json.put("usedCount",productDao.countTemplateUsed(tempId));
+        }
         return rates;
     }
 

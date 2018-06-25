@@ -228,10 +228,28 @@ public class ShopDao
         return jdbc.queryForObject(sql.toString(), Integer.class);
     }
 
+	public int countTemplateUsed(Long tempId)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT");
+		sql.append(" r.rel_temp_id,");
+		sql.append(" COUNT(r.rel_user_id)");
+		sql.append(" FROM");
+		sql.append(" `t_cs_commodity_rate_template_relation` r");
+		sql.append(" WHERE 1=1");
+		if (null != tempId) {
+			sql.append(" and r.rel_temp_id = "+tempId);
+		}
+		sql.append(" GROUP BY r.rel_temp_id");
+
+		return jdbc.queryForObject(sql.toString(), Integer.class);
+	}
+
     public List<JSONObject> rateTemplates(Long userId, String name, int from, int number){
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
 		sql.append(" r.rel_user_id,");
+		sql.append(" r.rel_temp_id,");
 		sql.append(" t.scheme_id,");
 		sql.append(" t.`code`,");
 		sql.append(" t.`name`,");
@@ -260,6 +278,7 @@ public class ShopDao
             {
                 JSONObject j = new JSONObject();
                 j.put("rel_user_id",m.getString("rel_user_id"));
+				j.put("rel_temp_id",m.getString("rel_temp_id"));
                 j.put("scheme_id",m.getString("scheme_id"));
                 j.put("code",m.getString("code"));
                 j.put("name", m.getString("name"));
