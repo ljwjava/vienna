@@ -138,15 +138,27 @@ public class ShopController
     @ResponseBody
     public JSONObject saveOrUpdateRateTemplate(@RequestBody JSONObject p)
     {
-        RateTemplate rt = JSON.parseObject(p.toJSONString(),RateTemplate.class);
-        Long tempId = productSrv.saveOrUpdateRateTemplate(rt);
-        if(null == rt.getId()) {
-            rt.setId(tempId);
-        }
         JSONObject res = new JSONObject();
+        RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
+        RateTemplate rt = productSrv.saveOrUpdateRateTemplate(contion);
         res.put("result", "success");
         res.put("content", JSON.toJSON(rt));
 
+        return res;
+    }
+
+    @RequestMapping("/batchOperateRateTemplate.json")
+    @ResponseBody
+    public JSONObject batchOperateRateTemplate(@RequestBody JSONObject p)
+    {
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        JSONArray list = p.getJSONArray("list");
+        if(null != list) {
+            List<RateTemplate> contions = JSON.parseArray(p.toJSONString(), RateTemplate.class);
+            List<RateTemplate> rts = productSrv.batchOperateRateTemplate(contions);
+            res.put("content", JSON.toJSON(rts));
+        }
         return res;
     }
 
