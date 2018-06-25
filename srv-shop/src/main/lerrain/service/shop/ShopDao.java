@@ -217,9 +217,10 @@ public class ShopDao
         sql.append("SELECT count(*)");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
+		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
         sql.append(" WHERE 1=1");
 		if (null != userId) {
-			sql.append(" and t.rel_user_id = "+userId);
+			sql.append(" and r.rel_user_id = "+userId);
 		}
 		if (StringUtils.isNotBlank(name)) {
 			sql.append(" and t.name LIKE '%"+name+"%'");
@@ -232,7 +233,6 @@ public class ShopDao
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT");
-		sql.append(" r.rel_temp_id,");
 		sql.append(" COUNT(r.rel_user_id)");
 		sql.append(" FROM");
 		sql.append(" `t_cs_commodity_rate_template_relation` r");
@@ -262,7 +262,7 @@ public class ShopDao
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
 		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
-        sql.append(" WHERE 1=1");
+        sql.append(" WHERE r.is_deleted='N'");
 		if (null != userId) {
 			sql.append(" and r.rel_user_id = "+userId);
 		}
@@ -364,11 +364,11 @@ public class ShopDao
 
 	public Long saveOrUpdateRateTemplateRelation(RateTemplate rt)
 	{
-		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template_relation` (`id`, `rel_user_id`, `rel_temp_id`, `used`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?);";
+		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template_relation` (`id`, `rel_user_id`, `rel_temp_id`, `used`, `creator`, `modifier`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?);";
 		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `rel_user_id`=?, `rel_temp_id`, `used`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
 
 		if(null != rt.getRelId()){
-			jdbc.update(update, rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getRelId());
+			jdbc.update(update, rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getRelId(), rt.getIsDeleted());
 		}else{
 			rt.setRelId(tools.nextId("cdRateTempRel"));
 			jdbc.update(insert, rt.getRelId(), rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier());
