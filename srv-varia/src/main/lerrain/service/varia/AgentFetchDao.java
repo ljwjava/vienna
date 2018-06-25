@@ -25,7 +25,7 @@ public class AgentFetchDao
 	{
 		try
 		{
-			List<Map> m = jdbc.query("select * from t_agent_1 where cert_no = ? and `name` = ? and flag = 1 limit 0, 2", new RowMapper<Map>()
+			List<Map> m = jdbc.query("select * from t_agent_1 where cert_no = ? and `name` = ? and flag = 1", new RowMapper<Map>()
 			{
 				@Override
 				public Map mapRow(ResultSet tc, int arg1) throws SQLException
@@ -60,7 +60,7 @@ public class AgentFetchDao
 	{
 		try
 		{
-			List<Map> m = jdbc.query("select * from t_agent_2 where cert_no = ? and `name` = ? and flag = 1 limit 0, 2", new RowMapper<Map>()
+			List<Map> m = jdbc.query("select * from t_agent_2 where cert_no = ? and `name` = ? and flag = 1", new RowMapper<Map>()
 			{
 				@Override
 				public Map mapRow(ResultSet tc, int arg1) throws SQLException
