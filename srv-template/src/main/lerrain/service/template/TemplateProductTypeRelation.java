@@ -10,6 +10,7 @@ public class TemplateProductTypeRelation {
     Long id;
     Long productTypeId;
     Long productId;
+    Long templateId;
     String creator;
     Date gmtCreated;
     String modifier;
@@ -78,5 +79,13 @@ public class TemplateProductTypeRelation {
 
     public void setIsDeleted(String isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public Long getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(Long templateId) {
+        this.templateId = templateId;
     }
 }

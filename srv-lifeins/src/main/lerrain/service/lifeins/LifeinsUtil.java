@@ -161,6 +161,7 @@ public class LifeinsUtil
 	public static Plan toPlan(LifeinsService lifeins, JSONObject saveJson, String planId)
 	{
 		Plan plan = new Plan(customerOf(saveJson.getJSONObject("applicant")), customerOf(saveJson.getJSONObject("insurant")));
+		plan.setCompany(lifeins.getCompany(null));
 		plan.setId(planId);
 
 		if (saveJson.containsKey("product")) for (Object prd : saveJson.getJSONArray("product"))

@@ -1,5 +1,6 @@
 package lerrain.service.lifeins;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.project.insurance.plan.Commodity;
@@ -124,8 +125,11 @@ public class LifeinsShow
         return l2;
     }
 
-    public static JSONArray format(Plan plan, String style)
+    public static JSON format(Plan plan, String style)
     {
+        if (plan.hasFormat(style))
+            return (JSON)JSON.toJSON(plan.format(style));
+
         JSONArray r = new JSONArray();
         for (int i=0;i<plan.size();i++)
         {
@@ -191,6 +195,56 @@ public class LifeinsShow
     }
 
     public static JSONObject formatChart(Commodity c)
+    {
+        JSONObject r = new JSONObject();
+
+        List<Chart> list = (List<Chart>)c.format("benefit_chart");
+        Chart chart = list == null || list.isEmpty() ? null : list.get(0);
+
+        int age = Common.intOf(c.getFactor("AGE"), 0);
+
+        r.put("name",  c.getProduct().getName());
+        r.put("age", age);
+
+        int b = chart.getStart();
+        int e = chart.getEnd();
+        int s = chart.getStep();
+
+        List s1 = new ArrayList<>();
+        List s3 = new ArrayList<>();
+        String[] s2 = new String[(e-b)/s+1];
+
+        for (int i=0;i<chart.size();i++)
+        {
+            ChartLine line = chart.getLine(i);
+
+            double[] v = new double[(e-b)/s+1];
+            int cc=0;
+            for (int j=b;j<=e;j+=s)
+                v[cc++] = line.getData()[j];
+
+            Map m = new HashMap<>();
+            m.put("name", line.getName());
+            m.put("type", line.getType());
+            m.put("data", v);
+            s1.add(m);
+            s3.add(line.getName());
+        }
+
+        int cc=0;
+        for (int j=b;j<=e;j+=s)
+        {
+            s2[cc++] = (j+age) +"岁";
+        }
+
+        r.put("data", s1);	// value
+        r.put("axis", s2);	// 年龄
+        r.put("sets", s3);	// name
+
+        return r;
+    }
+
+    public static JSONObject formatChart2(Commodity c)
     {
         if (c.getProduct().isRider())
             return null;

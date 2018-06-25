@@ -61,6 +61,18 @@
 		</rider>
 
 		<attachment>
+			<coverage filter="coverage" parser="coverage">
+				<paragraph title="重大疾病">
+					<item>被保险人在保险期间内因意外，或本合同生效（若曾复效，则自本合同最后复效）之日起180天后因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊初次发生本合同所列的一种或多种重大疾病，本公司按本合同基本保险金额给付重大疾病保险金，同时本合同终止。</item>
+					<item>被保险人在本合同生效（若曾复效，则自本合同最后复效）之日起180天内（含180天，下同）因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊初次发生本合同列明的一种或多重大疾病，本公司将按投保人已交纳本合同累计保险费（不计息）给付重大疾病保险金 ，同时本合终止。</item>
+				</paragraph>
+				<paragraph title="身故">
+					<item>被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起180天后因非意外的原因导致身故，本公司给付身故保险金，同时本合同终止。</item>
+					<item>身故保险金数额为：（1）如果被保险人身故时未满18周岁（不含18周岁生日），身故保险金数额等于投保人已交纳的本合同累积保险费数额（不计息）；（2）如果被保险人身故时已满18周岁（含18周岁生日），身故保险金数额等于本合同基本保险金额。</item>
+					<item>被保险人在本合同生效（若曾复效，则自本合同最后复效）之日起180天内因非意外的原因导致身故，本公司将按投保人已交纳的本合同累计保险费数额（不计息）给付身故保险金，同时本合终止。</item>
+				</paragraph>
+			</coverage>
+
 			<fgraph filter="fgraph" parser="fgraph">
 				<item name="THUNDER">[AMOUNT,AMOUNT]</item>
 				<item name="MILD">RM == null ? 0 : AMOUNT*0.6</item>
@@ -78,6 +90,11 @@
 					<line name="现金价值" color="#00BFFF">IT.CSV(I)</line>
 				</chart>
 			</benefit_chart>
+
+			<liab_graph parser="liab_graph">
+				<item type="thunder" mode="common" value="AMOUNT">保额{round(AMOUNT/10000,2)}万，确诊即赔</item>
+				<item type="death" mode="thunder" value="AMOUNT">非重疾以外原因身故，未满18周岁返还康乐一生已交保费，满18周岁给付身故保险金{round(AMOUNT/10000,2)}万</item>
+			</liab_graph>
 		</attachment>
 
 		<rule>

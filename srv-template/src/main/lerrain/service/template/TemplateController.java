@@ -79,9 +79,30 @@ public class TemplateController {
 
         List<TemplateProductType> tpts = templateSrv.queryByProductId(idList);
 
-        result.put("proType", tpts);
-        result.put("product", tps);
+        List<TemplateProductTypeRelation> tptrs = templateSrv.queryTptrsByTemplateIdAndProductId(templateId, idList);
 
+        JSONArray typeProducts = new JSONArray();
+        for (TemplateProductTypeRelation tptr : tptrs) {
+            JSONObject pt = new JSONObject();
+            JSONArray prodsArr = new JSONArray();
+            Long pTypeId = tptr.getProductTypeId();
+            Long prodId = tptr.getProductId();
+            for (TemplateProductType tpt : tpts) {
+                if (tpt.getId().longValue() == pTypeId.longValue()) {
+                    pt.put("proType", tpt);
+                    break;
+                }
+            }
+            for (TemplateProduct tp : tps) {
+                if (tp.getId().longValue() == prodId.longValue()) {
+                    prodsArr.add(tp);
+                }
+            }
+            pt.put("product", prodsArr);
+            typeProducts.add(pt);
+        }
+
+        result.put("typeProducts", typeProducts);
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", result);
@@ -173,11 +194,9 @@ public class TemplateController {
         String title = p.getString("title");
         JSONArray message = p.getJSONArray("msg");
         JSONArray banner = p.getJSONArray("banner");
-        JSONObject proType = p.getJSONObject("proType");
-        JSONArray products = p.getJSONArray("product");
+        JSONArray typeProducts = p.getJSONArray("typeProducts");
         String link = p.getString("link");
 
-        Long proTypeId = proType != null ? proType.getLong("id") : null;
         if (banner == null) {
             banner = new JSONArray();
             JSONObject json = new JSONObject();
@@ -197,41 +216,51 @@ public class TemplateController {
         Long id = templateSrv.saveOpUpdate(t);
 
         //创建产品
-        List<Long> proIds = Lists.newArrayList();
-        if (products != null && products.size() > 0) {
-            for (int i = 0; i < products.size(); i++) {
-                TemplateProduct tp = buildTemplatePro(products.getJSONObject(i));
-                Long productId = templateSrv.saveOrUpdateTemplateProduct(tp);
-                proIds.add(productId);
-            }
-        } else {
-            //设置默认产品
-        }
-
-        //创建模板产品关系表  创建产品类型与产品关系表
-        if (proIds.size() > 0) {
+        List<Long> proIds;
+        if (typeProducts != null && typeProducts.size() > 0) {
+            //先删除关系 在重新添加
             templateSrv.removeTpRelation(id);
-            List<TemplateProductRelation> tpist = Lists.newArrayList();
-            List<TemplateProductTypeRelation> tptrList = Lists.newArrayList();
-            for (Long productId : proIds) {
-                TemplateProductRelation tpr = new TemplateProductRelation();
-                tpr.setProductId(productId);
-                tpr.setTemplateId(id);
-                tpist.add(tpr);
-                if (proTypeId != null) {
-                    TemplateProductTypeRelation tptr = new TemplateProductTypeRelation();
-                    tptr.setProductTypeId(proTypeId);
-                    tptr.setProductId(productId);
-                    tptrList.add(tptr);
+            for (int i = 0; i < typeProducts.size(); i++) {
+                proIds = Lists.newArrayList();
+                JSONObject typeProduct = typeProducts.getJSONObject(i);
+                JSONObject pType = typeProduct.getJSONObject("proType");
+                Long pTypeId = pType != null ? pType.getLong("id") : null;
+
+                JSONArray products = typeProduct.getJSONArray("product");
+                if (products != null && products.size() > 0) {
+                    for (int j = 0; j < products.size(); j++) {
+                        TemplateProduct tp = buildTemplatePro(products.getJSONObject(j));
+                        Long productId = templateSrv.saveOrUpdateTemplateProduct(tp);
+                        proIds.add(productId);
+                    }
+                } else {
+                    //设置默认产品
+                }
+                //创建模板产品关系表  创建产品类型与产品关系表
+                if (proIds.size() > 0) {
+                    List<TemplateProductRelation> tpist = Lists.newArrayList();
+                    List<TemplateProductTypeRelation> tptrList = Lists.newArrayList();
+                    for (Long productId : proIds) {
+                        TemplateProductRelation tpr = new TemplateProductRelation();
+                        tpr.setProductId(productId);
+                        tpr.setTemplateId(id);
+                        tpist.add(tpr);
+                        if (pTypeId != null) {
+                            TemplateProductTypeRelation tptr = new TemplateProductTypeRelation();
+                            tptr.setProductTypeId(pTypeId);
+                            tptr.setProductId(productId);
+                            tptr.setTemplateId(id);
+                            tptrList.add(tptr);
+                        }
+                    }
+                    templateSrv.batchSaveTpRelation(tpist);
+                    if (tptrList.size() > 0) {
+                        templateSrv.removeProTypeRelation(pTypeId);
+                        templateSrv.batchSaveProTypeRelation(tptrList);
+                    }
                 }
             }
-            templateSrv.batchSaveTpRelation(tpist);
-            if (tptrList.size() > 0) {
-                templateSrv.removeProTypeRelation(proTypeId);
-                templateSrv.batchSaveProTypeRelation(tptrList);
-            }
         }
-
         //创建商城模板与用户关系表
         if (templateSrv.queryByTUserId(id, userId) == null) {
             TemplateUserRelation tur = new TemplateUserRelation();
@@ -242,7 +271,6 @@ public class TemplateController {
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", id);
-
         return res;
     }
 

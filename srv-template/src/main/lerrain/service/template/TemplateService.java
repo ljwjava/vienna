@@ -111,4 +111,8 @@ public class TemplateService {
         return dao.queryByProductId(pIds);
 
     }
+
+    public List<TemplateProductTypeRelation> queryTptrsByTemplateIdAndProductId(Long templateId, List<Long> idList) {
+        return dao.queryTptrsByTemplateIdAndProductId(templateId,idList);
+    }
 }

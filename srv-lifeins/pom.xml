@@ -15,17 +15,17 @@
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>common</artifactId>
-			<version>1.2.1</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>formula</artifactId>
-			<version>6.6.2</version>
+			<version>6.8</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>
 			<artifactId>finance</artifactId>
-			<version>6.2</version>
+			<version>6.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>lerrain</groupId>

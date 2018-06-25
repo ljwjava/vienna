@@ -253,15 +253,6 @@ public class PlanController
 
     private JSONObject clauseOf(Insurance ins, Plan plan)
     {
-        if (plan != null)
-        {
-            List<Rule> list = RuleUtil.precheck(ins, plan);
-            if (list != null)
-            {
-                
-            }
-        }
-
         JSONObject m = new JSONObject();
         m.put("id", ins.getId());
         m.put("code", ins.getId());
@@ -272,6 +263,18 @@ public class PlanController
         m.put("tag", ins.getAdditional("tag"));
         m.put("remark", ins.getAdditional("remark"));
         m.put("type", !ins.isMain() ? "rider" : ins.getType() == Insurance.PACKAGE ? "package" : "clause");
+
+        if (plan != null)
+        {
+            List<Rule> list = ins.getRuleList() == null ? null : RuleUtil.precheck(ins, plan);
+            if (list != null && !list.isEmpty())
+            {
+                JSONArray text = new JSONArray();
+                for (Rule rule : list)
+                    text.add(rule.getDesc());
+                m.put("rule", text);
+            }
+        }
 
         return m;
     }
@@ -339,21 +342,34 @@ public class PlanController
         String planId = p.getString("planId");
         Plan plan = planId == null ? null : planSrv.getPlan(planId);
 
+        JSONArray prdIds = p.getJSONArray("scope");
+
         JSONArray products = new JSONArray();
 
         if (Common.isEmpty(productId) && parentIndex < 0)
         {
             String company = Common.trimStringOf(p.get("company"));
             if (Common.isEmpty(company))
-                throw new RuntimeException("缺少company");
-
-            Company insc = lifeins.getCompany(company);
-
-            List<Insurance> list = insc.getProductList();
-            for (Insurance ins : list)
             {
-                if (ins != null && ins.isMain())
+                if (prdIds == null)
+                    throw new RuntimeException("缺少company&scope");
+
+                for (int i=0;i<prdIds.size();i++)
+                {
+                    Insurance ins = lifeins.getProduct(prdIds.getString(i));
                     products.add(clauseOf(ins, plan));
+                }
+            }
+            else
+            {
+                Company insc = lifeins.getCompany(company);
+
+                List<Insurance> list = insc.getProductList();
+                for (Insurance ins : list)
+                {
+                    if ((ins != null && ins.isMain()) && (prdIds == null || prdIds.indexOf(ins.getId()) >= 0))
+                        products.add(clauseOf(ins, plan));
+                }
             }
         }
         else
@@ -377,7 +393,7 @@ public class PlanController
                 for (String rs : riderList)
                 {
                     Insurance ins = lifeins.getProduct(rs);
-                    if (ins != null)
+                    if (ins != null && (prdIds == null || prdIds.indexOf(ins.getId()) >= 0))
                         products.add(clauseOf(ins, plan));
                 }
             }

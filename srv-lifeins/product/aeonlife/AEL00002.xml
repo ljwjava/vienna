@@ -37,6 +37,10 @@
 					<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>
 				</chart>
 			</benefit_chart>
+
+			<liab_graph parser="liab_graph">
+				<item type="thunder" mode="special" value="AMOUNT">特定疾病保额{round(AMOUNT/10000,2)}万，确诊即赔</item>
+			</liab_graph>
 		</attachment>
 
 		<rule>
