@@ -29,7 +29,6 @@
 				<item code="term_20"/>
 				<item code="term_25"/>
 				<item code="term_30"/>
-				<item code="term_35"/>
 			</insure>
 		</param>
 
@@ -90,6 +89,21 @@
 			<if condition="AMOUNT == 1500000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 25 and INSURE_PERIOD != 30">
 				保额选择150万时，保障期间只可以选择10/15/25/30年期
 			</if>
+			<if condition="AMOUNT == 1800000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 20 and INSURE_PERIOD != 30">
+				保额选择180万时，保障期间只可以选择10/15/20/30年期
+			</if>
+			<if condition="AMOUNT == 2000000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 20 and INSURE_PERIOD != 25">
+				保额选择200万时，保障期间只可以选择10/20/25年期
+			</if>
+			<if condition="AMOUNT == 2100000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 30 and INSURE_PERIOD != 35">
+				保额选择210万时，保障期间只可以选择10/15/30/35年期
+			</if>
+			<if condition="AMOUNT == 2500000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 25">
+				保额选择250万时，保障期间只可以选择10/25年期
+			</if>
+			<if condition="AGE > 45+25-INSURE_PERIOD" desc="formula">
+				'投保年龄+保险期间≤65周岁，请重新填写保险期间'
+			</if>
 			<if condition="INSURE_PERIOD > 25 and AGE > 45+25-INSURE_PERIOD" desc="formula">
 				'当保障期间选择为'+INSURE_PERIOD+'年时，投保年龄不能超过'+round(45+25-INSURE_PERIOD,0)+'周岁'
 			</if>
@@ -107,8 +121,8 @@
 					return null;
 				var lv = try(DS.ZONE_LEVEL[0][0],3);
 				if (lv == 1) {
-					if (AMOUNT > 1500000) {
-						return '一类城市最高150万有效保额';
+					if (AMOUNT > 2500000) {
+						return '一类城市最高250万有效保额';
 					}
 				} else if (lv == 2) {
 					if (AMOUNT > 1200000) {
