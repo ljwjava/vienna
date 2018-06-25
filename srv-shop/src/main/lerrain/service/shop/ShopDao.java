@@ -232,7 +232,6 @@ public class ShopDao
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT");
-		sql.append(" r.rel_temp_id,");
 		sql.append(" COUNT(r.rel_user_id)");
 		sql.append(" FROM");
 		sql.append(" `t_cs_commodity_rate_template_relation` r");
