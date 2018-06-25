@@ -199,7 +199,7 @@ var Ground = React.createClass({
                 ToastIt("请上传完整证件影像");
                 return;
             }
-            if(env.order.extra.photos.length > 2) {
+            if(env.order.extra.photos.length > env.order.detail.photo) {
                 ToastIt("请删除多余证件影像");
                 return;
             }

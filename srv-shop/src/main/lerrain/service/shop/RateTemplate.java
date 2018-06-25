@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class RateTemplate {
-    private Long id;
+    private Long tempId;
+    private Long relId;
     private Long userId;
     private Long schemeId;
     private String code;
@@ -12,4 +13,5 @@ public class RateTemplate {
     private String used;
     private String creator;
     private String modifier;
+    private String isDeleted;
 }

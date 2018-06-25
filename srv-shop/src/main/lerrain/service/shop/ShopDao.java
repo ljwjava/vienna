@@ -31,8 +31,8 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
 		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = p.rel_commodity_id AND m.rel_type = 'commodity'");
 		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_org_id = l.org_id");
-		sql.append(" WHERE");
-		sql.append(" p.rel_org_id = 1");
+		sql.append(" WHERE 1=1");
+		sql.append(" AND p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
 		if (null != userId) {
@@ -58,8 +58,8 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
 		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
-		sql.append(" WHERE");
-		sql.append(" p.rel_org_id = 1");
+		sql.append(" WHERE 1=1");
+		sql.append(" AND p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
 		if (StringUtils.isNotBlank(search)) {
@@ -87,8 +87,8 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
 		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
-		sql.append(" WHERE");
-		sql.append(" p.rel_org_id = 1");
+		sql.append(" WHERE 1=1");
+		sql.append(" AND p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
         if (StringUtils.isNotBlank(search)) {
@@ -155,8 +155,8 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
 		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = p.rel_commodity_id AND m.rel_type = 'commodity'");
 		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_org_id = l.org_id");
-		sql.append(" WHERE");
-		sql.append(" p.rel_org_id = 1");
+		sql.append(" WHERE 1=1");
+		sql.append(" AND p.rel_org_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
 		if (null != userId) {
@@ -217,29 +217,57 @@ public class ShopDao
         sql.append("SELECT count(*)");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
-        sql.append(" WHERE");
+		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
+        sql.append(" WHERE 1=1");
 		if (null != userId) {
-			sql.append(" t.rel_user_id = "+userId);
+			sql.append(" and r.rel_user_id = "+userId);
 		}
 		if (StringUtils.isNotBlank(name)) {
-			sql.append(" t.name = "+name);
+			sql.append(" and t.name LIKE '%"+name+"%'");
 		}
 
         return jdbc.queryForObject(sql.toString(), Integer.class);
     }
 
+	public int countTemplateUsed(Long tempId)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT");
+		sql.append(" COUNT(r.rel_user_id)");
+		sql.append(" FROM");
+		sql.append(" `t_cs_commodity_rate_template_relation` r");
+		sql.append(" WHERE 1=1");
+		if (null != tempId) {
+			sql.append(" and r.rel_temp_id = "+tempId);
+		}
+		sql.append(" GROUP BY r.rel_temp_id");
+
+		return jdbc.queryForObject(sql.toString(), Integer.class);
+	}
+
     public List<JSONObject> rateTemplates(Long userId, String name, int from, int number){
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
-        sql.append(" *");
+		sql.append(" r.rel_user_id,");
+		sql.append(" r.rel_temp_id,");
+		sql.append(" t.scheme_id,");
+		sql.append(" t.`code`,");
+		sql.append(" t.`name`,");
+		sql.append(" r.used,");
+		sql.append(" r.creator,");
+		sql.append(" r.gmt_created,");
+		sql.append(" r.modifier,");
+		sql.append(" r.gmt_modified,");
+		sql.append(" r.is_deleted");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
-        sql.append(" WHERE");
+		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
+        sql.append(" WHERE r.is_deleted='N'");
 		if (null != userId) {
-			sql.append(" t.rel_user_id = "+userId);
+			sql.append(" and r.rel_user_id = "+userId);
 		}
         if (StringUtils.isNotBlank(name)) {
-            sql.append(" t.name = "+name);
+            sql.append(" and t.name LIKE '%"+name+"%'");
         }
         sql.append(" limit ?, ?");
 
@@ -250,6 +278,7 @@ public class ShopDao
             {
                 JSONObject j = new JSONObject();
                 j.put("rel_user_id",m.getString("rel_user_id"));
+				j.put("rel_temp_id",m.getString("rel_temp_id"));
                 j.put("scheme_id",m.getString("scheme_id"));
                 j.put("code",m.getString("code"));
                 j.put("name", m.getString("name"));
@@ -270,10 +299,10 @@ public class ShopDao
         sql.append("SELECT count(*)");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
-        sql.append(" WHERE");
+        sql.append(" WHERE 1=1");
 
         if (StringUtils.isNotBlank(search)) {
-            sql.append(" t.scheme_id = "+search);
+            sql.append(" and t.scheme_id = "+search);
         }
 
         return jdbc.queryForObject(sql.toString(), Integer.class);
@@ -320,16 +349,31 @@ public class ShopDao
 
 	public Long saveOrUpdateRateTemplate(RateTemplate rt)
 	{
-		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template` (`rel_user_id`, `scheme_id`, `code`, `name`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?);";
+		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template` (`id`, `scheme_id`, `code`, `name`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?);";
 		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `name`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
 
-		if(null != rt.getId()){
+		if(null != rt.getTempId()){
 			jdbc.update(update, rt.getName(), rt.getCreator(), rt.getModifier());
 		}else{
-			rt.setId(tools.nextId("cdRateTemp"));
-			jdbc.update(insert, rt.getId(), rt.getSchemeId(), rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
+			rt.setTempId(tools.nextId("cdRateTemp"));
+			jdbc.update(insert, rt.getTempId(), rt.getTempId(), rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
 		}
 
-		return rt.getId();
+		return rt.getTempId();
+	}
+
+	public Long saveOrUpdateRateTemplateRelation(RateTemplate rt)
+	{
+		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template_relation` (`id`, `rel_user_id`, `rel_temp_id`, `used`, `creator`, `modifier`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `rel_user_id`=?, `rel_temp_id`, `used`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
+
+		if(null != rt.getRelId()){
+			jdbc.update(update, rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getRelId(), rt.getIsDeleted());
+		}else{
+			rt.setRelId(tools.nextId("cdRateTempRel"));
+			jdbc.update(insert, rt.getRelId(), rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier());
+		}
+
+		return rt.getRelId();
 	}
 }

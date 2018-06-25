@@ -81,13 +81,32 @@ public class ShopService
     public List<JSONObject> rateTemplates(Long userId, String cdName, int from, int num)
     {
         List<JSONObject> rates = productDao.rateTemplates(userId, cdName, from, num);
+        for(int i=0;i<rates.size();i++){
+            JSONObject json = rates.get(i);
+            Long tempId = json.getLong("rel_temp_id");
+            json.put("usedCount",productDao.countTemplateUsed(tempId));
+        }
         return rates;
     }
 
-    public Long saveOrUpdateRateTemplate(RateTemplate rt){
-        return productDao.saveOrUpdateRateTemplate(rt);
+    public RateTemplate saveOrUpdateRateTemplate(RateTemplate rt){
+        Long tempId = productDao.saveOrUpdateRateTemplate(rt);
+        rt.setTempId(tempId);
+        Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+        rt.setRelId(relId);
+        return rt;
     }
 
+    public List<RateTemplate> batchOperateRateTemplate(List<RateTemplate> contions){
+        List<RateTemplate> rts = Lists.newArrayList();
+	    for(int i=0;i<contions.size();i++) {
+            RateTemplate rt = contions.get(i);
+            Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+            rt.setRelId(relId);
+            rts.add(rt);
+        }
+        return rts;
+    }
 
     public Shop queryShopById(Long wareId)
     {

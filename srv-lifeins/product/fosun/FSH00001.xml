@@ -98,8 +98,8 @@
 			</benefit_chart>
 
 			<liab_graph parser="liab_graph">
-				<item type="thunder" mode="common" value="AMOUNT">保额{round(AMOUNT/10000,2)}万，确诊即赔</item>
-				<item type="mild" mode="time3" value="AMOUNT*0.9">可保3次（不同疾病），每次{round(AMOUNT*0.3/10000,2)}万，确诊即赔</item>
+				<item type="thunder" mode="common" value="AMOUNT" integral="AMOUNT">保额{round(AMOUNT/10000,2)}万，确诊即赔</item>
+				<item type="mild" mode="time3" value="AMOUNT*0.9" integral="AMOUNT*0.9*0.7">可保3次（不同疾病），每次{round(AMOUNT*0.3/10000,2)}万，确诊即赔</item>
 				<item type="mild_exempt" mode="common">豁免康乐系列剩余保费</item>
 			</liab_graph>
 		</attachment>

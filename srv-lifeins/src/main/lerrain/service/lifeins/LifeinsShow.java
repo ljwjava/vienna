@@ -145,6 +145,8 @@ public class LifeinsShow
                 content = formatCoverage(c);
             else if ("chart".equals(style))
                 content = formatChart(c);
+            else if ("benefit_chart".equals(style))
+                content = formatBenefitChart(c);
 
             json.put("content", content);
             r.add(json);
@@ -244,7 +246,7 @@ public class LifeinsShow
         return r;
     }
 
-    public static JSONObject formatChart2(Commodity c)
+    public static JSONObject formatBenefitChart(Commodity c)
     {
         if (c.getProduct().isRider())
             return null;
