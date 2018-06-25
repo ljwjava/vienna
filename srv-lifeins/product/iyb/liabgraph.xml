@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<attachment>
+		<liab_graph filter="liab_graph" parser="liab_graph">
+			<set name="重疾责任">
+				<items type="thunder" name="重疾保障">
+					<mode code="common">罹患所保障的重大疾病，保险公司给付重疾保险金，最高{round(self/10000,2)}万。</mode>
+				</items>
+				<items type="a_thunder_exempt" name="投保人重疾豁免">
+					<mode code="common">投保人罹患所重疾，免缴指定险种剩余保费。</mode>
+				</items>
+			</set>
+			<set name="轻症责任">
+				<items type="mild" name="轻症保障">
+					<mode code="common">罹患所保障的轻症疾病，保险公司给付轻症保险金，最高{round(self/10000,2)}万。</mode>
+				</items>
+				<items type="mild_exempt" name="被保险人轻症豁免">
+					<mode code="common">被保险人罹患所保障的轻症疾病，免缴指定险种剩余保费。</mode>
+				</items>
+				<items type="a_mild_exempt" name="投保人轻症豁免">
+					<mode code="common">投保人罹患所保障的轻症疾病，免缴指定险种剩余保费。</mode>
+				</items>
+			</set>
+			<set name="医疗责任">
+				<items type="medical" name="一般医疗保障">
+					<mode code="common">因意外伤害或非等待期因患疾病，在二级及以上医院普通部发生需个人支付，必须且合理的住院或特殊门诊费用最高可报销{round(self/10000,2)}万。</mode>
+				</items>
+				<items type="cancer" name="癌症医疗保障">
+					<mode code="common">罹患癌症，在二级及以上医院普通部发生需个人支付，必须且合理的住院或特殊门诊费用最高可报销{round(self/10000,2)}万（无免赔额）。</mode>
+				</items>
+			</set>
+			<set name="身故伤残责任">
+				<items type="disability" name="全残保障">
+					<mode code="common">被保险人全残，给付全残保险金，最高{round(self/10000,2)}万。</mode>
+				</items>
+				<items type="death" name="身故保障">
+					<mode code="common">被保险人身故，给付身故保险金{round(self/10000,2)}万。</mode>
+					<mode code="thunder">被保险人非重疾以外原因身故，指定险种未满18周岁返还已交保费，满18周岁给付身故保险金{round(self/10000,2)}万。</mode>
+				</items>
+				<items type="death_payback" name="身故返还保费">
+					<mode code="thunder">被保险人非重疾以外原因身故，指定险种返还已交保费。</mode>
+				</items>
+				<items type="death_cvback" name="身故返还现价">
+					<mode code="thunder">被保险人非重疾以外原因身故，指定险种返还现金价值。</mode>
+				</items>
+				<items type="death_exempt" name="投保人身故豁免">
+					<mode code="common">若投保人因意外或等待期后因非意外的原因导致身故，免缴指定险种剩余保费。</mode>
+				</items>
+			</set>
+			<set name="意外责任">
+				<items type="accident_death" name="意外身故保障">
+					<mode code="common">被保险人因意外伤害原因导致身故，保险公司给付将身故保险金，最高为{round(self/10000,2)}万。</mode>
+				</items>
+				<items type="accident_disability" name="意外伤残保障">
+					<mode code="common">若被保险人因意外伤害造成伤残，按照伤残评定标准对应等级的给付比例乘以伤残保额，将给付伤残保险金，最高{round(self/10000,2)}万。</mode>
+				</items>
+			</set>
+		</liab_graph>
+	</attachment>
+</declare>
