@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -92,6 +93,27 @@ public class ShopService
     public RateTemplate saveOrUpdateRateTemplate(RateTemplate rt){
         Long tempId = productDao.saveOrUpdateRateTemplate(rt);
         rt.setTempId(tempId);
+        Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+        rt.setRelId(relId);
+        return rt;
+    }
+
+    public RateTemplate updateRateTemplate4User(RateTemplate rt){
+	    // 已经在使用的模板设置无效
+        RateTemplate contion = new RateTemplate();
+        contion.setUserId(rt.getUserId());
+        contion.setSubUserId(rt.getSubUserId());
+        contion.setUsed("Y");
+        List<JSONObject> rates = productDao.rateTemplates(contion, 0, 10);
+        if(null != rates && rates.size()>0){
+            RateTemplate temp = JSONObject.parseObject(rates.get(0).toJSONString(), RateTemplate.class);
+            temp.setUsed("N");
+            temp.setModifier(rt.getModifier());
+            temp.setGmtModified(new Date());
+            productDao.saveOrUpdateRateTemplateRelation(rt);
+        }
+        // 重新关联一个有效的模板
+        rt.setRelId(null);
         Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
         rt.setRelId(relId);
         return rt;
