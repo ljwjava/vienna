@@ -226,7 +226,7 @@ public class ShopDao
 			sql.append(" and r.sub_user_id = "+contion.getSubUserId());
 		}
 		if (StringUtils.isNotBlank(contion.getUsed())) {
-			sql.append(" and r.used = "+contion.getUsed());
+			sql.append(" and r.used = '"+contion.getUsed()+"'");
 		}
 		if (StringUtils.isNotBlank(contion.getName())) {
 			sql.append(" and t.name LIKE '%"+contion.getName()+"%'");
