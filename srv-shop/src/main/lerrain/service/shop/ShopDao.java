@@ -289,17 +289,17 @@ public class ShopDao
             public JSONObject mapRow(ResultSet m, int arg1) throws SQLException
             {
                 JSONObject j = new JSONObject();
-                j.put("rel_user_id",m.getString("rel_user_id"));
-				j.put("rel_temp_id",m.getString("rel_temp_id"));
-                j.put("scheme_id",m.getString("scheme_id"));
+                j.put("userId",m.getString("rel_user_id"));
+				j.put("tempId",m.getString("rel_temp_id"));
+                j.put("schemeId",m.getString("scheme_id"));
                 j.put("code",m.getString("code"));
                 j.put("name", m.getString("name"));
                 j.put("used",m.getString("used"));
                 j.put("creator",m.getString("creator"));
-                j.put("gmt_created",m.getString("gmt_created"));
+                j.put("gmtCreated",m.getString("gmt_created"));
                 j.put("modifier",m.getString("modifier"));
-                j.put("gmt_modified",m.getString("gmt_modified"));
-                j.put("is_deleted",m.getString("is_deleted"));
+                j.put("gmtModified",m.getString("gmt_modified"));
+                j.put("isDeleted",m.getString("is_deleted"));
                 return j;
             }
         });
