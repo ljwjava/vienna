@@ -71,6 +71,7 @@
 			<item code="term_20" value="20" show="20年期" />
 			<item code="term_25" value="25" show="25年期" />
 			<item code="term_30" value="30" show="30年期" />
+			<item code="term_35" value="35" show="35年期" />
 			<item code="to_14" mode="1" value="14" show="保至14岁" />
 			<item code="to_17" mode="1" value="17" show="保至17岁" />
 			<item code="to_21" mode="1" value="21" show="保至21岁" />
