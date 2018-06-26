@@ -73,14 +73,14 @@ public class ShopService
         return objs;
     }
 
-    public int countTemplate(Long userId, String cdName)
+    public int countTemplate(RateTemplate contion)
     {
-        return productDao.countTemplate(userId, cdName);
+        return productDao.countTemplate(contion);
     }
 
-    public List<JSONObject> rateTemplates(Long userId, String cdName, int from, int num)
+    public List<JSONObject> rateTemplates(RateTemplate contion, int from, int num)
     {
-        List<JSONObject> rates = productDao.rateTemplates(userId, cdName, from, num);
+        List<JSONObject> rates = productDao.rateTemplates(contion, from, num);
         for(int i=0;i<rates.size();i++){
             JSONObject json = rates.get(i);
             Long tempId = json.getLong("rel_temp_id");
