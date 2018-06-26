@@ -5,7 +5,7 @@
 		corporation_id="bobcardif"
 		code="ETL1101"
 		name="中荷房贷宝减额定期寿险"
-		name_abbr="房贷宝"
+		name_abbr="顾家宝"
 		unit="10000"
 		type_code="life"
 		sequence="1000"
@@ -98,11 +98,14 @@
 			<if condition="AMOUNT == 2100000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 30 and INSURE_PERIOD != 35">
 				保额选择210万时，保障期间只可以选择10/15/30/35年期
 			</if>
+			<if condition="AMOUNT == 2400000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 15 and INSURE_PERIOD != 20 and INSURE_PERIOD != 30">
+				保额选择240万时，保障期间只可以选择10/15/20/30年期
+			</if>
 			<if condition="AMOUNT == 2500000 and INSURE_PERIOD != 10 and INSURE_PERIOD != 25">
 				保额选择250万时，保障期间只可以选择10/25年期
 			</if>
 			<if condition="AGE > 45+25-INSURE_PERIOD" desc="formula">
-				'投保年龄+保险期间≤65周岁，请重新填写保险期间'
+				'投保年龄+保险期间≤70周岁，请重新填写保险期间'
 			</if>
 			<if condition="INSURE_PERIOD > 25 and AGE > 45+25-INSURE_PERIOD" desc="formula">
 				'当保障期间选择为'+INSURE_PERIOD+'年时，投保年龄不能超过'+round(45+25-INSURE_PERIOD,0)+'周岁'
