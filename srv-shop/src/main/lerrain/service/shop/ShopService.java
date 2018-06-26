@@ -98,7 +98,7 @@ public class ShopService
         return rt;
     }
 
-    public RateTemplate updateRateTemplate4User(RateTemplate rt){
+    public RateTemplate handleUsedRateTemp(RateTemplate rt){
 	    // 已经在使用的模板设置无效
         RateTemplate contion = new RateTemplate();
         contion.setUserId(rt.getUserId());
@@ -112,10 +112,6 @@ public class ShopService
             temp.setGmtModified(new Date());
             productDao.saveOrUpdateRateTemplateRelation(rt);
         }
-        // 重新关联一个有效的模板
-        rt.setRelId(null);
-        Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
-        rt.setRelId(relId);
         return rt;
     }
 
@@ -128,6 +124,8 @@ public class ShopService
         List<RateTemplate> rts = Lists.newArrayList();
 	    for(int i=0;i<contions.size();i++) {
             RateTemplate rt = contions.get(i);
+            // 已经在使用的模板设置无效
+            RateTemplate res = this.handleUsedRateTemp(rt);
             Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
             rt.setRelId(relId);
             rts.add(rt);

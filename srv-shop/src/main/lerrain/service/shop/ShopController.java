@@ -149,19 +149,6 @@ public class ShopController
         return res;
     }
 
-    @RequestMapping("/updateRateTemplate4User.json")
-    @ResponseBody
-    public JSONObject updateRateTemplate4User(@RequestBody JSONObject p)
-    {
-        JSONObject res = new JSONObject();
-        RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
-        RateTemplate rt = productSrv.updateRateTemplate4User(contion);
-        res.put("result", "success");
-        res.put("content", JSON.toJSON(rt));
-
-        return res;
-    }
-
     @RequestMapping("/deleteRateTemplate.json")
     @ResponseBody
     public JSONObject deleteRateTemplate(@RequestBody JSONObject p)
