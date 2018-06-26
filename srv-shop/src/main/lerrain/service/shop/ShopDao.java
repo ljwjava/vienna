@@ -364,14 +364,14 @@ public class ShopDao
 
 	public Long saveOrUpdateRateTemplateRelation(RateTemplate rt)
 	{
-		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template_relation` (`id`, `rel_user_id`, `rel_temp_id`, `used`, `creator`, `modifier`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?);";
-		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `rel_user_id`=?, `rel_temp_id`, `used`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
+		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template_relation` (`id`, `rel_user_id`, `sub_user_id`, `rel_temp_id`, `used`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `rel_user_id`=?, `sub_user_id`=?, `rel_temp_id`=?, `used`=?, `creator`=?, `modifier`=?, `is_deleted`=? WHERE (`id`=?);";
 
 		if(null != rt.getRelId()){
-			jdbc.update(update, rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getRelId(), rt.getIsDeleted());
+			jdbc.update(update, rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getIsDeleted(), rt.getRelId());
 		}else{
 			rt.setRelId(tools.nextId("cdRateTempRel"));
-			jdbc.update(insert, rt.getRelId(), rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier());
+			jdbc.update(insert, rt.getRelId(), rt.getUserId(), rt.getSubUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier());
 		}
 
 		return rt.getRelId();

@@ -155,29 +155,10 @@ public class ShopController
         res.put("result", "success");
         JSONArray list = p.getJSONArray("list");
         if(null != list) {
-            List<RateTemplate> contions = JSON.parseArray(p.toJSONString(), RateTemplate.class);
+            List<RateTemplate> contions = JSON.parseArray(list.toJSONString(), RateTemplate.class);
             List<RateTemplate> rts = productSrv.batchOperateRateTemplate(contions);
             res.put("content", JSON.toJSON(rts));
         }
-        return res;
-    }
-
-    @RequestMapping("/saveProductToRateTemplate.json")
-    @ResponseBody
-    public JSONObject saveProductToRateTemplate(@RequestBody JSONObject p)
-    {
-        JSONObject res = new JSONObject();
-        Long tempId = p.getLong("tempId");
-        String productIdStr = p.getString("productIdStr");
-        List<String> productIds = Lists.newArrayList();
-
-
-
-        RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
-        RateTemplate rt = productSrv.saveOrUpdateRateTemplate(contion);
-        res.put("result", "success");
-        res.put("content", JSON.toJSON(rt));
-
         return res;
     }
 }
