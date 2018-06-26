@@ -27,6 +27,9 @@ public class Enterprise {
     private String modifier;
     // 级别
     private int    level;
+    private Long userId;
+    private int userStatus;
+    private String extraInfo;
 
     public Long getId() {
         return id;
@@ -123,5 +126,29 @@ public class Enterprise {
     public void setLevel(int level) {
         this.level = level;
     }
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public int getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(int userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public String getExtraInfo() {
+		return extraInfo;
+	}
+
+	public void setExtraInfo(String extraInfo) {
+		this.extraInfo = extraInfo;
+	}
 
 }

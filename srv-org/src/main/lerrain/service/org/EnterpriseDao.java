@@ -42,7 +42,7 @@ public class EnterpriseDao
                 enterprise.setParentId(tc.getLong("parent_id"));
                 enterprise.setTelephone(tc.getString("telephone"));
                 enterprise.setEmail(tc.getString("email"));
-                enterprise.setIsDeleted(tc.getString("is_deleted"));
+                enterprise.setIsDeleted(tc.getString("valid"));
                 enterprise.setLevel(0);
                 return enterprise;
             }
@@ -60,11 +60,23 @@ public class EnterpriseDao
      * @param resultList
      */
     private void querySuperiorByParentId(Long parentId, int level, List<Enterprise> resultList) {
-        List<Enterprise> list = jdbc.queryForList("select * from t_enterprise where id =" + parentId, Enterprise.class);
-        Enterprise result = list.get(0);
+        Enterprise result = jdbc.queryForObject("select * from t_enterprise where id = ?", new RowMapper<Enterprise>() {
+            @Override
+            public Enterprise mapRow(ResultSet tc, int arg1) throws SQLException {
+                Enterprise enterprise = new Enterprise();
+                enterprise.setId(tc.getLong("id"));
+                enterprise.setCompanyName(tc.getString("company_name"));
+                enterprise.setCompanyType(tc.getString("company_type"));
+                enterprise.setParentId(tc.getLong("parent_id"));
+                enterprise.setTelephone(tc.getString("telephone"));
+                enterprise.setEmail(tc.getString("email"));
+                enterprise.setIsDeleted(tc.getString("valid"));
+                return enterprise;
+            }
+        }, parentId);        
         result.setLevel(level+1);
         resultList.add(result);
-        if(result.getParentId() != null ) {
+        if(result.getParentId() != null && result.getParentId() > 0) {
             querySuperiorByParentId(result.getParentId(), result.getLevel(), resultList);
         }
     }
@@ -107,6 +119,12 @@ public class EnterpriseDao
                         + id);
         if (listMap != null && listMap.size() > 0) {
             for (Map<String, Object> map : listMap) {
+            	// 查询用户信息
+            	Map<String,Object> userMap = jdbc.queryForMap("select u.user_id,u.status from t_org org ,t_user u where org.id= u.user_id and org.company_id= ? and org.parent_id is null", map.get("id"));
+            	if(userMap != null && userMap.size() > 0) {
+                	map.put("userId", userMap.get("user_id"));
+                	map.put("userStatus", userMap.get("status"));
+            	}
                 list.add(JSON.parseObject(JSON.toJSONString(map), Enterprise.class));
             }
         }
@@ -122,13 +140,13 @@ public class EnterpriseDao
 
     public int save(Enterprise enterprise) {
         return jdbc
-                .update("insert into t_enterprise (id, company_name,telephone,parent_id, create_time,update_time) values (?,?,?,?,now(),now())",
+                .update("insert into t_enterprise (id, company_name,telephone,parent_id,email, create_time,update_time) values (?,?,?,?,?,now(),now())",
                         enterprise.getId(), enterprise.getCompanyName(), enterprise.getTelephone(),
-                        enterprise.getParentId());
+                        enterprise.getParentId(),enterprise.getEmail());
     }
 
     public Enterprise queryById(Long companyId) {
-        Enterprise enterprise = jdbc.queryForObject("select * from t_enterprise where parent_id = ?",
+        Enterprise enterprise = jdbc.queryForObject("select * from t_enterprise where id = ?",
                 new RowMapper<Enterprise>() {
                     @Override
                     public Enterprise mapRow(ResultSet tc, int arg1) throws SQLException {
@@ -139,11 +157,37 @@ public class EnterpriseDao
                         enterprise.setParentId(tc.getLong("parent_id"));
                         enterprise.setTelephone(tc.getString("telephone"));
                         enterprise.setEmail(tc.getString("email"));
-                        enterprise.setIsDeleted(tc.getString("is_deleted"));
+                        enterprise.setIsDeleted(tc.getString("valid"));
                         enterprise.setLevel(0);
+                        enterprise.setExtraInfo(tc.getString("extra_info"));
                         return enterprise;
                     }
                 }, companyId);
         return enterprise;
     }
+    
+   public Long getCompanyId(Long userId) {
+	   Map<String,Object> userMap = null;
+	try {
+	   	userMap = jdbc.queryForMap("select org.company_id from t_org org ,t_user u where org.id= u.user_id and u.user_id=?", userId);
+	   	if(userMap != null && userMap.size() > 0) {
+	       	return Long.valueOf(userMap.get("company_id").toString());
+	   	}
+	} catch(Exception e) {
+	}
+	if(userMap == null) {
+   		userMap = jdbc.queryForMap("select m.company_id from t_member m ,t_user u where m.id= u.user_id and u.user_id=?", userId);
+   	   	if(userMap != null && userMap.size() > 0) {
+   	       	return Long.valueOf(userMap.get("company_id").toString());
+   	   	}
+	}
+    return -1l;
+   }
+   
+   public int updateById(Enterprise enterprise) {
+       return jdbc
+               .update("update t_enterprise set extra_info=?,update_time=now() where id=?",enterprise.getExtraInfo(),
+                       enterprise.getId());
+   }
+
 }
