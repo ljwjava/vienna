@@ -91,10 +91,15 @@ public class ShopService
     }
 
     public RateTemplate saveOrUpdateRateTemplate(RateTemplate rt){
-        Long tempId = productDao.saveOrUpdateRateTemplate(rt);
-        rt.setTempId(tempId);
-        Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
-        rt.setRelId(relId);
+	    // 修改模板
+	    if(null != rt.getTempId()){
+            Long tempId = productDao.saveOrUpdateRateTemplate(rt);
+        }else {// 新增模板
+            Long tempId = productDao.saveOrUpdateRateTemplate(rt);
+            rt.setTempId(tempId);
+            Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+            rt.setRelId(relId);
+        }
         return rt;
     }
 
@@ -106,11 +111,13 @@ public class ShopService
         contion.setUsed("Y");
         List<JSONObject> rates = productDao.rateTemplates(contion, 0, 10);
         if(null != rates && rates.size()>0){
-            RateTemplate temp = JSONObject.parseObject(rates.get(0).toJSONString(), RateTemplate.class);
-            temp.setUsed("N");
-            temp.setModifier(rt.getModifier());
-            temp.setGmtModified(new Date());
-            productDao.saveOrUpdateRateTemplateRelation(rt);
+            for(int i=0;i<rates.size();i++) {
+                RateTemplate temp = JSONObject.parseObject(rates.get(i).toJSONString(), RateTemplate.class);
+                temp.setUsed("N");
+                temp.setModifier(rt.getModifier());
+                temp.setGmtModified(new Date());
+                productDao.saveOrUpdateRateTemplateRelation(temp);
+            }
         }
         return rt;
     }

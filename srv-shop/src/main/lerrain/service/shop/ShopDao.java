@@ -365,7 +365,7 @@ public class ShopDao
 		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `code`=?, `name`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
 
 		if(null != rt.getTempId()){
-			jdbc.update(update, rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
+			jdbc.update(update, rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier(), rt.getTempId());
 		}else{
 			rt.setTempId(tools.nextId("cdRateTemp"));
 			jdbc.update(insert, rt.getTempId(), rt.getTempId(), rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
@@ -380,7 +380,7 @@ public class ShopDao
 		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `rel_user_id`=?, `sub_user_id`=?, `rel_temp_id`=?, `used`=?, `creator`=?, `modifier`=?, `is_deleted`=? WHERE (`id`=?);";
 
 		if(null != rt.getRelId()){
-			jdbc.update(update, rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getIsDeleted(), rt.getRelId());
+			jdbc.update(update, rt.getUserId(), rt.getSubUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getIsDeleted(), rt.getRelId());
 		}else{
 			rt.setRelId(tools.nextId("cdRateTempRel"));
 			jdbc.update(insert, rt.getRelId(), rt.getUserId(), rt.getSubUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier());
