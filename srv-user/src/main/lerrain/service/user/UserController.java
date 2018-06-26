@@ -1,13 +1,16 @@
 package lerrain.service.user;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lerrain.service.common.Log;
 import lerrain.service.user.enm.RoleTypeEnum;
 import lerrain.service.user.service.ModuleService;
 import lerrain.service.user.service.RoleService;
 import lerrain.service.user.service.UserService;
+import lerrain.service.user.service.WxUserService;
 import lerrain.service.user.util.PasswordUtil;
 import lerrain.tool.Common;
 
@@ -17,25 +20,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Controller
-public class UserController
-{
+public class UserController {
     @Autowired
-    UserService userSrv;
+    UserService   userSrv;
 
     @Autowired
-    RoleService roleSrv;
+    RoleService   roleSrv;
 
     @Autowired
     ModuleService moduleSrv;
 
+    @Autowired
+    WxUserService wxUserService;
+
     @RequestMapping({ "/login.json" })
     @ResponseBody
-    public JSONObject login(@RequestBody JSONObject json)
-    {
+    public JSONObject login(@RequestBody JSONObject json) {
         String loginName = json.getString("loginName");
         String password = json.getString("password");
 
@@ -50,31 +55,28 @@ public class UserController
 
     @RequestMapping({ "/find_modules.json" })
     @ResponseBody
-    public JSONObject findModules(@RequestBody JSONObject json)
-    {
+    public JSONObject findModules(@RequestBody JSONObject json) {
         List<Role> roles = new ArrayList<>();
 
         JSONArray list = json.getJSONArray("role");
-        if (list != null) for (Object obj : list)
-        {
-            JSONObject roleMap = (JSONObject)obj;
+        if (list != null)
+            for (Object obj : list) {
+                JSONObject roleMap = (JSONObject) obj;
 
-            Long roleId = roleMap.getLong("id");
-            if (roleId != null)
-                roles.add(roleSrv.getRole(roleId));
-            else if (roleMap.containsKey("code"))
-                roles.add(roleSrv.getRole(roleMap.getString("code")));
-        }
+                Long roleId = roleMap.getLong("id");
+                if (roleId != null)
+                    roles.add(roleSrv.getRole(roleId));
+                else if (roleMap.containsKey("code"))
+                    roles.add(roleSrv.getRole(roleMap.getString("code")));
+            }
 
         JSONArray menu = new JSONArray();
 
         long lastParent = -1L;
         JSONArray pack = null;
 
-        for (Module m : moduleSrv.findModules(roles))
-        {
-            if (m.getParentId() != lastParent)
-            {
+        for (Module m : moduleSrv.findModules(roles)) {
+            if (m.getParentId() != lastParent) {
                 Module p = moduleSrv.getModule(m.getParentId());
 
                 JSONObject module = new JSONObject();
@@ -107,14 +109,12 @@ public class UserController
 
     @RequestMapping("/list.json")
     @ResponseBody
-    public JSONObject list(@RequestBody JSONObject p)
-    {
+    public JSONObject list(@RequestBody JSONObject p) {
         int from = Common.intOf(p.get("from"), 0);
         int num = Common.intOf(p.get("num"), 20);
 
         JSONArray list = new JSONArray();
-        for (User user : userSrv.list(null, from, num))
-        {
+        for (User user : userSrv.list(null, from, num)) {
             JSONObject obj = new JSONObject();
             obj.put("id", user.getId());
             obj.put("name", user.getName());
@@ -137,8 +137,7 @@ public class UserController
 
     @RequestMapping({ "/role.json" })
     @ResponseBody
-    public JSONObject role(@RequestBody JSONObject json)
-    {
+    public JSONObject role(@RequestBody JSONObject json) {
         Long userId = json.getLong("userId");
         User user = userSrv.getUser(userId);
 
@@ -151,8 +150,7 @@ public class UserController
 
     @RequestMapping({ "/role_all.json" })
     @ResponseBody
-    public JSONObject roleAll()
-    {
+    public JSONObject roleAll() {
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", roleSrv.getRoleList());
@@ -162,8 +160,7 @@ public class UserController
 
     @RequestMapping({ "/verify_password.json" })
     @ResponseBody
-    public JSONObject verifyPassword(@RequestBody JSONObject json)
-    {
+    public JSONObject verifyPassword(@RequestBody JSONObject json) {
         Long userId = json.getLong("userId");
         String pwd = json.getString("password");
 
@@ -176,8 +173,7 @@ public class UserController
 
     @RequestMapping({ "/set_password.json" })
     @ResponseBody
-    public JSONObject setPassword(@RequestBody JSONObject json)
-    {
+    public JSONObject setPassword(@RequestBody JSONObject json) {
         Long userId = json.getLong("userId");
         String pwd = json.getString("password");
 
@@ -233,12 +229,12 @@ public class UserController
     @RequestMapping({ "/freezeUser.json" })
     @ResponseBody
     public JSONObject freezeUser(@RequestBody JSONObject json) {
-    	JSONArray userId = json.getJSONArray("userId");
-    	Long[] userIds = new Long[userId.size()];
-    	List<Long> userList = JSONObject.parseArray(userId.toJSONString(), Long.class);
-    	for(int i =0;i<userList.size();i++) {
-    		userIds[i] = userList.get(i);
-    	}
+        JSONArray userId = json.getJSONArray("userId");
+        Long[] userIds = new Long[userId.size()];
+        List<Long> userList = JSONObject.parseArray(userId.toJSONString(), Long.class);
+        for (int i = 0; i < userList.size(); i++) {
+            userIds[i] = userList.get(i);
+        }
         int status = json.getIntValue("status");
         userSrv.updateStatus(userIds, status);
         JSONObject result = new JSONObject();
@@ -246,7 +242,7 @@ public class UserController
         result.put("content", true);
         return result;
     }
-    
+
     @RequestMapping({ "/currentUser.json" })
     @ResponseBody
     public JSONObject currentUser(@RequestBody JSONObject json) {
@@ -264,11 +260,11 @@ public class UserController
     public JSONObject csLogin(@RequestBody JSONObject json) {
         JSONObject res = new JSONObject();
         JSONObject result = new JSONObject();
-   
+
         result.put("type", "account");
-        
+
         result.put("status", "notokey");
-        
+
         result.put("currentAuthority", "admin");
         res.put("result", "success");
         try {
@@ -286,46 +282,85 @@ public class UserController
         res.put("content", result);
         return res;
     }
-    
+
     // 开通云服账号
     @RequestMapping({ "/batchOpenAccount.json" })
     @ResponseBody
     public JSONObject batchOpenAccount(@RequestBody JSONObject json) {
         // 开通类型 1人员 2组织 登录名 密码 类型 手机号
         JSONObject res = new JSONObject();
-    	try {
-    		JSONArray array = json.getJSONArray("memberInfo");
-    		for(int i =0;i<array.size();i++) {
-    			try {
-        			JSONObject j = array.getJSONObject(i);
-        	        Long userId = j.getLong("id");
-        	        int type = json.getIntValue("type");
-        	        List<Long> roleList = new ArrayList<Long>();
-        	        if (1 == type || 0 == type) {
-        	            roleList.add(RoleTypeEnum.YUNFUMEMBER.getId());
-        	        } else if (2 == type) {
-        	            roleList.add(RoleTypeEnum.YUNFUORG.getId());
-        	        } else if (3 == type) {
-        	            roleList.add(RoleTypeEnum.YUNFUORG.getId());
-        	        }
-        	        String loginName = j.getString("mobile");
-        	        String password = j.getString("password");
-        	        if (password == null) {
-        	            password = PasswordUtil.createPassword();
-        	        }
-        	        password = Common.md5Of(password);
-        	        boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
-        	        Log.info("开通账号结果:" + result);
-    			} catch(Exception e1) {
-    				Log.error(e1);
-    			}
-    		}
-    	} catch (Exception e) {
-    		Log.error(e);
-    	}
+        try {
+            JSONArray array = json.getJSONArray("memberInfo");
+            for (int i = 0; i < array.size(); i++) {
+                try {
+                    JSONObject j = array.getJSONObject(i);
+                    Long userId = j.getLong("id");
+                    int type = json.getIntValue("type");
+                    List<Long> roleList = new ArrayList<Long>();
+                    if (1 == type || 0 == type) {
+                        roleList.add(RoleTypeEnum.YUNFUMEMBER.getId());
+                    } else if (2 == type) {
+                        roleList.add(RoleTypeEnum.YUNFUORG.getId());
+                    } else if (3 == type) {
+                        roleList.add(RoleTypeEnum.YUNFUORG.getId());
+                    }
+                    String loginName = j.getString("mobile");
+                    String password = j.getString("password");
+                    if (password == null) {
+                        password = PasswordUtil.createPassword();
+                    }
+                    password = Common.md5Of(password);
+                    boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
+                    Log.info("开通账号结果:" + result);
+                } catch (Exception e1) {
+                    Log.error(e1);
+                }
+            }
+        } catch (Exception e) {
+            Log.error(e);
+        }
         res.put("result", "success");
         res.put("content", true);
 
         return res;
-    }    
+    }
+
+    @RequestMapping({ "/wxuser.json" })
+    @ResponseBody
+    public JSONObject queryWxUser(@RequestBody JSONObject params) {
+        JSONObject result = new JSONObject();
+        Log.info("params=====" + JSON.toJSONString(params));
+        JSONObject res = new JSONObject();
+        WxUser user = new WxUser();
+        user.setMobile(params.getString("mobile"));
+        user.setName(params.getString("name"));
+        Integer total = wxUserService.countWxUser(user);
+        if (total == 0) {
+            result.put("result", "success");
+            result.put("content", res);
+            return result;
+        }
+        Integer start = 0;
+        Integer limit = params.getInteger("pageSize") == null ? 10 : params.getInteger("pageSize");
+        if (params.getInteger("currentPage") != null) {
+            start = (params.getInteger("currentPage") - 1) * limit;
+        }
+        user.setStart(start);
+        user.setLimit(limit);
+        List<WxUser> listWxUser = wxUserService.listWxUser(user);
+        if (listWxUser != null && !listWxUser.isEmpty()) {
+            for (int i = 0; i < listWxUser.size(); i++) {
+                listWxUser.get(i).setIndex(i);
+            }
+        }
+        res.put("list", listWxUser);
+        Map<String, Object> pagination = new HashMap<>();
+        pagination.put("total", total);
+        pagination.put("current", params.getInteger("currentPage") == null ? 1 : params.getInteger("currentPage"));
+        res.put("pagination", pagination);
+        result.put("result", "success");
+        result.put("content", res);
+        return result;
+
+    }
 }
