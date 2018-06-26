@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -193,6 +194,7 @@ public class UserController
     @RequestMapping({ "/openAccount.json" })
     @ResponseBody
     public JSONObject openAccount(@RequestBody JSONObject json) {
+    	Log.info("openAccount request:"+JSON.toJSONString(json));
         // 开通类型 1人员 2组织 登录名 密码 类型 手机号
         Long userId = json.getLong("userId");
         int type = json.getIntValue("type");
@@ -205,11 +207,17 @@ public class UserController
             roleList.add(RoleTypeEnum.YUNFUORG.getId());
         }
         String loginName = json.getString("loginName");
-        String password = json.getString("password");
-        if (password == null) {
-            password = PasswordUtil.createPassword();
+        String password = null;
+        String md5Password = json.getString("md5Password");
+        if(md5Password != null) {
+        	password = md5Password;
+        } else {
+	        password = json.getString("password");
+	        if (password == null) {
+	            password = PasswordUtil.createPassword();
+	        }
+	        password = Common.md5Of(password);
         }
-        password = Common.md5Of(password);
         boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
         Log.info("开通账号结果:" + result);
         JSONObject res = new JSONObject();
@@ -309,11 +317,17 @@ public class UserController
         	            roleList.add(RoleTypeEnum.YUNFUORG.getId());
         	        }
         	        String loginName = j.getString("mobile");
-        	        String password = j.getString("password");
-        	        if (password == null) {
-        	            password = PasswordUtil.createPassword();
+        	        String password = null;
+        	        String md5Password = j.getString("md5Password");
+        	        if(md5Password != null) {
+        	        	password = md5Password;
+        	        } else {
+            	        password = j.getString("password");
+            	        if (password == null) {
+            	            password = PasswordUtil.createPassword();
+            	        }
+            	        password = Common.md5Of(password);
         	        }
-        	        password = Common.md5Of(password);
         	        boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
         	        Log.info("开通账号结果:" + result);
     			} catch(Exception e1) {
