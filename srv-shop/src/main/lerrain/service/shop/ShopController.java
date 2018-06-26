@@ -168,7 +168,7 @@ public class ShopController
     {
         JSONObject res = new JSONObject();
         RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
-        RateTemplate rt = productSrv.saveOrUpdateRateTemplate(contion);
+        RateTemplate rt = productSrv.deleteRateTemplate(contion);
         res.put("result", "success");
         res.put("content", JSON.toJSON(rt));
 

@@ -119,6 +119,11 @@ public class ShopService
         return rt;
     }
 
+    public RateTemplate deleteRateTemplate(RateTemplate rt){
+        Long tempId = productDao.deleteRateTemplate(rt);
+        return rt;
+    }
+
     public List<RateTemplate> batchOperateRateTemplate(List<RateTemplate> contions){
         List<RateTemplate> rts = Lists.newArrayList();
 	    for(int i=0;i<contions.size();i++) {
