@@ -155,7 +155,7 @@ public class ShopController
         res.put("result", "success");
         JSONArray list = p.getJSONArray("list");
         if(null != list) {
-            List<RateTemplate> contions = JSON.parseArray(p.toJSONString(), RateTemplate.class);
+            List<RateTemplate> contions = JSON.parseArray(list.toJSONString(), RateTemplate.class);
             List<RateTemplate> rts = productSrv.batchOperateRateTemplate(contions);
             res.put("content", JSON.toJSON(rts));
         }
