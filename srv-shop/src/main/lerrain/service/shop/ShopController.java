@@ -161,23 +161,4 @@ public class ShopController
         }
         return res;
     }
-
-    @RequestMapping("/saveProductToRateTemplate.json")
-    @ResponseBody
-    public JSONObject saveProductToRateTemplate(@RequestBody JSONObject p)
-    {
-        JSONObject res = new JSONObject();
-        Long tempId = p.getLong("tempId");
-        String productIdStr = p.getString("productIdStr");
-        List<String> productIds = Lists.newArrayList();
-
-
-
-        RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
-        RateTemplate rt = productSrv.saveOrUpdateRateTemplate(contion);
-        res.put("result", "success");
-        res.put("content", JSON.toJSON(rt));
-
-        return res;
-    }
 }
