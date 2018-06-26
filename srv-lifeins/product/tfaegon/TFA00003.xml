@@ -95,6 +95,9 @@
 			<if condition="APPLICANT.AGE + PAY_PERIOD > 70">
 				投保人年龄+缴费期限需≤70
 			</if>
+			<if condition="PAY_PERIOD == 5 and A_EXEMPT">
+				投保人豁免不支持5年交费期限
+			</if>
 			<if condition="ZONE == null and AMOUNT > 200000 and AMOUNT le 400000" level="alert">
 				A类地区最高40万，其他地区最高20万
 			</if>
