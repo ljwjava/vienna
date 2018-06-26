@@ -1,6 +1,5 @@
 package lerrain.service.template;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,12 @@ public class TemplateService {
     @Autowired
     TemplateDao dao;
 
-    public List<Template> list(String name, int from, int num) {
-        return dao.list(name, from, num);
+    public List<Template> list(String name, Long userId, int from, int num) {
+        return dao.list(name, userId, from, num);
     }
 
-    public int count(String name) {
-        return dao.count(name);
+    public int count(String name, Long userId) {
+        return dao.count(name, userId);
     }
 
     public Long saveOpUpdate(Template t) {
@@ -80,6 +79,10 @@ public class TemplateService {
         return dao.saveTUserRelation(tur);
     }
 
+    public Integer removeTurRelation(Long templateId) {
+        return dao.removeTurRelation(templateId);
+    }
+
     public void batchSaveTpRelation(List<TemplateProductRelation> list) {
         if (list == null || list.size() <= 0) {
             return;
@@ -113,6 +116,6 @@ public class TemplateService {
     }
 
     public List<TemplateProductTypeRelation> queryTptrsByTemplateIdAndProductId(Long templateId, List<Long> idList) {
-        return dao.queryTptrsByTemplateIdAndProductId(templateId,idList);
+        return dao.queryTptrsByTemplateIdAndProductId(templateId, idList);
     }
 }

@@ -104,13 +104,18 @@ public class OrgController
     @RequestMapping("/saveEnterpriseInfo.json")
     @ResponseBody
     public JSONObject saveEnterpriseInfo(@RequestBody JSONObject json) {
+    	Log.info("saveEnterpriseInfo request:"+JSON.toJSONString(json));
         JSONObject result = new JSONObject();
         Long id = -1l;
         int type = json.getIntValue("type");
         String mobile = json.getString("mobile");
         String name = json.getString("name");
+        String email = json.getString("email");
         // 邀请码
         Long inviteCode = json.getLong("inviteCode");
+        if(inviteCode != null && inviteCode > 0) {
+            inviteCode = enterpriseSrv.getCompanyId(inviteCode);
+        }
         if (1 == type) {
             // 保存渠道/子账户信息
             Member member = new Member();
@@ -132,6 +137,7 @@ public class OrgController
             enterprise.setCompanyName(name);
             enterprise.setTelephone(mobile);
             enterprise.setParentId(inviteCode);
+            enterprise.setEmail(email);
             Long companyId = enterpriseSrv.save(enterprise);
             org.setCompanyId(companyId);
             org.setType(4);
@@ -237,7 +243,13 @@ public class OrgController
     @ResponseBody
     public JSONObject companySubordinate(@RequestBody JSONObject json) {
         JSONObject result = new JSONObject();
-        List<Enterprise> list = enterpriseSrv.querySubordinate(json.getLongValue("companyId"));
+        Long companyId = json.getLongValue("companyId");
+        if(companyId == null || companyId < 1) {
+        	Long userId = json.getLongValue("userId");
+        	// 获取公司ID
+        	companyId = enterpriseSrv.getCompanyId(userId);
+        }
+        List<Enterprise> list = enterpriseSrv.querySubordinate(companyId);
         result.put("result", "success");
         JSONObject rJson = new JSONObject();
         rJson.put("list", list.size());
@@ -283,6 +295,9 @@ public class OrgController
         int type = json.getIntValue("type");
         // 邀请码
         Long inviteCode = json.getLong("inviteCode");
+        if(inviteCode != null && inviteCode > 0) {
+            inviteCode = enterpriseSrv.getCompanyId(inviteCode);
+        }
         JSONArray array = json.getJSONArray("memberInfo");
         for(int i =0;i<array.size();i++) {
             Long id = -1l;
@@ -387,5 +402,38 @@ public class OrgController
         }
 
         return array;
+    }
+    
+    @RequestMapping("/companyParent.json")
+    @ResponseBody
+    public JSONObject companyParent(@RequestBody JSONObject json) {
+        JSONObject result = new JSONObject();
+        List<Enterprise> list = enterpriseSrv.querySuperior(json.getLongValue("companyId"));
+        result.put("result", "success");
+        result.put("content", list);
+        return result;
+    }
+    
+    @RequestMapping("/getChannel.json")
+    @ResponseBody
+    public JSONObject getChannel(@RequestBody JSONObject json)
+    {
+        Long userId = json.getLong("userId");
+        Long companyId = enterpriseSrv.getCompanyId(userId);
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", companyId != null ? enterpriseSrv.queryById(companyId) : null);
+        return res;
+    }
+    
+    @RequestMapping("/updateChannel.json")
+    @ResponseBody
+    public JSONObject updateChannel(@RequestBody JSONObject json)
+    {
+    	Enterprise enterprise = JSON.parseObject(json.toJSONString(), Enterprise.class);
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", enterpriseSrv.updateById(enterprise));
+        return res;
     }
 }

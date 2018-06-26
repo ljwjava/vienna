@@ -31,8 +31,9 @@ public class TemplateController {
         int num = Common.intOf(p.get("pageSize"), 10);
         int from = num * (currentPage - 1);
         String name = p.getString("name");
+        Long userId = p.getLong("userId");
         JSONArray list = new JSONArray();
-        for (Template template : templateSrv.list(name, from, num)) {
+        for (Template template : templateSrv.list(name, userId, from, num)) {
             JSONObject obj = new JSONObject();
             obj.put("id", template.getId());
             obj.put("templateName", template.getTemplateName());
@@ -44,7 +45,7 @@ public class TemplateController {
         r.put("list", list);
 
         JSONObject page = new JSONObject();
-        page.put("total", templateSrv.count(name));
+        page.put("total", templateSrv.count(name, userId));
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);
@@ -113,11 +114,14 @@ public class TemplateController {
     @ResponseBody
     public JSONObject delete(@RequestBody JSONObject p) {
         Long templateId = p.getLong("templateId");
+        //删除模板
         templateSrv.delete(templateId);
-
+        //删除模板产品关系表
+        templateSrv.removeTpRelation(templateId);
+        //删除模板用户关系表
+        templateSrv.removeTurRelation(templateId);
         JSONObject res = new JSONObject();
         res.put("result", "success");
-
         return res;
     }
 

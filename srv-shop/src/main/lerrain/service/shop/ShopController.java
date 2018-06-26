@@ -99,15 +99,17 @@ public class ShopController
         int num = Common.intOf(p.get("pageSize"), 10);
         int from =  num*(currentPage - 1);
 
-        Long userId = p.getLong("userId");
-        String cdName = p.getString("cdName");
+//        Long userId = p.getLong("userId");
+//        String cdName = p.getString("cdName");
 
-        List<JSONObject> rtList = productSrv.rateTemplates(userId, cdName, from, num);
+        RateTemplate contion = JSONObject.parseObject(p.toJSONString(),RateTemplate.class);
+
+        List<JSONObject> rtList = productSrv.rateTemplates(contion, from, num);
 
         JSONObject r = new JSONObject();
         r.put("list", rtList);
         JSONObject page = new JSONObject();
-        page.put("total",productSrv.countTemplate(userId, cdName));
+        page.put("total",productSrv.countTemplate(contion));
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);
@@ -141,6 +143,19 @@ public class ShopController
         JSONObject res = new JSONObject();
         RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
         RateTemplate rt = productSrv.saveOrUpdateRateTemplate(contion);
+        res.put("result", "success");
+        res.put("content", JSON.toJSON(rt));
+
+        return res;
+    }
+
+    @RequestMapping("/deleteRateTemplate.json")
+    @ResponseBody
+    public JSONObject deleteRateTemplate(@RequestBody JSONObject p)
+    {
+        JSONObject res = new JSONObject();
+        RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
+        RateTemplate rt = productSrv.deleteRateTemplate(contion);
         res.put("result", "success");
         res.put("content", JSON.toJSON(rt));
 

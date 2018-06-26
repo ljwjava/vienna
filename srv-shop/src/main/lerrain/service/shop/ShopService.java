@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -73,14 +74,14 @@ public class ShopService
         return objs;
     }
 
-    public int countTemplate(Long userId, String cdName)
+    public int countTemplate(RateTemplate contion)
     {
-        return productDao.countTemplate(userId, cdName);
+        return productDao.countTemplate(contion);
     }
 
-    public List<JSONObject> rateTemplates(Long userId, String cdName, int from, int num)
+    public List<JSONObject> rateTemplates(RateTemplate contion, int from, int num)
     {
-        List<JSONObject> rates = productDao.rateTemplates(userId, cdName, from, num);
+        List<JSONObject> rates = productDao.rateTemplates(contion, from, num);
         for(int i=0;i<rates.size();i++){
             JSONObject json = rates.get(i);
             Long tempId = json.getLong("rel_temp_id");
@@ -90,10 +91,39 @@ public class ShopService
     }
 
     public RateTemplate saveOrUpdateRateTemplate(RateTemplate rt){
-        Long tempId = productDao.saveOrUpdateRateTemplate(rt);
-        rt.setTempId(tempId);
-        Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
-        rt.setRelId(relId);
+	    // 修改模板
+	    if(null != rt.getTempId()){
+            Long tempId = productDao.saveOrUpdateRateTemplate(rt);
+        }else {// 新增模板
+            Long tempId = productDao.saveOrUpdateRateTemplate(rt);
+            rt.setTempId(tempId);
+            Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+            rt.setRelId(relId);
+        }
+        return rt;
+    }
+
+    public RateTemplate handleUsedRateTemp(RateTemplate rt){
+	    // 已经在使用的模板设置无效
+        RateTemplate contion = new RateTemplate();
+        contion.setUserId(rt.getUserId());
+        contion.setSubUserId(rt.getSubUserId());
+        contion.setUsed("Y");
+        List<JSONObject> rates = productDao.rateTemplates(contion, 0, 10);
+        if(null != rates && rates.size()>0){
+            for(int i=0;i<rates.size();i++) {
+                RateTemplate temp = JSONObject.parseObject(rates.get(i).toJSONString(), RateTemplate.class);
+                temp.setUsed("N");
+                temp.setModifier(rt.getModifier());
+                temp.setGmtModified(new Date());
+                productDao.saveOrUpdateRateTemplateRelation(temp);
+            }
+        }
+        return rt;
+    }
+
+    public RateTemplate deleteRateTemplate(RateTemplate rt){
+        Long tempId = productDao.deleteRateTemplate(rt);
         return rt;
     }
 
@@ -101,6 +131,8 @@ public class ShopService
         List<RateTemplate> rts = Lists.newArrayList();
 	    for(int i=0;i<contions.size();i++) {
             RateTemplate rt = contions.get(i);
+            // 已经在使用的模板设置无效
+            RateTemplate res = this.handleUsedRateTemp(rt);
             Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
             rt.setRelId(relId);
             rts.add(rt);
