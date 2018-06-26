@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -97,10 +98,34 @@ public class ShopService
         return rt;
     }
 
+    public RateTemplate handleUsedRateTemp(RateTemplate rt){
+	    // 已经在使用的模板设置无效
+        RateTemplate contion = new RateTemplate();
+        contion.setUserId(rt.getUserId());
+        contion.setSubUserId(rt.getSubUserId());
+        contion.setUsed("Y");
+        List<JSONObject> rates = productDao.rateTemplates(contion, 0, 10);
+        if(null != rates && rates.size()>0){
+            RateTemplate temp = JSONObject.parseObject(rates.get(0).toJSONString(), RateTemplate.class);
+            temp.setUsed("N");
+            temp.setModifier(rt.getModifier());
+            temp.setGmtModified(new Date());
+            productDao.saveOrUpdateRateTemplateRelation(rt);
+        }
+        return rt;
+    }
+
+    public RateTemplate deleteRateTemplate(RateTemplate rt){
+        Long tempId = productDao.deleteRateTemplate(rt);
+        return rt;
+    }
+
     public List<RateTemplate> batchOperateRateTemplate(List<RateTemplate> contions){
         List<RateTemplate> rts = Lists.newArrayList();
 	    for(int i=0;i<contions.size();i++) {
             RateTemplate rt = contions.get(i);
+            // 已经在使用的模板设置无效
+            RateTemplate res = this.handleUsedRateTemp(rt);
             Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
             rt.setRelId(relId);
             rts.add(rt);

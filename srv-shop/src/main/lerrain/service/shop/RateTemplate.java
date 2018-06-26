@@ -2,6 +2,8 @@ package lerrain.service.shop;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class RateTemplate {
     private Long tempId;
@@ -14,5 +16,7 @@ public class RateTemplate {
     private String used;
     private String creator;
     private String modifier;
+    private Date gmtCreated;
+    private Date gmtModified;
     private String isDeleted;
 }

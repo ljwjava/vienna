@@ -362,10 +362,10 @@ public class ShopDao
 	public Long saveOrUpdateRateTemplate(RateTemplate rt)
 	{
 		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template` (`id`, `scheme_id`, `code`, `name`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?);";
-		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `name`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
+		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `code`=?, `name`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
 
 		if(null != rt.getTempId()){
-			jdbc.update(update, rt.getName(), rt.getCreator(), rt.getModifier());
+			jdbc.update(update, rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
 		}else{
 			rt.setTempId(tools.nextId("cdRateTemp"));
 			jdbc.update(insert, rt.getTempId(), rt.getTempId(), rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
@@ -387,5 +387,16 @@ public class ShopDao
 		}
 
 		return rt.getRelId();
+	}
+
+	public Long deleteRateTemplate(RateTemplate rt)
+	{
+		String delTemp = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `is_deleted`='Y', `modifier`=? WHERE (`id`=?);";
+		String delTempRel = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `is_deleted`='Y', `modifier`=? WHERE (`rel_temp_id`=?);";
+
+		jdbc.update(delTemp, rt.getModifier(), rt.getTempId());
+		jdbc.update(delTempRel, rt.getModifier(), rt.getTempId());
+
+		return rt.getTempId();
 	}
 }
