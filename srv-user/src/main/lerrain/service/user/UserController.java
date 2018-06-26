@@ -201,11 +201,17 @@ public class UserController {
             roleList.add(RoleTypeEnum.YUNFUORG.getId());
         }
         String loginName = json.getString("loginName");
-        String password = json.getString("password");
-        if (password == null) {
-            password = PasswordUtil.createPassword();
+        String password = null;
+        String md5Password = json.getString("md5Password");
+        if(md5Password != null) {
+        	password = md5Password;
+        } else {
+	        password = json.getString("password");
+	        if (password == null) {
+	            password = PasswordUtil.createPassword();
+	        }
+	        password = Common.md5Of(password);
         }
-        password = Common.md5Of(password);
         boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
         Log.info("开通账号结果:" + result);
         JSONObject res = new JSONObject();
