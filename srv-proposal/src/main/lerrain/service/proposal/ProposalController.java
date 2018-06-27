@@ -201,6 +201,45 @@ public class ProposalController
 
 		return res;
 	}
+
+	@RequestMapping("/customer.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject customer(@RequestBody JSONObject p)
+	{
+		Proposal proposal = getProposal(p);
+
+		JSONObject applicant = p.getJSONObject("applicant");
+		JSONArray insurants = p.getJSONArray("insurants");
+
+		JSONObject req = new JSONObject();
+		if (applicant != null)
+			req.put("applicant", applicant);
+
+		if (applicant != null)
+			proposal.setApplicant(applicant);
+
+		int i = 0;
+		for (String planId : proposal.getPlanList())
+		{
+			if (insurants != null && insurants.size() > i)
+				req.put("insurant", insurants.getJSONObject(i));
+
+			if (applicant != null || req.get("insurant") != null)
+			{
+				req.put("planId", planId);
+				serviceMgr.req("lifeins", "plan/customer.json", req);
+			}
+
+			i++;
+		}
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", proposalTool.jsonOf(proposal));
+
+		return res;
+	}
 	
 	@RequestMapping("/applicant.json")
 	@ResponseBody
