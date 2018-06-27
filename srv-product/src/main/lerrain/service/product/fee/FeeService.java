@@ -63,6 +63,24 @@ public class FeeService
 		return feeDao.findFee(bizType, bizId);
 	}
 
+	public List<Fee> queryFeeLimit(FeeSearch f)
+	{
+		Long start = 0L;
+		Long limit = 10L;
+		if(!Common.isEmpty(f.getPageNo())){
+			start = f.getPageNo() - 1;
+		}
+		if(!Common.isEmpty(f.getPageSize())){
+			limit = f.getPageSize();
+		}
+		return feeDao.findFeeLimit(f.getProductId(), f.getVendorId(), f.getBizType(), f.getBizId(), f.getBizNo(), f.getType(), f.getUnit(), f.getEstimateB(), f.getEstimateE(), f.getAuto(), f.getPayTimeB(), f.getPayTimeE(), f.getFreezeMin(), f.getFreezeMax(), f.getStatus(), f.getPayer(), f.getDrawer(), start, limit);
+	}
+
+	public Long countFee(FeeSearch f)
+	{
+		return feeDao.countFee(f.getProductId(), f.getVendorId(), f.getBizType(), f.getBizId(), f.getBizNo(), f.getType(), f.getUnit(), f.getEstimateB(), f.getEstimateE(), f.getAuto(), f.getPayTimeB(), f.getPayTimeE(), f.getFreezeMin(), f.getFreezeMax(), f.getStatus(), f.getPayer(), f.getDrawer());
+	}
+
 	public int payAll(Long platformId, Long vendorId, String bizNo)
 	{
 		int r = 0;

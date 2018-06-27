@@ -129,12 +129,14 @@ public class OrgService
     }
 
     public Long save(Org org) {
-        // 主键ID与userId保持一致
-        Long id = tools.nextId("user");
-        org.setId(id);
+    	if(org.getId() == null || org.getId() < 1) {
+            // 主键ID与userId保持一致
+            Long id = tools.nextId("user");
+            org.setId(id);
+    	}
         int result = orgDao.save(org);
         if (result > 0) {
-            return id;
+            return org.getId();
         }
         return null;
     }
