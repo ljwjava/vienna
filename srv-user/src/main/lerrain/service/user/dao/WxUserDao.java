@@ -60,6 +60,7 @@ public class WxUserDao {
                 wxUser.setName(rs.getString("name"));
                 wxUser.setRemark(rs.getString("remark"));
                 wxUser.setAuthStatus(rs.getString("auth_status"));
+                wxUser.setUserId(rs.getLong("user_id"));
                 return wxUser;
             }
 
