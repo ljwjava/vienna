@@ -9,12 +9,14 @@
 		unit="1000"
 		type_code="life"
 		sequence="1000"
+		input="amount"
+		premium="DS.RATE[0][IC == 3 ? 2 : (IC == 2 ? 1 : 0)]*AMOUNT/UNIT"
 		sale_begin_date="2015-01-01"
 		sale_end_date=""
 		last_modify_date="2017-01-01">
 
 		<data>
-			<!--<item parser="dds" value="CPR00002" />-->
+			<item parser="dds" value="CPR00002" />
 		</data>
 
 		<param>
@@ -32,12 +34,14 @@
 		</param>
 
 		<init>
+			<item name="IC" value="var INS_CATEGORY = try(INSURANT.INS_CATEGORY, null); return INS_CATEGORY == null ? 1 : INS_CATEGORY;"/>
+			<item name="DSCSV" value="IC == 3 ? DS.CSV3 : (IC == 2 ? DS.CSV2 : DS.CSV1)"/>
 			<item name="A_CITY" value="['1101','1102','3101','3102','4401','4403']"/>
 			<item name="B_CITY" value="['1201','1202','5001','5002','5003']"/>
 		</init>
 
 		<interest>
-			<!--<item name="CSV" param="A1" formula="DS.CSV[0][A1]*QUANTITY"/>-->
+			<item name="CSV" param="A1" formula="DSCSV[0][A1]*QUANTITY"/>
 		</interest>
 
 		<!--<attachment>
