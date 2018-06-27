@@ -213,4 +213,21 @@ public class FeeController
         return res;
     }
 
+    @RequestMapping("/fee/query_limit.json")
+    @ResponseBody
+    public JSONObject queryLimit(@RequestBody JSONObject c)
+    {
+        FeeSearch f = new FeeSearch();
+        f.fsOf(c);
+
+        List<Fee> ls = cs.queryFeeLimit(f);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", JSONArray.toJSON(ls));
+
+        return res;
+    }
+
+
 }

@@ -45,11 +45,13 @@ public class TemplateDao {
     }
 
 
-    public List<Template> list(String name, int from, int num) {
+    public List<Template> list(String name, Long userId, int from, int num) {
         StringBuffer sql = new StringBuffer("select * from t_cs_template where is_deleted='N' ");
         if (StringUtils.isNotBlank(name)) {
             sql.append(" and template_name like '%" + name + "%' ");
         }
+        sql.append(" and id in (select template_id from t_cs_template_user_relation where is_deleted='N' and user_id= ")
+                .append(userId).append(") ");
         sql.append(" order by gmt_modified desc");
         sql.append(" limit ?, ?");
 
@@ -67,11 +69,13 @@ public class TemplateDao {
         });
     }
 
-    public int count(String name) {
+    public int count(String name,Long userId) {
         StringBuffer sql = new StringBuffer("select count(1) from t_cs_template where is_deleted='N' ");
         if (StringUtils.isNotBlank(name)) {
             sql.append(" and template_name like '%" + name + "%' ");
         }
+        sql.append(" and id in (select template_id from t_cs_template_user_relation where is_deleted='N' and user_id= ")
+                .append(userId).append(") ");
         return jdbc.queryForObject(sql.toString(), Integer.class);
     }
 
@@ -162,7 +166,12 @@ public class TemplateDao {
     }
 
     public Integer removeTpRelation(Long templateId) {
-        String sql = "delete from  t_cs_template_product_relation where template_id= " + templateId;
+        String sql = "update t_cs_template_product_relation set is_deleted='Y' where template_id= " + templateId;
+        return jdbc.update(sql);
+    }
+
+    public Integer removeTurRelation(Long templateId) {
+        String sql = "update t_cs_template_user_relation set is_deleted='Y' where template_id= " + templateId;
         return jdbc.update(sql);
     }
 

@@ -223,6 +223,184 @@ public class FeeDao
 		}, bizType, bizId);
 	}
 
+	public List<Fee> findFeeLimit(String productId, Long vendorId, Integer bizType, Long bizId, String bizNo, Integer type, Integer unit, Date estimateB, Date estimateE, Boolean auto, Date payB, Date payE, Integer freezeMin, Integer freezeMax, Integer status, Long payer, Long drawer, Long start, Long limit)
+	{
+		String sql = "select pf.* from t_product_fee pf where 1 = 1";
+		List<Object> params = new ArrayList<Object>();
+		if(!Common.isEmpty(productId)){
+			sql += " and product_id = ?";
+			params.add(productId);
+		}
+		if(!Common.isEmpty(vendorId)){
+			sql += " and vendor_id = ?";
+			params.add(vendorId);
+		}
+		if(!Common.isEmpty(bizType)){
+			sql += " and biz_type = ?";
+			params.add(bizType);
+		}
+		if(!Common.isEmpty(bizId)){
+			sql += " and biz_id = ?";
+			params.add(bizId);
+		}
+		if(!Common.isEmpty(bizNo)){
+			sql += " and biz_no = ?";
+			params.add(bizNo);
+		}
+		if(!Common.isEmpty(type)){
+			sql += " and type = ?";
+			params.add(type);
+		}
+		if(!Common.isEmpty(unit)){
+			sql += " and unit = ?";
+			params.add(unit);
+		}
+		if(!Common.isEmpty(estimateB)){
+			sql += " and estimate >= ?";
+			params.add(estimateB);
+		}
+		if(!Common.isEmpty(estimateE)){
+			sql += " and estimate < ?";
+			params.add(estimateE);
+		}
+		if(!Common.isEmpty(auto)){
+			sql += " and auto = ?";
+			params.add(auto?"Y":"N");
+		}
+		if(!Common.isEmpty(payB)){
+			sql += " and pay >= ?";
+			params.add(payB);
+		}
+		if(!Common.isEmpty(payE)){
+			sql += " and pay < ?";
+			params.add(payE);
+		}
+		if(!Common.isEmpty(freezeMin)){
+			sql += " and freeze >= ?";
+			params.add(freezeMin);
+		}
+		if(!Common.isEmpty(freezeMax)){
+			sql += " and freeze < ?";
+			params.add(freezeMax);
+		}
+		if(!Common.isEmpty(status)){
+			sql += " and status = ?";
+			params.add(status);
+		}
+		if(!Common.isEmpty(payer)){
+			sql += " and payer = ?";
+			params.add(payer);
+		}
+		if(!Common.isEmpty(drawer)){
+			sql += " and drawer = ?";
+			params.add(drawer);
+		}
+		sql += " order by create_time desc, vendor_id, biz_id";
+		if(!Common.isEmpty(start) && !Common.isEmpty(limit)) {
+			sql += " limit ?, ?";
+			start = Common.isEmpty(start) ? 0 : start;
+			limit = Common.isEmpty(limit) ? 10 : limit;
+			params.add(start);
+			params.add(limit);
+		}
+
+		try {
+			return jdbc.query(sql, params.toArray(), new RowMapper<Fee>() {
+				@Override
+				public Fee mapRow(ResultSet rs, int i) throws SQLException {
+					return feeOf(rs);
+				}
+			});
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public Long countFee(String productId, Long vendorId, Integer bizType, Long bizId, String bizNo, Integer type, Integer unit, Date estimateB, Date estimateE, Boolean auto, Date payB, Date payE, Integer freezeMin, Integer freezeMax, Integer status, Long payer, Long drawer)
+	{
+		String sql = "select count(pf.id) cnt from t_product_fee pf where 1 = 1";
+		List<Object> params = new ArrayList<Object>();
+		if(!Common.isEmpty(productId)){
+			sql += " and product_id = ?";
+			params.add(productId);
+		}
+		if(!Common.isEmpty(vendorId)){
+			sql += " and vendor_id = ?";
+			params.add(vendorId);
+		}
+		if(!Common.isEmpty(bizType)){
+			sql += " and biz_type = ?";
+			params.add(bizType);
+		}
+		if(!Common.isEmpty(bizId)){
+			sql += " and biz_id = ?";
+			params.add(bizId);
+		}
+		if(!Common.isEmpty(bizNo)){
+			sql += " and biz_no = ?";
+			params.add(bizNo);
+		}
+		if(!Common.isEmpty(type)){
+			sql += " and type = ?";
+			params.add(type);
+		}
+		if(!Common.isEmpty(unit)){
+			sql += " and unit = ?";
+			params.add(unit);
+		}
+		if(!Common.isEmpty(estimateB)){
+			sql += " and estimate >= ?";
+			params.add(estimateB);
+		}
+		if(!Common.isEmpty(estimateE)){
+			sql += " and estimate < ?";
+			params.add(estimateE);
+		}
+		if(!Common.isEmpty(auto)){
+			sql += " and auto = ?";
+			params.add(auto?"Y":"N");
+		}
+		if(!Common.isEmpty(payB)){
+			sql += " and pay >= ?";
+			params.add(payB);
+		}
+		if(!Common.isEmpty(payE)){
+			sql += " and pay < ?";
+			params.add(payE);
+		}
+		if(!Common.isEmpty(freezeMin)){
+			sql += " and freeze >= ?";
+			params.add(freezeMin);
+		}
+		if(!Common.isEmpty(freezeMax)){
+			sql += " and freeze < ?";
+			params.add(freezeMax);
+		}
+		if(!Common.isEmpty(status)){
+			sql += " and status = ?";
+			params.add(status);
+		}
+		if(!Common.isEmpty(payer)){
+			sql += " and payer = ?";
+			params.add(payer);
+		}
+		if(!Common.isEmpty(drawer)){
+			sql += " and drawer = ?";
+			params.add(drawer);
+		}
+
+		try {
+			Map<String, Object> map = jdbc.queryForMap(sql, params.toArray(), null);
+			if(!Common.isEmpty(map)){
+				return Common.toLong(map.get("cnt"));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0L;
+	}
+
 	public void pay(Long id, int status, Date time)
 	{
 		jdbc.update("update t_product_fee set pay = ?, status = ? where id = ?", time, status, id);

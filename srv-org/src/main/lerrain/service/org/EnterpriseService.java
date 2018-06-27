@@ -1,5 +1,6 @@
 package lerrain.service.org;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lerrain.service.common.ServiceTools;
@@ -33,5 +34,30 @@ public class EnterpriseService {
 
     public List<Enterprise> querySubordinate(Long companyId) {
         return enterpriseDao.querySubordinate(companyId);
+    }
+    
+    public List<Enterprise> querySuperior(Long companyId) {
+    	List<Enterprise> list = enterpriseDao.querySuperior(companyId);
+    	List<Enterprise> result = new ArrayList<Enterprise>();
+    	if(list != null && list.size() > 0) {
+    		for(int i = list.size();i>0;i--) {
+    			Enterprise e = list.get(i-1);
+    			e.setLevel(list.size()-e.getLevel()-1);
+    			result.add(e);
+    		}
+    	}
+    	return result;
+    }
+    
+    public Enterprise queryById(Long companyId) {
+    	return enterpriseDao.queryById(companyId);
+    }
+    
+    public int updateById(Enterprise enterprise) {
+    	return enterpriseDao.updateById(enterprise);
+    }
+    
+    public Long getCompanyId(Long userId) {
+    	return enterpriseDao.getCompanyId(userId);
     }
 }

@@ -211,7 +211,7 @@ public class ShopDao
 		});
 	}
 
-    public int countTemplate(Long userId, String name)
+    public int countTemplate(RateTemplate contion)
     {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT count(*)");
@@ -219,11 +219,17 @@ public class ShopDao
         sql.append(" `t_cs_commodity_rate_template` t");
 		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
         sql.append(" WHERE 1=1");
-		if (null != userId) {
-			sql.append(" and r.rel_user_id = "+userId);
+		if (null != contion.getUserId()) {
+			sql.append(" and r.rel_user_id = "+contion.getUserId());
 		}
-		if (StringUtils.isNotBlank(name)) {
-			sql.append(" and t.name LIKE '%"+name+"%'");
+		if (null != contion.getSubUserId()) {
+			sql.append(" and r.sub_user_id = "+contion.getSubUserId());
+		}
+		if (StringUtils.isNotBlank(contion.getUsed())) {
+			sql.append(" and r.used = '"+contion.getUsed()+"'");
+		}
+		if (StringUtils.isNotBlank(contion.getName())) {
+			sql.append(" and t.name LIKE '%"+contion.getName()+"%'");
 		}
 
         return jdbc.queryForObject(sql.toString(), Integer.class);
@@ -245,7 +251,7 @@ public class ShopDao
 		return jdbc.queryForObject(sql.toString(), Integer.class);
 	}
 
-    public List<JSONObject> rateTemplates(Long userId, String name, int from, int number){
+    public List<JSONObject> rateTemplates(RateTemplate contion, int from, int number){
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
 		sql.append(" r.rel_user_id,");
@@ -263,11 +269,17 @@ public class ShopDao
         sql.append(" `t_cs_commodity_rate_template` t");
 		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
         sql.append(" WHERE r.is_deleted='N'");
-		if (null != userId) {
-			sql.append(" and r.rel_user_id = "+userId);
+		if (null != contion.getUserId()) {
+			sql.append(" and r.rel_user_id = "+contion.getUserId());
 		}
-        if (StringUtils.isNotBlank(name)) {
-            sql.append(" and t.name LIKE '%"+name+"%'");
+		if (null != contion.getSubUserId()) {
+			sql.append(" and r.sub_user_id = "+contion.getSubUserId());
+		}
+		if (StringUtils.isNotBlank(contion.getUsed())) {
+			sql.append(" and r.used = '"+contion.getUsed()+"'");
+		}
+        if (StringUtils.isNotBlank(contion.getName())) {
+            sql.append(" and t.name LIKE '%"+contion.getName()+"%'");
         }
         sql.append(" limit ?, ?");
 
@@ -277,17 +289,17 @@ public class ShopDao
             public JSONObject mapRow(ResultSet m, int arg1) throws SQLException
             {
                 JSONObject j = new JSONObject();
-                j.put("rel_user_id",m.getString("rel_user_id"));
-				j.put("rel_temp_id",m.getString("rel_temp_id"));
-                j.put("scheme_id",m.getString("scheme_id"));
+                j.put("userId",m.getString("rel_user_id"));
+				j.put("tempId",m.getString("rel_temp_id"));
+                j.put("schemeId",m.getString("scheme_id"));
                 j.put("code",m.getString("code"));
                 j.put("name", m.getString("name"));
                 j.put("used",m.getString("used"));
                 j.put("creator",m.getString("creator"));
-                j.put("gmt_created",m.getString("gmt_created"));
+                j.put("gmtCreated",m.getString("gmt_created"));
                 j.put("modifier",m.getString("modifier"));
-                j.put("gmt_modified",m.getString("gmt_modified"));
-                j.put("is_deleted",m.getString("is_deleted"));
+                j.put("gmtModified",m.getString("gmt_modified"));
+                j.put("isDeleted",m.getString("is_deleted"));
                 return j;
             }
         });
@@ -350,10 +362,10 @@ public class ShopDao
 	public Long saveOrUpdateRateTemplate(RateTemplate rt)
 	{
 		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template` (`id`, `scheme_id`, `code`, `name`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?);";
-		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `name`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
+		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `code`=?, `name`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
 
 		if(null != rt.getTempId()){
-			jdbc.update(update, rt.getName(), rt.getCreator(), rt.getModifier());
+			jdbc.update(update, rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier(), rt.getTempId());
 		}else{
 			rt.setTempId(tools.nextId("cdRateTemp"));
 			jdbc.update(insert, rt.getTempId(), rt.getTempId(), rt.getCode(), rt.getName(), rt.getCreator(), rt.getModifier());
@@ -364,16 +376,27 @@ public class ShopDao
 
 	public Long saveOrUpdateRateTemplateRelation(RateTemplate rt)
 	{
-		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template_relation` (`id`, `rel_user_id`, `rel_temp_id`, `used`, `creator`, `modifier`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?);";
-		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `rel_user_id`=?, `rel_temp_id`, `used`=?, `creator`=?, `modifier`=? WHERE (`id`=?);";
+		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_rate_template_relation` (`id`, `rel_user_id`, `sub_user_id`, `rel_temp_id`, `used`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+		String update = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `rel_user_id`=?, `sub_user_id`=?, `rel_temp_id`=?, `used`=?, `creator`=?, `modifier`=?, `is_deleted`=? WHERE (`id`=?);";
 
 		if(null != rt.getRelId()){
-			jdbc.update(update, rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getRelId(), rt.getIsDeleted());
+			jdbc.update(update, rt.getUserId(), rt.getSubUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier(), rt.getIsDeleted(), rt.getRelId());
 		}else{
 			rt.setRelId(tools.nextId("cdRateTempRel"));
-			jdbc.update(insert, rt.getRelId(), rt.getUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier());
+			jdbc.update(insert, rt.getRelId(), rt.getUserId(), rt.getSubUserId(), rt.getTempId(), rt.getUsed(), rt.getCreator(), rt.getModifier());
 		}
 
 		return rt.getRelId();
+	}
+
+	public Long deleteRateTemplate(RateTemplate rt)
+	{
+		String delTemp = "UPDATE `vie_biz`.`t_cs_commodity_rate_template` SET `is_deleted`='Y', `modifier`=? WHERE (`id`=?);";
+		String delTempRel = "UPDATE `vie_biz`.`t_cs_commodity_rate_template_relation` SET `is_deleted`='Y', `modifier`=? WHERE (`rel_temp_id`=?);";
+
+		jdbc.update(delTemp, rt.getModifier(), rt.getTempId());
+		jdbc.update(delTempRel, rt.getModifier(), rt.getTempId());
+
+		return rt.getTempId();
 	}
 }
