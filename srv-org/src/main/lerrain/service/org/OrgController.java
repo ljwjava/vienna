@@ -130,6 +130,10 @@ public class OrgController
         } else if (2 == type) {
             // 保存渠道/部门信息
             Org org = new Org();
+            Long userId = json.getLong("userId");
+            if(userId != null && userId > 0) {
+            	org.setId(userId);
+            }
             org.setName(name);
             org.setMobile(mobile);
             org.setType(4);
