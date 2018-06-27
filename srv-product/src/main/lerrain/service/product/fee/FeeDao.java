@@ -295,6 +295,7 @@ public class FeeDao
 			sql += " and drawer = ?";
 			params.add(drawer);
 		}
+		sql += " order by create_time desc, vendor_id, biz_id";
 		if(!Common.isEmpty(start) && !Common.isEmpty(limit)) {
 			sql += " limit ?, ?";
 			start = Common.isEmpty(start) ? 0 : start;
@@ -302,7 +303,6 @@ public class FeeDao
 			params.add(start);
 			params.add(limit);
 		}
-		sql += " order by create_time desc, vendor_id, biz_id";
 
 		try {
 			return jdbc.query(sql, params.toArray(), new RowMapper<Fee>() {
