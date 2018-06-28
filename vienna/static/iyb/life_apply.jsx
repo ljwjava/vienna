@@ -237,6 +237,7 @@ class ContactForm extends Form {
                 container: "#sliderBox", //必填 容器id
                 sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID pre-prd
                 host: "https://af.zhongan.io", //https://test-af.zhongan.io  或者 https://af.zhongan.io
+                placeholdLabel: "智能检测中",  // 可选， loading时显示内容 可以根据业务场景更改内容
                 onSuccess: (did, token, sId) => {
                     env.tokenId = token;
                     this.afTicket(sId, did, token);
