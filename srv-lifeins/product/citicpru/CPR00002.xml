@@ -36,8 +36,9 @@
 		<init>
 			<item name="IC" value="var INS_CATEGORY = try(INSURANT.INS_CATEGORY, null); return INS_CATEGORY == null ? 1 : INS_CATEGORY;"/>
 			<item name="DSCSV" value="IC == 3 ? DS.CSV3 : (IC == 2 ? DS.CSV2 : DS.CSV1)"/>
-			<item name="A_CITY" value="['1101','1102','3101','3102','4401','4403']"/>
-			<item name="B_CITY" value="['1201','1202','5001','5002','5003']"/>
+			<item name="A_CITY" value="['11','31','4401','4403']"/>
+			<item name="B_CITY" value="['4201','5101','3201','4101']"/>
+			<item name="C_CITY" value="['3205']"/>
 		</init>
 
 		<interest>
@@ -102,10 +103,15 @@
 					return null;
 				var city = 3;
 				var code = str(ZONE, 0, 4);
-				if (find(A_CITY, code) != null) {
+				var codeP = str(ZONE, 0, 2);
+				if (find(A_CITY, code) != null and find(A_CITY, codeP) != null) {
 					city = 1;
-				} else if (find(B_CITY, code) != null or str(ZONE, 2, 4) == "01") {
+				} else if (find(B_CITY, code) != null) {
 					city = 2;
+				} else if (find(C_CITY, code) != null) {
+					city = 3;
+				} else {
+					return "该产品仅允许北京、上海、广州、深圳、武汉、成都、南京、郑州、苏州9个城市投保";
 				}
 				if (city == 1) {
 					if (AGE >= 18 and AGE le 45 and AMOUNT lt 1100000) {
