@@ -233,10 +233,12 @@ class ContactForm extends Form {
     }
     initSlider() {
         try{
+            let ssId = getEnv() === 'prd' ? "iyunbao_h5#prd#insure_verify" : "iyunbao_h5#pre#insure_verify";
+            let shost = getEnv() === 'prd' ? "https://af.zhongan.io" : "https://test-af.zhongan.io";
             env.slider = new ClickIdentifyControl({
                 container: "#sliderBox", //必填 容器id
-                sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID pre-prd
-                host: "https://af.zhongan.io", //https://test-af.zhongan.io  或者 https://af.zhongan.io
+                sId: ssId,  // 必填 埋点场景ID pre-prd
+                host: shost, //https://test-af.zhongan.io  或者 https://af.zhongan.io
                 placeholdLabel: "智能检测中",  // 可选， loading时显示内容 可以根据业务场景更改内容
                 onSuccess: (did, token, sId) => {
                     env.tokenId = token;
@@ -710,10 +712,11 @@ var Ground = React.createClass({
             ToastIt("请检查通讯信息");
             return;
         }
-        if (env.smsKey == null) {
+        if (env.smsKey == null && getEnv() === 'prd') {
             ToastIt("请获取并输入验证码");
             return;
         }
+
         let contact = this.refs.contact.val();
         let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");
         env.applicant.mobile = contact.mobile;
@@ -960,13 +963,29 @@ var draw = function(defVal) {
     );
 };
 
+var initEnvConfig = function(){
+    common.reqSync("util/env_conf.json", {}, r => {
+        if(!!r && !!r.url) {
+            env.url = r.url;
+        }
+        if(!!r && !!r.env) {
+            env.env = r.env;
+        }else{
+            env.env = 'prd';    // 默认生产环境
+        }
+    }, r => {});
+};
+
+var getEnv = function(){
+    if(!env.env) {
+        initEnvConfig();
+    }
+    return env.env;
+};
+
 var getUrl = function(key){
     if(!env.url){
-        common.reqSync("util/env_conf.json", {}, r => {
-            if(!!r && !!r.url) {
-                env.url = r.url;
-            }
-        }, r => {});
+        initEnvConfig();
     }
     if(key == null || key == ""){
         return env.url;
