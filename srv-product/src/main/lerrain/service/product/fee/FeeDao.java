@@ -188,7 +188,7 @@ public class FeeDao
 			@Override
 			public Fee mapRow(ResultSet rs, int rowNum) throws SQLException
 			{
-				if(rs.next()){
+				if(!rs.wasNull()){
 					return feeOf(rs);
 				} else {
 					return null;
