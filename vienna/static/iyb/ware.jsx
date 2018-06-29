@@ -365,7 +365,7 @@ var Ware = React.createClass({
         }
     },
     getInitialState() {
-    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false, salesFlagMsg: {0:null, 1:"该产品正在报备中，请耐心等待，报备完成后即可购买", 2:"该产品已停售"}, salesFlag: 0};
+    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false, salesFlagMsg: {0:null, 1:"该产品正在报备中，请耐心等待，报备完成后即可购买", 2:"很抱歉，该产品已停售"}, salesFlag: 0};
     	let v = this.props.detail;
     	if (v != null && v.detail != null && v.detail.length > 1) {
             r.packs = [];
