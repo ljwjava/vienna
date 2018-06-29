@@ -440,9 +440,9 @@ var Ware = React.createClass({
         // this.doReadyShare();
     },
     doReadyShare(){
-        var UA = window.navigator.userAgent.toLowerCase();
-        var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
-        if (isInApp) {
+        // var UA = window.navigator.userAgent.toLowerCase();
+        // var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
+        if (common.isAPP()) {
             env.frame = "iyb";
             this.shareApp();
         } else {
@@ -743,7 +743,9 @@ $(document).ready( function() {
 		var urln = document.location.href.split("wareId")[1];
 		window.location.href = urlp+"wareId=21" + (urln.substr(urln.indexOf("&")));
 	}*/
-
+    if (common.isAPP()) {
+        env.frame = "iyb";
+    }
 	common.req("sale/view.json", {wareId:common.param("wareId"), packIds: common.param("packIds")}, function (r) {
 		env.ware = r;
         try{
