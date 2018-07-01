@@ -347,43 +347,27 @@ var Ground = React.createClass({
 
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
-				<div className="title">投保信息</div>
+				<div className="title">投保人信息</div>
 				<div className="view">
-					<div><span>投保人{env.order.detail.insurant == null ? " / 被保险人" : ""}</span></div>
-					<div><span>　姓名</span>{env.order.detail.applicant.name}</div>
+					<div><span>　投保人是被保人</span>本人</div>
+					<div><span>　投保人姓名</span>{env.order.detail.applicant.name}</div>
 					<div><span>　证件</span>{env.order.detail.applicant.certName} {env.order.detail.applicant.certNo}</div>
                     { env.order.detail.applicant.certValidateBegin == null ? null : <div><span>　证件有效起期</span> {env.order.detail.applicant.certValidateBegin}</div>}
                     { env.order.detail.applicant.certValidate == null ? null : <div><span>　证件有效止期</span> {env.order.detail.applicant.certValidate.certLong ? '长期' : env.order.detail.applicant.certValidate.certExpire}</div>}
 					<div><span>　性别</span>{env.order.detail.applicant.genderName}</div>
 					<div><span>　出生日期</span>{env.order.detail.applicant.birthday}</div>
-                    {env.order.detail.applicant.height == null ? null : <div><span>　身高</span>{env.order.detail.applicant.height}(厘米)</div>}
-                    {env.order.detail.applicant.weight == null ? null : <div><span>　体重</span>{env.order.detail.applicant.weight}(公斤)</div>}
-                    {env.order.detail.applicant.cityName == null ? null : <div><span>　所在地区</span>{env.order.detail.applicant.cityName}</div>}
-					<div><span>　通讯地址</span>{env.order.detail.applicant.address}</div>
-					{ env.order.detail.applicant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.applicant.occupation.text}{env.order.detail.applicant.occupation.level != null ? "("+env.order.detail.applicant.occupation.level+"类)" : ""}</div>}
+                    {env.order.detail.applicant.cityName == null ? null : <div><span>　所在城市</span>{env.order.detail.applicant.cityName}</div>}
+					<div><span>　详细地址</span>{env.order.detail.applicant.address}</div>
+					<div><span>　评定结果</span>{env.order.detail.applicant.address}</div>
+					<div><span>　是否吸烟体</span>{env.order.detail.applicant.address}</div>
+					<div><span>　保额</span>{env.order.detail.applicant.address}</div>
 				</div>
-				{ env.order.detail.insurant == null ? null :
-					<div className="view">
-						<div><span>被保险人</span></div>
-						<div><span>　姓名</span>{env.order.detail.insurant.name}{env.dict.relation[env.order.detail.insurant.relation] != null ? "["+env.dict.relation[env.order.detail.insurant.relation]+"]" : ""}</div>
-						<div><span>　证件</span>{env.order.detail.insurant.certName} {env.order.detail.insurant.certNo}</div>
-                        { env.order.detail.insurant.certValidateBegin == null ? null : <div><span>　证件有效起期</span> {env.order.detail.insurant.certValidateBegin}</div>}
-                        { env.order.detail.insurant.certValidate == null ? null : <div><span>　证件有效止期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>}
-						<div><span>　性别</span>{env.order.detail.insurant.genderName}</div>
-						<div><span>　出生日期</span>{env.order.detail.insurant.birthday}</div>
-                        {env.order.detail.insurant.height == null ? null : <div><span>　身高</span>{env.order.detail.insurant.height}(厘米)</div>}
-                        {env.order.detail.insurant.weight == null ? null : <div><span>　体重</span>{env.order.detail.insurant.weight}(公斤)</div>}
-						{env.order.detail.insurant.cityName == null ? null : <div><span>　所在地区</span>{env.order.detail.insurant.cityName}</div>}
-						{env.order.detail.insurant.address == null ? null : <div><span>　通讯地址</span>{env.order.detail.insurant.address}</div>}
-                        {env.order.detail.insurant.occupation == null ? null : <div><span>　职业</span>{env.order.detail.insurant.occupation.text}{env.order.detail.insurant.occupation.level != null ? "("+env.order.detail.insurant.occupation.level+"类)" : ""}</div>}
-					</div>
-				}
-				<div className="view">
+				{/*<div className="view">
 					<div><span>通讯信息</span></div>
 					<div><span>　电子邮箱</span>{env.order.detail.applicant.email}</div>
 					<div><span>　手机号　</span>{env.order.detail.applicant.mobile}</div>
-				</div>
-				<div className="view">
+				</div>*/}
+				{/*<div className="view">
 					<div><span>{env.order.productName}</span></div>
 					{ env.order.detail.packDesc.map(v => {
 						var txtshow = v.text;
@@ -393,125 +377,17 @@ var Ground = React.createClass({
 						return (<div><span>　{v.name}</span>{txtshow}</div>);
 					})}
 					{ env.order.detail.factors.effectiveTime == null ? null : <div><span>　保单生效日</span>{env.order.detail.factors.effectiveTime}</div> }
-				</div>
-				<div className="view">
-					<div><span>受益人</span></div>
-					{
-						env.order.detail.beneficiaryDeathType == "law" ? <div><span>　法定受益人</span></div> :
-						env.order.detail.beneficiaryDeath.map(v => {
-							return (
-								<div>
-									<span>　姓名</span>{v.name} {env.dict.relation[v.relation] != null ? "["+env.dict.relation[v.relation]+"]" : ""}
-									<br/>
-									<span>　{v.certName}</span>{v.certNo}
-                                    { v.certValidateBegin == null ? null : [<br/>, <span>　证件有效起期</span>, <font>{v.certValidateBegin}</font>]}
-									{ v.certValidate == null ? null : [<br/>, <span>　证件有效止期</span>, <font>{v.certValidate.certLong ? '长期' : v.certValidate.certExpire}</font>]}
-									<br/>
-									<span>　受益比例</span>{v.scale}% (第{v.order}顺位)
-								</div>
-							);
-						})
-					}
-				</div>
-                { env.order.detail.applyMode == 2 && !env.order.extra.hasPay ? null :
-					<div className="title">{preShow}支付信息</div>
-                }
-                { env.order.detail.applyMode == 2 && !env.order.extra.hasPay ? null :
-					<div className="form">
-						<PayForm ref="pay"/>
-						{
-							(env.company != "fosun" || !common.isWeixin()) ? null : <div style={{color: "#FF0000", paddingTop: "5px"}}>☞ 保费超过10000元，会受到微信支付额度的限制而导致支付失败，请点击<a onClick={this.openDoc.bind(this, "https://static.zhongan.com/website/health/iyb/resource/product/fosunkangle/pay_tips/pay_tips.html")} style={{color: "blue"}}>微信单笔支付额度提示</a>查阅支付额度规则，请在微信中先完成相关设置，再进行支付。<br/><font>☞ 请确认微信零钱足够支付首期保费，若未成功支付，保险公司将<b>锁定未支付订单1小时</b>，过后才可重新操作。</font><br/><br/><font>☞ 若您通过微信支付扣款成功，请在等待页面耐心等待，<b>切勿退回此页面重复提交支付</b>。</font></div>
-						}
-					</div>
-                }
-                { !env.order.extra.hasPayRenew ? null :
-                    <div className="title">续期支付信息</div>
-                }
-                { !env.order.extra.hasPayRenew ? null :
-					<div className="form">
-						<PayRenewForm ref="payRenew"/>
-					</div>
-                }
-				{ env.order.detail.photo == null || env.order.detail.photo <= 0 ? null :
-					<div className="title">身份证拍照</div>
-				}
-				{ env.order.detail.photo == null || env.order.detail.photo <= 0 ? null :
-					<div className="form">
-						<Photo ref="photos" value={env.order.extra.photos}/>{/* onChange={this.changePhotos}*/}
-					</div>
-				}
-				<div className="title">客户声明信息</div>
-				<div className="view">
-					<div className="doc">
-						<input type="checkbox" ref="agree"/>本人已了解并接受保险公司关于产品的{docs}{env.order.detail.readAddDesc}
-					</div>
-					{
-						env.order.detail.otherReadDesc != null && env.order.detail.otherReadDesc.length > 0 ?
-							env.order.detail.otherReadDesc.map((v, ix) => {
-								// console.log(v, ix);
-                                return <div className="doc">
-									<input type="checkbox" ref={"agree" + ix}/>{v}
-								</div>;
-                            })
-							: null
-					}
-				</div>
+				</div>*/}
 				<div className="console">
 					<div className="tab">
 						<div className="row">
 							<div className="col left">
                                 {env.order.detail.applyMode == 1 ? "首期" : ""}保费：{!env.order.price || env.order.price <= 0 ? "无法计算" : env.order.price.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "核保中..." : "下一步"}</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "处理中..." : "去支付"}</div>
 						</div>
 					</div>
 				</div>
-				<div ref="disputeDiv" className="notice dispute" style={{display: this.state.disputeShow ? "block" : "none"}} onclick={this}>
-					<div className="content" style={{padding: "20px", textAlign: "left"}}>
-						{
-							this.state.disputeList != null && this.state.disputeList.length > 0 ?
-								this.state.disputeList.map((rdp) => {
-									return <div style={{borderLeft: "3px solid #00fff37a", marginBottom: "5px"}}>
-										<table style={{fontSize: "0.8em"}}>
-											<tr>
-												<td colSpan={2} style={{fontWeight: "bold"}}>{rdp.lnam01}</td>
-											</tr>
-											<tr>
-												<td style={{width: "45px"}}>地址：</td>
-												<td>{rdp.lnam02}</td>
-											</tr>
-											<tr>
-												<td style={{width: "45px"}}>电话：</td>
-												<td>{rdp.rmblphone}</td>
-											</tr>
-											<tr>
-												<td style={{width: "45px"}}>区域：</td>
-												<td>{rdp.sbusiorgid}</td>
-											</tr>
-											<tr>
-												<td style={{width: "45px"}}>连接：</td>
-												<td>{rdp.email}</td>
-											</tr>
-										</table>
-									</div>;
-								}) : null
-						}
-                        {<div style={{backgroundColor: "#bdbdbd", color: "#FFFFFF", height: "50px", lineHeight: "50px", margin: "15px 20px 0px", borderRadius: "5px", textAlign: "center"}} onClick={this.hide.bind(this)}>已知晓</div>}
-					</div>
-				</div>
-				<div ref="payTipsDiv" id="payTipsDiv" className="notice dispute" style={{display: "none"}} onClick={this.hidePayTipsDiv.bind(this)}>
-					<div className="content" style={{padding: "20px", textAlign: "left"}}>
-						{
-							!common.isWeixin() ?
-								<div>
-									您当前选择的银行仅支持续期支付，首年支付请移步微信内操作。<br/>
-									您可<font style={{color: "#ff8300", fontWeight: "bold"}}>{common.isAPP() ? null : "通过右上角"}分享当前页面至微信</font>继续操作，或者<font style={{color: "#ff8300", fontWeight: "bold"}}>选择其它银行支付</font>
-								</div> : null
-						}
-                        { !common.isAPP() ? null : <div style={{backgroundColor: "#f9cc4d", color: "#FFFFFF", height: "50px", lineHeight: "50px", margin: "15px 20px 0px", borderRadius: "5px", textAlign: "center"}} onClick={this.sharePage.bind(this)}>分享继续</div>}
-					</div>
-				</div>
-				<PaySwich ref="paySwich"></PaySwich>
 			</div>
 		);
 	}

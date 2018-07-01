@@ -188,6 +188,10 @@ var AccessSale = React.createClass({
     },
     componentDidMount(){
         if(!this.state.loadSucc) {
+            /*if(getEnv() != 'prd') {
+                this.setState({loadSucc: true, allow: true});
+                return false;
+            }*/
             try{
                 let apiurl = getUrl("api");
                 common.getOther(apiurl + "club/open/v1/user/salesQualict/query?accountId="+common.param("accountId"), null,
@@ -722,13 +726,29 @@ env.getShareObj = function(shareObj){
 };
 
 
+var initEnvConfig = function(){
+    common.reqSync("util/env_conf.json", {}, r => {
+        if(!!r && !!r.url) {
+            env.url = r.url;
+        }
+        if(!!r && !!r.env) {
+            env.env = r.env;
+        }else{
+            env.env = 'prd';    // 默认生产环境
+        }
+    }, r => {});
+};
+
+var getEnv = function(){
+    if(!env.env) {
+        initEnvConfig();
+    }
+    return env.env;
+};
+
 var getUrl = function(key){
     if(!env.url){
-        common.reqSync("util/env_conf.json", {}, r => {
-            if(!!r && !!r.url) {
-                env.url = r.url;
-            }
-        }, r => {});
+        initEnvConfig();
     }
     if(key == null || key == ""){
         return env.url;
