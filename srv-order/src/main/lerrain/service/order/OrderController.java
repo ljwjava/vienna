@@ -214,7 +214,7 @@ public class OrderController
             throw new RuntimeException("no orderId");
 
         Order order = orderSrv.getOrder(orderId);
-        if (order.getStatus() != 1 && order.getStatus() != 4)
+        if (order.getStatus() != 1 && order.getStatus() != 4 && order.getStatus() != 24)
             throw new RuntimeException("订单<"+orderId+">处理失败：只有未提交或退回的订单才可以修改");
 
         synchronized (order)
@@ -242,7 +242,7 @@ public class OrderController
             throw new RuntimeException("no orderId");
 
         Order order = orderSrv.getOrder(orderId);
-        if (order.getStatus() != 1 && order.getStatus() != 4)
+        if (order.getStatus() != 1 && order.getStatus() != 4 && order.getStatus() != 24)
             throw new RuntimeException("订单<"+orderId+">处理失败：只有未提交或退回的订单才可以修改");
 
         synchronized (order)
