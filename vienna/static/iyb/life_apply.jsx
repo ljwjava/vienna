@@ -338,7 +338,7 @@ class ContactForm extends Form {
     form() {
         let v = [
             {name:'电子邮箱', code:"email", type:"text", reg:"^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", req:"yes", mistake:"请输入正确的电子邮箱", desc:"用于接收电子保单"},
-            {name:'手机', code:"mobile", type:"number", reg:"^1[3456789]\\d{9}$", req:"yes", mistake:"请输入正确的手机号码", desc:"请输入手机号码"}
+            {name:'手机', code:"mobile", type:"number", reg:"^1[3456789]\\d{9}$", req:"yes", mistake:"请输入正确的手机号码", desc:"请输入手机号码", ph: "请输入投保人手机号码"}
         ];
         let form = this.buildForm(v);
         form.push(['短信验证码', (
