@@ -1,0 +1,8 @@
+server:
+  port: 7503
+
+datasource:
+  url: jdbc:mysql://118.31.130.214:9001/athens?useUnicode=true&characterEncoding=UTF-8
+  username: root
+  password: 123456
+

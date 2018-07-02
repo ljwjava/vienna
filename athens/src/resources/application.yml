@@ -22,6 +22,7 @@ datasource:
   password: 123456
 
 service:
+  stat: http://localhost:7503
   lifeins: http://localhost:7777
   proposal: http://localhost:7776
   customer: http://localhost:7602
