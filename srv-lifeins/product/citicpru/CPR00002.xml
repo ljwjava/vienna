@@ -78,6 +78,9 @@
 			<if condition="AMOUNT lt 300000 or AMOUNT % 100000 > 0">
 				最低投保基本保险金额：40万元，且需要为10万元的整数倍
 			</if>
+			<if condition="AMOUNT > 25000000">
+				最高投保基本保险金额：2500万元
+			</if>
 			<if condition="PAY_VALUE != 30 and INSURE_VALUE == 30">
 				选择保30年时，需选择30年交
 			</if>

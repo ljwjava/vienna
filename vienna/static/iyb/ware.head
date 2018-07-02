@@ -1,6 +1,5 @@
 
 <style>
- /* 动画足球旋转 */
 @keyframes kf_ware_open {
 	from {
         opacity: 0;

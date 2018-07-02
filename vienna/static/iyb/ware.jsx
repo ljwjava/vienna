@@ -188,6 +188,10 @@ var AccessSale = React.createClass({
     },
     componentDidMount(){
         if(!this.state.loadSucc) {
+            /*if(getEnv() != 'prd') {
+                this.setState({loadSucc: true, allow: true});
+                return false;
+            }*/
             try{
                 let apiurl = getUrl("api");
                 common.getOther(apiurl + "club/open/v1/user/salesQualict/query?accountId="+common.param("accountId"), null,
@@ -365,7 +369,7 @@ var Ware = React.createClass({
         }
     },
     getInitialState() {
-    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false, salesFlagMsg: {0:null, 1:"该产品正在报备中，请耐心等待，报备完成后即可购买", 2:"该产品已停售"}, salesFlag: 0};
+    	let r = {quest:false, alertQuest:false, vendor:{}, bannerTop: 0, isShowActBanner: false, salesFlagMsg: {0:null, 1:"该产品正在报备中，请耐心等待，报备完成后即可购买", 2:"很抱歉，该产品已停售"}, salesFlag: 0};
     	let v = this.props.detail;
     	if (v != null && v.detail != null && v.detail.length > 1) {
             r.packs = [];
@@ -440,9 +444,9 @@ var Ware = React.createClass({
         // this.doReadyShare();
     },
     doReadyShare(){
-        var UA = window.navigator.userAgent.toLowerCase();
-        var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
-        if (isInApp) {
+        // var UA = window.navigator.userAgent.toLowerCase();
+        // var isInApp = !!~UA.indexOf('iyunbao') || (typeof iHealthBridge !== 'undefined');
+        if (common.isAPP()) {
             env.frame = "iyb";
             this.shareApp();
         } else {
@@ -722,13 +726,29 @@ env.getShareObj = function(shareObj){
 };
 
 
+var initEnvConfig = function(){
+    common.reqSync("util/env_conf.json", {}, r => {
+        if(!!r && !!r.url) {
+            env.url = r.url;
+        }
+        if(!!r && !!r.env) {
+            env.env = r.env;
+        }else{
+            env.env = 'prd';    // 默认生产环境
+        }
+    }, r => {});
+};
+
+var getEnv = function(){
+    if(!env.env) {
+        initEnvConfig();
+    }
+    return env.env;
+};
+
 var getUrl = function(key){
     if(!env.url){
-        common.reqSync("util/env_conf.json", {}, r => {
-            if(!!r && !!r.url) {
-                env.url = r.url;
-            }
-        }, r => {});
+        initEnvConfig();
     }
     if(key == null || key == ""){
         return env.url;
@@ -743,7 +763,9 @@ $(document).ready( function() {
 		var urln = document.location.href.split("wareId")[1];
 		window.location.href = urlp+"wareId=21" + (urln.substr(urln.indexOf("&")));
 	}*/
-
+    if (common.isAPP()) {
+        env.frame = "iyb";
+    }
 	common.req("sale/view.json", {wareId:common.param("wareId"), packIds: common.param("packIds")}, function (r) {
 		env.ware = r;
         try{
