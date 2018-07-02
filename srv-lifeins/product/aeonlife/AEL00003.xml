@@ -3,6 +3,10 @@
 	<product id="AEL00003" corporation_id="aeonlife" code="5303" name="百年定惠保定期寿险" name_abbr="定惠保" unit="1000"
 		type_code="thunder" sequence="1000" sale_begin_date="2018-06-29" sale_end_date="" last_modify_date="2018-06-29">
 
+		<data>
+			<item parser="dds" value="AEL00003" />
+		</data>
+
 		<param>
 			<pay>
 				<item code="term_10" />
