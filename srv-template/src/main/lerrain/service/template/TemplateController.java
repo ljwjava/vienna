@@ -70,7 +70,7 @@ public class TemplateController {
         String banner = template.getBanner();
         String message = template.getMessage();
         result.put("banner", StringUtils.isNotBlank(banner) ? JSON.parseArray(banner) : null);
-        result.put("message", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : null);
+        result.put("msg", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : null);
 
         JSONObject pJson = findProducts(p);
         result.put("typeProducts", pJson != null ? pJson.getJSONArray("content") : new JSONArray());
@@ -300,7 +300,7 @@ public class TemplateController {
         String premium = p.getString("premium");
         String link = p.getString("link");
         String pic = p.getString("pic");
-        String labelName = p.getString("labelName");
+        String labelName = p.getString("label");
         String buttonName = p.getString("buttonName");
         String buttonLink = p.getString("buttonLink");
         String isIndex = p.getString("isIndex");
