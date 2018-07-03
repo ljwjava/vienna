@@ -218,7 +218,7 @@ public class ShopDao
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
 		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
-        sql.append(" WHERE 1=1");
+		sql.append(" WHERE r.is_deleted='N'");
 		if (null != contion.getUserId()) {
 			sql.append(" and r.rel_user_id = "+contion.getUserId());
 		}
