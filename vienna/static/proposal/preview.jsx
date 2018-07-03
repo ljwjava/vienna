@@ -37,9 +37,8 @@ class Main extends React.Component {
                         <img src="https://lifeins.iyunbao.com/static/iyb/images/bobcardif/iyb10004banner.jpg" style={{width:"750px",height:"360px"}} className="br-bl-gray"/>
                     </div>
                     <div className="divx">
-                        { this.state.proposal.plans.map(plan =>
-                            <div className="divx pl-1 pr-1 pt-2 pb-2 tc-dark"
-                                 style={{width: "250px", backgroundImage: "url(../images/arrow.png)", backgroundSize: "32px 16px", backgroundRepeat: "no-repeat", backgroundPosition: "center bottom"}}>
+                        { this.state.proposal.plans.map((plan, i) =>
+                            <div className="divx pl-1 pr-1 pt-2 pb-2 tc-dark" style={{width: "250px", backgroundImage: i == this.state.index ? "url(../images/arrow.png)" : null, backgroundSize: "32px 16px", backgroundRepeat: "no-repeat", backgroundPosition: "center bottom"}} onClick={this.onInsurantSwitch.bind(this, i)}>
                                 <div>
                                     <img src={plan.insurant.gender == "M" ? "../images/male.png" : "../images/female.png"} style={{width: "100px", height: "100px"}}/>
                                 </div>
