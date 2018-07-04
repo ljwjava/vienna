@@ -228,7 +228,12 @@ var Ground = React.createClass({
                         var f = common.initForm(r.nextUrl, r.params, r.method);
                         f.submit();
                     } else if (r.payList != null) {
-                        this.refs.paySwich.reSetOptions(r.payList);
+                        if(r.payList.length == 1){
+                            var f = common.initForm(r.payList[0].nextUrl, r.payList[0].params, r.payList[0].method);
+                            f.submit();
+                        }else{
+                            this.refs.paySwich.reSetOptions(r.payList);
+                        }
                     } else if (r.payWxOther != null) {
                     	if(common.isWeixin() && !!r.payWxOther.wx){	// 微信浏览器直接跳转微信支付
                         	var wxfp = r.payWxOther.wx;
