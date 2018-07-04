@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <declare>
-	<product id="AEL00003" corporation_id="aeonlife" code="5303" name="百年定惠保定期寿险" name_abbr="定惠保" unit="1000"
+	<product id="AEL00003" corporation_id="aeonlife" code="1314" name="百年定惠保定期寿险" name_abbr="定惠保" unit="1000"
 		type_code="thunder" sequence="1000" sale_begin_date="2018-06-29" sale_end_date="" last_modify_date="2018-06-29">
 
 		<data>
@@ -79,23 +79,19 @@
 					}
 					if(AGE >= 41 and AGE lt 50){
 						if(city ==	1 and AMOUNT >1000000){
-							return '被保人年龄25-40周岁，一线城市最高保额为100万。';
+							return '被保人年龄41-50周岁，一线城市最高保额为100万。';
 						}
 						if(city == 2 and AMOUNT > 600000){
-							return '被保人年龄25-40周岁，二线城市最高保额为60万。';
+							return '被保人年龄41-50周岁，二线城市最高保额为60万。';
 						}
 						if(city == 3 and AMOUNT > 500000){
-							return '被保人年龄25-40周岁，普通地区最高保额为50万。';
+							return '被保人年龄41-50周岁，普通地区最高保额为50万。';
 						}
 					}
 				}
 			</if>
-            <if>
-                var pay = val(str(PAY, 5));
-                print(pay+AGE);
-                if(pay+AGE > 60){
-                    return '投保人年龄+缴费期间≤60周岁 ';
-                }
+            <if condition="PAY_PERIOD+AGE > 60">
+                被保人年龄+交费期间≤60周岁
             </if>
 			<if condition="INSURANT.OCCUPATION_L != null and (val(INSURANT.OCCUPATION_L) lt 1 or val(INSURANT.OCCUPATION_L) > 4)">
 				职业要求为1~4类

@@ -217,21 +217,10 @@ public class ShopDao
         sql.append("SELECT count(*)");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
-		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
-        sql.append(" WHERE 1=1");
+		sql.append(" WHERE t.is_deleted='N'");
 		if (null != contion.getUserId()) {
-			sql.append(" and r.rel_user_id = "+contion.getUserId());
+			sql.append(" and t.creator = "+contion.getUserId());
 		}
-		if (null != contion.getSubUserId()) {
-			sql.append(" and r.sub_user_id = "+contion.getSubUserId());
-		}
-		if (StringUtils.isNotBlank(contion.getUsed())) {
-			sql.append(" and r.used = '"+contion.getUsed()+"'");
-		}
-		if (StringUtils.isNotBlank(contion.getName())) {
-			sql.append(" and t.name LIKE '%"+contion.getName()+"%'");
-		}
-
         return jdbc.queryForObject(sql.toString(), Integer.class);
     }
 
@@ -242,11 +231,10 @@ public class ShopDao
 		sql.append(" COUNT(r.rel_user_id)");
 		sql.append(" FROM");
 		sql.append(" `t_cs_commodity_rate_template_relation` r");
-		sql.append(" WHERE 1=1");
+		sql.append(" WHERE r.is_deleted='N'");
 		if (null != tempId) {
 			sql.append(" and r.rel_temp_id = "+tempId);
 		}
-		sql.append(" GROUP BY r.rel_temp_id");
 
 		return jdbc.queryForObject(sql.toString(), Integer.class);
 	}
@@ -254,29 +242,20 @@ public class ShopDao
     public List<JSONObject> rateTemplates(RateTemplate contion, int from, int number){
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
-		sql.append(" r.rel_user_id,");
-		sql.append(" r.rel_temp_id,");
-		sql.append(" t.scheme_id,");
+		sql.append(" t.id as tempId,");
+		sql.append(" t.scheme_id as schemeId,");
 		sql.append(" t.`code`,");
 		sql.append(" t.`name`,");
-		sql.append(" r.used,");
-		sql.append(" r.creator,");
-		sql.append(" r.gmt_created,");
-		sql.append(" r.modifier,");
-		sql.append(" r.gmt_modified,");
-		sql.append(" r.is_deleted");
+		sql.append(" t.creator,");
+		sql.append(" t.gmt_created,");
+		sql.append(" t.modifier,");
+		sql.append(" t.gmt_modified,");
+		sql.append(" t.is_deleted");
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
-		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
-        sql.append(" WHERE r.is_deleted='N'");
+        sql.append(" WHERE t.is_deleted='N'");
 		if (null != contion.getUserId()) {
-			sql.append(" and r.rel_user_id = "+contion.getUserId());
-		}
-		if (null != contion.getSubUserId()) {
-			sql.append(" and r.sub_user_id = "+contion.getSubUserId());
-		}
-		if (StringUtils.isNotBlank(contion.getUsed())) {
-			sql.append(" and r.used = '"+contion.getUsed()+"'");
+			sql.append(" and t.creator = "+contion.getUserId());
 		}
         if (StringUtils.isNotBlank(contion.getName())) {
             sql.append(" and t.name LIKE '%"+contion.getName()+"%'");
@@ -289,12 +268,11 @@ public class ShopDao
             public JSONObject mapRow(ResultSet m, int arg1) throws SQLException
             {
                 JSONObject j = new JSONObject();
-                j.put("userId",m.getString("rel_user_id"));
-				j.put("tempId",m.getString("rel_temp_id"));
-                j.put("schemeId",m.getString("scheme_id"));
+                j.put("userId",m.getString("creator"));
+				j.put("tempId",m.getString("tempId"));
+                j.put("schemeId",m.getString("schemeId"));
                 j.put("code",m.getString("code"));
                 j.put("name", m.getString("name"));
-                j.put("used",m.getString("used"));
                 j.put("creator",m.getString("creator"));
                 j.put("gmtCreated",m.getString("gmt_created"));
                 j.put("modifier",m.getString("modifier"));

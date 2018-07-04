@@ -143,6 +143,9 @@ public class TemplateController {
     @ResponseBody
     public JSONObject saveProType(@RequestBody JSONObject p) {
         Log.info(p);
+        if (p == null){
+            return new JSONObject();
+        }
         Long typeId = p.getLong("id");
         String productTypeName = p.getString("productTypeName");
 
@@ -213,8 +216,9 @@ public class TemplateController {
         if (banner == null) {
             banner = new JSONArray();
             JSONObject json = new JSONObject();
-            json.put("picUrl", "111");
-            json.put("launchUrl", "222");
+//            默认的banner图
+            json.put("picUrl", "www.baidu.com");
+            json.put("launchUrl", "www.google.com");
             banner.add(json);
         }
 

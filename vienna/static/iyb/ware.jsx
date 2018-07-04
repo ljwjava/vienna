@@ -302,12 +302,19 @@ var Ware = React.createClass({
         }
     },
 	openQuest() {
-        if (env.pack.uwUrl) {
+        if (env.pack.uwUrl || env.docs.underwriting == "partnerGrc") {
             let factors = this.refs.plan.val();
             factors.url = this.getApplyUrl();
-        	common.req("underwriting/create.json", {productId:this.state.detail.target, answer:factors}, v => {
-                document.location.href = env.pack.uwUrl + "?uwId=" + v + "&accountId=" + common.param("accountId");
-			});
+            if(env.docs.underwriting == "partnerGrc"){
+                common.req("sale/auto_underwriting.json", {accountId:common.param("accountId"),productId: this.state.detail.target, answer: factors}, v => {
+                   document.location.href = v;
+                });
+            }else {
+                common.req("underwriting/create.json", {productId: this.state.detail.target, answer: factors}, v => {
+                    document.location.href = env.pack.uwUrl + "?uwId=" + v + "&accountId=" + common.param("accountId");
+                });
+            }
+
         } else {
             this.quest();
         }
