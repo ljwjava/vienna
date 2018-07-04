@@ -91,7 +91,7 @@
 				}
 			</if>
             <if condition="PAY_PERIOD+AGE > 60">
-                被保人年龄+缴费期间≤60周岁
+                被保人年龄+交费期间≤60周岁
             </if>
 			<if condition="INSURANT.OCCUPATION_L != null and (val(INSURANT.OCCUPATION_L) lt 1 or val(INSURANT.OCCUPATION_L) > 4)">
 				职业要求为1~4类
