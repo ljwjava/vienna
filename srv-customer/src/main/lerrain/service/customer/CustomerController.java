@@ -19,6 +19,9 @@ public class CustomerController
 	@Autowired
 	CustomerService cs;
 
+    @Autowired
+    ChannelUserRService cuService;
+
 	@RequestMapping("/list.json")
 	@ResponseBody
 	public JSONObject list(@RequestBody JSONObject json)
@@ -130,4 +133,31 @@ public class CustomerController
 
 		return res;
 	}
+
+    // 渠道用户信息绑定accountId
+    @RequestMapping("/channel_bind_account.json")
+    @ResponseBody
+    public JSONObject channelBindAccount(@RequestBody JSONObject json)
+    {
+        Integer channelType = Common.toInteger(json.get("channelType"));
+        String channelUserId = json.getString("channelUserId");
+        Long accountId = Common.toLong(json.get("accountId"));
+
+        if (Common.isEmpty(channelType) || Common.isEmpty(channelUserId))
+            throw new RuntimeException("type and userId cannot be empty.");
+
+        ChannelUserR cur = new ChannelUserR();
+        cur.setChannelType(channelType);
+        cur.setChannelUserId(channelUserId);
+        cur.setAccountId(accountId);
+
+        cur = cuService.searchAndBind(cur);
+
+        JSONObject res = new JSONObject();
+        res.put("result", cur != null ? "success" : "fail");
+        res.put("content", cur);
+        res.put("reason", cur != null ? null : "用户信息绑定失败");
+
+        return res;
+    }
 }

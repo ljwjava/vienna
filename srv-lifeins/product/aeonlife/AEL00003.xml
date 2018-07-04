@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product id="AEL00003" corporation_id="aeonlife" code="5303" name="百年定惠保定期寿险" name_abbr="定惠保" unit="1000"
+		type_code="thunder" sequence="1000" sale_begin_date="2018-06-29" sale_end_date="" last_modify_date="2018-06-29">
+
+		<data>
+			<item parser="dds" value="AEL00003" />
+		</data>
+
+		<param>
+			<pay>
+				<item code="term_10" />
+				<item code="term_20" />
+				<item code="term_30" />
+			</pay>
+			<insure>
+				<item code="term_30" />
+				<item code="to_60" />
+				<item code="to_65" />
+				<item code="to_70" />
+			</insure>
+		</param>
+
+		<init>
+			<item name="A_CITY" value="['1101','1102','3101','3102','4401','4403']"/>
+			<item name="B_CITY" value="['1201','1202','5001','5002','5003']"/>
+		</init>
+		
+		<interest>
+			<!--<var name="CSV" param="A1" formula="DS.CSV[A1][0]*QUANTITY" />-->
+		</interest>
+
+		<!--<attachment>-->
+			<!--<coverage filter="coverage" parser="coverage">-->
+				<!--<paragraph title="重大疾病保险金">-->
+					<!--<item>在本合同有效期间内，被保险人在等待期内初次患本合同所约定的重大疾病中一种或多种，经公司承认的医疗机构和医师诊断确认，我们返还所交保险费（不计利息），本合同效力终止；</item>-->
+					<!--<item>在本合同有效期间内，被保险人因遭受意外伤害事故或在等待期后初次患本合同所约定的重大疾病中一种或多种，经公司承认的医疗机构和医师诊断确认，我们给付基本保额，本合同效力终止。</item>-->
+					<!--<item>若被保险人因本合同所约定的重大疾病以外的原因身故，我们返还身故当时的保单现金价值，本合同效力终止。</item>-->
+				<!--</paragraph>-->
+			<!--</coverage>-->
+
+			<!--<benefit_chart filter="chart" parser="chart">-->
+			    <!--<chart from="0" to="INSURE_PERIOD-1" name="I">-->
+					<!--<text name="重大疾病" color="#0000FF">AMOUNT</text>-->
+					<!--<line name="累计保费" color="#FF0000">PremiumSum(I)</line>-->
+					<!--<line name="现金价值" color="#00AAFF">IT.CSV(I)</line>-->
+				<!--</chart>-->
+			<!--</benefit_chart>-->
+
+			<!--<liab_graph parser="liab_graph">-->
+				<!--<item type="thunder" mode="common" value="AMOUNT">保额{round(AMOUNT/10000,2)}万，确诊即赔</item>-->
+				<!--<item type="death_cvback" mode="common">重疾以外原因身故，返还现金价值</item>-->
+			<!--</liab_graph>-->
+		<!--</attachment>-->
+
+		<rule>
+			<if condition="AGE lt 25 or AGE > 50">
+				25周岁≤被保险人年龄≤50周岁
+			</if>
+			<if>
+				if(ZONE != null){
+					var city = 3;
+					var code = str(ZONE, 0, 4);
+					if (find(A_CITY, code) != null) {
+						city = 1;
+					} else if (find(B_CITY, code) != null or str(ZONE, 2, 4) == "01") {
+						city = 2;
+					}
+					if(AGE >= 25 and AGE lt 41){
+						if(city ==	1 and AMOUNT >1500000){
+							return '被保人年龄25-40周岁，一线城市最高保额为150万。';
+						}
+						if(city == 2 and AMOUNT > 1000000){
+							return '被保人年龄25-40周岁，二线城市最高保额为100万。';
+						}
+						if(city == 3 and AMOUNT > 800000){
+							return '被保人年龄25-40周岁，普通地区最高保额为80万。';
+						}
+					}
+					if(AGE >= 41 and AGE lt 50){
+						if(city ==	1 and AMOUNT >1000000){
+							return '被保人年龄41-50周岁，一线城市最高保额为100万。';
+						}
+						if(city == 2 and AMOUNT > 600000){
+							return '被保人年龄41-50周岁，二线城市最高保额为60万。';
+						}
+						if(city == 3 and AMOUNT > 500000){
+							return '被保人年龄41-50周岁，普通地区最高保额为50万。';
+						}
+					}
+				}
+			</if>
+            <if condition="PAY_PERIOD+AGE > 60">
+                被保人年龄+交费期间≤60周岁
+            </if>
+			<if condition="INSURANT.OCCUPATION_L != null and (val(INSURANT.OCCUPATION_L) lt 1 or val(INSURANT.OCCUPATION_L) > 4)">
+				职业要求为1~4类
+			</if>
+		</rule>
+	</product>
+</declare>

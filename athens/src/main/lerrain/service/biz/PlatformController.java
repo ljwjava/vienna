@@ -65,10 +65,11 @@ public class PlatformController
         Long userId = (Long)session.getAttribute("userId");
         if (userId == null)
         {
+            //userKey（用处类似sessionId）登录时生成，同时把其与userId的关联关系保存在内存里，userKey回传前端，前端保存在客户端内存，每次请求时带上
             String userKey = param.getString("userKey");
             if (userKey != null)
             {
-                userId = 1L;
+                userId = 1L; //这里通过userKey获取userId
 
                 session.setAttribute("userId", userId);
                 session.setAttribute("memberId", userId);

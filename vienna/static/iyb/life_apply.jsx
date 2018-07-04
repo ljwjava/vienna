@@ -233,10 +233,12 @@ class ContactForm extends Form {
     }
     initSlider() {
         try{
+            let ssId = getEnv() === 'prd' ? "iyunbao_h5#prd#insure_verify" : "iyunbao_h5#pre#insure_verify";
+            let shost = getEnv() === 'prd' ? "https://af.zhongan.io" : "https://test-af.zhongan.io";
             env.slider = new ClickIdentifyControl({
                 container: "#sliderBox", //必填 容器id
-                sId: "iyunbao_h5#prd#insure_verify",  // 必填 埋点场景ID pre-prd
-                host: "https://af.zhongan.io", //https://test-af.zhongan.io  或者 https://af.zhongan.io
+                sId: ssId,  // 必填 埋点场景ID pre-prd
+                host: shost, //https://test-af.zhongan.io  或者 https://af.zhongan.io
                 placeholdLabel: "智能检测中",  // 可选， loading时显示内容 可以根据业务场景更改内容
                 onSuccess: (did, token, sId) => {
                     env.tokenId = token;
@@ -336,7 +338,7 @@ class ContactForm extends Form {
     form() {
         let v = [
             {name:'电子邮箱', code:"email", type:"text", reg:"^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", req:"yes", mistake:"请输入正确的电子邮箱", desc:"用于接收电子保单"},
-            {name:'手机', code:"mobile", type:"number", reg:"^1[3456789]\\d{9}$", req:"yes", mistake:"请输入正确的手机号码", desc:"请输入手机号码"}
+            {name:'手机', code:"mobile", type:"number", reg:"^1[3456789]\\d{9}$", req:"yes", mistake:"请输入正确的手机号码", desc:"请输入手机号码", ph: "请输入投保人手机号码"}
         ];
         let form = this.buildForm(v);
         form.push(['短信验证码', (
@@ -710,10 +712,11 @@ var Ground = React.createClass({
             ToastIt("请检查通讯信息");
             return;
         }
-        if (env.smsKey == null) {
+        if (env.smsKey == null && getEnv() === 'prd') {
             ToastIt("请获取并输入验证码");
             return;
         }
+
         let contact = this.refs.contact.val();
         let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");
         env.applicant.mobile = contact.mobile;
@@ -752,6 +755,7 @@ var Ground = React.createClass({
             photo: env.photo,
             read: env.pack.extra.read,
             readAddDesc: env.pack.extra.readAddDesc,
+            otherReadDesc: env.pack.extra.otherReadDesc,
             returnVisit: env.pack.extra.returnVisit,
             tips: env.pack.extra.tips,
             pay: this.props.defVal.pay,
@@ -960,13 +964,29 @@ var draw = function(defVal) {
     );
 };
 
+var initEnvConfig = function(){
+    common.reqSync("util/env_conf.json", {}, r => {
+        if(!!r && !!r.url) {
+            env.url = r.url;
+        }
+        if(!!r && !!r.env) {
+            env.env = r.env;
+        }else{
+            env.env = 'prd';    // 默认生产环境
+        }
+    }, r => {});
+};
+
+var getEnv = function(){
+    if(!env.env) {
+        initEnvConfig();
+    }
+    return env.env;
+};
+
 var getUrl = function(key){
     if(!env.url){
-        common.reqSync("util/env_conf.json", {}, r => {
-            if(!!r && !!r.url) {
-                env.url = r.url;
-            }
-        }, r => {});
+        initEnvConfig();
     }
     if(key == null || key == ""){
         return env.url;
