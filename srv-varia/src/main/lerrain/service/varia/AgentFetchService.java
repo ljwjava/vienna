@@ -162,7 +162,7 @@ public class AgentFetchService
 		List<NameValuePair> list = new ArrayList<NameValuePair>();
 		list.add(new BasicNameValuePair("peopleId", peopleId));
 
-		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
+		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GBK");
 		httpPost.setEntity(uyrlEntity);
 		httpPost.setHeader("Cookie", cookie);
 
@@ -177,7 +177,7 @@ public class AgentFetchService
 			bb = Common.byteOf(io1);
 		}
 
-		String s = new String(bb, "GB2312");
+		String s = new String(bb, "GBK");
 
 		if (s.indexOf("apologise") >= 0)
 			s = new String(bb, "utf-8");
@@ -284,7 +284,7 @@ public class AgentFetchService
 		list.add(new BasicNameValuePair("evelop_code", ""));
 		list.add(new BasicNameValuePair("valCode", code));
 
-		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
+		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GBK");
 		httpPost.setEntity(uyrlEntity);
 		httpPost.setHeader("Cookie", cookie);
 
@@ -299,7 +299,7 @@ public class AgentFetchService
 			bb = Common.byteOf(io1);
 		}
 
-		String s = new String(bb, "GB2312");
+		String s = new String(bb, "GBK");
 
 		if (s.indexOf("apologise") >= 0)
 			s = new String(bb, "utf-8");
@@ -347,7 +347,7 @@ public class AgentFetchService
 					list.add(new BasicNameValuePair("currentPage", i+""));
 					list.add(new BasicNameValuePair("totalCount", num+""));
 
-					uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
+					uyrlEntity = new UrlEncodedFormEntity(list, "GBK");
 					httpPost.setEntity(uyrlEntity);
 					httpPost.setHeader("Cookie", cookie);
 
@@ -361,7 +361,7 @@ public class AgentFetchService
 						bb = Common.byteOf(io1);
 					}
 
-					s = new String(bb, "GB2312");
+					s = new String(bb, "GBK");
 
 					if (s.indexOf("apologise") >= 0)
 					{
@@ -511,7 +511,7 @@ public class AgentFetchService
 		list.add(new BasicNameValuePair("certificate_code", ""));
 		list.add(new BasicNameValuePair("valCode", code));
 
-		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GB2312");
+		UrlEncodedFormEntity uyrlEntity = new UrlEncodedFormEntity(list, "GBK");
 		httpPost.setEntity(uyrlEntity);
 		httpPost.setHeader("Cookie", cookie2);
 
@@ -526,7 +526,7 @@ public class AgentFetchService
 			bb = Common.byteOf(io1);
 		}
 
-		String s = new String(bb, "GB2312");
+		String s = new String(bb, "GBK");
 
 //		System.out.println(code);
 //		System.out.println(s);

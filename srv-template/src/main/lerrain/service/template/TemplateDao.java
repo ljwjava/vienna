@@ -29,11 +29,11 @@ public class TemplateDao {
     public Long saveOrUpdate(Template cc) {
         if (cc.getId() == null) {
             cc.setId(tools.nextId("template"));
-            jdbc.update("insert into t_cs_template(id, template_name, title, message, banner, creator, gmt_created, modifier, gmt_modified, is_deleted) values(?,?,?,?,?,?,?,?,?,?)",
-                    cc.getId(), cc.getTemplateName(), cc.getTitle(), cc.getMessage(), cc.getBanner(), "system", new Date(), "system", new Date(), "N");
+            jdbc.update("insert into t_cs_template(id, template_name, title, message, banner, creator, gmt_created, modifier, gmt_modified, is_deleted,link) values(?,?,?,?,?,?,?,?,?,?,?)",
+                    cc.getId(), cc.getTemplateName(), cc.getTitle(), cc.getMessage(), cc.getBanner(), "system", new Date(), "system", new Date(), "N", cc.getLink());
         } else {
-            jdbc.update("update t_cs_template set template_name=?, title=?, message=?, banner=?, modifier=?, gmt_modified=? where id=?",
-                    cc.getTemplateName(), cc.getTitle(), cc.getMessage(), cc.getBanner(), "system", new Date(), cc.getId());
+            jdbc.update("update t_cs_template set template_name=?, title=?, message=?, banner=?, modifier=?, gmt_modified=?,link=? where id=?",
+                    cc.getTemplateName(), cc.getTitle(), cc.getMessage(), cc.getBanner(), "system", new Date(), cc.getLink(), cc.getId());
         }
         return cc.getId();
     }
@@ -69,7 +69,7 @@ public class TemplateDao {
         });
     }
 
-    public int count(String name,Long userId) {
+    public int count(String name, Long userId) {
         StringBuffer sql = new StringBuffer("select count(1) from t_cs_template where is_deleted='N' ");
         if (StringUtils.isNotBlank(name)) {
             sql.append(" and template_name like '%" + name + "%' ");

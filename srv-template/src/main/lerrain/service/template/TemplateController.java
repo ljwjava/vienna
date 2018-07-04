@@ -70,7 +70,7 @@ public class TemplateController {
         String banner = template.getBanner();
         String message = template.getMessage();
         result.put("banner", StringUtils.isNotBlank(banner) ? JSON.parseArray(banner) : null);
-        result.put("message", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : null);
+        result.put("msg", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : null);
 
         JSONObject pJson = findProducts(p);
         result.put("typeProducts", pJson != null ? pJson.getJSONArray("content") : new JSONArray());
@@ -143,6 +143,9 @@ public class TemplateController {
     @ResponseBody
     public JSONObject saveProType(@RequestBody JSONObject p) {
         Log.info(p);
+        if (p == null){
+            return new JSONObject();
+        }
         Long typeId = p.getLong("id");
         String productTypeName = p.getString("productTypeName");
 
@@ -213,8 +216,9 @@ public class TemplateController {
         if (banner == null) {
             banner = new JSONArray();
             JSONObject json = new JSONObject();
-            json.put("picUrl", "111");
-            json.put("launchUrl", "222");
+//            默认的banner图
+            json.put("picUrl", "www.baidu.com");
+            json.put("launchUrl", "www.google.com");
             banner.add(json);
         }
 
@@ -300,7 +304,7 @@ public class TemplateController {
         String premium = p.getString("premium");
         String link = p.getString("link");
         String pic = p.getString("pic");
-        String labelName = p.getString("labelName");
+        String labelName = p.getString("label");
         String buttonName = p.getString("buttonName");
         String buttonLink = p.getString("buttonLink");
         String isIndex = p.getString("isIndex");
