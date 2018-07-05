@@ -51,14 +51,14 @@ var Ground = React.createClass({
         }
         let succTopText = "";
         if (!succText)
-            succText = !!vd.succTips ? vd.succTips : "投保成功，" + vd.name + "会在承保后进行回访，回访重要，请注意接听";
+            succText = !!vd.succTips ? vd.succTips : "预约成功，请保持手机号码通畅，工作人员将在1-2个工作日内联系您。";
         if (!failText)
         	failText = !!vd.failTips ? vd.failTips : "请修改后重新提交";
 
-        succText = '尊敬的客户，感谢您的预约，您的预约订单号***，请保持手机号畅通，工作人员将在将在3-5个工作日内联系您。';
+        succText = '尊敬的客户，感谢您的预约，您的预约订单号'+env.order.extra.transOrderNo+'，请保持手机号畅通，工作人员将在将在3-5个工作日内联系您。';
 
         if (t == 1) {
-			s = {modify:0, title:"投保成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png"};	// , hasReturnVisit: false, isConfirmReturnVisit: false, hasCorrect: false, isConfirmCorrect: false, correctUrl: null
+			s = {modify:0, title:"预约成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png"};	// , hasReturnVisit: false, isConfirmReturnVisit: false, hasCorrect: false, isConfirmCorrect: false, correctUrl: null
             // try{this.getUseableCountByOrderNo();}catch (e){}
             // try{this.refs.returnVisit.setState({order: env.order, isConfirmReturnVisit: env.order.extra.isConfirmReturnVisit == true});}catch(e){}
         } else if (t == 20)
@@ -93,14 +93,13 @@ var Ground = React.createClass({
                 } else if(asking % 5 == 0) {
                     common.req("order/view.json", {orderId: this.state.orderId}, r => {
                         env.order = r;
-                        // 21预约中 22已预约 23预约告知 24预约失败
-                        if (r.status == 23 || r.status == 22) {	// 23预约告知
+                        if (r.status == 23) {	// 23预约告知
                             // r.extra = {iybOrderNo: 'IYB201710161408193477'};
                             this.finish(1, "保单号："+ r.bizNo);
+                        } else if (r.status == 22) {	// 22已预约
+                            this.finish(30, r.bizMsg); //支付失败
                         } else if (r.status == 24) {	// 24预约失败
-                            this.finish(30, r.bizMsg);
-                        } else if (r.status == 21) {	// 21预约中
-                            this.finish(30, r.bizMsg);
+                            this.finish(30, r.bizMsg); //支付失败
                         } else if (r.status == 9 || r.pay == 9) {
                             this.finish(92, r.bizMsg); //未知错误
                         } else if (r.status != 2) {
