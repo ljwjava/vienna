@@ -209,4 +209,17 @@ public class CustFeeController
 
         return res;
     }
+
+    @RequestMapping("/fee/rate/queryTotalFeeRate.json")
+    @ResponseBody
+    public JSONObject queryTotalFeeRate(@RequestBody JSONObject c)
+    {
+        Long productId = c.getLong("productId");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", ccs.queryTotalFeeRate(productId));
+
+        return res;
+    }
 }
