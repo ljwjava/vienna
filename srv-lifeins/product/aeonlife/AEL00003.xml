@@ -91,6 +91,9 @@
 				}
 			</if>
 			<if>
+				if(INSURE_VALUE == 30 and AGE > 40){
+					return '当保险期间为30年时，被保人年龄≤40周岁';
+				}
 				if(INSURE_VALUE == 30 and PAY_PERIOD+AGE > 70){
 					return '被保人年龄+交费期间≤70周岁';
 				}
