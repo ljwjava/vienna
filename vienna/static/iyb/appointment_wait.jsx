@@ -55,7 +55,7 @@ var Ground = React.createClass({
         if (!failText)
         	failText = !!vd.failTips ? vd.failTips : "请修改后重新提交";
 
-        succText = '尊敬的客户，感谢您的预约，您的预约订单号'+env.order.extra.transOrderNo+'，请保持手机号畅通，工作人员将在将在3-5个工作日内联系您。';
+        succText = '尊敬的客户，感谢您的预约，您的预约订单号'+env.order.applyNo+'，请保持手机号畅通，工作人员将在将在1-2个工作日内联系您。';
 
         if (t == 1) {
 			s = {modify:0, title:"预约成功", text:text, memo:succText, titleMemo: succTopText, icon:"images/insure_succ.png"};	// , hasReturnVisit: false, isConfirmReturnVisit: false, hasCorrect: false, isConfirmCorrect: false, correctUrl: null
@@ -66,7 +66,7 @@ var Ground = React.createClass({
 		else if (t == 21)
 			s = {modify:2, title:"投保失败", text:text, memo:failText, icon:"images/insure_fail.png"};
 		else if (t == 30)
-			s = {modify:1, title:"支付失败", text:text, memo:"请修改支付信息后重新提交", icon:"images/insure_fail.png"};
+			s = {modify:1, title:"预约失败", text:text, memo:"", icon:"images/insure_fail.png"};
 		else if (t == 40)
 			s = {modify:0, title:"已进入人工核保", text:text, icon:"images/insure_fail.png"};
 		else if (t == 90)
@@ -74,7 +74,7 @@ var Ground = React.createClass({
 		else if (t == 91)
 			s = {modify:0, title:"服务器连接错误", text:text, icon:"images/insure_fail.png"};
 		else if (t == 92)
-			s = {modify:0, title:"投保失败", text:text, icon:"images/insure_fail.png"};
+			s = {modify:0, title:"预约失败", text:text, icon:"images/insure_fail.png"};
 		else
 			s = {modify:0, title:"处理中", text:text, icon:"images/insure_succ.png"};
 
@@ -97,7 +97,7 @@ var Ground = React.createClass({
                             // r.extra = {iybOrderNo: 'IYB201710161408193477'};
                             this.finish(1, "保单号："+ r.bizNo);
                         } else if (r.status == 22) {	// 22已预约
-                            this.finish(30, r.bizMsg); //支付失败
+                            this.finish(1, r.bizMsg); //支付失败
                         } else if (r.status == 24) {	// 24预约失败
                             this.finish(30, r.bizMsg); //支付失败
                         } else if (r.status == 9 || r.pay == 9) {
