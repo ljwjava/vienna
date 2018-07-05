@@ -376,7 +376,8 @@ var Ground = React.createClass({
                         { env.order.detail.insurant.certValidate == null ? null : <div><span>　证件有效止期</span> {env.order.detail.insurant.certValidate.certLong ? '长期' : env.order.detail.insurant.certValidate.certExpire}</div>}
 						<div><span>　性别</span>{env.order.detail.insurant.genderName}</div>
 						<div><span>　出生日期</span>{env.order.detail.insurant.birthday}</div>
-                        {env.order.detail.insurant.height == null ? null : <div><span>　身高</span>{env.order.detail.insurant.height}(厘米)</div>}
+                        { env.order.detail.insurant.mobile == null ? null : <div><span>　手机</span> {env.order.detail.insurant.mobile}</div>}
+						{env.order.detail.insurant.height == null ? null : <div><span>　身高</span>{env.order.detail.insurant.height}(厘米)</div>}
                         {env.order.detail.insurant.weight == null ? null : <div><span>　体重</span>{env.order.detail.insurant.weight}(公斤)</div>}
 						{env.order.detail.insurant.cityName == null ? null : <div><span>　所在地区</span>{env.order.detail.insurant.cityName}</div>}
 						{env.order.detail.insurant.address == null ? null : <div><span>　通讯地址</span>{env.order.detail.insurant.address}</div>}

@@ -20,7 +20,7 @@ class WareList extends List {
         document.location.href = "ware.web?userId=" + id;
     }
     refresh() {
-        common.req("sale/list_ware.json", {from: env.from, number: env.number}, r => {
+        common.req("sale/product/list.json", {from: env.from, number: env.number}, r => {
             this.setState({content:r});
         });
     }
@@ -33,7 +33,7 @@ class WareList extends List {
                 <th><div>名称缩写</div></th>
                 <th><div>供应商</div></th>
                 <th><div>类型</div></th>
-				<th style={{width:"200px"}}>{this.buildPageComponent()}</th>
+				<th></th>
 			</tr>
         );
     }

@@ -4,8 +4,8 @@
 		id="HG20001"
 		corporation_id="huigui"
 		code="012B0100"
-		name="华贵擎天柱定期寿险"
-		name_abbr="华贵擎天柱定期寿险"
+		name="华贵守护e家定期寿险"
+		name_abbr="华贵守护e家定期寿险"
 		unit="10000"
 		type_code="life"
 		sequence="1000"
@@ -53,9 +53,22 @@
 
 
 			<if>
-				if(val(PAY_PERIOD)+AGE>70){
-					return '年龄+缴费期限≤70周岁';
+				if(val(INSURE_VALUE)+AGE>70){
+					return '年龄+保险期间≤70周岁';
 				}
+				print(INSURE_VALUE+"*****");
+				print(PAY_PERIOD+"*****");
+
+
+
+				if(INSURE_VALUE==10 and PAY_PERIOD>10){
+					return '保险期间10年期，交费方式不能大于10年交';
+				}
+
+				if(INSURE_VALUE==20 and PAY_PERIOD>20){
+				return '保险期间20年期，交费方式不能大于20年交';
+				}
+
 
 				if(SOCIAL_INS and SOCIAL_ZONE==null){
 					return '请选择社保所在地区';
@@ -79,58 +92,66 @@
 					}
 				}
 
-				lv=(lv lt slv ? lv : slv);
 
-				if (lv == 1) {
-					if(!SOCIAL_INS){
-						if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
-							return '年龄在18-40周岁无社保,一类城市最高150万有效保额';
-						}
-						if (AGE >= 41 and AGE le 50 and AMOUNT > 1000000) {
-							return '年龄在41-50周岁无社保,一类城市最高100万有效保额';
-						}
-					}else{
-						if (AGE >= 18 and AGE le 40 and AMOUNT > 2000000) {
-							return '年龄在18-40周岁有社保,一类城市最高200万有效保额';
-						}
-						if (AGE >= 41 and AGE le 50 and AMOUNT > 1500000) {
-							return '年龄在41-50周岁有社保,一类城市最高150万有效保额';
-						}
-					}
 
-				} else if (lv == 2) {
-					if(!SOCIAL_INS){
-						if (AGE >= 18 and AGE le 40 and AMOUNT > 1000000) {
-							return '年龄在18-40周岁无社保,二类城市最高100万有效保额';
-						}
-						if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
-							return '年龄在41-50周岁无社保,二类城市最高50万有效保额';
-						}
-					}else{
-						if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
-							return '年龄在18-40周岁有社保,二类城市最高150万有效保额';
-						}
-						if (AGE >= 41 and AGE le 50 and AMOUNT > 1000000) {
-							return '年龄在41-50周岁有社保,二类城市最高100万有效保额';
-						}
-					}
-				} else {
-					if(!SOCIAL_INS){
-						if (AGE >= 18 and AGE le 40 and AMOUNT > 500000) {
-							return '年龄在18-40周岁无社保,三类城市最高50万有效保额';
-						}
-						if (AGE >= 41 and AGE le 50 and AMOUNT > 300000) {
-							return '年龄在41-50周岁无社保,三类城市最高30万有效保额';
-						}
-					}else{
-						if (AGE >= 18 and AGE le 40 and AMOUNT > 1000000) {
-							return '年龄在18-40周岁有社保,三类城市最高100万有效保额';
-						}
-						if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
-							return '年龄在41-50周岁有社保,三类城市最高50万有效保额';
-						}
-					}
-				}
+                if(!SOCIAL_INS){
+                    if (lv == 1) {
+                        if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
+                        return '年龄在18-40周岁无社保,一类城市最高150万有效保额';
+                        }
+                        if (AGE >= 41 and AGE le 50 and AMOUNT > 1000000) {
+                        return '年龄在41-50周岁无社保,一类城市最高100万有效保额';
+                        }
+                    }else if(lv==2){
+                        if (AGE >= 18 and AGE le 40 and AMOUNT > 1000000) {
+                        return '年龄在18-40周岁无社保,二类城市最高100万有效保额';
+                        }
+                        if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
+                        return '年龄在41-50周岁无社保,二类城市最高50万有效保额';
+                        }
+                    }else{
+                        if (AGE >= 18 and AGE le 40 and AMOUNT > 500000) {
+                        return '年龄在18-40周岁无社保,三类城市最高50万有效保额';
+                        }
+                        if (AGE >= 41 and AGE le 50 and AMOUNT > 300000) {
+                        return '年龄在41-50周岁无社保,三类城市最高30万有效保额';
+                        }
+                    }
+                }else{
+                  if(slv==1){
+                    if (AGE >= 18 and AGE le 40 and AMOUNT > 2000000) {
+                    return '年龄在18-40周岁有社保,一类城市最高200万有效保额';
+                    }
+                    if (AGE >= 41 and AGE le 50 and AMOUNT > 1500000) {
+                    return '年龄在41-50周岁有社保,一类城市最高150万有效保额';
+                    }
+                  }else  if(slv==2){
+                    if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
+                    return '年龄在18-40周岁有社保,二类城市最高150万有效保额';
+                    }
+                    if (AGE >= 41 and AGE le 50 and AMOUNT > 1000000) {
+                    return '年龄在41-50周岁有社保,二类城市最高100万有效保额';
+                    }
+                  }else if(slv==3){
+                     if(lv==1){
+                        if (AGE >= 18 and AGE le 40 and AMOUNT > 1500000) {
+                        return '年龄在18-40周岁有社保,一类所在城市最高150万有效保额';
+                        }
+                        if (AGE >= 41 and AGE le 50 and AMOUNT > 1000000) {
+                        return '年龄在41-50周岁无社保,一类所在城市最高100万有效保额';
+                        }
+                     }else{
+                        if (AGE >= 18 and AGE le 40 and AMOUNT > 1000000) {
+                        return '年龄在18-40周岁有社保,三类城市最高100万有效保额';
+                        }
+                        if (AGE >= 41 and AGE le 50 and AMOUNT > 500000) {
+                        return '年龄在41-50周岁有社保,三类城市最高50万有效保额';
+                        }
+                    }
+                  }
+
+                }
+
 				return null;
 			</if>
 
