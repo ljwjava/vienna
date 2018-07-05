@@ -22,8 +22,8 @@ public class StatDao
 	{
 		for (Map.Entry<String, Integer> e : map.entrySet())
 		{
+			Log.info(e.getKey());
 			String[] k = e.getKey().split(" / ");
-
 			jdbc.update("replace into t_stat(`time`, platform_id, user_id, `action`, `count`) values(?, ?, ?, ?, ?)", k[0], k[1], k[2], k[3], e.getValue());
 		}
 	}

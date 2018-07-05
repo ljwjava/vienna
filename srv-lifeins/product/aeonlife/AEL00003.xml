@@ -90,9 +90,20 @@
 					}
 				}
 			</if>
-            <if condition="PAY_PERIOD+AGE > 60">
-                被保人年龄+交费期间≤60周岁
-            </if>
+			<if>
+				if(INSURE_VALUE == 30 and PAY_PERIOD+AGE > 70){
+					return '被保人年龄+交费期间≤70周岁';
+				}
+				if(INSURE_VALUE == 60 and PAY_PERIOD+AGE > 60){
+					return '被保人年龄+交费期间≤60周岁';
+				}
+				if(INSURE_VALUE == 65 and PAY_PERIOD+AGE > 65){
+					return '被保人年龄+交费期间≤65周岁';
+				}
+				if(INSURE_VALUE == 70 and PAY_PERIOD+AGE > 70){
+					return '被保人年龄+交费期间≤70周岁';
+				}
+			</if>
 			<if condition="INSURANT.OCCUPATION_L != null and (val(INSURANT.OCCUPATION_L) lt 1 or val(INSURANT.OCCUPATION_L) > 4)">
 				职业要求为1~4类
 			</if>
