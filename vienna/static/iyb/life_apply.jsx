@@ -39,7 +39,8 @@ env.def = {
         height: false,
         hasSmoke: false,
         smoke: [["2","否"],["1","是"]],
-        relation: [["1","本人"]]
+        relation: [["1","本人"]],
+        mobile:false
     },
     beneficiary: {
         max: 3,
@@ -153,7 +154,7 @@ class ApplicantForm extends Form {
         if (env.formOpt.applicant.city)
             v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.applicant.address)
-            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"学院路37号院1号楼109室"});
+            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"例:学院路37号院1号楼109室"});
         if (env.formOpt.applicant.hasIncome) {
             v.push({name:'年收入(万元)', code:"income", type:"number", req:"yes", mistake:"只能输入数字", desc:"请输入年收入"});
             v.push({name:'收入来源', code:"incomeSource", type:"switch", req:"yes", options:env.formOpt.applicant.income});
@@ -190,7 +191,10 @@ class InsurantForm extends Form {
         if (env.formOpt.insurant.city)
             v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
         if (env.formOpt.insurant.address)
-            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"学院路37号院1号楼109室"});
+            v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"例:学院路37号院1号楼109室"});
+        if (env.formOpt.insurant.mobile)
+            v.push({name:'手机', code:"mobile", type:"number", reg:"^1[3456789]\\d{9}$", req:"yes", mistake:"请输入正确的手机号码", desc:"请输入手机号码"});
+
         return this.buildForm(v);
     }
     verify(code, val) {
@@ -544,6 +548,7 @@ var Ground = React.createClass({
                         e.value = res;
                 });
                 env.photo = r.photo;
+                env.age=r.age;
                 this.setState({premium:r.total, rules:r.rules, alert:r.alert, form:form});
             });
         }
@@ -598,6 +603,129 @@ var Ground = React.createClass({
                 this.setState({benefitLive:this.state.benefitLive});
                 return;
             }
+        }
+    },
+    next(){
+        if (env.brokerId == null || env.brokerId == "") {
+            ToastIt("缺少代理人信息");
+            return;
+        }
+        //投保人信息校验
+        if (!this.refs.applicant.verifyAll()) {
+            ToastIt("请检查投保人信息");
+            return;
+        }
+        env.relation = this.refs.relation.val();
+        env.applicant = this.refs.applicant.val();
+
+        // 处理证件有效起期
+        env.applicant.certName = this.refs.applicant.refs.certType.text();
+        env.applicant.genderName = this.refs.applicant.refs.gender.text();
+        if (env.formOpt.applicant.city)
+            env.applicant.cityName = this.refs.applicant.refs.city.val().text;
+        // 被保险人信息校验
+        if (!!this.refs.more && !this.refs.more.verifyAll()) {
+            ToastIt("请检查被保险人信息");
+            return;
+        }
+
+        let m = !this.refs.more ? null : this.refs.more.val();
+        //被保人信息校验
+        if (this.state.insurant) {
+            if (!this.refs.insurant.verifyAll()) {
+                ToastIt("请检查被保险人信息");
+                return;
+            }
+            env.insurant = this.refs.insurant.val();
+            env.insurant.certName = this.refs.insurant.refs.certType.text();
+            env.insurant.genderName = this.refs.insurant.refs.gender.text();
+            if (env.formOpt.insurant.city)
+                env.insurant.cityName = this.refs.insurant.refs.city.val().text;
+            env.insurant.relation = this.refs.relation.val();
+            if (m != null) {
+                env.insurant.occupation = m.occupation;
+                env.insurant.height = m.height;
+                env.insurant.weight = m.weight;
+                env.insurant.smoke = m.smoke;
+            }
+        } else {
+            env.insurant = env.applicant;
+            if (m != null) {
+                if(env.applicant.occupation == null && m.occupation != null) {
+                    env.applicant.occupation = m.occupation;
+                }
+                env.applicant.height = m.height;
+                env.applicant.weight = m.weight;
+                env.applicant.smoke = m.smoke;
+            }
+        }
+        //受益人
+        let b1 = true;
+        let vv = {};
+        let beneficiaryLive = null;
+        let beneficiaryDeath = null;
+        if (this.state.benefitLiveType == "other") {
+            beneficiaryLive = this.state.benefitLive.map(i => {
+                let c = this.refs["l"+i];
+                b1 = c.verifyAll() && b1;
+                let r = c.val();
+                r.certName = c.refs.certType.text();
+                if (!env.formOpt.beneficiary.order)
+                    r.order = 1;	// 固定第一顺位
+                if (vv["l" + r.order] == null) vv["l" + r.order] = 0;
+                vv["l" + r.order] += Number(r.scale);
+                return r;
+            });
+            if (beneficiaryLive == null || beneficiaryLive.length == 0)
+                b1 = false;
+        }
+        if (this.state.benefitDeathType == "other") {
+            beneficiaryDeath = this.state.benefitDeath.map(i => {
+                let c = this.refs["d"+i];
+                b1 = c.verifyAll() && b1;
+                let r = c.val();
+                if (!env.formOpt.beneficiary.order)
+                    r.order = 1;	// 固定第一顺位
+                r.certName = c.refs.certType.text();
+                if (vv["d" + r.order] == null) vv["d" + r.order] = 0;
+                vv["d" + r.order] += Number(r.scale);
+                return r;
+            });
+            if (beneficiaryDeath == null || beneficiaryDeath.length == 0)
+                b1 = false;
+        }
+        for (let ss in vv) {
+            if (vv[ss] != 100) {
+                ToastIt("受益人同一次序下比例之和需要为100%");
+                return;
+            }
+        }
+        if (!b1) {
+            ToastIt("请检查受益人信息");
+            return;
+        }
+        //规则保费
+        if (this.state.rules != null && this.state.rules.length > 0) {
+            ToastIt("请检查投保规则");
+            return;
+        }
+        if ((typeof this.state.premium != "number") || !this.state.premium || this.state.premium <= 0) {
+            ToastIt("请确认保费已正确计算");
+            return;
+        }
+        if (!this.refs.contact.verifyAll()) {
+            ToastIt("请检查通讯信息");
+            return;
+        }
+        if (env.smsKey == null && getEnv() === 'prd') {
+            ToastIt("请获取并输入验证码");
+            return;
+        }
+
+        if(!!env.pack.extra.age && env.age > env.pack.extra.age){
+            this.openQuest(null, this.submit);
+        }else{
+            this.submit();
         }
     },
     submit() {
@@ -761,6 +889,7 @@ var Ground = React.createClass({
             pay: this.props.defVal.pay,
             vendor: env.vendor,
             uwId: env.uwId,
+            serialNo:env.serialNo,
             packName: (env.pack.extra.productName != null && env.pack.extra.productName != "" ? env.pack.extra.productName : orderName)
         };
         let order = {
@@ -804,6 +933,11 @@ var Ground = React.createClass({
             });
         });
     },
+    openQuest(cancelFun, acceptFun) {
+        this.setState({canQuestFun: cancelFun, accQuestFun: acceptFun},()=>{
+            this.popQuest();
+        });
+    },
     popQuest() {
         this.setState({appQuest: true, alertQuest: false});
     },
@@ -812,6 +946,9 @@ var Ground = React.createClass({
     },
     closeQuest() {
         this.setState({appQuest: false, alertQuest: false});
+        if(typeof this.state.accQuestFun === 'function'){
+            this.state.accQuestFun();
+        }
     },
     back() {
         history.back(-1);
@@ -826,7 +963,7 @@ var Ground = React.createClass({
 			<div className="notice">
                 { !this.state.alertQuest ?
 					<div className="content" style={{textAlign: "left", overflow:"auto", maxHeight:"100%"}}>
-						<div className="title">投保人健康及财务告知</div>
+						<div className="title">{!!env.pack.extra.age?'被保人健康及财务告知':'投保人健康及财务告知'}</div>
 						<div className="text" style={{}}>
 							<Summary content={env.pack.extra.applicantQuests != null ? env.pack.extra.applicantQuests : env.pack.extra.quests}/>
 						</div>
@@ -948,7 +1085,7 @@ var Ground = React.createClass({
 							<div className="col left">
                                 {env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "提交中..." : "下一步"}</div>
+							<div className="col right" onClick={this.next.bind(this)}>{this.state.isSubmit ? "提交中..." : "下一步"}</div>
 						</div>
 					</div>
 				</div>
@@ -1003,6 +1140,7 @@ $(document).ready( function() {
         env.packId = common.param("packId");
         env.brokerId = common.param("accountId");
         env.uwId = common.param("uwId");
+        env.serialNo=common.param("serialNo");
         common.req("order/create.json", {}, r => {
             env.orderId = r.id;
             let planFactors = JSON.parse(common.load("iyb/temp", 600000));
@@ -1027,6 +1165,7 @@ $(document).ready( function() {
             env.brokerId = r.owner;
             if (r.detail != null) {
                 env.uwId = r.detail.uwId;
+                env.serialNo=r.detail.serialNo;
                 draw(r.detail);
             } else {
                 draw({});

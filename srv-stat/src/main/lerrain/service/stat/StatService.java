@@ -74,7 +74,7 @@ public class StatService
 
 					try
 					{
-						Thread.sleep(3600L);
+						Thread.sleep(10000L);
 					}
 					catch (InterruptedException e)
 					{

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 商城模板服务
@@ -143,7 +146,7 @@ public class TemplateController {
     @ResponseBody
     public JSONObject saveProType(@RequestBody JSONObject p) {
         Log.info(p);
-        if (p == null){
+        if (p == null) {
             return new JSONObject();
         }
         Long typeId = p.getLong("id");
@@ -212,13 +215,12 @@ public class TemplateController {
         JSONArray banner = p.getJSONArray("banner");
         JSONArray typeProducts = p.getJSONArray("typeProducts");
         String link = p.getString("link");
-
         if (banner == null) {
             banner = new JSONArray();
             JSONObject json = new JSONObject();
 //            默认的banner图
-            json.put("picUrl", "www.baidu.com");
-            json.put("launchUrl", "www.google.com");
+            json.put("picUrl", "https://static.iyunbao.com/website/health/iybApp/cloud/h5/home/home_bac.png");
+//            json.put("launchUrl", "");
             banner.add(json);
         }
 
@@ -294,6 +296,66 @@ public class TemplateController {
         res.put("result", "success");
         res.put("content", id);
         return res;
+    }
+
+
+    @RequestMapping("/handle.json")
+    @ResponseBody
+    public JSONObject handleTemplate(@RequestBody JSONObject p) {
+        Log.info(p);
+        Long userId = p.getLong("userId");
+        JSONArray banner = p.getJSONArray("banner");
+        JSONArray typeProducts = p.getJSONArray("typeProducts");
+        String link = p.getString("shopUrl");
+        if (banner == null) {
+            banner = new JSONArray();
+            JSONObject json = new JSONObject();
+//            默认的banner图
+            json.put("picUrl", "https://static.iyunbao.com/website/health/iybApp/cloud/h5/home/home_bac.png");
+//            json.put("launchUrl", "");
+            banner.add(json);
+        }
+        JSONObject pp = new JSONObject();
+        pp.put("templateName", "商城模板");
+        pp.put("title", "商城");
+        pp.put("banner", banner);
+        pp.put("userId", userId);
+        pp.put("link", link);
+        JSONArray array = new JSONArray();
+        Map<String, JSONArray> map = Maps.newTreeMap();
+        if (typeProducts != null && typeProducts.size() > 0) {
+            for (int i = 0; i < typeProducts.size(); i++) {
+                JSONObject typeProduct = typeProducts.getJSONObject(i);
+                String typeName = typeProduct.getString("typeName");
+                JSONArray productArray = new JSONArray();
+                for (int j = 0; j <= typeProducts.size() - 1; j++) {
+                    JSONObject tpj = typeProducts.getJSONObject(j);
+                    String tNameJ = tpj.getString("typeName");
+                    JSONObject pro = new JSONObject();
+                    if (Objects.equals(typeName, tNameJ)) {
+                        pro.put("packageName", tpj.getString("name"));
+                        pro.put("premium", tpj.getString("price"));
+                        if (j <= 1) {
+                            //默认前2个做首页
+                            pro.put("isIndex", "Y");
+                            pro.put("indexPic", "aaaaaaaa");
+                        }
+                        productArray.add(pro);
+                    }
+                }
+                map.put(typeName, productArray);
+            }
+        }
+        for (String key : map.keySet()) {
+            JSONObject json = new JSONObject();
+            JSONObject pType = new JSONObject();
+            pType.put("productTypeName", key);
+            json.put("proType", pType);
+            json.put("product", map.get(key));
+            array.add(json);
+        }
+        pp.put("typeProducts", array);
+        return save(pp);
     }
 
 

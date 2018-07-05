@@ -27,6 +27,9 @@ public class StatController
         Long platformId = json.getLong("platformId");
         String action = json.getString("action");
 
+        if (userId == null || platformId == null)
+            throw new RuntimeException("userId or platformId is null");
+
         statSrv.count(new Date(), platformId, userId, action);
 
         JSONObject res = new JSONObject();

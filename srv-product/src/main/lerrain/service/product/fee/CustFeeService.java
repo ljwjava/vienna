@@ -89,4 +89,9 @@ public class CustFeeService
 	{
 		return feeDao.queryFeeByScheme(schemeId, from, num);
 	}
+
+	public List<CustFeeDefine> queryTotalFeeRate(Long productId)
+	{
+		return feeDao.queryTotalFeeRate(productId);
+	}
 }
