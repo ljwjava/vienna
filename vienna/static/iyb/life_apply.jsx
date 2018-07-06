@@ -219,6 +219,8 @@ class InsurantMore extends Form {
             v.push({name:'体重(公斤)', code:"weight", type:"text", reg:"^[1-9]{1}[0-9]{0,}$", mistake:"格式只能为整数", req:"yes", desc:"请填写体重"});
         if (env.formOpt.insurant.hasSmoke)
             v.push({name:'是否吸烟', code:"smoke", type:"switch", refresh:"yes", options: env.formOpt.insurant.smoke});
+        if (env.formOpt.insurant.hasCategory)
+            v.push({name:'体检结果', code:"insCategory", type: "switch", refresh: "yes", options: env.formOpt.insurant.category});
         return this.buildForm(v);
     }
 }

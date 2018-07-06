@@ -203,14 +203,14 @@ public class UserController {
         String loginName = json.getString("loginName");
         String password = null;
         String md5Password = json.getString("md5Password");
-        if(md5Password != null) {
-        	password = md5Password;
+        if (md5Password != null) {
+            password = md5Password;
         } else {
-	        password = json.getString("password");
-	        if (password == null) {
-	            password = PasswordUtil.createPassword();
-	        }
-	        password = Common.md5Of(password);
+            password = json.getString("password");
+            if (password == null) {
+                password = PasswordUtil.createPassword();
+            }
+            password = Common.md5Of(password);
         }
         boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
         Log.info("开通账号结果:" + result);
@@ -368,5 +368,24 @@ public class UserController {
         result.put("content", res);
         return result;
 
+    }
+
+    @RequestMapping({ "/findWxuserByOpendId.json" })
+    @ResponseBody
+    public JSONObject queryWxUserByOpenid(@RequestBody JSONObject params) {
+        Log.info("params=====" + JSON.toJSONString(params));
+        JSONObject result = new JSONObject();
+        if (params.getString("openId") == null) {
+            result.put("result", "false");
+            return result;
+        }
+        WxUser user = new WxUser();
+        user.setOpenId(params.getString("openId"));
+        List<WxUser> listWxUser = wxUserService.listWxUser(user);
+        if (listWxUser != null && !listWxUser.isEmpty()) {
+            result.put("content", listWxUser.get(0));
+        }
+        result.put("result", "success");
+        return result;
     }
 }

@@ -10,6 +10,7 @@
 		<param>
 			<pay>
 				<item code="term_10" />
+
 				<item code="term_20" />
 				<item code="term_30" />
 			</pay>
