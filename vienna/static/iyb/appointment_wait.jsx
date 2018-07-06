@@ -68,7 +68,9 @@ var Ground = React.createClass({
 		else if (t == 30)
 			s = {modify:1, title:"预约失败", text:text, memo:"", icon:"images/insure_fail.png"};
 		else if (t == 40)
-			s = {modify:0, title:"已进入人工核保", text:text, icon:"images/insure_fail.png"};
+			s = {modify:0, title:"预约取消", text:text, icon:"images/insure_fail.png"};
+		else if (t == 50)
+			s = {modify:0, title:"订单已撤销", text:text, icon:"images/insure_fail.png"};
 		else if (t == 90)
 			s = {modify:0, title:"服务器无响应", text:text, icon:"images/insure_fail.png"};
 		else if (t == 91)
@@ -93,13 +95,19 @@ var Ground = React.createClass({
                 } else if(asking % 5 == 0) {
                     common.req("order/view.json", {orderId: this.state.orderId}, r => {
                         env.order = r;
-                        if (r.status == 23) {	// 23预约告知
+                        if (r.status == 32) {	// 32体检通过
                             // r.extra = {iybOrderNo: 'IYB201710161408193477'};
                             this.finish(1, "保单号："+ r.bizNo);
+                        } else if (r.status == 31) {	// 31体检不通过
+                            this.finish(1, r.bizMsg);
                         } else if (r.status == 22) {	// 22已预约
-                            this.finish(1, r.bizMsg); //支付失败
+                            this.finish(1, r.bizMsg);
                         } else if (r.status == 24) {	// 24预约失败
-                            this.finish(30, r.bizMsg); //支付失败
+                            this.finish(30, r.bizMsg);
+                        } else if (r.status == 25) {	// 25预约取消
+                            this.finish(40, r.bizMsg);
+                        } else if (r.status == 7) {	// 7撤销订单
+                            this.finish(50, r.bizMsg);
                         } else if (r.status == 9 || r.pay == 9) {
                             this.finish(92, r.bizMsg); //未知错误
                         } else if (r.status != 2) {
