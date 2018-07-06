@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lerrain.service.common.ServiceTools;
 import lerrain.service.user.WxUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class WxUserDao {
     @Autowired
     JdbcTemplate jdbc;
 
+    @Autowired
+    ServiceTools tools;
+
     public Integer countWxUser(WxUser user) {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder("select count(*) from t_wx_user where is_deleted='N' ");
@@ -29,15 +33,15 @@ public class WxUserDao {
 
     private void addParams(WxUser user, StringBuilder sql, List<Object> params) {
         if (!StringUtils.isNullOrEmpty(user.getMobile())) {
-            sql.append("mobile = ? ");
+            sql.append("and mobile = ? ");
             params.add(user.getMobile());
         }
         if (!StringUtils.isNullOrEmpty(user.getName())) {
-            sql.append("name = ? ");
+            sql.append("and name = ? ");
             params.add(user.getName());
         }
         if (user.getOpenId() != null) {
-            sql.append("open_id = ? ");
+            sql.append("and open_id = ? ");
             params.add(user.getOpenId());
         }
         if (user.getStart() != null && user.getLimit() != null) {
@@ -70,4 +74,33 @@ public class WxUserDao {
         });
     }
 
+    public void insert(WxUser user) {
+        String sql = "INSERT INTO `t_wx_user` (`id`, `open_id`, `name`, `mobile`, `user_id`, `auth_status`, `remark`, `is_deleted`, `creator`, `gmt_created`, `modifier`, `gmt_modified`) VALUES (?, ?, ?, ?, ?, ?, ?, 'N', 'system', NOW(), 'system', NOW())";
+        jdbc.update(sql, tools.nextId("wxUser"), user.getOpenId(), user.getName(), user.getMobile(), user.getUserId(),
+                user.getAuthStatus(), user.getRemark());
+    }
+
+    public void updateByOpenId(WxUser user) {
+        StringBuilder sql = new StringBuilder("update t_wx_user set gmt_modified=NOW()");
+        List<Object> list = new ArrayList<>();
+        if (!StringUtils.isNullOrEmpty(user.getName())) {
+            sql.append(",name=?");
+            list.add(user.getName());
+        }
+        if (!StringUtils.isNullOrEmpty(user.getMobile())) {
+            sql.append(",mobile=?");
+            list.add(user.getMobile());
+        }
+        if (!StringUtils.isNullOrEmpty(user.getRemark())) {
+            sql.append(",remark=?");
+            list.add(user.getRemark());
+        }
+        if (!StringUtils.isNullOrEmpty(user.getAuthStatus())) {
+            sql.append(",auth_status=?");
+            list.add(user.getAuthStatus());
+        }
+        sql.append(" where open_id=?");
+        list.add(user.getOpenId());
+        jdbc.update(sql.toString(), list.toArray());
+    }
 }
