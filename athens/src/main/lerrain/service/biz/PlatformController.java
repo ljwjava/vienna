@@ -2,6 +2,8 @@ package lerrain.service.biz;
 
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
+import lerrain.service.common.ServiceMgr;
+import lerrain.tool.Network;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,12 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class PlatformController
 {
     @Autowired
     GatewayController gc;
+
+    @Autowired
+    ServiceMgr serviceMgr;
+
+    Map<String, Long> kv = new HashMap<>();
 
     @RequestMapping("/wx/**/*.json")
     @ResponseBody
@@ -35,7 +44,50 @@ public class PlatformController
         {
             String userKey = param.getString("userKey");
             if (userKey != null)
-                userId = 1L;
+            {
+                synchronized (kv)
+                {
+                    if (kv.containsKey(userKey))
+                        userId = kv.get(userKey);
+                }
+
+                if (userId == null)
+                {
+                    JSONObject req2 = new JSONObject();
+                    req2.put("userKey", userKey);
+                    req2.put("appCode", "proposal");
+
+                    JSONObject res2 = serviceMgr.req("user", "app/user.json", req2);
+                    if ("success".equals(res2.getString("result")))
+                    {
+                        res2 = res2.getJSONObject("content");
+                        userId = res2.getLong("userId");
+                        if (userId == null)
+                            userId = res2.getLong("originalId");
+
+                        synchronized (kv)
+                        {
+                            if (kv.size() > 100000)
+                                kv.clear();
+
+                            kv.put(userKey, userId);
+                        }
+                    }
+                }
+            }
+            else if (uri.equals("login.json"))
+            {
+                String jsCode = param.getString("jsCode");
+                JSONObject r2 = JSONObject.parseObject(Network.request("https://api.weixin.qq.com/sns/jscode2session?appid=wxc4140eb67743b792&secret=93f724e8540a1a0dec6c4413bd0688ca&js_code="+jsCode+"&grant_type=authorization_code"));
+
+                JSONObject res = new JSONObject();
+                res.put("result", "success");
+                res.put("content", r2);
+                return res;
+            }
+
+            if (userId == null)
+                throw new RuntimeException("can't init user");
 
             session.setAttribute("userId", userId);
             session.setAttribute("memberId", userId);
