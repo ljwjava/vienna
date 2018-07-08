@@ -1,241 +1,204 @@
 package lerrain.service.policy;
 
-import com.alibaba.fastjson.JSONObject;
-
 import java.util.Date;
 import java.util.List;
 
-public class Policy
-{
-    Long id;
-    Long orderId;
-    Long platformId;
+import com.alibaba.fastjson.JSONObject;
 
-    String applyNo;
-    String policyNo;
+public class Policy {
+    Long               id;
+    Long               orderId;
+    Long               platformId;
 
-    String endorseNo;
-    Date endorseTime;
+    String             applyNo;
+    String             policyNo;
 
-    String productName;
+    String             endorseNo;
+    Date               endorseTime;
 
-    int type;
-    int status;
-    int period;
+    String             productName;
 
-    JSONObject target;
-    JSONObject detail;
-    JSONObject fee;
-    JSONObject extra;
+    Integer            type;
+    Integer            status;
+    Integer            period;
 
-    double premium;
+    JSONObject         target;
+    JSONObject         detail;
+    JSONObject         fee;
+    JSONObject         extra;
 
-    Date insureTime;
-    Date effectiveTime;
-    Date finishTime;
+    Double             premium;
 
-    Long vendorId;
-    Long agencyId;
+    Date               insureTime;
+    Date               effectiveTime;
+    Date               finishTime;
 
-    Long owner;
-    Long ownerOrg;
-    Long ownerCompany;
+    Long               vendorId;
+    Long               agencyId;
+
+    Long               owner;
+    Long               ownerOrg;
+    Long               ownerCompany;
 
     List<PolicyClause> clauses;
 
     //自动替代
 
-    String applicantName;
-    String applicantMobile;
-    String applicantEmail;
-    String applicantCertNo;
-    String applicantCertType;
+    String             applicantName;
+    String             applicantMobile;
+    String             applicantEmail;
+    String             applicantCertNo;
+    String             applicantCertType;
 
-    String insurantName;
-    String insurantCertNo;
-    String insurantCertType;
+    String             insurantName;
+    String             insurantCertNo;
+    String             insurantCertType;
 
-    String vehicleEngineNo;
-    String vehicleFrameNo;
-    String vehiclePlateNo;
+    String             vehicleEngineNo;
+    String             vehicleFrameNo;
+    String             vehiclePlateNo;
 
-    public String getProductName()
-    {
+    public String getProductName() {
         return productName;
     }
 
-    public void setProductName(String productName)
-    {
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public String getApplicantName()
-    {
+    public String getApplicantName() {
         return applicantName;
     }
 
-    public void setApplicantName(String applicantName)
-    {
+    public void setApplicantName(String applicantName) {
         this.applicantName = applicantName;
     }
 
-    public String getApplicantMobile()
-    {
+    public String getApplicantMobile() {
         return applicantMobile;
     }
 
-    public void setApplicantMobile(String applicantMobile)
-    {
+    public void setApplicantMobile(String applicantMobile) {
         this.applicantMobile = applicantMobile;
     }
 
-    public List<PolicyClause> getClauses()
-    {
+    public List<PolicyClause> getClauses() {
         return clauses;
     }
 
-    public void setClauses(List<PolicyClause> clauses)
-    {
+    public void setClauses(List<PolicyClause> clauses) {
         this.clauses = clauses;
     }
 
-    public String getApplicantEmail()
-    {
+    public String getApplicantEmail() {
         return applicantEmail;
     }
 
-    public void setApplicantEmail(String applicantEmail)
-    {
+    public void setApplicantEmail(String applicantEmail) {
         this.applicantEmail = applicantEmail;
     }
 
-    public String getApplicantCertNo()
-    {
+    public String getApplicantCertNo() {
         return applicantCertNo;
     }
 
-    public void setApplicantCertNo(String applicantCertNo)
-    {
+    public void setApplicantCertNo(String applicantCertNo) {
         this.applicantCertNo = applicantCertNo;
     }
 
-    public String getApplicantCertType()
-    {
+    public String getApplicantCertType() {
         return applicantCertType;
     }
 
-    public void setApplicantCertType(String applicantCertType)
-    {
+    public void setApplicantCertType(String applicantCertType) {
         this.applicantCertType = applicantCertType;
     }
 
-    public String getEndorseNo()
-    {
+    public String getEndorseNo() {
         return endorseNo;
     }
 
-    public void setEndorseNo(String endorseNo)
-    {
+    public void setEndorseNo(String endorseNo) {
         this.endorseNo = endorseNo;
     }
 
-    public Date getEndorseTime()
-    {
+    public Date getEndorseTime() {
         return endorseTime;
     }
 
-    public void setEndorseTime(Date endorseTime)
-    {
+    public void setEndorseTime(Date endorseTime) {
         this.endorseTime = endorseTime;
     }
 
-    public int getPeriod()
-    {
+    public Integer getPeriod() {
         return period;
     }
 
-    public void setPeriod(int period)
-    {
+    public void setPeriod(Integer period) {
         this.period = period;
     }
 
-    public String getInsurantName()
-    {
+    public String getInsurantName() {
         return insurantName;
     }
 
-    public void setInsurantName(String insurantName)
-    {
+    public void setInsurantName(String insurantName) {
         this.insurantName = insurantName;
     }
 
-    public String getInsurantCertNo()
-    {
+    public String getInsurantCertNo() {
         return insurantCertNo;
     }
 
-    public void setInsurantCertNo(String insurantCertNo)
-    {
+    public void setInsurantCertNo(String insurantCertNo) {
         this.insurantCertNo = insurantCertNo;
     }
 
-    public String getInsurantCertType()
-    {
+    public String getInsurantCertType() {
         return insurantCertType;
     }
 
-    public void setInsurantCertType(String insurantCertType)
-    {
+    public void setInsurantCertType(String insurantCertType) {
         this.insurantCertType = insurantCertType;
     }
 
-    public int getStatus()
-    {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status)
-    {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public String getVehicleFrameNo()
-    {
+    public String getVehicleFrameNo() {
         return vehicleFrameNo;
     }
 
-    public void setVehicleFrameNo(String vehicleFrameNo)
-    {
+    public void setVehicleFrameNo(String vehicleFrameNo) {
         this.vehicleFrameNo = vehicleFrameNo;
     }
 
-    public String getVehiclePlateNo()
-    {
+    public String getVehiclePlateNo() {
         return vehiclePlateNo;
     }
 
-    public void setVehiclePlateNo(String vehiclePlateNo)
-    {
+    public void setVehiclePlateNo(String vehiclePlateNo) {
         this.vehiclePlateNo = vehiclePlateNo;
     }
 
-    public String getVehicleEngineNo()
-    {
+    public String getVehicleEngineNo() {
         return vehicleEngineNo;
     }
 
-    public void setVehicleEngineNo(String vehicleEngineNo)
-    {
+    public void setVehicleEngineNo(String vehicleEngineNo) {
         this.vehicleEngineNo = vehicleEngineNo;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -247,173 +210,139 @@ public class Policy
         this.orderId = orderId;
     }
 
-    public Long getPlatformId()
-    {
+    public Long getPlatformId() {
         return platformId;
     }
 
-    public void setPlatformId(Long platformId)
-    {
+    public void setPlatformId(Long platformId) {
         this.platformId = platformId;
     }
 
-    public String getApplyNo()
-    {
+    public String getApplyNo() {
         return applyNo;
     }
 
-    public void setApplyNo(String applyNo)
-    {
+    public void setApplyNo(String applyNo) {
         this.applyNo = applyNo;
     }
 
-    public String getPolicyNo()
-    {
+    public String getPolicyNo() {
         return policyNo;
     }
 
-    public void setPolicyNo(String policyNo)
-    {
+    public void setPolicyNo(String policyNo) {
         this.policyNo = policyNo;
     }
 
-    public int getType()
-    {
+    public int getType() {
         return type;
     }
 
-    public void setType(int type)
-    {
+    public void setType(int type) {
         this.type = type;
     }
 
-    public JSONObject getTarget()
-    {
+    public JSONObject getTarget() {
         return target;
     }
 
-    public void setTarget(JSONObject target)
-    {
+    public void setTarget(JSONObject target) {
         this.target = target;
     }
 
-    public JSONObject getDetail()
-    {
+    public JSONObject getDetail() {
         return detail;
     }
 
-    public void setDetail(JSONObject detail)
-    {
+    public void setDetail(JSONObject detail) {
         this.detail = detail;
     }
 
-    public JSONObject getFee()
-    {
+    public JSONObject getFee() {
         return fee;
     }
 
-    public void setFee(JSONObject fee)
-    {
+    public void setFee(JSONObject fee) {
         this.fee = fee;
     }
 
-    public JSONObject getExtra()
-    {
+    public JSONObject getExtra() {
         return extra;
     }
 
-    public void setExtra(JSONObject extra)
-    {
+    public void setExtra(JSONObject extra) {
         this.extra = extra;
     }
 
-    public double getPremium()
-    {
+    public Double getPremium() {
         return premium;
     }
 
-    public void setPremium(double premium)
-    {
+    public void setPremium(Double premium) {
         this.premium = premium;
     }
 
-    public Date getInsureTime()
-    {
+    public Date getInsureTime() {
         return insureTime;
     }
 
-    public void setInsureTime(Date insureTime)
-    {
+    public void setInsureTime(Date insureTime) {
         this.insureTime = insureTime;
     }
 
-    public Date getEffectiveTime()
-    {
+    public Date getEffectiveTime() {
         return effectiveTime;
     }
 
-    public void setEffectiveTime(Date effectiveTime)
-    {
+    public void setEffectiveTime(Date effectiveTime) {
         this.effectiveTime = effectiveTime;
     }
 
-    public Date getFinishTime()
-    {
+    public Date getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(Date finishTime)
-    {
+    public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
     }
 
-    public Long getVendorId()
-    {
+    public Long getVendorId() {
         return vendorId;
     }
 
-    public void setVendorId(Long vendorId)
-    {
+    public void setVendorId(Long vendorId) {
         this.vendorId = vendorId;
     }
 
-    public Long getAgencyId()
-    {
+    public Long getAgencyId() {
         return agencyId;
     }
 
-    public void setAgencyId(Long agencyId)
-    {
+    public void setAgencyId(Long agencyId) {
         this.agencyId = agencyId;
     }
 
-    public Long getOwner()
-    {
+    public Long getOwner() {
         return owner;
     }
 
-    public void setOwner(Long owner)
-    {
+    public void setOwner(Long owner) {
         this.owner = owner;
     }
 
-    public Long getOwnerOrg()
-    {
+    public Long getOwnerOrg() {
         return ownerOrg;
     }
 
-    public void setOwnerOrg(Long ownerOrg)
-    {
+    public void setOwnerOrg(Long ownerOrg) {
         this.ownerOrg = ownerOrg;
     }
 
-    public Long getOwnerCompany()
-    {
+    public Long getOwnerCompany() {
         return ownerCompany;
     }
 
-    public void setOwnerCompany(Long ownerCompany)
-    {
+    public void setOwnerCompany(Long ownerCompany) {
         this.ownerCompany = ownerCompany;
     }
 }

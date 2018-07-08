@@ -10,6 +10,7 @@
 		<param>
 			<pay>
 				<item code="term_10" />
+
 				<item code="term_20" />
 				<item code="term_30" />
 			</pay>
@@ -23,7 +24,7 @@
 
 		<init>
 			<item name="A_CITY" value="['1101','1102','3101','3102','4401','4403']"/>
-			<item name="B_CITY" value="['1201','1202','5001','5002','5003']"/>
+			<item name="B_CITY" value="['1201','1202','2102','3302','3502','3702','5001','5002','5003']"/>
 		</init>
 		
 		<interest>
@@ -77,7 +78,7 @@
 							return '被保人年龄25-40周岁，普通地区最高保额为80万。';
 						}
 					}
-					if(AGE >= 41 and AGE lt 50){
+					if(AGE >= 41 and AGE le 50){
 						if(city ==	1 and AMOUNT >1000000){
 							return '被保人年龄41-50周岁，一线城市最高保额为100万。';
 						}
@@ -90,9 +91,23 @@
 					}
 				}
 			</if>
-            <if condition="PAY_PERIOD+AGE > 60">
-                被保人年龄+交费期间≤60周岁
-            </if>
+			<if>
+				if(INSURE_VALUE == 30 and AGE > 40){
+					return '当保险期间为30年时，被保人年龄≤40周岁';
+				}
+				if(INSURE_VALUE == 30 and PAY_PERIOD+AGE > 70){
+					return '被保人年龄+交费期间≤70周岁';
+				}
+				if(INSURE_VALUE == 60 and PAY_PERIOD+AGE > 60){
+					return '被保人年龄+交费期间≤60周岁';
+				}
+				if(INSURE_VALUE == 65 and PAY_PERIOD+AGE > 65){
+					return '被保人年龄+交费期间≤65周岁';
+				}
+				if(INSURE_VALUE == 70 and PAY_PERIOD+AGE > 70){
+					return '被保人年龄+交费期间≤70周岁';
+				}
+			</if>
 			<if condition="INSURANT.OCCUPATION_L != null and (val(INSURANT.OCCUPATION_L) lt 1 or val(INSURANT.OCCUPATION_L) > 4)">
 				职业要求为1~4类
 			</if>

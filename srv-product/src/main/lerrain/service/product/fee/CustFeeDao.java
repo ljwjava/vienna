@@ -177,4 +177,27 @@ public class CustFeeDao
 			}
 		});
 	}
+
+	public List<CustFeeDefine> queryTotalFeeRate(Long productId)
+	{
+		String sql = "select * from t_cs_product_rate where is_deleted = 'N' and product_id = ?";
+
+		return jdbc.queryForObject(sql, new RowMapper<List<CustFeeDefine>>()
+		{
+			@Override
+			public List<CustFeeDefine> mapRow(ResultSet rs, int j) throws SQLException
+			{
+				String str = rs.getString("content");
+				List<CustFeeDefine> list = JSON.parseArray(str, CustFeeDefine.class);
+
+				for (CustFeeDefine cfd : list)
+				{
+					cfd.setProductId(rs.getLong("product_id"));
+				}
+
+				return list;
+			}
+
+		}, productId);
+	}
 }
