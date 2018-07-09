@@ -170,6 +170,19 @@ var Ground = React.createClass({
 			ToastIt("请检查支付信息");
 			return;
 		}
+        if(env.company == "fosun"){
+            console.info(!this.refs.chosePay1);
+            if(!this.refs.chosePay1 && !this.refs.chosePay.checked){
+                ToastIt("请选择支付方式");
+                return;
+            }else if(!this.refs.chosePay.checked && !this.refs.chosePay1.checked){
+                ToastIt("请选择支付方式");
+                return;
+            }
+            env.order.extra.chosePay=this.state.chose;
+
+        }
+
 		if (!this.refs.agree.checked) {
 			ToastIt("请确认客户声明信息");
 			return;
@@ -201,6 +214,8 @@ var Ground = React.createClass({
                 return;
 			}
 		}
+
+
 		if (this.refs.photos) {
             env.order.extra.photos = this.refs.photos.val();
             if(env.order.extra.photos.length < 2) {
@@ -330,6 +345,10 @@ var Ground = React.createClass({
             iHealthBridge.doAction("share", JSON.stringify(shareObj));
 		}
 	},
+
+    handlerChange: function(event) {
+        this.setState({chose: event.target.value});
+    },
 	render() {
 		let docs = [];
 		if (env.order.detail.read) for (let d in env.order.detail.read) {
@@ -446,6 +465,17 @@ var Ground = React.createClass({
 						<Photo ref="photos" value={env.order.extra.photos}/>{/* onChange={this.changePhotos}*/}
 					</div>
 				}
+
+                { env.company != "fosun"  ? null :
+                    <div className="title">支付选择</div>
+                }
+
+                {env.company != "fosun" ? null :
+					 <div className="view">
+                      <label><input id="r1" style={{"vertical-align": "middle","margin-bottom": "5px"}} type="radio" value="3" name="chosePay" ref="chosePay" onChange={this.handlerChange}/>银联</label>
+                         {!common.isWeixin() ? null : <label> <input id="r2" style={{"vertical-align": "middle","margin-bottom": "5px"}} type="radio" value="2" name="chosePay" ref="chosePay1" onChange={this.handlerChange}/>微信</label> }
+                    </div>
+                }
 				<div className="title">客户声明信息</div>
 				<div className="view">
 					<div className="doc">
