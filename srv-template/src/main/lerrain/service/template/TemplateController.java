@@ -233,7 +233,7 @@ public class TemplateController {
         t.setBanner(banner.toJSONString());
         Long id = templateSrv.saveOpUpdate(t);
         t.setId(id);
-        link = link + "&accountId=" + userId + "&templateId=" + id;
+        link = link + "?accountId=" + userId + "&templateId=" + id;
         t.setLink(link);
         templateSrv.saveOpUpdate(t);
 
