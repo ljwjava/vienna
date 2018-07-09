@@ -153,29 +153,28 @@ class Main extends React.Component {
                         <div className="ml-1 lh-40">责任条款</div>
                     </div>
                     <div className="ml-1 mr-1 pt-2 pb-2 bg-white" style={{border:"#dddddd 1px solid"}}>
-                      { !this.state.coverage ? null : this.state.coverage.map((v, i) =>
-                        <div className="pl-2 pr-2 bg-white">
-                          <div style={{marginTop:(i!=0?10:0)+"px"}}>
-                            <div className="text17 lh-60 center pl-3 pr-3 ml-3 mr-3 mt-1 mb-2 tc-primary bg-white" style={{border:"#00aff9 1px solid", borderRadius:"30px"}}>{v.productName}</div>
-                          </div>
-                          { v.content.map((x, j) =>
-                            <div style={{background:"#fff"}}>
-                              <div className="divx h-60" onClick={this.showCoverageDetail.bind(this, i, j)}>
-                                <div className="text17 mt-1 mb-1 lh-40 center bg-primary tc-white" style={{width:"40px", borderRadius:"20px"}}>{j+1}</div>
-                                <div className="text17 ml-1 lh-60 tc-primary">{x.title}</div>
-                                <div className="ml-auto mr-1 pt-1 pm-1">
-                                    <img style={{width:"40px",height:"40px"}} src={x.show?"../images/arrow-7-up.png":"../images/arrow-7-down.png"}/>
+                        { !this.state.coverage ? null : this.state.coverage.map((v, i) =>
+                            <div className="pl-2 pr-2 bg-white">
+                                <div style={{marginTop:(i!=0?10:0)+"px"}}>
+                                    <div className="text17 lh-60 center pl-3 pr-3 ml-3 mr-3 mt-1 mb-2 tc-primary bg-white" style={{border:"#00aff9 1px solid", borderRadius:"30px"}}>{v.productName}</div>
                                 </div>
-                              </div>
-                              { !x.show ? null : x.content.map((y, k) =>
-                                <div className="text16">　　{y.text}</div>
-                              )}
-                              <div style={{height:"10px"}}></div>
+                                { v.content.map((x, j) =>
+                                    <div style={{background:"#fff"}}>
+                                        <div className="divx h-60" onClick={this.showCoverageDetail.bind(this, i, j)}>
+                                            <div className="pt-1 pm-1">
+                                                <img style={{width:"40px",height:"40px"}} src={x.show?"../images/arrow-7-up.png":"../images/arrow-7-down.png"}/>
+                                            </div>
+                                            <div className="text17 ml-1 lh-60 tc-primary">{x.title}</div>
+                                        </div>
+                                        { !x.show ? null : x.content.map((y, k) =>
+                                            <div className="text16">　　{y.text}</div>
+                                        )}
+                                        <div style={{height:"10px"}}></div>
+                                    </div>
+                                )}
+                                <div style={{height:"10px"}}></div>
                             </div>
-                          )}
-                          <div style={{height:"10px"}}></div>
-                        </div>
-                      )}
+                        )}
                     </div>
 
                     <div className="divx mt-1 p-2">
@@ -186,7 +185,7 @@ class Main extends React.Component {
                     　　免除保险公司责任条款、犹豫期、解除合同的手续及风险、费用扣除等内容，请您仔细阅读保险合同。本演示说明仅供参考，具体保险责任、免除保险公司责任的条款等内容以正式保险合同为准。
                     </div>
 
-                    <div className="h-60"></div>
+                    <div className="h-100"></div>
 
                     <div className="bottom">
                         <div className="divx" style={{width:"550px"}}>
