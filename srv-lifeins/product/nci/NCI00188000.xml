@@ -136,11 +136,11 @@
 			
 			<benefit_chart filter="chart" parser="chart">
 			    <chart from="0" to="INSURE_PERIOD-1" name="I">
-					<bar name="身故保额" color="#00AA00">IT.SGBXJ(I)</bar>
-					<line name="保单账户价值(低)" color="#0088DD">IT.FJSYND(I)</line>
-					<line name="保单账户价值(中)" color="#0099EE">IT.FJSYNZ(I)</line>
-					<line name="保单账户价值(高)" color="#00AAFF">IT.FJSYNG(I)</line>
+					<line name="账户价值低" color="#0088DD">IT.FJSYND(I)</line>
+					<line name="账户价值中" color="#0099EE">IT.FJSYNZ(I)</line>
+					<line name="账户价值高" color="#00AAFF">IT.FJSYNG(I)</line>
 					<line name="累计保费" color="red">IT.ADP(I)</line>
+					<line name="现金价值" color="#00AA00">IT.XJJZ(I)</line>
 				</chart>
 			</benefit_chart>
 		</attachment>
