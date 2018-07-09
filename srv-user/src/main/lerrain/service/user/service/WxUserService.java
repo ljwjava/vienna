@@ -23,4 +23,13 @@ public class WxUserService {
         return wxUserDao.listWxUser(user);
     }
 
+    public void insert(WxUser user) {
+        wxUserDao.insert(user);
+
+    }
+
+    public void updateByOpenId(WxUser user) {
+        wxUserDao.updateByOpenId(user);
+    }
+
 }
