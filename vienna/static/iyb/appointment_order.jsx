@@ -345,6 +345,13 @@ var Ground = React.createClass({
             preShow = "续期";
 		}
 
+		let insCategoryMap = {
+		    "T1": "标准体",
+		    "T2": "优选体",
+		    "T3": "超优体"
+        };
+		let insCategory = insCategoryMap[env.order.detail.factors.INS_CATEGORY];
+
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="title">投保人信息</div>
@@ -358,9 +365,9 @@ var Ground = React.createClass({
 					<div><span>　出生日期</span>{env.order.detail.applicant.birthday}</div>
                     {env.order.detail.applicant.cityName == null ? null : <div><span>　所在城市</span>{env.order.detail.applicant.cityName}</div>}
 					<div><span>　详细地址</span>{env.order.detail.applicant.address}</div>
-					<div><span>　评定结果</span>{env.order.detail.applicant.address}</div>
-					<div><span>　是否吸烟体</span>{env.order.detail.applicant.address}</div>
-					<div><span>　保额</span>{env.order.detail.applicant.address}</div>
+					<div><span>　评定结果</span>{insCategory != null ? insCategory : ""}</div>
+					<div><span>　是否吸烟体</span>{env.order.detail.factors.SMOKE == "1" ? "吸烟体" : (env.order.detail.factors.SMOKE == "2" ? "非吸烟体" : "")}</div>
+					<div><span>　保额</span>{env.order.detail.factors.AMOUNT != null ? env.order.detail.factors.AMOUNT + "万" : ""}</div>
 				</div>
 				{/*<div className="view">
 					<div><span>通讯信息</span></div>
@@ -394,7 +401,7 @@ var Ground = React.createClass({
 });
 
 $(document).ready( function() {
-	common.req("order/view.json", {orderId: common.param("orderId")}, r => {
+	common.req("order/view.json", {orderId: common.param("orderId"), oSign: common.param("oSign")}, r => {
 		env.order = r;
 		if(r.detail.vendor != null && r.detail.vendor.code != null){
             env.company = r.detail.vendor.code;
@@ -403,11 +410,13 @@ $(document).ready( function() {
 		ReactDOM.render(
 			<Ground/>, document.getElementById("content")
 		);
-	});
+	}, er =>{
+        ToastIt(er);
+    });
 
-	document.title = "投保确认";
+	document.title = "订单确认";
 	if ("undefined" != typeof iHealthBridge) {
-		IYB.setTitle("投保确认");
+		IYB.setTitle("订单确认");
         window.IYB.setRightButton(JSON.stringify([]));
 	}
 });
