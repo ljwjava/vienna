@@ -170,6 +170,19 @@ var Ground = React.createClass({
 			ToastIt("请检查支付信息");
 			return;
 		}
+        if(env.company == "fosun"){
+            console.info(!this.refs.chosePay1);
+            if(!this.refs.chosePay1 && !this.refs.chosePay.checked){
+                ToastIt("请选择支付方式");
+                return;
+            }else if(!this.refs.chosePay.checked && !this.refs.chosePay1.checked){
+                ToastIt("请选择支付方式");
+                return;
+            }
+            env.order.extra.chosePay=this.state.chose;
+
+        }
+
 		if (!this.refs.agree.checked) {
 			ToastIt("请确认客户声明信息");
 			return;
@@ -202,15 +215,7 @@ var Ground = React.createClass({
 			}
 		}
 
-        if(env.company == "fosun"){
-			console.info(this.refs.chosePay);
-        	 if(!this.refs.chosePay.checked && !this.refs.chosePay1.checked){
-        		ToastIt("请选择支付方式");
-                 return;
-             }
-            env.order.extra.chosePay=this.state.chose;
 
-        }
 		if (this.refs.photos) {
             env.order.extra.photos = this.refs.photos.val();
             if(env.order.extra.photos.length < 2) {
