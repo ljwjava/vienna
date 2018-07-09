@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<product 
+		code="00555000" 
+		corporation_id="nci" 
+		id="NCI00555000"
+		last_modify_date=""
+		magnumExempt="0"
+		is_main="yes" 
+		is_rider="no"
+		magnumJuvenilesRisk="false" 
+		magnumProductType="LIFE,CI"
+		name="新产品05重大疾病保险" 
+		name_abbr="新产品05"
+		premium="DS.DATA[0,0]*QUANTITY"
+		unit="10000"
+		amount="100000"
+		sale_begin_date="2016-4-21" 
+		sale_end_date="" 
+		type_code="healthins,common"> 
+		<data>
+			<item parser="dds" value="NCI00555000"/>
+		</data>
+
+		<param>
+			<pay>
+			    <item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+			</pay>
+			<insure>
+			    <item code="to_full"/>
+			</insure>
+		</param>
+
+		<interest>
+			<var formula="min(0.2*AMOUNT, 200000)" name="MILD_AMOUNT" type="double"/> <!--轻症疾病保险金-->
+			<var formula="(I >= 10?0:AMOUNT)*0.5" name="F10_AMOUNT" param="I" type="double"/> <!--前十年关爱保险金-->
+			<var formula="0.2*AMOUNT" name="SPECIAL_AMOUNT" param="A1" type="double"/> <!--特定严重疾病保险金-->
+			<var formula="DS.DATA1[A1,0]*QUANTITY" name="CV" param="A1" type="double"/> <!--现金价值-->
+		</interest>
+		<attachment>
+			<benefit_table filter="table" parser="table">
+			<table>
+					<row type="title">
+						<blank col="1" row="3">'保单年度末'</blank>
+						<blank col="1" row="3">'年龄'</blank>
+						<blank col="1" row="3">'当年保费'</blank>
+						<blank col="1" row="3">'累计保费'</blank>
+						<blank col="2" row="1">'第一至五组'</blank>
+						<blank col="1" row="3">'前十年关爱保\n险金'</blank>
+						<blank col="1" row="3">'特定严重疾病\n保险金'</blank>
+						<blank col="1" row="3">'身故保险金'</blank>
+						<blank col="1" row="3">'现金价值'</blank>
+					</row>
+				
+					<row type="title">
+						<blank col="1" row="2">'轻症疾病保\n险金'</blank>
+						<blank col="1" row="2">'重大疾病保\n险金'</blank>
+					</row>
+					
+					<loop from="1" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+						   <blank style="##0">I</blank>
+							<blank style="##0">AGE+I</blank>
+							<blank align="right" style="########0">I > PAY_PERIOD?0:PREMIUM</blank>
+							<blank align="right" style="########0">I > PAY_PERIOD?IT.ADP[I]:PREMIUM*I</blank>
+						  	<blank align="right" style="########0">0.2*AMOUNT lt 200000 ? 0.2*AMOUNT:200000</blank>
+							<blank align="right" style="########0">AMOUNT</blank>
+							<blank align="right" style="########0">(I > 10?0:AMOUNT)*0.5</blank> 
+							<blank align="right" style="########0">0.2*AMOUNT</blank>
+							<blank align="right" style="########0">AMOUNT</blank>
+							<blank align="right" style="########0">IT.XJJZ[I]*AMOUNT/10000</blank>
+					    </row>
+					</loop>
+				</table>
+				<text>1、利益演示表中的轻症疾病保险金、重大疾病保险及身故保险金的给付金均为：在保险期间内，合同初次发生理赔时的金额；</text>
+				<text>2、如已发生保险金给付的，您不得要求解除合同；</text>
+				<text>3、合同所指的特定严重疾病， 是指下列疾病、疾病状态或手术： 脑癌、 骨癌、 白血病、 胰腺癌、 重大器官移植术或造血干细胞移植术和冠状动脉搭桥术 （或称冠状动脉旁路移植术）。</text>
+			</benefit_table>
+			<coverage filter="coverage" parser="coverage">
+					<paragraph title="1、疾病保险金">
+						<item>合同疾病保险金包括轻症疾病保险金和重大疾病保险金。疾病保险金保障的疾病范围包括合同所指的轻症疾病和合同所指的重大疾病，所有疾病分为5组（详见附表《疾病分组与给付限额表》）。在合同保险期间内，本公司按下列规定承担给付疾病保险金责任：</item>
+					<item> </item>
+					</paragraph>
+					
+					<paragraph title="疾病保险金单一组别给付限额和累计给付限额">
+						<item>在合同保险期间内，本公司对《疾病分组与给付限额表》中单一组别内所有疾病（包括该组别中的轻症疾病和重大疾病，下同）累计给付的疾病保险金（包括轻症疾病保险金和重大疾病保险金之和，下同）以该组别对应的单一组别给付限额为限；本公司对单一组别内所有疾病累计给付的疾病保险金达到该组别对应的单一组别给付限额时，本公司对该组别内的各项疾病不再承担给付疾病保险金责任。</item>
+						<item>单一组别给付限额是指在合同保险期间内，本公司按照合同疾病保险金给付规定，对某一组别内所有疾病（包括该组别中的轻症疾病和重大疾病）累计给付的疾病保险金（包括轻症疾病保险金和重大疾病保险金之和）的上限，各组别对应的单一组别给付限额具体见《疾病分组与给付限额表》。</item>
+						<item>在合同保险期间内，本公司对《疾病分组与给付限额表》中所有疾病的疾病保险金累计给付限额，按下列规定确定：</item>
+						<item>1、被保险人85周岁保单生效对应日之前，本公司累计给付的疾病保险金以各组别对应的单一组别给付限额之和为限，本公司累计给付的疾病保险金达到各组别对应的单一组别给付限额之和时，本合同终止；</item>
+						<item>2、被保险人85周岁保单生效对应日及以后，本公司自合同生效之日起累计给付的疾病保险金（包括被保险人85周岁保单生效对应日之前和之后给付金额之和）以基本保险金额为限，本公司自合同生效之日起累计给付的疾病保险金达到基本保险金额时，合同终止。</item>
+						<item>被保险人85周岁保单生效对应日零时，   如本公司自合同生效之日起累计给付的疾病保险金已达到或超过基本保险金额，   合同自被保险人85周岁保单生效对应日零时终止。</item>
+						<item> </item>
+					</paragraph>
+					<paragraph title="轻症疾病保险金">
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内因疾病原因，由本公司认可医院的专科医生确诊初次发生合同所指的轻症疾病（无论一项或多项），本公司不承担给付轻症疾病保险金责任，合同继续有效。</item>
+						<item>被保险人于合同生效 （或合同效力恢复）  之日起90日内因意外伤害原因，   或于合同生效（或合同效力恢复）之日起90日后，由本公司认可医院的专科医生确诊初次发生合同所指的轻症疾病（无论一项或多项），  本公司按基本保险金额的20%给付轻症疾病保险金，且应符合合同疾病保险金单一组别给付限额和累计给付限额的规定。</item>
+						<item>在合同保险期间内，  本公司对每项轻症疾病给付次数以一次为限，   每项轻症疾病保险金给付金额不超过20万元人民币。</item>
+					<item> </item>
+					</paragraph>
+					<paragraph title="重大疾病保险金">
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内因疾病原因，  由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病（无论一项或多项），  本公司给付重大疾病保险金， 其金额为本保险实际交纳的保险费的1.1倍， 合同终止。</item>
+						<item>被保险人于合同生效 （或合同效力恢复） 之日起90日内因意外伤害原因， 或于合同生效（或合同效力恢复） 之日起90日后，由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病（无论一项或多项），本公司按下列规定给付重大疾病保险金，且应符合合同疾病保险金单一组别给付限额和累计给付限额的规定：</item>
+						<item>1、若该项重大疾病确诊初次发生日期在被保险人85周岁保单生效对应日之前，本公司按基本保险金额与该项重大疾病所属组别对应的单一组别给付限额的余额二者之较小者，给付重大疾病保险金。</item>
+						<item>单一组别给付限额的余额指单一组别给付限额减去该组别疾病累计已给付的疾病保险金后的余额。</item>
+						<item>2、若该项重大疾病确诊初次发生日期在被保险人85周岁保单生效对应日及以后，本公司按基本保险金额减去自合同生效之日起累计给付的疾病保险金（包括被保险人85周岁保单生效对应日之前和之后给付金额之和）后的余额，给付重大疾病保险金，合同终止。</item>
+					<item> </item>
+					</paragraph>
+					
+					<paragraph title="疾病保险金给付特别约定">
+						<item>1、在合同保险期间内，  被保险人多次确诊初次发生合同所指的重大疾病，对于相邻两次确诊初次发生的重大疾病，  当且仅当后项重大疾病确诊初次发生日期满足以下条件时，  本公司按重大疾病保险金给付规定对后项重大疾病承担保险责任：</item>
+						<item>（1）如前项重大疾病为合同所指的恶性肿瘤，  后项重大疾病属于 《疾病分组与给付限额表》 中所列第四组重大疾病（与主要器官及功能相关的疾病）之一，后项重大疾病确诊初次发生日期自前项重大疾病确诊初次发生日期已届满5年；</item>
+						<item>（2）除上述第（1）项情形之外，后项重大疾病确诊初次发生日期自前项重大疾病确诊初次发生日期已届满1年。</item>
+						<item>被保险人在保险期间内确诊初次发生合同所指的恶性肿瘤之后，再次确诊恶性肿瘤且后次确诊满足5年恶性肿瘤等待期的，则后次确诊恶性肿瘤视同初次发生；如后次确诊恶性肿瘤不满足5年恶性肿瘤等待期的，则后次确诊不视同初次发生。 </item>
+						<item>2、被保险人由于同一疾病原因、同次医疗行为或同次意外伤害事故，确诊初次发生一项或多项合同所指的轻症疾病或合同所指的重大疾病，本公司按轻症疾病保险金或重大疾病保险金规定，仅给付其中金额最高的一项保险金。</item>
+					<item> </item>
+					</paragraph>
+					
+					<paragraph title="2、身故保险金">
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内，因疾病原因身故，本公司给付身故保险金，其金额为本保险实际交纳的保险费的1.1倍，合同终止。</item>
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内因意外伤害原因身故，或于合同生效（或合同效力恢复）之日起90日后身故，本公司按基本保险金额减去累计已给付的合同第1条规定的疾病保险金后的余额（如果基本保险金额低于累计已给付的疾病保险金的，余额视同为零）给付身故保险金，合同终止。</item>
+					<item> </item>
+					</paragraph>
+				
+					<paragraph title="3、前10年关爱保险金">
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内且于第10个保单生效对应日零时之前因意外伤害原因，或于合同生效（或合同效力恢复）之日起90日后且于第10个保单生效对应日零时之前，由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病（无论一项或多项）并按合同第1条规定给付重大疾病保险金的，本公司将同时给付前10年关爱保险金，其金额为基本保险金额的50%，本项保险责任终止。</item>
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内因意外伤害原因，或于合同生效（或合同效力恢复）之日起90日后且于第10个保单生效对应日零时之前身故，并且符合合同第2条身故保险金给付条件的，本公司将同时给付前10年关爱保险金，其金额为基本保险金额的50%，本项保险责任终止。</item>
+						<item>在合同保险期间内，前10年关爱保险金给付次数以一次为限。</item>
+					<item> </item>
+					</paragraph>
+					<paragraph title="4、特定严重疾病保险金">
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内因意外伤害原因，或于合同生效（或合同效力恢复）之日起90日后，由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病并按合同第1条规定给付重大疾病保险金的，如果上述所确诊的重大疾病同时符合合同所指的特定严重疾病（无论一项或多项），本公司将同时给付特定严重疾病保险金，其金额为基本保险金额的20%，本项保险责任终止。</item>
+						<item>被保险人于合同生效（或合同效力恢复）之日起90日内且于第10个保单生效对应日零时之前因意外伤害原因，或于合同生效（或合同效力恢复）之日起90日后且于第10个保单生效对应日零时之前身故，并且符合合同第2条身故险金给付条件的，本公司将同时给付前10年关爱保险金，其金额为基本保险金额的50%，本项保险责任终止。</item>
+						<item>在合同保险期间内，特定严重疾病保险金给付次数以一次为限。</item>
+					<item> </item>
+					</paragraph>
+					
+					<paragraph title="5、豁免保险费">
+						<item>在合同交费期间内，如本公司按合同第1条规定累计给付的疾病保险金达到基本保险金额时，您可免交后续保险费，合同继续有效。</item>
+						<item> </item>
+					    <item> </item>
+						<item> </item>
+						<item> </item>
+					    <item> </item>
+						<table>
+							
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>'年龄'</blank> 
+								<blank>'第一至五组'</blank>
+								<blank>''</blank> 
+								<blank>'前10年\n关爱保\n险金'</blank> 
+								<blank>'特定严\n重疾病\n保险金'</blank> 
+								<blank>'身故金'</blank> 
+								
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>'轻症疾\n病保险金'</blank> 
+								<blank>'重大疾\n病保险金'</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>'90日（含）\n内因疾\n病'</blank> 
+								<blank>'不承担\n相应保\n险责任'</blank> 
+								<blank>PR_EMIUM</blank> 
+								<blank>'不承担\n相应保\n险责任'</blank>
+								<blank>'不承担\n相应保\n险责任'</blank>
+								<blank>PR_EMIUM</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank>
+								<blank>''</blank>
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>'85周岁\n保单生\n效对应\n日之前'</blank> 
+								<blank>'90日（含）\n内因意\n外伤害\n原因或\n90日后'</blank> 
+								<blank>case(0.2*AMOUNT lt 200000,0.2*AMOUNT,200000)+'元'</blank> 
+								<blank>AMOUNT+'元'</blank> 
+								<blank>'且于第10个保\n单年度（含）前，\n重疾或身故：\n' +0.5*AMOUNT+'元'</blank>
+								<blank>'重疾\n给付：\n'+0.2*AMOUNT+'元'</blank>
+								<blank>''</blank> 
+							</row>
+							
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank> 
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank>
+								<blank>''</blank>
+							</row>
+							<row>
+								<blank>''</blank> 
+								<blank>'85周岁保单生效对\n应日及以后'</blank> 
+								<blank>case(0.2*AMOUNT lt 200000,0.2*AMOUNT,200000)+'元'</blank> 
+								<blank>AMOUNT+'元'</blank> 
+								<blank>'——'</blank>
+								<blank>'重疾\n给付：\n'+0.2*AMOUNT+'元'</blank>
+								<blank>AMOUNT+'元'</blank>
+							</row>
+							
+							<row>
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank> 
+								<blank>''</blank>
+								<blank>''</blank>
+								<blank>''</blank>
+							</row>
+						
+						</table>
+					 <item></item>
+					 <item></item>
+						          
+						<item>注：1、表中的轻症疾病保险金、重大疾病保险金、身故保险金的给付金均为：在保险期间内，合同初次发生理赔时的金额。</item>
+						<item>    2、第一组的单一组别给付限额为3倍保险金额；第二至五组的单一组别限额为1倍保险金额。其中，单一组别给付限额是指在合同保险期间内，本公司按照合同疾病保险金给付规定，对某一组别内所有疾病（包括该组别中的轻症疾病和重大疾病）累计给付的疾病保险金（包括轻症疾病保险金和重大疾病保险金之和）的上限。</item>
+						<item>    3、累计给付限额：按以下规定确定：（1）被保险人85周岁保单生效对应日之前，本公司累计给付的疾病保险金以各组别对应的单一组别给付限额之和为限，本公司累计给付的疾病保险金达到各组别对应的单一组别给付限额之和时，合同终止；（2）被保险人85周岁保单生效对应日及以后，本公司自合同生效之日起累计给付的疾病保险金（包括被保险人85周岁保单生效对应日之前和之后给付金额之和）以基本保险金额为限，本公司自合同生效之日起累计给付的疾病保险金达到基本保险金额时，合同终止。</item>
+						<item>    被保险人85周岁保单生效对应日零时，   如本公司自合同生效之日起累计给付的疾病保险金已达到或超过基本保险金额，   合同自被保险人85周岁保单生效对应日零时终止。</item>
+						<item>    4、轻症疾病保险金：在合同保险期间内，对每项轻症疾病给付次数以一次为限。</item>
+						<item>    5、在合同保险期间内，被保险人多次确诊初次发生合同所指的重大疾病，   对于相邻两次确诊初次发生的重大疾病，   当且仅当后项重大疾病确诊初次发生日期满足以下条件时，  本公司按重大疾病保险金给付规定对后项重大疾病承担保险责任：</item>
+						<item>	（1）如前项重大疾病为合同所指的恶性肿瘤， 后项重大疾病属于  《疾病分组与给付限额表》   中所列第四组重大疾病（与主要器官及功能相关的疾病）之一，后项重大疾病确诊初次发生日期自前项重大疾病确诊初次发生日期已届满5年。</item>
+						<item>	（2）除上述第（1）项情形之外，后项重大疾病确诊初次发生日期自前项重大疾病确诊初次发生日期已届满1年。</item>
+						<item>	  被保险人在保险期间内确诊初次发生本合同所指的恶性肿瘤之后，   再次确诊恶性肿瘤且后次确诊满足5年恶性肿瘤等待期的，   则后次确诊恶性肿瘤视同初次发生；   如后次确诊恶性肿瘤不满足5年恶性肿瘤等待期的，   则后次确诊不视同初次发生。</item>
+						</paragraph>
+					
+				</coverage>
+			<benefit_chart filter="chart" parser="chart">
+			    <chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="累计保费" color="#00BFFF">PremiumSum(I)</line>
+					<line name="现金价值" color="red">IT.CV(I)</line>
+				</chart>
+			</benefit_chart>
+		</attachment>
+		
+		<rider>
+			<product id="00205003"/>
+			<!--388-->
+			<product id="00388000"/>
+			<product id="00389000"/>
+			<!--717-->
+			<product id="00205006"/>
+			<product id="00205007"/>
+			<!--718-->
+			<product id="00205008"/>
+			<product id="00205009"/>
+			<!--726-->
+			<product id="00205010"/>
+			<product id="00205012"/>
+			<!--727-->
+			<product id="00205011"/>
+			<product id="00205013"/>
+
+			<product id="00425000"/>
+			<!--507 508-->
+			<product id="00507000"/>
+			<product id="00508000"/>
+			<!--540 541-->
+			<product id="00540000"/> 
+			<product id="00541000"/>
+			
+			<product id="00378000"/>
+			<product id="00519000"/>
+			<!--552 553-->
+			<product id="00552000"/> 
+			<product id="00553000"/>
+			<product id="00554000"/>
+			<product id="00563100"/>
+			<product id="00570000"/>
+			<product id="00946000"/>
+			<product id="00392000"/>
+			<product id="00958100"/>
+		</rider>
+
+		<rule skip="rule_02001">
+		 
+			<if condition="AMOUNT lt 100000">
+			    最低投保保额为10万元。
+			</if>
+		   <if condition="((THIS.RIDER('00205006') == null?0:1) + (THIS.RIDER('00205007') == null?0:1) + (THIS.RIDER('00205008') == null?0:1) + (THIS.RIDER('00205009') == null?0:1) + (THIS.RIDER('00205010') == null?0:1) + (THIS.RIDER('00205011') == null?0:1) + (THIS.RIDER('00205012') == null?0:1) + (THIS.RIDER('00205013') == null?0:1) + (THIS.RIDER('00507000') == null?0:1) + (THIS.RIDER('00508000') == null?0:1) + (THIS.RIDER('00540000') ==null?0:1) + (THIS.RIDER('00541000') == null?0:1) + (THIS.RIDER('00552000') == null?0:1) + (THIS.RIDER('00553000') == null?0:1)) > 3">
+				同一主险所附短期附加险717、726、727、718、507、508、540、541、552、553累计不得超过3个。
+			</if>
+		     <!-- <if condition="case(this.getProduct().getRider('00205006') == null,0,1) +case(this.getProduct().getRider('00205007') == null,0,1) +case(this.getProduct().getRider('00205010') == null,0,1) + case(this.getProduct().getRider('00205011') == null,0,1) + case(this.getProduct().getRider('00205012') == null,0,1) + case(this.getProduct().getRider('00205013') == null,0,1)+case(this.getProduct().getRider('00540000') == null,0,1)+case(this.getProduct().getRider('00541000') == null,0,1) &gt; 1">
+		     				同一主险,附加717、726、727、540、541时，只能选择其中一个险种。
+		     			</if> -->
+			
+			 <!--  <if condition="case(this.getProduct().getRider('00507000') == null,0,1) + case(this.getProduct().getRider('00508000') == null,0,1)  &gt; 1">
+			  				同一主险,附加507、508时，只能选择其中一个险种。
+			  			</if> -->
+			 <if condition="THIS.RIDER('00552000') != null and THIS.RIDER('00553000') != null">
+				同一主险,附加552、553时，只能选择其中一个险种。
+			</if>
+		    
+		    <!-- <if alert="amount" condition="this.calculate('rider_amount','00205006,00205007,00205010,00205011,00540000,00541000') &gt; 50000">
+		    				单张保单，同一被保险人所附717、726、727、540及541最高不得超过5万。
+		    			</if> -->
+			
+			<if alert="amount" condition="(THIS.RIDER('00205009') != null and THIS.RIDER('00205009').QUANTITY > 5)or(THIS.RIDER('00205008') != null and THIS.RIDER('00205008').QUANTITY > 5)">
+				单张保单，同一主险所附718最高不得超过5份。
+			</if>
+			
+			<if alert="amount" condition="(THIS.RIDER('00507000') != null and THIS.RIDER('00507000').AMOUNT lt 5000) or (THIS.RIDER('00508000') != null and THIS.RIDER('00508000').AMOUNT lt 5000)">
+				同一主险，507、508最低保额5000元。
+			</if> 
+		 	<!-- <if alert="amount" condition="this.calculate('rider_amount','00388000') lt 50000 and this.calculate('rider_amount','00388000') &gt; AMOUNT*10 ">
+		 					同一主险，388最低保额为5万，且不得超过主险基本保额的10倍。
+		 				</if> -->
+			<if condition="PAY_VALUE == 5 and AGE > 50 and GENDER_CODE==1">
+				被保险人年龄范围：18周岁(含)- 50周岁(含)。
+			</if>
+			<if condition="PAY_VALUE == 10 and AGE > 45 and GENDER_CODE==1">
+				被保险人年龄范围：18周岁(含)- 45周岁(含)。
+			</if>
+			<if condition="PAY_VALUE == 20 and AGE > 40 and GENDER_CODE==1">
+				被保险人年龄范围：18周岁(含)- 40周岁(含)。
+			</if>
+			<if condition="PAY_VALUE == 5 and AGE > 55 and GENDER_CODE==2">
+				被保险人年龄范围：18周岁(含)- 55周岁(含)。
+			</if>
+			<if condition="PAY_VALUE == 10 and AGE > 50 and GENDER_CODE==2">
+				被保险人年龄范围：18周岁(含)- 50周岁(含)。
+			</if>
+			<if condition="PAY_VALUE == 20 and AGE > 45 and GENDER_CODE==2">
+				被保险人年龄范围：18周岁(含)- 45周岁(含)。
+			</if>
+			
+			<!--
+			 <if alert="amount" condition="case(try(AMOUNT,'error') = 'error',false, this.calculate('short_amount','00205006,00205007,00205008,00205009,00205010,00205011,00205012,00205013') &gt; AMOUNT)">
+				同一主险所附718、718、726、727短期附加险累计保额不得超过主险基本保额。
+			</if>
+			<if alert="amount" condition=" (this.getProduct().getRider('00507000') != null or this.getProduct().getRider('00508000') != null) and this.getProduct().getRider('00388000') == null )
+			and (this.getProduct().getRider('00388000') != null and this.getProduct().getRider('00507000') != null  and (this.getProduct().getRider('00388000').getBuy().getAmount() lt this.getProduct().getRider('00507000').getBuy().getAmount() * 10) or (this.getProduct().getRider('00388000') != null and this.getProduct().getRider('00507000') != null  and this.getProduct().getRider('00388000').getBuy().getAmount() lt this.getProduct().getRider('00507000').getBuy().getAmount() * 10)
+			and (this.getProduct().getRider('00507000') != null and (this.getProduct().getRider('00507000').getBuy().getAmount() lt 5000)) or (this.getProduct().getRider('00508000') != null and this.getProduct().getRider('00508000').getBuy().getAmount() lt 5000)">
+			
+			    同一主险，被保险人只有在附加388后方可附加507或508，且507、508最低保额5000元，且388与507或508保额的最低比例为10：1。
+			</if>
+		
+			<if condition="(PARENT.getProduct().getRider('00552000') !=null) and (PARENT.getProduct().getRider('00205010') = null or  PARENT.getProduct().getRider('00540000') = null) " >
+				同一主险，只有在附加726或540后，方可附加552。
+			</if>
+			<if condition="(PARENT.getProduct().getRider('00553000') !=null) and (PARENT.getProduct().getRider('00205011') = null or  PARENT.getProduct().getRider('00541000') = null) " >
+				同一主险，只有在附加727或541后，方可附加553。
+			</if>
+         -->
+		</rule>
+	</product>
+</declare>

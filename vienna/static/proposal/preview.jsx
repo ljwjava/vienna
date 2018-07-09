@@ -187,6 +187,29 @@ class Main extends React.Component {
                     </div>
 
                     <div className="h-60"></div>
+
+                    <div className="bottom">
+                        <div className="divx" style={{width:"550px"}}>
+                            <div style={{width:"100px", padding:"10px"}}>
+                                <img src="../images/female.png" style={{width:"80px",width:"80px"}}></img>
+                            </div>
+                            <div className="tc-white lh-80 pt-1" style={{width:"300px"}}>
+                                <div className="lh-40 text18">张星彩</div>
+                                <div className="divx">
+                                    <div><img src="../images/telephone.png" style={{width:"40px",height:"40px",filter:"invert(100%)"}}></img></div>
+                                    <div className="lh-40 text14">13911231123</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="btn-img tc-white text12">
+                            <img src="../images/folder.png" style={{filter:"invert(100%)"}}></img>
+                            <div>分享</div>
+                        </div>
+                        <div className="btn-img bg-white text12 ml-auto">
+                            <img src="../images/folder.png"></img>
+                            <div>完成</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

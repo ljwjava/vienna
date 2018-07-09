@@ -35,6 +35,7 @@ public class EnvService
     @Autowired TaskFX taskFX;
     @Autowired OnAlert alert;
     @Autowired StoreFX storeFX;
+    @Autowired PushMsg pushMsg;
 
     Function time2long;
     Function today;
@@ -174,6 +175,7 @@ public class EnvService
         stack.put("UrlFX", new UrlFX());
         stack.put("TaskFX", taskFX);
         stack.put("StoreFX", storeFX);
+        stack.put("pushMsg", pushMsg);
         stack.put("IYunBao", new IYunBao());
 
         environments = envDao.loadAllEnv(stack);

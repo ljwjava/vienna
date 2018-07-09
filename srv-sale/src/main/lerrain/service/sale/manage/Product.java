@@ -1,5 +1,7 @@
 package lerrain.service.sale.manage;
 
+import java.util.Map;
+
 public class Product
 {
     Long id;
@@ -8,7 +10,7 @@ public class Product
     String code;
     String name;
 
-    String companyName;
+    Map content;
 
     public Long getId()
     {
@@ -50,13 +52,13 @@ public class Product
         this.name = name;
     }
 
-    public String getCompanyName()
+    public Map getContent()
     {
-        return companyName;
+        return content;
     }
 
-    public void setCompanyName(String companyName)
+    public void setContent(Map content)
     {
-        this.companyName = companyName;
+        this.content = content;
     }
 }

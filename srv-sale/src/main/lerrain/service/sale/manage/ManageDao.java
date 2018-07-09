@@ -51,7 +51,7 @@ public class ManageDao
 
     public List<Product> list(String search, int from, int number)
     {
-        StringBuffer sql = new StringBuffer("select a.*, b.name as company_name from t_product a left join t_company b on a.company_id = b.id where a.valid is null");
+        StringBuffer sql = new StringBuffer("select * from t_ware where valid is null");
 
         if (!Common.isEmpty(search))
             sql.append(" and name like '%" + search + "%' ");
@@ -66,8 +66,7 @@ public class ManageDao
                 m.setId(rs.getLong("id"));
                 m.setCode(rs.getString("code"));
                 m.setName(rs.getString("name"));
-                m.setCompanyId(rs.getLong("company_id"));
-                m.setCompanyName(rs.getString("company_name"));
+                m.setCompanyId(rs.getLong("vendor_id"));
 
                 return m;
             }
@@ -76,7 +75,7 @@ public class ManageDao
 
     public int count(String search)
     {
-        StringBuffer sql = new StringBuffer("select count(*) from t_product where valid is null");
+        StringBuffer sql = new StringBuffer("select count(*) from t_ware where valid is null");
 
         if (!Common.isEmpty(search))
             sql.append(" and name like '%" + search + "%' ");
