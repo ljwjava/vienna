@@ -52,14 +52,14 @@ class PayForm extends Form {
         return forms;
     }
     changeBank() {
-    	if(env.company != "fosun"){
-    		return false;
-		}
-    	if(",9002,9003,9004,9007,9008,9009,9010,9013,9014,9015,9017,9018,9021,9022,9023,9024,9025,9026,9027,9028,9029,9030,9039,".indexOf(","+this.refs.bank.val()+",") >= 0 && !common.isWeixin()) {
-			// 是否分享至微信端
-			$("#payTipsDiv").show();
-		}
-	}
+        if(env.company != "fosun"){
+            return false;
+        }
+        if(",9002,9003,9004,9007,9008,9009,9010,9013,9014,9015,9017,9018,9021,9022,9023,9024,9025,9026,9027,9028,9029,9030,9039,".indexOf(","+this.refs.bank.val()+",") >= 0 && !common.isWeixin()) {
+            // 是否分享至微信端
+            $("#payTipsDiv").show();
+        }
+    }
 }
 
 class PayRenewForm extends Form {
@@ -82,10 +82,10 @@ class PayRenewForm extends Form {
             v.push({name:'开户行所在地区', code:"bankCity", type:"bankCity", value: bcity, company: env.company, refresh:"yes", req:"yes", desc:"开户行所在地"});
         }
         v.push({name:'开户人', code:"bankUser", type:"static", req:"yes", value:env.order.detail.applicant.name});
-		if(env.company == "citicpru"){
+        if(env.company == "citicpru"){
             v.push({name:'是否自动垫交保费', code:"autoPayFlag", type:"switch", req:"yes", value: bauto, options:[["Y","是"],["N","否"]]});
             v.push({name:'自动垫交保费释义', code:"autoPayFlagDesc", type:"label", value: "自动垫交保险费是一项权益。如果选择本权益，续期保费可以用现金价值扣除未还借款本息之后的余额垫缴，同时保险公司会收取一定的利息。"});
-		}
+        }
         return this.buildForm(v);
     }
 };
@@ -140,7 +140,7 @@ var Ground = React.createClass({
 		return {isSubmit: false, dict:false, disputeShow: false, disputeList: []};
 	},
 	refresh() {
-        common.req("dict/view.json", {company: env.company, name: "bank,relation", version: "new"}, r => {
+        /*common.req("dict/view.json", {company: env.company, name: "bank,relation", version: "new"}, r => {
             // if (typeof r.bank === 'object' && isNaN(r.bank.length)) {
             if(r.bank != null){
                 if (!Array.isArray(r.bank)) {
@@ -156,64 +156,21 @@ var Ground = React.createClass({
         }, f => {
             ToastIt("字典数据加载失败");
         });
-        try{this.reloadDisputeData(env.order.detail.applicant.city.code);}catch(e){}
+        try{this.reloadDisputeData(env.order.detail.applicant.city.code);}catch(e){}*/
 	},
 	componentDidMount() {
-		this.refresh();
+		// this.refresh();
     },
 	submit() {
-		if (this.refs.pay != null && !this.refs.pay.verifyAll()) {
-			ToastIt("请检查支付信息");
+		if (env.order.status == "3") {
+			ToastIt("该笔订单已已承保，无需重复提交");
 			return;
 		}
-		if (this.refs.payRenew != null && !this.refs.payRenew.verifyAll()) {
-			ToastIt("请检查支付信息");
+		if (env.order.pay == "2") {
+			ToastIt("该笔订单已提交支付，无需重复提交");
 			return;
-		}
-		if (!this.refs.agree.checked) {
-			ToastIt("请确认客户声明信息");
-			return;
-		}
-		if (env.order.detail.otherReadDesc != null && env.order.detail.otherReadDesc.length > 0) {
-			for(let ix = 0; ix < env.order.detail.otherReadDesc.length; ix++){
-                if (!this.refs["agree"+ix].checked) {
-                    ToastIt("请确认客户声明信息");
-                    return false;
-				}
-			}
-		}
-        env.order.extra = (env.order.extra == null ? {} : env.order.extra);
-		if (this.refs.pay) {
-            env.order.extra.pay = this.refs.pay.val();
-            env.order.extra.pay.bankText = this.refs.pay.refs.bank.text();
-            if (env.order.extra.pay.bank == null || env.order.extra.pay.bank == "") {
-            	this.refresh();
-                ToastIt("请选择银行");
-                return;
-			}
-		}
-		if (this.refs.payRenew) {
-            env.order.extra.payRenew = this.refs.payRenew.val();
-            env.order.extra.payRenew.bankText = this.refs.payRenew.refs.bank.text();
-            if (env.order.extra.payRenew.bank == null || env.order.extra.payRenew.bank == "") {
-            	this.refresh();
-                ToastIt("请选择银行");
-                return;
-			}
-		}
-		if (this.refs.photos) {
-            env.order.extra.photos = this.refs.photos.val();
-            if(env.order.extra.photos.length < 2) {
-                ToastIt("请上传完整证件影像");
-                return;
-            }
-            if(env.order.extra.photos.length > env.order.detail.photo) {
-                ToastIt("请删除多余证件影像");
-                return;
-            }
 		}
 
-		//console.log(env.order);
         // 判断是否可提交
         if(this.state.isSubmit){
             ToastIt("数据提交中，请耐心等待");
@@ -221,14 +178,19 @@ var Ground = React.createClass({
         }
         this.setState({isSubmit: true}, ()=>{
         	env.order.extra.isWX = common.isWeixin();
-            common.req("sale/apply.json", env.order, r => {
+            common.req("sale/accept.json", {orderId: env.order.id, oSign: common.param("oSign")}, r => {
                 common.save("iyb/orderId", env.order.id);
                 if (r.success != false) {
                     if(r.nextUrl != null && r.params != null){
                         var f = common.initForm(r.nextUrl, r.params, r.method);
                         f.submit();
                     } else if (r.payList != null) {
-                        this.refs.paySwich.reSetOptions(r.payList);
+                        if(r.payList.length == 1){
+                            var f = common.initForm(r.payList[0].nextUrl, r.payList[0].params, r.payList[0].method);
+                            f.submit();
+                        }else{
+                            this.refs.paySwich.reSetOptions(r.payList);
+                        }
                     } else if (r.payWxOther != null) {
                     	if(common.isWeixin() && !!r.payWxOther.wx){	// 微信浏览器直接跳转微信支付
                         	var wxfp = r.payWxOther.wx;
@@ -254,54 +216,12 @@ var Ground = React.createClass({
                     ToastIt(r.errCode + " - " + r.errMsg);
                 }
                 this.setState({isSubmit: false});
-                /*if (r.success != false && r.nextUrl != null) {
-                    document.location.href = r.nextUrl;
-                } else {
-                    ToastIt(r.errCode + " - " + r.errMsg);
-                    this.setState({isSubmit: false});
-                }*/
             }, r => {
                 if(r != null){
                     ToastIt(r);
                 }
                 this.setState({isSubmit: false});
             });
-        });
-	},
-	// changePhotos() {
-     //    env.order.detail.photos = this.refs.photos.val();
-     //    common.req("order/save.json", env.order);
-	// },
-	openDoc(link) {
-		try {
-            env.order.extra = (env.order.extra == null ? {} : env.order.extra);
-            if (this.refs.pay) {
-                env.order.extra.pay = this.refs.pay.val();
-            }
-            if (this.refs.payRenew) {
-                env.order.extra.payRenew = this.refs.payRenew.val();
-            }
-			if (this.refs.photos) {
-				env.order.extra.photos = this.refs.photos.val();
-            }
-			common.req("order/save.json", env.order);
-        } catch(e) {
-		}
-		document.location.href = link;
-	},
-	// 纠纷相关div数据
-	reloadDisputeData(cityCode){
-        //
-		if(cityCode == null || cityCode.length < 6){
-			return null;
-		}
-		if(env.company != "citicpru" || !(""+env.order.detail.applicant.city.code).startsWith("44")){
-		    return null;
-        }
-        common.req("sale/dispute.json", {provinceId: cityCode.substr(0, 2) + "0000", cityId: cityCode.substr(0, 4) + "00"}, r => {
-        	this.setState({disputeList: r});
-        }, f => {
-            ToastIt("纠纷数据加载失败");
         });
 	},
 	openDivDispute() {
@@ -314,7 +234,7 @@ var Ground = React.createClass({
 		$(this.refs.payTipsDiv).hide();
 	},
     sharePage(){
-		if(common.isAPP()){
+		/*if(common.isAPP()){
             var shareObj = {
                 title: "复星联合康乐e生重大疾病保险",
                 desc: "继续投保",
@@ -323,28 +243,9 @@ var Ground = React.createClass({
                 link: window.location.href
             };
             iHealthBridge.doAction("share", JSON.stringify(shareObj));
-		}
+		}*/
 	},
 	render() {
-		let docs = [];
-		if (env.order.detail.read) for (let d in env.order.detail.read) {
-			if (docs.length > 0)
-				docs.push("、");
-			docs.push(<a key={d} onClick={this.openDoc.bind(this, env.order.detail.read[d].url)}>{env.order.detail.read[d].name}</a>);
-		}
-		try{
-            if(env.company == "citicpru" && (""+env.order.detail.applicant.city.code).startsWith("44") && this.state.disputeList != null && this.state.disputeList.length > 0) {	// 440000
-                if (docs.length > 0)
-                    docs.push("、");
-                docs.push(<a onClick={this.openDivDispute.bind(this)}>《广东纠纷调节处信息》</a>);
-            }
-		}catch(e){console.log("添加广东纠纷调节处信息失败");}
-
-		let preShow = "";
-		if(env.company == "fosun" && common.isWeixin()){
-            preShow = "续期";
-		}
-
 		let insCategoryMap = {
 		    "T1": "标准体",
 		    "T2": "优选体",
@@ -365,26 +266,10 @@ var Ground = React.createClass({
 					<div><span>　出生日期</span>{env.order.detail.applicant.birthday}</div>
                     {env.order.detail.applicant.cityName == null ? null : <div><span>　所在城市</span>{env.order.detail.applicant.cityName}</div>}
 					<div><span>　详细地址</span>{env.order.detail.applicant.address}</div>
-					<div><span>　评定结果</span>{insCategory != null ? insCategory : ""}</div>
-					<div><span>　是否吸烟体</span>{env.order.detail.factors.SMOKE == "1" ? "吸烟体" : (env.order.detail.factors.SMOKE == "2" ? "非吸烟体" : "")}</div>
-					<div><span>　保额</span>{env.order.detail.factors.AMOUNT != null ? env.order.detail.factors.AMOUNT + "万" : ""}</div>
+					<div><span>　评定结果</span><font style={{color: "red"}}>{insCategory != null ? insCategory : ""}</font></div>
+                    <div><span>　是否吸烟体</span><font style={{color: "red"}}>{env.order.detail.factors.SMOKE == "1" ? "吸烟体" : (env.order.detail.factors.SMOKE == "2" ? "非吸烟体" : "")}</font></div>
+                    <div><span>　保额</span><font style={{color: "red"}}>{env.order.detail.factors.AMOUNT != null ? env.order.detail.factors.AMOUNT + "万" : ""}</font></div>
 				</div>
-				{/*<div className="view">
-					<div><span>通讯信息</span></div>
-					<div><span>　电子邮箱</span>{env.order.detail.applicant.email}</div>
-					<div><span>　手机号　</span>{env.order.detail.applicant.mobile}</div>
-				</div>*/}
-				{/*<div className="view">
-					<div><span>{env.order.productName}</span></div>
-					{ env.order.detail.packDesc.map(v => {
-						var txtshow = v.text;
-						if(v.text instanceof Object) {
-							txtshow = txtshow.text;
-						}
-						return (<div><span>　{v.name}</span>{txtshow}</div>);
-					})}
-					{ env.order.detail.factors.effectiveTime == null ? null : <div><span>　保单生效日</span>{env.order.detail.factors.effectiveTime}</div> }
-				</div>*/}
 				<div className="console">
 					<div className="tab">
 						<div className="row">

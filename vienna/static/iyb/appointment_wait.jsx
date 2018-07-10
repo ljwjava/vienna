@@ -101,7 +101,7 @@ var Ground = React.createClass({
                         } else if (r.status == 31) {	// 31体检不通过
                             this.finish(1, r.bizMsg);
                         } else if (r.status == 22) {	// 22已预约
-                            this.finish(1, r.bizMsg);
+                            this.finish(1, "");
                         } else if (r.status == 24) {	// 24预约失败
                             this.finish(30, r.bizMsg);
                         } else if (r.status == 25) {	// 25预约取消
