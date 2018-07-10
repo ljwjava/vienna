@@ -350,7 +350,7 @@ var Ground = React.createClass({
 		    "T2": "优选体",
 		    "T3": "超优体"
         };
-		let insCategory = insCategoryMap[env.order.detail.factors.INS_CATEGORY];
+		let insCategory = insCategoryMap["T"+env.order.detail.factors.INS_CATEGORY];
 
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
