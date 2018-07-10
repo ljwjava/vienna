@@ -255,6 +255,11 @@ var Ground = React.createClass({
 
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
+				<div className="title">订单信息</div>
+				<div className="view">
+					<div><span>　订单号</span>{env.order.applyNo}</div>
+					<div><span>　产品名称</span>{env.order.productName}</div>
+				</div>
 				<div className="title">投保人信息</div>
 				<div className="view">
 					<div><span>　投保人是被保人</span>本人</div>
