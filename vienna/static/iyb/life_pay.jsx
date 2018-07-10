@@ -498,7 +498,7 @@ var Ground = React.createClass({
 							<div className="col left">
                                 {env.order.detail.applyMode == 1 ? "首期" : ""}保费：{!env.order.price || env.order.price <= 0 ? "无法计算" : env.order.price.toFixed(2)}
 							</div>
-							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "核保中..." : "下一步"}</div>
+							<div className="col right" onClick={this.submit}>{this.state.isSubmit ? "核保中..." : (env.order.productId == "47" ? "预约体检" : "下一步")}</div>
 						</div>
 					</div>
 				</div>
