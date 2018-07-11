@@ -175,6 +175,9 @@ public class TemplateController {
         for (int i = 0; i < ids.size(); i++) {
             idList.add(ids.get(i).getProductId());
         }
+        if (idList.size() <= 0) {
+            return result;
+        }
         List<TemplateProduct> tps = templateSrv.queryTps(idList);
         List<TemplateProductType> tpts = templateSrv.queryByProductId(idList);
         List<TemplateProductTypeRelation> tptrs = templateSrv.queryTptrsByTemplateIdAndProductId(templateId, idList);
