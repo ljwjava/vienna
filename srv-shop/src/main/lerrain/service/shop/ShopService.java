@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,25 +22,25 @@ public class ShopService
 	{
 	}
 
-    public int count(Long userId, String name, String type)
+    public int count(Shop contion)
     {
-        return productDao.count(userId, name, type);
+        return productDao.count(contion);
     }
 
-    public int countType(String search)
+    public int countType(Shop contion)
     {
-        return productDao.countType(search);
+        return productDao.countType(contion);
     }
 
-    public List<JSONObject> types(String search, int from, int num)
+    public List<JSONObject> types(Shop contion, int from, int num)
     {
-        List<JSONObject> types = productDao.types(search, from, num);
+        List<JSONObject> types = productDao.types(contion, from, num);
         return types;
     }
 
-    public List<Shop> commoditys(Long userId, String name, String type, int from, int num)
+    public List<Shop> commoditys(Shop contion, int from, int num)
     {
-        List<Shop> shops = productDao.commoditys(userId, name, type, from, num);
+        List<Shop> shops = productDao.commoditys(contion, from, num);
         for (int i=0;i<shops.size();i++){
             Shop shop = shops.get(i);
             JSONObject detailJson = new JSONObject();
@@ -50,9 +51,11 @@ public class ShopService
             detailJson.put("price",shop.getPriceDesc());
             detailJson.put("promotion",shop.getPriceDescText());
             String ext = shop.getExtraInfo();
-            JSONObject extraInfo = JSON.parseObject(ext);
-            detailJson.put("factors",extraInfo.getJSONArray("factors"));
-            detailJson.put("rules",extraInfo.getJSONArray("rules"));
+            if(StringUtils.isNotBlank(ext)) {
+                JSONObject extraInfo = JSON.parseObject(ext);
+                detailJson.put("factors", extraInfo.getJSONArray("factors"));
+                detailJson.put("rules", extraInfo.getJSONArray("rules"));
+            }
 
             shop.setCommissionRate(this.getCommodityRate(shop.getWareId()));
         }
@@ -81,12 +84,12 @@ public class ShopService
         return maxRate;
     }
 
-    public int countTemplate(RateTemplate contion)
+    public int countTemplate(RateTemp contion)
     {
         return productDao.countTemplate(contion);
     }
 
-    public List<JSONObject> rateTemplates(RateTemplate contion, int from, int num)
+    public List<JSONObject> rateTemplates(RateTemp contion, int from, int num)
     {
         List<JSONObject> rates = productDao.rateTemplates(contion, from, num);
         for(int i=0;i<rates.size();i++){
@@ -97,7 +100,7 @@ public class ShopService
         return rates;
     }
 
-    public RateTemplate saveOrUpdateRateTemplate(RateTemplate rt){
+    public RateTemp saveOrUpdateRateTemplate(RateTemp rt){
 	    // 修改模板
 	    if(null != rt.getTempId()){
             Long tempId = productDao.saveOrUpdateRateTemplate(rt);
@@ -110,16 +113,16 @@ public class ShopService
         return rt;
     }
 
-    public RateTemplate handleUsedRateTemp(RateTemplate rt){
+    public RateTemp handleUsedRateTemp(RateTemp rt){
 	    // 已经在使用的模板设置无效
-        RateTemplate contion = new RateTemplate();
+        RateTemp contion = new RateTemp();
         contion.setUserId(rt.getUserId());
         contion.setSubUserId(rt.getSubUserId());
         contion.setUsed("Y");
         List<JSONObject> rates = productDao.rateTemplates(contion, 0, 10);
         if(null != rates && rates.size()>0){
             for(int i=0;i<rates.size();i++) {
-                RateTemplate temp = JSONObject.parseObject(rates.get(i).toJSONString(), RateTemplate.class);
+                RateTemp temp = JSONObject.parseObject(rates.get(i).toJSONString(), RateTemp.class);
                 temp.setUsed("N");
                 temp.setModifier(rt.getModifier());
                 temp.setGmtModified(new Date());
@@ -129,17 +132,17 @@ public class ShopService
         return rt;
     }
 
-    public RateTemplate deleteRateTemplate(RateTemplate rt){
+    public RateTemp deleteRateTemplate(RateTemp rt){
         Long tempId = productDao.deleteRateTemplate(rt);
         return rt;
     }
 
-    public List<RateTemplate> batchOperateRateTemplate(List<RateTemplate> contions){
-        List<RateTemplate> rts = Lists.newArrayList();
+    public List<RateTemp> batchOperateRateTemplate(List<RateTemp> contions){
+        List<RateTemp> rts = Lists.newArrayList();
 	    for(int i=0;i<contions.size();i++) {
-            RateTemplate rt = contions.get(i);
+            RateTemp rt = contions.get(i);
             // 已经在使用的模板设置无效
-            RateTemplate res = this.handleUsedRateTemp(rt);
+            RateTemp res = this.handleUsedRateTemp(rt);
             Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
             rt.setRelId(relId);
             rts.add(rt);
@@ -151,5 +154,11 @@ public class ShopService
     {
         Shop shop = productDao.queryShopById(wareId);
         return shop;
+    }
+
+    public Qrcode saveOrUpdateQrcodeInfo(Qrcode qr){
+	    Long id = productDao.saveOrUpdateQrcodeInfo(qr);
+	    qr.setId(id);
+        return qr;
     }
 }
