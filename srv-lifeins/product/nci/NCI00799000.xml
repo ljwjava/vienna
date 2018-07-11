@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<product 
+		code="00799000"
+		corporation_id="nci" 
+		id="NCI00799000"
+		last_modify_date="2017-01-01"
+		name="健康福星增额（2014）重大疾病保险" 
+		name_abbr="健康福星增额（2014）" 
+		premium="DS.DATA2[0,0]*QUANTITY"
+		sale_begin_date="2014-02-24" 
+		sale_end_date="" 
+		type_code="healthins,common" 
+		unit_amount="10000">
+		
+		<data>
+			<item parser="file.auto" file="NCI00799000.dat"/>
+		</data>
+
+		<param>
+			<pay>
+				<item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="to_full"/>
+			</insure>
+		</param>
+		
+		<interest>
+				<var formula="DS.DATA[A1,0]*QUANTITY" param="A1" name="CSV" type="double"/><!--现金价值-->
+				<var formula="A1 > 1 ? (1+A1*0.03)*AMOUNT : 1.1*PremiumSum(A1-1)" param="A1" name="ZJBZ" type="double"/><!--重疾保障-->
+				<var formula="AGE+A1 > 17 ? (1+A1*0.03)*AMOUNT : max(PremiumSum(A1-1),IT.CSV(A1))" param="A1" name="YWSG" type="double"/><!--意外身故-->
+				<var formula="AGE+A1 > 17 ? (1+A1*0.03)*AMOUNT : max(PremiumSum(A1-1),IT.CSV(A1))" param="A1" name="JBSG" type="double"/><!--疾病身故-->
+
+		</interest>
+		
+		<attachment>
+			<benefit_table name="table" parser="table">
+				<table>
+					<row type="title">
+						<blank>'保单年度末'</blank>
+						<blank>'当年保险费'</blank>
+						<blank>'意外身故'</blank>
+						<blank>'疾病身故'</blank>
+						<blank>'重疾保障'</blank>
+						<blank>'现金价值'</blank>
+					</row>
+					<loop from="1" name="I" step="1" to="INSURE_PERIOD-1">
+						<row>
+							<blank style="##0">I</blank>
+							<blank align="right" style="###,###,##0">PremiumSum(I-1)</blank>
+							<blank align="right" style="###,###,##0">IT.YWSG(I)</blank>
+							<blank align="right" style="###,###,##0">IT.JBSG(I)</blank>
+							<blank align="right" style="###,###,##0">IT.ZJBZ(I)</blank>
+							<blank align="right" style="###,###,##0">IT.CSV(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			
+			<coverage name="coverage" parser="coverage">
+				<paragraph title="保险责任主要保险利益">
+					<item>在合同保险期间内，本公司承担下列保险责任：</item>
+				</paragraph>
+				<paragraph title="重大疾病保险金">
+					<item>1.被保险人于合同生效（或合同效力恢复）之日起一年内因疾病，由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病，本公司给付重大疾病保险金，其金额为本保险实际交纳的保险费的1.1倍，合同终止。</item>
+					<item>2.被保险人因意外伤害或于合同生效（或合同效力恢复）之日起一年后因疾病，由本公司认可医院的专科医生确诊初次发生合同所指的重大疾病，本公司按基本保险金额×（1＋3%×保单经过整年度）给付重大疾病保险金，合同终止。</item>
+				</paragraph>
+				<paragraph title="身故保险金">
+					<item>1.被保险人于合同生效（或合同效力恢复）之日起一年内因疾病身故，本公司按被保险人身故时所处的以下不同情形给付身故保险金，合同终止：</item>
+					<item>（1）若身故时被保险人处于18周岁保单生效对应日之前（不含18周岁保单生效对应日），则其身故保险金为本保险实际交纳的保险费；</item>
+					<item>（2）若身故时被保险人处于18周岁保单生效对应日之后（含18周岁保单生效对应日），则其身故保险金为本保险实际交纳的保险费的1.1倍。</item>
+					<item>2.被保险人因意外伤害或于合同生效（或合同效力恢复）之日起一年后因疾病身故，本公司按被保险人身故时所处的以下不同情形给付身故保险金, 合同终止：</item>
+					<item>（1）若身故时被保险人处于18周岁保单生效对应日之前（不含18周岁保单生效对应日），则其身故保险金为本保险实际交纳的保险费与基本保险金额对应的现金价值二者之较大者；</item>
+					<item>（2）若身故时被保险人处于18周岁保单生效对应日之后（含18周岁保单生效对应日），本公司按基本保险金额×（1＋3%×保单经过整年度）给付身故保险金。</item>
+				</paragraph>
+				<paragraph title="投保人意外伤害身故或意外伤害身体全残豁免保险费">
+					<item>除另有约定外，投保人因意外伤害身故或因意外伤害身体全残，且投保人身故或身体全残时年龄已满18周岁未满61周岁，可免交自投保人身故或被确定身体全残之日起的续期保险费，合同继续有效。</item>
+					<item>豁免保险费的，本公司视同自投保人身故或被确定身体全残之日起的续期保险费已交纳。</item>
+				</paragraph>
+			</coverage>
+		</attachment>
+		
+		<rider>
+			<product id="00205006"/>
+			<product id="00205007"/>
+			<product id="00205008"/>
+			<product id="00205009"/>
+			<product id="00205010"/>
+			<product id="00205011"/>
+			<product id="00205012"/>
+			<product id="00205013"/>
+			<product id="00388000"/>
+			<product id="00389000"/>
+			<product id="00507000"/>  
+			<product id="00508000"/>  
+			<product id="00192000"/>
+			<!-- hull添加附加险 -->
+			<product id="00540000"/>
+			<product id="00541000"/>
+			<product id="00552000"/>    
+			<product id="00553000"/>
+			<product id="00554000"/>
+			<product id="00570000"/>
+		</rider>
+
+		<rule skip="rule_02001">
+			<if condition="AGE &gt; 60" type="customer">
+				被保险人年龄不能大于60周岁。
+			</if>
+			<if alert="amount" condition="AMOUNT lt 10000">
+				最低保额为10000元。
+			</if>
+			<if condition="PAY_VALUE == 1 and AGE &gt; 58 and GENDER_CODE==1">
+				趸交男性被保人年龄不得超过58周岁。
+			</if>
+			
+			<if condition="PAY_VALUE == 1 and AGE &gt; 60 and GENDER_CODE==2">
+				趸交女性被保人年龄不得超过60周岁。
+			</if>
+			<if condition="PAY_PERIOD ==5 and AGE &gt; 50 and GENDER_CODE==1">
+				5年期男性被保人年龄不得超过50周岁。
+			</if>
+			
+			<if condition="PAY_PERIOD ==5 and AGE &gt; 55 and GENDER_CODE==2">
+				5年期女性被保人年龄不得超过55周岁。
+			</if>
+			<if condition="PAY_PERIOD ==10 and AGE &gt; 50 and GENDER_CODE==1">
+				10年期男性被保人年龄不得超过50周岁。
+			</if>
+			
+			<if condition="PAY_PERIOD ==10 and AGE &gt; 50 and GENDER_CODE==2">
+				10年期女性被保人年龄不得超过50周岁。
+			</if>
+			<if condition="PAY_PERIOD ==20 and AGE &gt; 45 and GENDER_CODE==1">
+				20年期男性被保人年龄不得超过45周岁。
+			</if>
+			
+			<if condition="PAY_PERIOD == 20 and AGE &gt; 45 and GENDER_CODE==2">
+				20年期女性被保人年龄不得超过45周岁。
+			</if>
+			<if condition="PAY_PERIOD ==30 and AGE &gt; 40 and GENDER_CODE==1">
+				30年期男性被保人年龄不得超过40周岁。
+			</if>
+			
+			<if condition="PAY_PERIOD ==30 and AGE &gt; 40 and GENDER_CODE==2">
+				30年期女性被保人年龄不得超过40周岁。
+			</if>
+			<!-- duanqi
+			<if alert="amount" condition="case(try(AMOUNT,'error') = 'error',false, this.calculate('short_amount','00205006,00205007,00205008,00205009,00205010,00205011,00205012,00205013') &gt; AMOUNT)">
+				同一主险所附726、727、717、718短期附加险累计保额不得超过主险基本保险金额。
+			</if>
+			-->
+			<!-- <if condition="this.calculate('rider_amount','00388000') &gt; AMOUNT*10 and this.calculate('rider_amount','00388000') lt 50000" alert="amount">
+				同一主险所附388保额不得超过主险基本保险金额的10倍。
+			</if> -->
+			
+			<!-- <if alert="amount" condition="this.calculate('rider_amount','00205006,00205010,00205011') &gt; 50000">
+				单张保单，同一被保险人所附717、726及727最高不得超过5万。
+			</if> -->
+			
+			<!-- <if condition="case(this.getProduct().getRider('00205006') == null,0,1) + case(this.getProduct().getRider('00205007') == null,0,1) + case(this.getProduct().getRider('00205010') == null,0,1) + case(this.getProduct().getRider('00205011') == null,0,1) + case(this.getProduct().getRider('00205012') == null,0,1) + case(this.getProduct().getRider('00205013') == null,0,1) &gt; 1">
+				附加726、727、717只能选择其中一个险种。
+			</if> -->
+		</rule>
+	</product>
+</declare>

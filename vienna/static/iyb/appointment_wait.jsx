@@ -93,7 +93,7 @@ var Ground = React.createClass({
                     clearInterval(this.intervalId);
                     this.finish(90, "请致电客服，确认投保结果");
                 } else if(asking % 5 == 0) {
-                    common.req("order/view.json", {orderId: this.state.orderId}, r => {
+                    common.req("order/view.json", {orderId: this.state.orderId, oSign: common.param("oSign")}, r => {
                         env.order = r;
                         if (r.status == 32) {	// 32体检通过
                             // r.extra = {iybOrderNo: 'IYB201710161408193477'};
@@ -101,7 +101,7 @@ var Ground = React.createClass({
                         } else if (r.status == 31) {	// 31体检不通过
                             this.finish(1, r.bizMsg);
                         } else if (r.status == 22) {	// 22已预约
-                            this.finish(1, r.bizMsg);
+                            this.finish(1, "");
                         } else if (r.status == 24) {	// 24预约失败
                             this.finish(30, r.bizMsg);
                         } else if (r.status == 25) {	// 25预约取消

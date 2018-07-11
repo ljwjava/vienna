@@ -30,13 +30,13 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
 		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = p.rel_commodity_id AND m.rel_type = 'commodity'");
-		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_org_id = l.org_id");
+		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_user_id = l.user_id");
 		sql.append(" WHERE 1=1");
-		sql.append(" AND p.rel_org_id = 1");
+		sql.append(" AND p.rel_user_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
 		if (null != userId) {
-			sql.append(" AND p.rel_org_id = "+userId);
+			sql.append(" AND p.rel_user_id = "+userId);
 		}
 		if (StringUtils.isNotBlank(type)) {
 			sql.append(" AND t.`code` = '"+type+"'");
@@ -59,7 +59,7 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
 		sql.append(" WHERE 1=1");
-		sql.append(" AND p.rel_org_id = 1");
+		sql.append(" AND p.rel_user_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
 		if (StringUtils.isNotBlank(search)) {
@@ -88,7 +88,7 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
 		sql.append(" WHERE 1=1");
-		sql.append(" AND p.rel_org_id = 1");
+		sql.append(" AND p.rel_user_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
         if (StringUtils.isNotBlank(search)) {
@@ -117,7 +117,8 @@ public class ShopDao
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
-		sql.append(" p.rel_org_id AS orgId,");
+		sql.append(" c.ware_id as wareId,");
+		sql.append(" p.rel_user_id AS userId,");
 		sql.append(" /*companyId*/");
 		sql.append(" t.`code` AS commodityTypeCode,");
 		sql.append(" t.`name` AS commodityTypeName,");
@@ -154,13 +155,13 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
 		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
 		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = p.rel_commodity_id AND m.rel_type = 'commodity'");
-		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_org_id = l.org_id");
+		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_user_id = l.user_id");
 		sql.append(" WHERE 1=1");
-		sql.append(" AND p.rel_org_id = 1");
+		sql.append(" AND p.rel_user_id = 1");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
 		if (null != userId) {
-			sql.append(" AND p.rel_org_id = "+userId);
+			sql.append(" AND p.rel_user_id = "+userId);
 		}
 		if (StringUtils.isNotBlank(type)) {
 			sql.append(" AND t.`code` = '"+type+"'");
@@ -177,7 +178,8 @@ public class ShopDao
 			public Shop mapRow(ResultSet m, int arg1) throws SQLException
 			{
 				Shop p = new Shop();
-				p.setOrgId(m.getLong("orgId"));
+				p.setWareId(m.getLong("wareId"));
+				p.setUserId(m.getLong("userId"));
 				p.setCommodityTypeCode(m.getString("commodityTypeCode"));
 				p.setCommodityTypeName(m.getString("commodityTypeName"));
 				p.setCommodityId(m.getLong("commodityId"));
@@ -376,5 +378,33 @@ public class ShopDao
 		jdbc.update(delTempRel, rt.getModifier(), rt.getTempId());
 
 		return rt.getTempId();
+	}
+
+
+	public List<JSONObject> queryProductsByWareId(Long wareId)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append(" p.*,");
+		sql.append(" r.content");
+		sql.append(" FROM");
+		sql.append(" `t_ware_pack` p");
+		sql.append(" INNER JOIN t_cs_product_rate r ON p.id = r.product_id");
+		sql.append(" WHERE");
+		sql.append(" p.ware_id = ?");
+		return jdbc.query(sql.toString(), new Object[] {wareId}, new RowMapper<JSONObject>()
+		{
+			@Override
+			public JSONObject mapRow(ResultSet rs, int arg1) throws SQLException
+			{
+				JSONObject p = new JSONObject();
+				p.put("id", rs.getLong("id"));
+				p.put("code", rs.getString("code"));
+				p.put("name", rs.getString("name"));
+				p.put("ware_id", rs.getLong("ware_id"));
+				p.put("content", rs.getString("content"));
+				return p;
+			}
+		});
 	}
 }

@@ -366,6 +366,7 @@ class PlanForm extends Form {
             if (v.var == "EFFECTIVE_DAYS" || v.var == "EFFECTIVE_DATE" || v.var == "EFFECTIVE_STR")
                 effDays = true;
             if(v.widget != 'benefitCharts') {
+
                 if (v.scope == null || (v.scope.indexOf("insurant") < 0 && v.scope.indexOf("applicant") < 0)) {
                     return {
                         name: v.label,
@@ -373,13 +374,13 @@ class PlanForm extends Form {
                         type: v.widget,
                         refresh: "yes",
                         options: v.detail,
-                        value: v.value,
-                        onChange: v.name != "A_EXEMPT" && v.name != "EXEMPT" ? null : (comp, code) => {
+                        value: v.value
+                       /* onChange: v.name != "A_EXEMPT" && v.name != "EXEMPT" ? null : (comp, code) => {
                             if (code == "Y") {
                                 this.props.parent.popQuest();
                             }
                             this.onRefresh(comp);
-                        }
+                        }*/
                     };
                 }
             }
@@ -723,23 +724,17 @@ var Ground = React.createClass({
             ToastIt("请获取并输入验证码");
             return;
         }
+        let factors = this.getPlanFactors();
+        let factors2 = this.refs.plan.val();
 
-        if(!!env.pack.extra.age && env.age > env.pack.extra.age){
+        if(!!env.pack.extra.age && env.age > env.pack.extra.age || factors.A_EXEMPT != null && factors.A_EXEMPT == 'Y' || factors2.A_EXEMPT != null && factors2.A_EXEMPT == 'Y'){
             this.openQuest(null, this.submit);
         }else{
             this.submit();
         }
     },
     submit() {
-        if (env.brokerId == null || env.brokerId == "") {
-            ToastIt("缺少代理人信息");
-            return;
-        }
-        //投保人信息校验
-        if (!this.refs.applicant.verifyAll()) {
-            ToastIt("请检查投保人信息");
-            return;
-        }
+
         env.relation = this.refs.relation.val();
         env.applicant = this.refs.applicant.val();
 
@@ -748,19 +743,11 @@ var Ground = React.createClass({
         env.applicant.genderName = this.refs.applicant.refs.gender.text();
         if (env.formOpt.applicant.city)
             env.applicant.cityName = this.refs.applicant.refs.city.val().text;
-        // 被保险人信息校验
-        if (!!this.refs.more && !this.refs.more.verifyAll()) {
-            ToastIt("请检查被保险人信息");
-            return;
-        }
+
 
         let m = !this.refs.more ? null : this.refs.more.val();
         //被保人信息校验
         if (this.state.insurant) {
-            if (!this.refs.insurant.verifyAll()) {
-                ToastIt("请检查被保险人信息");
-                return;
-            }
             env.insurant = this.refs.insurant.val();
             env.insurant.certName = this.refs.insurant.refs.certType.text();
             env.insurant.genderName = this.refs.insurant.refs.gender.text();
@@ -819,33 +806,7 @@ var Ground = React.createClass({
             if (beneficiaryDeath == null || beneficiaryDeath.length == 0)
                 b1 = false;
         }
-        for (let ss in vv) {
-            if (vv[ss] != 100) {
-                ToastIt("受益人同一次序下比例之和需要为100%");
-                return;
-            }
-        }
-        if (!b1) {
-            ToastIt("请检查受益人信息");
-            return;
-        }
-        //规则保费
-        if (this.state.rules != null && this.state.rules.length > 0) {
-            ToastIt("请检查投保规则");
-            return;
-        }
-        if ((typeof this.state.premium != "number") || !this.state.premium || this.state.premium <= 0) {
-            ToastIt("请确认保费已正确计算");
-            return;
-        }
-        if (!this.refs.contact.verifyAll()) {
-            ToastIt("请检查通讯信息");
-            return;
-        }
-        if (env.smsKey == null && getEnv() === 'prd') {
-            ToastIt("请获取并输入验证码");
-            return;
-        }
+
 
         let contact = this.refs.contact.val();
         let orderName = env.pack.wareName + (env.pack.name != null && env.pack.name != "" ? "("+env.pack.name+")" : "");

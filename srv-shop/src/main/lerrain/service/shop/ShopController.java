@@ -74,7 +74,7 @@ public class ShopController
         String name = p.getString("cdName");
         String type = StringUtils.equals("all",p.getString("cdType"))?"":p.getString("cdType");
 
-        List<JSONObject> cdList = productSrv.commoditys(userId, name, type, from, num);
+        List<Shop> cdList = productSrv.commoditys(userId, name, type, from, num);
 
         JSONObject r = new JSONObject();
         r.put("list", cdList);
