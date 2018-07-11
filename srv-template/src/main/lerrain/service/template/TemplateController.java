@@ -72,11 +72,12 @@ public class TemplateController {
         }
         String banner = template.getBanner();
         String message = template.getMessage();
-        result.put("banner", StringUtils.isNotBlank(banner) ? JSON.parseArray(banner) : null);
-        result.put("msg", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : null);
+        JSONArray defaultArray = new JSONArray();
+        result.put("banner", StringUtils.isNotBlank(banner) ? JSON.parseArray(banner) : defaultArray);
+        result.put("msg", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : defaultArray);
 
         JSONObject pJson = findProducts(p);
-        result.put("typeProducts", pJson != null ? pJson.getJSONArray("content") : new JSONArray());
+        result.put("typeProducts", (pJson != null && pJson.getJSONArray("content") != null) ? pJson.getJSONArray("content") : defaultArray);
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", result);
@@ -211,6 +212,9 @@ public class TemplateController {
     public JSONObject save(@RequestBody JSONObject p) {
         Log.info(p);
         Long userId = p.getLong("userId");
+        if (userId == null) {
+            throw new RuntimeException("userId can not be null");
+        }
         Long templateId = p.getLong("id");
         String templateName = p.getString("templateName");
         String title = p.getString("title");
@@ -289,7 +293,7 @@ public class TemplateController {
             }
         }
         //创建商城模板与用户关系表
-        if (templateSrv.queryByTUserId(id, userId) == null) {
+        if (userId != null && templateSrv.queryByTUserId(id, userId) == null) {
             TemplateUserRelation tur = new TemplateUserRelation();
             tur.setUserId(userId);
             tur.setTemplateId(id);
@@ -307,6 +311,9 @@ public class TemplateController {
     public JSONObject handleTemplate(@RequestBody JSONObject p) {
         Log.info(p);
         Long userId = p.getLong("userId");
+        if (userId == null) {
+            throw new RuntimeException("userId can not be null");
+        }
         JSONArray banner = p.getJSONArray("banner");
         JSONArray typeProducts = p.getJSONArray("typeProducts");
         String link = p.getString("shopUrl");
