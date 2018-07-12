@@ -384,7 +384,27 @@ public class UserController {
         List<WxUser> listWxUser = wxUserService.listWxUser(user);
         if (listWxUser != null && !listWxUser.isEmpty()) {
             result.put("content", listWxUser.get(0));
+        } else {
+            user.setName(params.getString("name"));
+            user.setMobile(params.getString("mobile"));
+            user.setUserId(params.getLong("userId"));
+            user.setAuthStatus("1");
+            wxUserService.insert(user);
         }
+        result.put("result", "success");
+        return result;
+    }
+
+    @RequestMapping({ "/update_wxuser.json" })
+    @ResponseBody
+    public JSONObject updateWxUserByOpenid(@RequestBody WxUser user) {
+        Log.info("params=====" + JSON.toJSONString(user));
+        JSONObject result = new JSONObject();
+        if (user.getOpenId() == null) {
+            result.put("result", "false");
+            return result;
+        }
+        wxUserService.updateByOpenId(user);
         result.put("result", "success");
         return result;
     }

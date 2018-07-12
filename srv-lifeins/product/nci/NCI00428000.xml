@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?><declare>
+	<product 
+	code="00428000" 
+	corporation_id="nci" 
+	id="NCI00428000"
+	input="quantity"
+	last_modify_date="" 
+	magnumExempt="0" 
+	magnumJuvenilesRisk="TRUE" 
+	magnumProductType="ANNUITY" 
+	name="惠添利两全保险"
+	name_abbr="惠添利"
+	premium="QUANTITY*1000" 
+	unit_desc="quantity"
+	sale_begin_date="2017-8-25" 
+	sale_end_date="" 
+	type_code="lifeins,common" 
+	amount="DS.RATE[0,0]*QUANTITY">
+			
+		<data>
+			<item parser="dds" value="NCI00428000"/>
+		</data>
+
+		<param>
+			<pay><!--交费方式 -->
+				<item code="term_3"/>
+				<item code="term_5"/>
+			</pay>
+			<insure><!--保险期间 -->
+				<item code="term_15"/>
+				<item code="term_20"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="LINE_NUM">INSURE_PERIOD</item>
+		</init>
+			
+		<!--利益演示_公式 -->
+		<interest>
+				<var formula="DS.DATA[A1,1]*QUANTITY*10*0.1" name="DNBXF" param="A1" type="double"/> <!--当年保险费（年初）-->
+				<var formula="DS.DATA[A1,2]*QUANTITY*10*0.1" name="LJBXF" param="A1" type="double"/> <!--累计保险费（年初）-->
+			    <var formula="DS.DATA[A1,3]*QUANTITY*10*0.1" name="GAJ" param="A1" type="double"/><!--关爱金、生存保险金（年初）-->
+				<var formula="DS.DATA[A1,4]*QUANTITY*10*0.1" name="LJGAJ" param="A1" type="double"/> <!--累计关爱金、生存保险金（年初）-->
+				
+				<var formula="DS.DATA[A1,5]*QUANTITY*10*0.1" name="MQBXJ" param="A1" type="double"/><!--满期保险金（年末）-->
+				<var formula="DS.DATA[A1,6]*QUANTITY*10*0.1" name="GGJTYWBX" param="A1" type="double"/><!--公共交通工具意外伤害身故或身体全残保险金-->
+				<var formula="DS.DATA[A1,7]*QUANTITY" name="HKYWSHSG" param="A1" type="double"/><!--航空意外伤害身故或身体全残保险金-->
+				<var formula="DS.DATA[A1,8]*QUANTITY*10*0.1" name="YBSG" param="A1" type="double"/><!--一般身故或身体全残保险金-->
+				<!-- <var formula="round(DS.DATA[A1,11]*QUANTITY*10+DS.DATA[A1,14])" name="BDZHG" param="A1" type="double"/>保单账户价值（年末）高
+				<var formula="round(DS.DATA[A1,10]*QUANTITY*10+DS.DATA[A1,13])" name="BDZHZ" param="A1" type="double"/>保单账户价值（年末）中
+				<var formula="round(DS.DATA[A1,9]*QUANTITY*10+DS.DATA[A1,12])" name="BDZHD" param="A1" type="double"/>保单账户价值（年末）低	 -->
+
+				<!-- 924数据取值 -->
+				<var formula="DS.DATA1[A1,11]" name="YCJQBXF" param="A1" type="double"/> <!--一次交清保险费（年初）-->
+				<var formula="DS.DATA1[A1,12]" name="ZJBXF" param="A1" type="double"/> <!--追加保险费（年初-->
+			    <var formula="DS.DATA1[A1,1]*QUANTITY*10*0.1" name="AXGYDZRBXF" param="A1" type="double"/><!--按相关约定转入的保险费（年初）-->
+				<var formula="DS.DATA1[A1,13]+DS.DATA1[A1,2]*QUANTITY*10*0.1" name="TLLJBXF" param="A1" type="double"/> <!--累计保险费（年初）-->
+				<var formula="DS.DATA1[A1,14]+DS.DATA1[A1,3]*QUANTITY*10*0.1" name="CSFY" param="A1" type="double"/><!--初始费用（年初）-->
+				<var formula="DS.DATA1[A1,15]+DS.DATA1[A1,4]*QUANTITY*10*0.1" name="JRWNBDZHJZ" param="A1" type="double"/><!--进入万能保单账户的价值（年初）-->
+				<var formula="DS.DATA1[A1,16]+DS.DATA1[A1,5]*QUANTITY*10*0.1" name="BDZHJZD" param="A1" type="double"/><!--保单账户价值（年末）低-->
+				<var formula="DS.DATA1[A1,17]+DS.DATA1[A1,6]*QUANTITY*10*0.1" name="BDZHJZZ" param="A1" type="double"/><!--保单账户价值（年末）中-->
+				<var formula="DS.DATA1[A1,18]+DS.DATA1[A1,7]*QUANTITY*10*0.1" name="BDZHJZG" param="A1" type="double"/><!--保单账户价值（年末）高-->
+				<var formula="max(DS.DATA1[A1,13]+DS.DATA1[A1,2]*QUANTITY*10*0.1,DS.DATA1[A1,16]+DS.DATA1[A1,5]*QUANTITY*10*0.1)" name="SGBXJD" param="A1" type="double"/><!--身故保险金（年末）低-->
+				<var formula="max(DS.DATA1[A1,13]+DS.DATA1[A1,2]*QUANTITY*10*0.1,DS.DATA1[A1,17]+DS.DATA1[A1,6]*QUANTITY*10*0.1)" name="SGBXJZ" param="A1" type="double"/><!--身故保险金（年末）中-->
+				<var formula="max(DS.DATA1[A1,13]+DS.DATA1[A1,2]*QUANTITY*10*0.1,DS.DATA1[A1,18]+DS.DATA1[A1,7]*QUANTITY*10*0.1)" name="SGBXJG" param="A1" type="double"/><!--身故保险金（年末）高-->
+				<var formula="DS.DATA1[A1,19]+DS.DATA1[A1,8]*QUANTITY*10*0.1" name="XJJZD" param="A1" type="double"/><!--现金价值（年末）低-->
+				<var formula="DS.DATA1[A1,20]+DS.DATA1[A1,9]*QUANTITY*10*0.1" name="XJJZZ" param="A1" type="double"/><!--现金价值（年末）中-->
+				<var formula="DS.DATA1[A1,21]+DS.DATA1[A1,10]*QUANTITY*10*0.1" name="XJJZG" param="A1" type="double"/><!--现金价值（年末）高-->
+			</interest> 
+		<!--利益演示 -->
+		<attachment>
+		   <benefit_table filter="table" parser="table"><!--利益演示-表头 -->
+			    <table>
+					
+				<row type="title">
+						<blank  row="4">'保单年度'</blank>
+						<blank  col="8">'惠添利两全保险'</blank>
+					</row>
+					<row type="title">
+						<blank  row="3">'当年保险费\n（年初）'</blank>
+						<blank  row="3">'累计保险费\n（年初）'</blank>
+						<blank  row="3">'关爱金、生存\n保险金\n（年初）'</blank>
+						<blank  row="3">'累计关爱金、\n生存保险金\n（年初）'</blank>
+						<blank  row="3">'满期保险金\n（年末）'</blank>
+						<blank  row="3">'公共交通工具\n意外伤害身故\n或身体全残保\n险金'</blank>
+						<blank  row="3">'航空意外伤害\n身故或身体全\n残保险金'</blank>
+						<blank  row="3">'一般身故或身\n体全残保险金'</blank>
+					</row>
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1"><!--利益演示_数据 -->
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="######0">IT.DNBXF[I]</blank>
+							<blank align="right" style="######0">IT.LJBXF[I]</blank>  
+							<blank align="right" style="######0">IT.GAJ[I]</blank>
+							<blank align="right" style="#######0">IT.LJGAJ[I]</blank> 
+						  	<blank align="right" style="#######0">IT.MQBXJ[I]</blank>
+							<blank align="right" style="#######0">IT.GGJTYWBX[I]</blank>
+							<blank align="right" style="#######0">IT.HKYWSHSG[I]</blank> 
+							<blank align="right" style="#######0">IT.YBSG[I]</blank>
+						</row>
+					</loop>
+				</table>
+				<!--重要说明 -->
+				<text>惠添利两全保险的产品重要说明如下：</text>
+				<text>上述演示数据经过取整处理。</text>
+			</benefit_table>
+
+			<benefit_table filter="table" parser="table"><!--利益演示-表头 -->
+			    <table >
+					
+				<row type="title">
+						<blank  row="4">'保单年度'</blank>
+						<blank  col="8">'惠添利两全保险'</blank>
+						<blank  col="3">'天利年金保险（万能型）'</blank>
+					</row>
+					<row type="title">
+						<blank  row="3">'当年保险费\n（年初）'</blank>
+						<blank  row="3">'累计保险费\n（年初）'</blank>
+						<blank  row="3">'关爱金、生存\n保险金\n（年初）'</blank>
+						<blank  row="3">'累计关爱金、\n生存保险金\n（年初）'</blank>
+						<blank  row="3">'满期保险金\n（年末）'</blank>
+						<blank  row="3">'公共交通工具\n意外伤害身故\n或身体全残保\n险金'</blank>
+						<blank  row="3">'航空意外伤害\n身故或身体全\n残保险金'</blank>
+						<blank  row="3">'一般身故或身\n体全残保险金'</blank>
+						<blank  col="3">'保单账户价值（年末）'</blank>
+					</row>
+					<row type="title">
+						<blank  row="2">'低'</blank>
+						<blank  row="2">'中'</blank>
+						<blank  row="2">'高'</blank>
+					</row>
+					<loop from="0" name="I" step="1" to="INSURE_PERIOD-1"><!--利益演示_数据 -->
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="######0">IT.DNBXF[I]</blank>
+							<blank align="right" style="######0">IT.LJBXF[I]</blank>  
+							<blank align="right" style="######0">IT.GAJ[I]</blank>
+							<blank align="right" style="#######0">IT.LJGAJ[I]</blank> 
+						  	<blank align="right" style="#######0">IT.MQBXJ[I]</blank>
+							<blank align="right" style="#######0">IT.GGJTYWBX[I]</blank>
+							<blank align="right" style="#######0">IT.HKYWSHSG[I]</blank> 
+							<blank align="right" style="#######0">IT.YBSG[I]</blank>
+							<blank align="right" style="###########0">IT.BDZHJZD[I]</blank> 
+							<blank align="right" style="###########0">IT.BDZHJZZ[I]</blank> 
+							<blank align="right" style="###########0">IT.BDZHJZG[I]</blank> 
+						</row>
+					</loop>
+				</table>
+				
+
+				 <table >
+					
+					<row type="title">
+						<blank  row="4">'保单年度'</blank>
+						<blank  col="3">'当年保险费'</blank>
+						<blank  row="4">'累计保险\n费（年初）'</blank>
+						<blank  row="4">'初始费用\n（年初）'</blank>
+						<blank  row="4">'进入万能\n保单账户\n的价值\n（年初）'</blank>
+						<blank  col="3">'保单账户价值（年末）'</blank>
+						<blank  col="3">'身故保险金（年末）'</blank>
+						<blank  col="3">'现金价值（年末）'</blank>
+					</row>
+					<row type="title">
+						<blank  row="3">'一次交清\n保险费\n（年初）'</blank>
+						<blank  row="3">'追加保险\n费（年初）'</blank>
+						<blank  row="3">'按相关约\n定转入的\n保险费\n（年初）'</blank>
+						<blank  row="3">'低'</blank>
+						<blank  row="3">'中'</blank>
+						<blank  row="3">'高'</blank>
+						<blank  row="3">'低'</blank>
+						<blank  row="3">'中'</blank>
+						<blank  row="3">'高'</blank>
+						<blank  row="3">'低'</blank>
+						<blank  row="3">'中'</blank>
+						<blank  row="3">'高'</blank>
+					</row>
+						<row>
+							<blank style="##0">1</blank>
+							<blank align="right" style="######0">10</blank>
+							<blank align="right" style="######0">0</blank>  
+							<blank align="right" style="######0">0</blank>
+							<blank align="right" style="#######0">10</blank> 
+						  	<blank align="right" style="#######0.0">0.3</blank>
+							<blank align="right" style="#######0.0">9.7</blank>
+							<blank align="right" style="#######0">10</blank> 
+							<blank align="right" style="#######0">10</blank>
+							<blank align="right" style="###########0">10</blank> 
+							<blank align="right" style="###########0">10</blank> 
+							<blank align="right" style="#######0">10</blank>
+							<blank align="right" style="#######0">10</blank> 
+							<blank align="right" style="#######0">10</blank>
+							<blank align="right" style="###########0">10</blank> 
+							<blank align="right" style="###########0">10</blank> 
+							
+						</row>
+					<loop from="1" name="I" step="1" to="104-AGE"><!--利益演示_数据 -->
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="######0">IT.YCJQBXF[I]</blank>
+							<blank align="right" style="######0">IT.ZJBXF[I]</blank>  
+							<blank align="right" style="######0">IT.AXGYDZRBXF[I]</blank>
+							<blank align="right" style="#######0">IT.TLLJBXF[I]</blank> 
+						  	<blank align="right" style="#######0">IT.CSFY[I]</blank>
+							<blank align="right" style="#######0">IT.JRWNBDZHJZ[I]</blank>
+							<blank align="right" style="#######0">IT.BDZHJZD[I]</blank> 
+							<blank align="right" style="#######0">IT.BDZHJZZ[I]</blank>
+							<blank align="right" style="###########0">IT.BDZHJZG[I]</blank> 
+							<blank align="right" style="###########0">IT.SGBXJD[I]</blank> 
+							<blank align="right" style="#######0">IT.SGBXJZ[I]</blank>
+							<blank align="right" style="#######0">IT.SGBXJG[I]</blank> 
+							<blank align="right" style="#######0">IT.XJJZD[I]</blank>
+							<blank align="right" style="###########0">IT.XJJZZ[I]</blank> 
+							<blank align="right" style="###########0">IT.XJJZG[I]</blank> 
+							
+						</row>
+					</loop>
+				</table>
+				<!--重要说明 -->
+				<text>惠添利保险产品计划的产品重要说明如下：</text>
+				<text>1．上述演示数据经过取整处理。</text>
+				<text>2.“天  利  年  金  保  险 （ 万 能 型 ） 合  同” 保   险  利  益  演  示  中,   假 设  结 算 利 率 分 别  处  于 低、中、高  三  种  水  平。对 应 的 年 结 算 利 率 分 别  为：“低”为2.5％（保证利率）；“中”为4.5％；“高”为6％。</text>
+				<text>3.“天 利 年 金 保 险（万能型）合 同”生 效 满 五 年后，该 合 同 年 金 受 益 人 可 选 择 向本公司申请年金。本公司按当时保单账户价值的10%与该合同已交保险费的20%二者之较小者给付年金。</text>
+				<text>4.“天 利 年 金 保 险（万能型）合 同”投 保 人 在 犹 豫 期 后 可 以 申 请 部 分 领 取保单账户价值，但每个保单年度申请部分领取的金额不得超过该合同已交保险费的20%，同时每次申请部分领取的金额和领取后的保单账户价值余额均须符合本公司规定的最低标准。</text>
+				<text>5.“天利年金保险（万能型）合同”的费用收取：</text> 
+				<text>（1）初始费用：对 于 一 次 交 清 保 险 费、追 加 保 险 费，每 笔 保 险 费 均 收 取3%的初始费用；对于按相关约定转入的保险费，每笔保险费收取0.5%的初始费用。</text>
+				<text>（2）退保费用：投 保 人 申 请 部 分 领 取 保 单 账 户 价 值 或 解 除 该 合 同 时 本 公 司 收取一定的退保费用。退保费用为本公司收到部分领取申请书之日申请领取的或合同解除申请书之日保单账户价值的一定比例。退保费用收取比例为：第1年，5%；第2年，4%；第3年，3%；第4年，2%；第5年，1%；第6年及 以 后，0%。</text>
+				<text>6．“天利年金保险（万能型）合同”进入万能保单账户的价值 = 一次交清保险费+追加保险费+按相关约定转入的保险费-初始费用</text>
+				<text>天利年金保险（万能型）产品的保险利益演示基于公司的精算及其他假设，不代表公司的历史经营业绩，也不代表对公司未来经营业绩的预期，最低保证利率之上的投资收益是不确定的，实际保单账户利益可能低于中、高档利益演示水平。
+				</text>
+			</benefit_table>
+			
+			<!--保险责任 -->
+				<coverage filter="coverage" parser="coverage">
+					<paragraph >
+						<item>在本合同保险期间内，本公司承担下列保险责任：</item>
+					</paragraph>
+					<paragraph title="1.关爱金">
+						<item>被保险人于本合同生效满五年的首个保单生效对应日零时生存，本公司按以下方式给付关爱金：</item>
+						<item>关爱金=首次交纳保险费的金额×关爱金给付比例</item>
+						<item>（1）如保险单上载明的交费期间为3年，则关爱金给付比例为15%；</item>
+						<item>（2）如保险单上载明的交费期间为5年，则关爱金给付比例为20%。 </item>
+						
+					</paragraph>
+					<paragraph title="2.生存保险金">
+						<item>被保险人于本合同生效满五年起至保险期间届满之前，在每个保单生效对应日零时生存，本公司按以下方式给付生存保险金：</item>
+						<item>生存保险金=首次交纳保险费的金额×生存保险金给付比例</item>
+						<item>（1）如保险单上载明的交费期间为3年，则生存保险金给付比例为7%；</item>
+						<item>（2）如保险单上载明的交费期间为5年，则生存保险金给付比例为10%。</item>
+					</paragraph>
+					<paragraph title="3.满期保险金">
+						<item>被保险人生存至保险期间届满，本公司按基本保险金额给付满期保险金，本合同终止。</item>
+					</paragraph>
+					<paragraph title="4.公共交通工具意外伤害身故或身体全残保险金">
+						<item>被保险人以乘客身份乘坐公共交通工具期间，在交通工具内因交通事故遭受意外伤害导致身故或身体全残的，本公司按被保险人身故或身体全残时所处的以下不同情形给付公共交通工具意外伤害身故或身体全残保险金, 本合同终止：</item>
+						<item>（1）若身故或身体全残时被保险人处于18周岁保单生效对应日之前（不含18周岁保单生效对应日），则其公共交通工具意外伤害身故或身体全残保险金为本保险实际交纳的保险费的1.6倍；</item>
+						<item>（2）若身故或身体全残时被保险人处于18周岁保单生效对应日之后（含18周岁保单生效对应日），则其公共交通工具意外伤害身故或身体全残保险金为基本保险金额的5倍。</item>
+					</paragraph>
+					<paragraph title="5.航空意外伤害身故或身体全残保险金">
+						<item>被保险人以乘客身份乘坐合法商业运营民航班机期间，在民航班机内遭受意外伤害导致身故或身体全残的，本公司按基本保险金额的10倍给付航空意外伤害身故或身体全残保险金, 本合同终止。</item>
+					</paragraph>
+					<paragraph title="6.一般身故或身体全残保险金">
+						<item>被保险人因本条第4款、第5款以外的情形导致身故或身体全残，本公司按被保险人身故或身体全残时所处的以下不同情形给付一般身故或身体全残保险金，本合同终止：</item>
+						<item>（1）若身故或身体全残时被保险人处于41周岁保单生效对应日之前（不含41周岁保单生效对应日），则其一般身故或身体全残保险金为本保险实际交纳的保险费的1.6倍；</item>
+						<item>（2）若身故或身体全残时被保险人处于41周岁保单生效对应日之后（含41周岁保单生效对应日）、61周岁保单生效对应日之前（不含61周岁保单生效对应日），则其一般身故或身体全残保险金为本保险实际交纳的保险费的1.4倍；</item>
+						<item>（3）若身故或身体全残时被保险人处于61周岁保单生效对应日之后（含61周岁保单生效对应日），则其一般身故或身体全残保险金为本保险实际交纳的保险费的1.2倍。</item>
+					</paragraph>
+				</coverage>
+				<benefit_chart filter="chart" parser="chart">
+				    <chart from="0" to="INSURE_PERIOD-1" name="I">
+				    	<line name="累计保费" color="#00BFFF">PremiumSum(I)</line>
+						<line name="公共交通工具意外伤害身故或身体全残保险金" color="#ff66ff">IT.GGJTYWBX(I)</line>
+						<line name="航空意外伤害身故或身体全残保险金" color="#ccff66">IT.HKYWSHSG(I)</line>
+						<line name="一般身故或身体全残保险金" color="#0088DD">IT.YBSG(I)</line>
+						<!--<line name="累计保险费" color="#0099EE">IT.LJBXF(I)</line>
+						<line name="满期保险金" color="#ff6633">IT.MQBXJ(I)</line>
+						<line name="保单账户价值(高)" color="#3366ff">IT.BDZHJZG(I)</line>
+						 <line name="累计保费" color="red">IT.LJBXF(I)</line> -->
+					</chart>
+				</benefit_chart>
+			</attachment>
+			
+			<rider><!--附加险 -->
+				<product id="00205008"/>   
+				<product id="00205009"/>
+				<product id="00378000"/>
+				<product id="00519000"/>
+				<product id="00540000"/>
+				<product id="00541000"/>
+				<product id="00552000"/>
+				<product id="00553000"/>
+				<product id="00554000"/>
+				<product id="00388000"/>
+				<product id="00507000"/>
+				<product id="00508000"/>
+				<product id="00563100"/>
+				<product id="00389000"/>
+				<product id="00570000"/>
+				<product id="00946000"/>
+				<product id="00392000"/>
+				<product id="00958100"/>
+			</rider>
+
+			<rule skip="rule_02001">
+			
+				<if condition = "QUANTITY lt 5" alert="premium">
+					最低投保5份。
+				</if>
+				<if condition = "DAY lt 30 or AGE > 59" alert="amount">
+					被保险人年龄范围：出生满30天（含）-59周岁（含）。
+				</if>
+				
+			</rule>
+		</product>	
+	</declare>

@@ -10,6 +10,7 @@ import lerrain.tool.Common;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,11 +73,12 @@ public class TemplateController {
         }
         String banner = template.getBanner();
         String message = template.getMessage();
-        result.put("banner", StringUtils.isNotBlank(banner) ? JSON.parseArray(banner) : null);
-        result.put("msg", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : null);
+        JSONArray defaultArray = new JSONArray();
+        result.put("banner", StringUtils.isNotBlank(banner) ? JSON.parseArray(banner) : defaultArray);
+        result.put("msg", StringUtils.isNotBlank(message) ? JSON.parseArray(message) : defaultArray);
 
         JSONObject pJson = findProducts(p);
-        result.put("typeProducts", pJson != null ? pJson.getJSONArray("content") : new JSONArray());
+        result.put("typeProducts", (pJson != null && pJson.getJSONArray("content") != null) ? pJson.getJSONArray("content") : defaultArray);
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", result);
@@ -175,29 +177,52 @@ public class TemplateController {
         for (int i = 0; i < ids.size(); i++) {
             idList.add(ids.get(i).getProductId());
         }
+        if (idList.size() <= 0) {
+            return result;
+        }
         List<TemplateProduct> tps = templateSrv.queryTps(idList);
         List<TemplateProductType> tpts = templateSrv.queryByProductId(idList);
         List<TemplateProductTypeRelation> tptrs = templateSrv.queryTptrsByTemplateIdAndProductId(templateId, idList);
         JSONArray typeProducts = new JSONArray();
-        for (TemplateProductTypeRelation tptr : tptrs) {
+        if (CollectionUtils.isEmpty(tptrs)) {
+            result.put("content", typeProducts);
+            result.put("result", "success");
+            return result;
+        }
+        Map<Long, List<Long>> map = Maps.newTreeMap();
+        for (int i = 0; i < tptrs.size(); i++) {
+            TemplateProductTypeRelation tptr = tptrs.get(i);
+            List<Long> pIdList = Lists.newArrayList();
+            Long pTypeId = tptr.getProductTypeId();
+            for (int j = 0; j < tptrs.size(); j++) {
+                if (tptrs.get(j).getProductTypeId().longValue() == pTypeId.longValue()) {
+                    pIdList.add(tptrs.get(j).getProductId());
+                }
+            }
+            map.put(pTypeId, pIdList);
+        }
+        for (Long id : map.keySet()) {
             JSONObject pt = new JSONObject();
             JSONArray prodsArr = new JSONArray();
-            Long pTypeId = tptr.getProductTypeId();
-            Long prodId = tptr.getProductId();
+            List<Long> pList = map.get(id);
             for (TemplateProductType tpt : tpts) {
-                if (tpt.getId().longValue() == pTypeId.longValue()) {
+                if (tpt.getId().longValue() == id.longValue()) {
                     pt.put("proType", tpt);
                     break;
                 }
             }
-            for (TemplateProduct tp : tps) {
-                if (tp.getId().longValue() == prodId.longValue()) {
-                    prodsArr.add(tp);
+            for (int i = 0; i < pList.size(); i++) {
+                Long pid = pList.get(i);
+                for (TemplateProduct tp : tps) {
+                    if (tp.getId().longValue() == pid.longValue()) {
+                        prodsArr.add(tp);
+                    }
                 }
+                pt.put("product", prodsArr);
             }
-            pt.put("product", prodsArr);
             typeProducts.add(pt);
         }
+
         result.put("content", typeProducts);
         result.put("result", "success");
         return result;
@@ -208,6 +233,9 @@ public class TemplateController {
     public JSONObject save(@RequestBody JSONObject p) {
         Log.info(p);
         Long userId = p.getLong("userId");
+        if (userId == null) {
+            throw new RuntimeException("userId can not be null");
+        }
         Long templateId = p.getLong("id");
         String templateName = p.getString("templateName");
         String title = p.getString("title");
@@ -233,7 +261,7 @@ public class TemplateController {
         t.setBanner(banner.toJSONString());
         Long id = templateSrv.saveOpUpdate(t);
         t.setId(id);
-        link = link + "&accountId=" + userId + "&templateId=" + id;
+        link = link + "?accountId=" + userId + "&templateId=" + id;
         t.setLink(link);
         templateSrv.saveOpUpdate(t);
 
@@ -286,7 +314,7 @@ public class TemplateController {
             }
         }
         //创建商城模板与用户关系表
-        if (templateSrv.queryByTUserId(id, userId) == null) {
+        if (userId != null && templateSrv.queryByTUserId(id, userId) == null) {
             TemplateUserRelation tur = new TemplateUserRelation();
             tur.setUserId(userId);
             tur.setTemplateId(id);
@@ -304,6 +332,9 @@ public class TemplateController {
     public JSONObject handleTemplate(@RequestBody JSONObject p) {
         Log.info(p);
         Long userId = p.getLong("userId");
+        if (userId == null) {
+            throw new RuntimeException("userId can not be null");
+        }
         JSONArray banner = p.getJSONArray("banner");
         JSONArray typeProducts = p.getJSONArray("typeProducts");
         String link = p.getString("shopUrl");
@@ -335,6 +366,7 @@ public class TemplateController {
                     if (Objects.equals(typeName, tNameJ)) {
                         pro.put("packageName", tpj.getString("name"));
                         pro.put("premium", tpj.getString("price"));
+                        pro.put("label",tNameJ);
                         if (j <= 1) {
                             //默认前2个做首页
                             pro.put("isIndex", "Y");

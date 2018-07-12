@@ -44,6 +44,7 @@ service:
   shop: http://localhost:7759
   template: http://localhost:7969
   varia: http://localhost:7508
+  message: http://15414-iyunbao-broker-iyb-message.test.za.net
 
 path:
   temp: x:/temp/1/

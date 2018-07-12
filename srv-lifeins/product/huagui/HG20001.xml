@@ -53,8 +53,8 @@
 
 
 			<if>
-				if(val(INSURE_VALUE)+AGE>70){
-					return '年龄+保险期间≤70周岁';
+				if(val(PAY_PERIOD)+AGE>70){
+					return '年龄+交费方式≤70周岁';
 				}
 				print(INSURE_VALUE+"*****");
 				print(PAY_PERIOD+"*****");

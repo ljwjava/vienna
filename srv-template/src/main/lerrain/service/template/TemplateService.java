@@ -1,6 +1,7 @@
 package lerrain.service.template;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,15 +108,24 @@ public class TemplateService {
     }
 
     public List<TemplateProduct> queryTps(List<Long> ids) {
+        if (ids == null || ids.size() <= 0) {
+            return Lists.newArrayList();
+        }
         return dao.queryTps(ids);
     }
 
     public List<TemplateProductType> queryByProductId(List<Long> pIds) {
+        if (pIds == null || pIds.size() <= 0) {
+            return Lists.newArrayList();
+        }
         return dao.queryByProductId(pIds);
 
     }
 
     public List<TemplateProductTypeRelation> queryTptrsByTemplateIdAndProductId(Long templateId, List<Long> idList) {
+        if (templateId == null || idList == null || idList.size() <= 0) {
+            return Lists.newArrayList();
+        }
         return dao.queryTptrsByTemplateIdAndProductId(templateId, idList);
     }
 }

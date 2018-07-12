@@ -439,6 +439,10 @@ input {
   text-align: center;
 }
 
+.middle {
+  vertical-align: middle;
+}
+
 .right {
   text-align: right;
 }
