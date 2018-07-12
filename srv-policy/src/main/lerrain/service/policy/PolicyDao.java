@@ -186,7 +186,7 @@ public class PolicyDao {
 
         String sql = "update t_policy set order_id=?, platform_id=?, apply_no=?, policy_no=?, endorse_no=?, endorse_time=?, type=?, product_name = ?, target=?, detail=?, fee=?, extra=?, premium=?, insure_time=?, effective_time=?, finish_time=?, "
                 + "vendor_id=?, agency_id=?, owner_company=?, owner_org=?, owner=?, period=?, applicant_name=?, applicant_mobile=?, applicant_email=?, applicant_cert_no=?, applicant_cert_type=?, insurant_name=?, insurant_cert_no=?, "
-                + "insurant_cert_type=?, vehicle_engine_no=?, vehicle_frame_no=?, vehicle_plate_no=?, update_time=?, updater=? where id = ?";
+                + "insurant_cert_type=?, vehicle_engine_no=?, vehicle_frame_no=?, vehicle_plate_no=?, update_time=now(), updater=? where id = ?";
 
         jdbc.update(sql, p.getOrderId(), p.getPlatformId(), p.getApplyNo(), p.getPolicyNo(), p.getEndorseNo(),
                 p.getEndorseTime(), p.getType(), p.getProductName(), Common.trimStringOf(p.getTarget()),

@@ -131,7 +131,8 @@ public class ImageController {
             json.put("id", uploadApply.getId());
             json.put("status", uploadApply.getStatus());
             json.put("name", uploadApply.getName());
-            Integer count = imageService.countRecommend(uploadApply.getName(), uploadApply.getUserId());
+            Integer count = imageService.countRecommend(uploadApply.getName(), uploadApply.getUserId(),
+                    uploadApply.getOpenId());
             json.put("recommend", count);
             List<NormalPolicy> listPolicyByUploadApply = imageService.listPolicyByUploadApply(uploadApply.getId());
             json.put("policy", listPolicyByUploadApply);
@@ -225,12 +226,13 @@ public class ImageController {
         JSONObject res = new JSONObject();
         String name = params.getString("name");
         Long userId = params.getLong("userId");
-        if (userId == null || name == null) {
+        String openId = params.getString("openId");
+        if (userId == null || name == null || openId == null) {
             res.put("result", "success");
             res.put("content", 0);
             return res;
         }
-        Integer count = imageService.countRecommend(name, userId);
+        Integer count = imageService.countRecommend(name, userId, openId);
         res.put("result", "success");
         res.put("content", count);
         return res;
@@ -248,7 +250,28 @@ public class ImageController {
         JSONObject res = new JSONObject();
         String name = params.getString("name");
         Long applyId = params.getLong("id");
-        if (applyId == null || name == null) {
+        if (name == null) {
+            res.put("result", "false");
+            return res;
+        }
+        Long userId = null;
+        String openId = params.getString("openId");
+        Integer count = null;
+        if (applyId == null) {
+            userId = params.getLong("userId");
+            openId = params.getString("openId");
+            JSONObject countRecommend = countRecommend(params);
+            count = countRecommend.getInteger("content");
+        } else {
+            ImageUpload p = new ImageUpload();
+            p.setId(applyId);
+            List<ImageUpload> listUploadApply = imageService.listUploadApply(p);
+            ImageUpload uploadApply = listUploadApply.get(0);
+            userId = uploadApply.getUserId();
+            openId = uploadApply.getOpenId();
+        }
+        if (userId == null) {
+            res.put("result", "false");
             return res;
         }
 
@@ -257,13 +280,13 @@ public class ImageController {
         if (params.getInteger("currentPage") != null) {
             start = (params.getInteger("currentPage") - 1) * limit;
         }
-        ImageUpload p = new ImageUpload();
-        p.setId(applyId);
-        List<ImageUpload> listUploadApply = imageService.listUploadApply(p);
-        ImageUpload uploadApply = listUploadApply.get(0);
-        List<Map<String, Object>> list = imageService.queryRecommend(name, uploadApply.getUserId(), start, limit);
+
+        List<Map<String, Object>> list = imageService.queryRecommend(name, userId, openId, start, limit);
 
         Map<String, Object> map = new HashMap<>();
+        if (count != null) {
+            map.put("total", count);
+        }
         map.put("result", list);
         map.put("currentPage", params.getInteger("currentPage"));
         map.put("pageSize", limit);
@@ -288,10 +311,9 @@ public class ImageController {
             String status = params.getString("status");
             JSONArray policyArray = params.getJSONArray("policy");
 
-            if (StringUtils.isBlank(status) || policyArray == null || policyArray.isEmpty()) {
+            if (StringUtils.isBlank(status)) {
                 return result;
             }
-
             Date now = new Date();
             ImageUpload upload = new ImageUpload();
             upload.setId(imageUploadId);
@@ -313,16 +335,22 @@ public class ImageController {
     @RequestMapping(value = "/create_relation.json")
     public JSONObject createRelation(@RequestBody JSONObject params) {
         JSONObject result = new JSONObject();
+        String openId = null;
         Long uploadId = params.getLong("id");
+        if (uploadId == null) {
+            openId = params.getString("openId");
+        } else {
+            ImageUpload p = new ImageUpload();
+            p.setId(uploadId);
+            ImageUpload imageUpload = imageService.listUploadApply(p).get(0);
+            openId = imageUpload.getOpenId();
+        }
         JSONArray ids = params.getJSONArray("policyId");
-        if (uploadId == null || ids == null || ids.isEmpty()) {
+        if (openId == null || ids == null || ids.isEmpty()) {
             result.put("result", "false");
             return result;
         }
-        ImageUpload p = new ImageUpload();
-        p.setId(uploadId);
-        ImageUpload imageUpload = imageService.listUploadApply(p).get(0);
-        imageService.createRelation(imageUpload.getOpenId(), ids);
+        imageService.createRelation(openId, uploadId, ids);
         result.put("result", "success");
         return result;
     }
