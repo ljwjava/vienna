@@ -711,7 +711,7 @@ var Ground = React.createClass({
             }
         }
         if(!repNode){
-            ToastIt("受益人信息，同一人仅能出现一次！");
+            ToastIt("受益人信息不能重复！");
             return;
         }
         if (!b1) {
