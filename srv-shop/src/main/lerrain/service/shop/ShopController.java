@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class ShopController
@@ -34,23 +35,24 @@ public class ShopController
         int currentPage = Common.intOf(p.get("currentPage"), 1);
         int num = Common.intOf(p.get("pageSize"), 20);
         int from =  num*(currentPage - 1);
-        Long userId = p.getLong("userId");
-        String name = p.getString("cdName");
+//        Long userId = p.getLong("userId");
+//        String name = p.getString("commodityName");
+        Shop contion = JSONObject.parseObject(p.toJSONString(),Shop.class);
 
-        List<JSONObject> typeList = productSrv.types(name,from,num);
+        List<JSONObject> typeList = productSrv.types(contion,from,num);
         List<JSONObject> titleList = Lists.newArrayList();
         JSONObject json = new JSONObject();
         json.put("tagId","1");
         json.put("tagCode","all");
         json.put("tagName","全部");
-        json.put("prdNumbers",productSrv.count(userId, name, null));
+        json.put("prdNumbers",productSrv.count(contion));
         titleList.add(json);
         titleList.addAll(typeList);
 
         JSONObject r = new JSONObject();
         r.put("titleList", titleList);
         JSONObject page = new JSONObject();
-        page.put("total",productSrv.countType(name));
+        page.put("total",productSrv.countType(contion));
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);
@@ -70,16 +72,18 @@ public class ShopController
         int num = Common.intOf(p.get("pageSize"), 10);
         int from =  num*(currentPage - 1);
 
-        Long userId = p.getLong("userId");
-        String name = p.getString("cdName");
-        String type = StringUtils.equals("all",p.getString("cdType"))?"":p.getString("cdType");
+//        Long userId = p.getLong("userId");
+//        String name = p.getString("commodityName");
+//        String type = StringUtils.equals("all",p.getString("commodityTypeCode"))?"":p.getString("commodityTypeCode");
 
-        List<Shop> cdList = productSrv.commoditys(userId, name, type, from, num);
+        Shop contion = JSONObject.parseObject(p.toJSONString(),Shop.class);
+
+        List<Shop> cdList = productSrv.commoditys(contion, from, num);
 
         JSONObject r = new JSONObject();
         r.put("list", cdList);
         JSONObject page = new JSONObject();
-        page.put("total",productSrv.count(userId, name, type));
+        page.put("total",productSrv.count(contion));
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);
@@ -102,7 +106,7 @@ public class ShopController
 //        Long userId = p.getLong("userId");
 //        String cdName = p.getString("cdName");
 
-        RateTemplate contion = JSONObject.parseObject(p.toJSONString(),RateTemplate.class);
+        RateTemp contion = JSONObject.parseObject(p.toJSONString(),RateTemp.class);
 
         List<JSONObject> rtList = productSrv.rateTemplates(contion, from, num);
 
@@ -141,8 +145,8 @@ public class ShopController
     public JSONObject saveOrUpdateRateTemplate(@RequestBody JSONObject p)
     {
         JSONObject res = new JSONObject();
-        RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
-        RateTemplate rt = productSrv.saveOrUpdateRateTemplate(contion);
+        RateTemp contion = JSON.parseObject(p.toJSONString(), RateTemp.class);
+        RateTemp rt = productSrv.saveOrUpdateRateTemplate(contion);
         res.put("result", "success");
         res.put("content", JSON.toJSON(rt));
 
@@ -154,8 +158,8 @@ public class ShopController
     public JSONObject deleteRateTemplate(@RequestBody JSONObject p)
     {
         JSONObject res = new JSONObject();
-        RateTemplate contion = JSON.parseObject(p.toJSONString(), RateTemplate.class);
-        RateTemplate rt = productSrv.deleteRateTemplate(contion);
+        RateTemp contion = JSON.parseObject(p.toJSONString(), RateTemp.class);
+        RateTemp rt = productSrv.deleteRateTemplate(contion);
         res.put("result", "success");
         res.put("content", JSON.toJSON(rt));
 
@@ -170,10 +174,26 @@ public class ShopController
         res.put("result", "success");
         JSONArray list = p.getJSONArray("list");
         if(null != list) {
-            List<RateTemplate> contions = JSON.parseArray(list.toJSONString(), RateTemplate.class);
-            List<RateTemplate> rts = productSrv.batchOperateRateTemplate(contions);
+            List<RateTemp> contions = JSON.parseArray(list.toJSONString(), RateTemp.class);
+            List<RateTemp> rts = productSrv.batchOperateRateTemplate(contions);
             res.put("content", JSON.toJSON(rts));
         }
         return res;
     }
+
+    @RequestMapping("/saveOrUpdateQrcodeInfo.json")
+    @ResponseBody
+    public JSONObject saveOrUpdateQrcodeInfo(@RequestBody JSONObject p)
+    {
+        JSONObject res = new JSONObject();
+        Qrcode contion = JSON.parseObject(p.toJSONString(), Qrcode.class);
+        contion.setQrcodeUid(UUID.randomUUID().toString().trim().replaceAll("-", "")
+                .substring(0, 14));
+        Qrcode qr = productSrv.saveOrUpdateQrcodeInfo(contion);
+        res.put("result", "success");
+        res.put("content", JSON.toJSON(qr));
+
+        return res;
+    }
+
 }

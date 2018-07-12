@@ -76,7 +76,7 @@
 				投保年龄：30年交最高投保年龄为40周岁
 			</if>
 			<if condition="AMOUNT lt 300000 or AMOUNT % 100000 > 0">
-				最低投保基本保险金额：40万元，且需要为10万元的整数倍
+				最低投保基本保险金额：30万元，且需要为10万元的整数倍
 			</if>
 			<if condition="AMOUNT > 25000000">
 				最高投保基本保险金额：2500万元
@@ -91,17 +91,17 @@
 				交费期间不能大于保障期间
 			</if>
 
-			<if condition="ZONE == null and AGE >= 18 and AGE le 45 and AMOUNT lt 600000" level="alert">
-				18~45周岁，北京、上海、广州、深圳，最低投保110万；武汉、成都、南京、郑州，最低投保90万；苏州，最低投保60万。
+			<if condition="ZONE == null and AGE >= 18 and AGE le 45 and AMOUNT lt 500000" level="alert">
+				18~45周岁，北京、上海、广州、深圳，最低投保100万；其他地区，最低投保50万。
 			</if>
-			<if condition="ZONE == null and AGE >= 46 and AGE le 50 and AMOUNT lt 400000" level="alert">
-				46~50周岁，北京、上海、广州、深圳，最低投保70万；武汉、成都、南京、郑州，最低投保50万；苏州，最低投保40万。
+			<if condition="ZONE == null and AGE >= 46 and AGE le 50 and AMOUNT lt 300000" level="alert">
+				46~50周岁，北京、上海、广州、深圳，最低投保60万；其他地区，最低投保30万。
 			</if>
 			<if>
-				if (AGE >= 18 and AGE le 45 and AMOUNT lt 600000)
-					return "18~45周岁，保额最低60万";
-				if (AGE >= 46 and AGE le 50 and AMOUNT lt 400000)
-					return "46~50周岁，保额最低40万";
+				if (AGE >= 18 and AGE le 45 and AMOUNT lt 500000)
+					return "18~45周岁，保额最低50万";
+				if (AGE >= 46 and AGE le 50 and AMOUNT lt 300000)
+					return "46~50周岁，保额最低30万";
 				if (ZONE == null)
 					return null;
 				var city = 3;
@@ -117,22 +117,22 @@
 					return "该产品仅允许北京、上海、广州、深圳、武汉、成都、南京、郑州、苏州9个城市投保";
 				}
 				if (city == 1) {
-					if (AGE >= 18 and AGE le 45 and AMOUNT lt 1100000) {
-						return '省会地区，18~45岁最低保额为110万';
-					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 700000) {
-						return '省会地区，46~50岁最低保额为70万';
+					if (AGE >= 18 and AGE le 45 and AMOUNT lt 1000000) {
+						return '北京、上海、广州、深圳地区，18~45岁最低保额为100万';
+					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 600000) {
+						return '北京、上海、广州、深圳地区，46~50岁最低保额为60万';
 					}
-				} else if (city == 2) {
+				/* } else if (city == 2) {
 					if (AGE >= 18 and AGE le 45 and AMOUNT lt 900000) {
 						return '省会地区，18~45岁最低保额为90万';
 					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 500000) {
 						return '省会地区，46~50岁最低保额为50万';
-					}
+					} */
 				} else {
 					if (AGE >= 18 and AGE le 45 and AMOUNT lt 600000) {
-						return '普通地区，18~45岁最低保额为60万';
-					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 400000) {
-						return '普通地区，46~50岁最低保额为40万';
+						return '武汉、成都、南京、郑州、苏州地区，18~45岁最低保额为60万';
+					} else if (AGE >= 46 and AGE le 50 and AMOUNT lt 300000) {
+						return '武汉、成都、南京、郑州、苏州地区，46~50岁最低保额为30万';
 					}
 				}
 				return null;

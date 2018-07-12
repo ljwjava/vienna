@@ -682,13 +682,20 @@ var Ground = React.createClass({
             if (beneficiaryLive == null || beneficiaryLive.length == 0)
                 b1 = false;
         }
+        var repNode = true;
         if (this.state.benefitDeathType == "other") {
+            var arr = ",";
             beneficiaryDeath = this.state.benefitDeath.map(i => {
                 let c = this.refs["d"+i];
                 b1 = c.verifyAll() && b1;
                 let r = c.val();
                 if (!env.formOpt.beneficiary.order)
                     r.order = 1;	// 固定第一顺位
+                if(arr.indexOf(","+r.certNo+",") >= 0){
+                    repNode = false;
+                }else{
+                    arr += r.certNo + ",";
+                }
                 r.certName = c.refs.certType.text();
                 if (vv["d" + r.order] == null) vv["d" + r.order] = 0;
                 vv["d" + r.order] += Number(r.scale);
@@ -702,6 +709,10 @@ var Ground = React.createClass({
                 ToastIt("受益人同一次序下比例之和需要为100%");
                 return;
             }
+        }
+        if(!repNode){
+            ToastIt("受益人信息，同一人仅能出现一次！");
+            return;
         }
         if (!b1) {
             ToastIt("请检查受益人信息");
