@@ -558,13 +558,23 @@ var Ware = React.createClass({
 		}
 		env.factors = factors;
 		common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
-			var form = r.form == null ? this.state.form : r.form;
+            let form = r.form == null ? this.state.form : r.form;
 			if (r.factors != null) form.map(function(e) {
-				var res = r.factors[e.name];
+                let res = r.factors[e.name];
 				if (res != null)
 					e.value = res;
 			});
-			this.setState({premium:r.total, rules:r.rules, alert:r.alert, vals:r, form:form});
+			let nForm = [];
+			if(form != null){
+			    for(let fidx in form){
+                    let xf = form[fidx];
+                    if(env.ware.id != 17 || xf.name != 'APPLY_ZONE'){
+                        nForm.push(xf);
+                    }
+                }
+            }
+            r.form = nForm;
+			this.setState({premium:r.total, rules:r.rules, alert:r.alert, vals:r, form:nForm});
 		});
 	},
     onSummary(code) {
