@@ -576,7 +576,13 @@ var Ground = React.createClass({
         })
     },
     benefitDeath(comp, code) {
-        this.setState({benefitDeathType:code});
+        if(this.refs.relation.val() == env.formOpt.relationSelf) {
+            this.setState({benefitDeathType:code});
+        }else if(code == "other"){
+            ToastIt("投被保人非同一人不允许指定受益人");
+            this.setState({benefitDeathType:"law"});
+            comp.setState({value: "law"});
+        }
     },
     benefitLive(comp, code) {
         this.setState({benefitLiveType:code});
@@ -1013,6 +1019,14 @@ var Ground = React.createClass({
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
+
+        // 指定受益人控制（被保人非本人时，不允许选择指定受益人）
+        let benefitOps = this.state.benefit;
+        let relaIns = (this.refs.relation == null ? null : this.refs.relation.val());
+        if(relaIns != null && relaIns != env.formOpt.relationSelf){
+            benefitOps = [benefitOps[0]];
+        }
+
         return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="title">投保人信息</div>
@@ -1041,7 +1055,7 @@ var Ground = React.createClass({
 						<div className="tab">
 							<div className="row">
 								<div className="col line left">受益人</div>
-								<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={this.state.benefit}/></div>
+								<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={benefitOps}/></div>
 							</div>
 						</div>
                         {b2}
