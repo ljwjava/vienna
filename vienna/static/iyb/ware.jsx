@@ -693,7 +693,7 @@ var Ware = React.createClass({
 					<div className="tab">
 						<div className="row">
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
-                            {env.frame == "iyb" && !!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
+                            {!!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
 							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
 							<div className="col right" onClick={this.next.bind(this)}>去投保</div>
 						</div>
