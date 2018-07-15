@@ -10,6 +10,7 @@ import lerrain.tool.Common;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -99,70 +100,6 @@ public class TemplateController {
         return res;
     }
 
-    @RequestMapping("/savePro.json")
-    @ResponseBody
-    public JSONObject saveProduct(@RequestBody JSONObject p) {
-        Log.info(p);
-        TemplateProduct tp = buildTemplatePro(p);
-        Long temProductId = templateSrv.saveOrUpdateTemplateProduct(tp);
-
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", temProductId);
-        return res;
-    }
-
-
-    @RequestMapping("/proTypes.json")
-    @ResponseBody
-    public JSONObject productTypes(@RequestBody JSONObject p) {
-        int currentPage = Common.intOf(p.get("currentPage"), 1);
-        int num = Common.intOf(p.get("pageSize"), 10);
-        int from = num * (currentPage - 1);
-
-        JSONArray list = new JSONArray();
-        for (TemplateProductType productType : templateSrv.listProType(null, from, num)) {
-            JSONObject obj = new JSONObject();
-            obj.put("id", productType.getId());
-            obj.put("productTypeName", productType.getProductTypeName());
-            obj.put("gmtModified", productType.getGmtModified());
-            list.add(obj);
-        }
-        JSONObject r = new JSONObject();
-        r.put("list", list);
-
-        JSONObject page = new JSONObject();
-        page.put("total", templateSrv.countProType(null));
-        page.put("pageSize", num);
-        page.put("current", currentPage);
-        r.put("pagination", page);
-
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", r);
-        return res;
-    }
-
-    @RequestMapping("/saveProType.json")
-    @ResponseBody
-    public JSONObject saveProType(@RequestBody JSONObject p) {
-        Log.info(p);
-        if (p == null) {
-            return new JSONObject();
-        }
-        Long typeId = p.getLong("id");
-        String productTypeName = p.getString("productTypeName");
-
-        TemplateProductType tpt = new TemplateProductType();
-        tpt.setId(typeId);
-        tpt.setProductTypeName(productTypeName);
-        Long id = templateSrv.saveOpUpdateProType(tpt);
-        JSONObject res = new JSONObject();
-        res.put("result", "success");
-        res.put("content", id);
-        return res;
-    }
-
     @RequestMapping("/findProducts.json")
     @ResponseBody
     public JSONObject findProducts(@RequestBody JSONObject p) {
@@ -183,25 +120,45 @@ public class TemplateController {
         List<TemplateProductType> tpts = templateSrv.queryByProductId(idList);
         List<TemplateProductTypeRelation> tptrs = templateSrv.queryTptrsByTemplateIdAndProductId(templateId, idList);
         JSONArray typeProducts = new JSONArray();
-        for (TemplateProductTypeRelation tptr : tptrs) {
+        if (CollectionUtils.isEmpty(tptrs)) {
+            result.put("content", typeProducts);
+            result.put("result", "success");
+            return result;
+        }
+        Map<Long, List<Long>> map = Maps.newTreeMap();
+        for (int i = 0; i < tptrs.size(); i++) {
+            TemplateProductTypeRelation tptr = tptrs.get(i);
+            List<Long> pIdList = Lists.newArrayList();
+            Long pTypeId = tptr.getProductTypeId();
+            for (int j = 0; j < tptrs.size(); j++) {
+                if (tptrs.get(j).getProductTypeId().longValue() == pTypeId.longValue()) {
+                    pIdList.add(tptrs.get(j).getProductId());
+                }
+            }
+            map.put(pTypeId, pIdList);
+        }
+        for (Long id : map.keySet()) {
             JSONObject pt = new JSONObject();
             JSONArray prodsArr = new JSONArray();
-            Long pTypeId = tptr.getProductTypeId();
-            Long prodId = tptr.getProductId();
+            List<Long> pList = map.get(id);
             for (TemplateProductType tpt : tpts) {
-                if (tpt.getId().longValue() == pTypeId.longValue()) {
+                if (tpt.getId().longValue() == id.longValue()) {
                     pt.put("proType", tpt);
                     break;
                 }
             }
-            for (TemplateProduct tp : tps) {
-                if (tp.getId().longValue() == prodId.longValue()) {
-                    prodsArr.add(tp);
+            for (int i = 0; i < pList.size(); i++) {
+                Long pid = pList.get(i);
+                for (TemplateProduct tp : tps) {
+                    if (tp.getId().longValue() == pid.longValue()) {
+                        prodsArr.add(tp);
+                    }
                 }
+                pt.put("product", prodsArr);
             }
-            pt.put("product", prodsArr);
             typeProducts.add(pt);
         }
+
         result.put("content", typeProducts);
         result.put("result", "success");
         return result;
@@ -345,10 +302,11 @@ public class TemplateController {
                     if (Objects.equals(typeName, tNameJ)) {
                         pro.put("packageName", tpj.getString("name"));
                         pro.put("premium", tpj.getString("price"));
+                        pro.put("label",tNameJ);
                         if (j <= 1) {
                             //默认前2个做首页
                             pro.put("isIndex", "Y");
-                            pro.put("indexPic", "aaaaaaaa");
+                            pro.put("indexPic", tpj.getString("homeImage"));
                         }
                         productArray.add(pro);
                     }
@@ -366,6 +324,71 @@ public class TemplateController {
         }
         pp.put("typeProducts", array);
         return save(pp);
+    }
+
+
+    @RequestMapping("/saveProType.json")
+    @ResponseBody
+    public JSONObject saveProType(@RequestBody JSONObject p) {
+        Log.info(p);
+        if (p == null) {
+            return new JSONObject();
+        }
+        Long typeId = p.getLong("id");
+        String productTypeName = p.getString("productTypeName");
+
+        TemplateProductType tpt = new TemplateProductType();
+        tpt.setId(typeId);
+        tpt.setProductTypeName(productTypeName);
+        Long id = templateSrv.saveOpUpdateProType(tpt);
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", id);
+        return res;
+    }
+
+    @RequestMapping("/savePro.json")
+    @ResponseBody
+    public JSONObject saveProduct(@RequestBody JSONObject p) {
+        Log.info(p);
+        TemplateProduct tp = buildTemplatePro(p);
+        Long temProductId = templateSrv.saveOrUpdateTemplateProduct(tp);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", temProductId);
+        return res;
+    }
+
+
+    @RequestMapping("/proTypes.json")
+    @ResponseBody
+    public JSONObject productTypes(@RequestBody JSONObject p) {
+        int currentPage = Common.intOf(p.get("currentPage"), 1);
+        int num = Common.intOf(p.get("pageSize"), 10);
+        int from = num * (currentPage - 1);
+
+        JSONArray list = new JSONArray();
+        for (TemplateProductType productType : templateSrv.listProType(null, from, num)) {
+            JSONObject obj = new JSONObject();
+            obj.put("id", productType.getId());
+            obj.put("productTypeName", productType.getProductTypeName());
+            obj.put("gmtModified", productType.getGmtModified());
+            list.add(obj);
+        }
+        JSONObject r = new JSONObject();
+        r.put("list", list);
+
+        JSONObject page = new JSONObject();
+        page.put("total", templateSrv.countProType(null));
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        r.put("pagination", page);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+        return res;
     }
 
 

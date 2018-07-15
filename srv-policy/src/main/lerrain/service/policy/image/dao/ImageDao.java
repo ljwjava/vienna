@@ -99,7 +99,7 @@ public class ImageDao {
     }
 
     public void deleteUploadApply(Long id) {
-        String sql = "update t_policy_image_upload set is_deleted='N' where id=" + id;
+        String sql = "update t_policy_image_upload set is_deleted='Y' where id=" + id;
         jdbc.execute(sql);
     }
 
@@ -186,15 +186,16 @@ public class ImageDao {
         jdbc.update(sql.toString(), params.toArray());
     }
 
-    public Integer countRecommend(String name, Long userId) {
-        String sql = "select count(*) from t_policy where owner= ? and insurant_name=? or applicant_name=?";
-        return jdbc.queryForObject(sql, new Object[] { userId, name, name }, Integer.class);
+    public Integer countRecommend(String name, Long userId, String openId) {
+        String sql = "select count(*) from t_policy a LEFT JOIN t_policy_extra b on a.id=b.policy_id where a.insurant_name=? or a.applicant_name=? or b.detail like ? and a.owner=? and not EXISTS (select * from t_wx_policy c where c.is_deleted='N' and a.id=c.policy_id and open_id=?)";
+        return jdbc.queryForObject(sql, new Object[] { name, name, name, userId, openId }, Integer.class);
     }
 
-    public List<Map<String, Object>> queryRecommend(String name, Long userId, Integer start, Integer limit) {
-        String sql = "select id,policy_no,product_name,applicant_name,applicant_cert_no,insurant_name,insurant_cert_no from t_policy where insurant_name=? and owner=? union all select id,policy_no,product_name,applicant_name,applicant_cert_no,insurant_name,insurant_cert_no from t_policy where applicant_name=? and owner=? limit ?,?";
-
-        return jdbc.query(sql, new Object[] { name, userId, name, userId, start, limit },
+    public List<Map<String, Object>> queryRecommend(String name, Long userId, String openId, Integer start,
+                                                    Integer limit) {
+        //String sql = "select id,policy_no,product_name,applicant_name,applicant_cert_no,insurant_name,insurant_cert_no from t_policy where insurant_name=? and owner=? union all select id,policy_no,product_name,applicant_name,applicant_cert_no,insurant_name,insurant_cert_no from t_policy where applicant_name=? and owner=? limit ?,?";
+        String sql = "select a.id,a.policy_no,a.product_name,a.applicant_name,a.applicant_cert_no,a.insurant_name,a.insurant_cert_no from t_policy a LEFT JOIN t_policy_extra b on a.id=b.policy_id where a.insurant_name=? or a.applicant_name=? or b.detail like ? and a.owner=? and not EXISTS (select * from t_wx_policy c where c.is_deleted='N' and a.id=c.policy_id and c.open_id=?) limit ?,?";
+        return jdbc.query(sql, new Object[] { name, name, name, userId, openId, start, limit },
                 new RowMapper<Map<String, Object>>() {
                     @Override
                     public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -251,19 +252,19 @@ public class ImageDao {
         });
     }
 
-    public Long insertWxPolicy(String openId, Long policyId) {
+    public Long insertWxPolicy(String openId, Long imageUploadId, Long policyId) {
         Long nextId = tools.nextId("wxPolicy");
-        String sql = "insert into t_wx_policy(id,open_id,policy_id,is_deleted,creator,gmt_created,modifier,gmt_modified) values(?,?,?,?,'N','system',NOW(),'system',NOW())";
-        jdbc.update(sql, nextId, openId, policyId);
+        String sql = "insert into t_wx_policy(id,open_id,policy_id,image_upload_id,is_deleted,creator,gmt_created,modifier,gmt_modified) values(?,?,?,?,'N','system',NOW(),'system',NOW())";
+        jdbc.update(sql, nextId, openId, policyId, imageUploadId);
         return nextId;
     }
 
-    public void deletePolicy(Long id, String openId, Long policyId) {
+    public void deletePolicy(Long wxPolicyId, String openId, Long policyId) {
         List<Object> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("update t_wx_policy set is_deleted='Y',gmt_modified=now() ");
-        if (id != null) {
+        if (wxPolicyId != null) {
             sql.append("where id = ?");
-            list.add(id);
+            list.add(wxPolicyId);
         } else {
             sql.append("where open_id = ? and policyId = ?");
             list.add(openId);
@@ -271,6 +272,27 @@ public class ImageDao {
         }
         jdbc.update(sql.toString(), list.toArray());
 
+    }
+
+    public void deletePolicy(Long id, List<Long> saveIds) {
+        List<Object> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "update t_wx_policy set is_deleted='Y',gmt_modified=now() where image_upload_id=? ");
+        list.add(id);
+        if (saveIds != null && !saveIds.isEmpty()) {
+            sql.append("and policy_id not in (");
+            for (int i = 0; i < saveIds.size(); i++) {
+                if (i == 0) {
+                    sql.append("?");
+                } else {
+                    sql.append(",?");
+                }
+                list.add(saveIds.get(i));
+            }
+            sql.append(")");
+        }
+
+        jdbc.update(sql.toString(), list.toArray());
     }
 
     public List<NormalPolicy> queryPolicyByOpenId(String openId, Long userId, Integer start, Integer limit) {

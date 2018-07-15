@@ -110,18 +110,24 @@ public class ImageService {
         return list;
     }
 
-    public Integer countRecommend(String name, Long userId) {
-        return imageDao.countRecommend(name, userId);
+    public Integer countRecommend(String name, Long userId, String openId) {
+        return imageDao.countRecommend(name, userId, openId);
     }
 
-    public List<Map<String, Object>> queryRecommend(String name, Long userId, Integer start, Integer limit) {
-        return imageDao.queryRecommend(name, userId, start, limit);
+    public List<Map<String, Object>> queryRecommend(String name, Long userId, String openId, Integer start,
+                                                    Integer limit) {
+        return imageDao.queryRecommend(name, userId, openId, start, limit);
     }
 
     public void save(ImageUpload upload, JSONArray policyArray) throws ParseException {
         if (upload != null) {
             updateImageUpload(upload);
+            if (policyArray == null || policyArray.isEmpty()) {
+                deletePolicy(upload.getId(), null);
+                return;
+            }
         }
+        List<Long> saveId = new ArrayList<>();
 
         for (int i = 0; i < policyArray.size(); i++) {
             NormalPolicy normalPolicy = policyArray.getObject(i, NormalPolicy.class);
@@ -170,9 +176,17 @@ public class ImageService {
                     imageDao.updatePolicyExtra(policyExtra);
                 }
             }
+            saveId.add(policy.getId());
 
         }
+        if (upload != null) {
+            imageDao.deletePolicy(upload.getId(), saveId);
+        }
 
+    }
+
+    private void deletePolicy(Long uploadId, List<Long> saveIds) {
+        imageDao.deletePolicy(uploadId, saveIds);
     }
 
     private void saveOrUpdateClause(List<PolicyClause> list, Policy policy) {
@@ -222,19 +236,19 @@ public class ImageService {
         return policy;
     }
 
-    public void createRelation(String openId, JSONArray ids) {
+    public void createRelation(String openId, Long imageUploadId, JSONArray ids) {
         for (int i = 0; i < ids.size(); i++) {
             List<JSONObject> queryWxpolicy = imageDao.queryWxpolicy(ids.getLong(i), openId);
             if (queryWxpolicy != null && !queryWxpolicy.isEmpty()) {
                 continue;
             }
-            imageDao.insertWxPolicy(openId, ids.getLong(i));
+            imageDao.insertWxPolicy(openId, imageUploadId, ids.getLong(i));
         }
 
     }
 
-    public void deletePolicy(Long id, String openId, Long policyId) {
-        imageDao.deletePolicy(id, openId, policyId);
+    public void deletePolicy(Long wxPolicyId, String openId, Long policyId) {
+        imageDao.deletePolicy(wxPolicyId, openId, policyId);
 
     }
 
