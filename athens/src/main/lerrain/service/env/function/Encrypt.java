@@ -1,9 +1,9 @@
 package lerrain.service.env.function;
 
 import lerrain.tool.CipherUtil;
+import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +43,33 @@ public class Encrypt implements Factors
                 try
                 {
                     return CipherUtil.encryptByPublicKey(objects[0].toString().getBytes("UTF-8"), objects[1].toString());
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        map.put("base64EN", new Function() {
+            @Override
+            public Object run(Object[] v, Factors factors)
+            {
+                try {
+                    return Common.encodeBase64(v[0].toString().getBytes("UTF-8"));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        map.put("base64DE", new Function() {
+            @Override
+            public Object run(Object[] v, Factors factors)
+            {
+                try
+                {
+                    return Common.decodeBase64(v[0].toString());
                 }
                 catch (Exception e)
                 {
