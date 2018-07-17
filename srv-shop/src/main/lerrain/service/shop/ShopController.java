@@ -173,8 +173,14 @@ public class ShopController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         JSONArray list = p.getJSONArray("list");
+        Long userId = p.getLong("userId");
         if(null != list) {
             List<RateTemp> contions = JSON.parseArray(list.toJSONString(), RateTemp.class);
+        	for(RateTemp r : contions) {
+        		r.setUserId(userId);
+        		r.setCreator(userId+"");
+        		r.setModifier(userId+"");
+        	}
             List<RateTemp> rts = productSrv.batchOperateRateTemplate(contions);
             res.put("content", JSON.toJSON(rts));
         }
