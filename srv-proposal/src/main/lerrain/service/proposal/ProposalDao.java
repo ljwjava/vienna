@@ -1,22 +1,24 @@
 package lerrain.service.proposal;
 
-import java.rmi.activation.ActivationGroup_Stub;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import lerrain.service.common.ServiceMgr;
-import lerrain.service.common.ServiceTools;
-import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import lerrain.service.common.ServiceMgr;
+import lerrain.service.common.ServiceTools;
+import lerrain.tool.Common;
 
 @Repository
 public class ProposalDao
@@ -207,12 +209,13 @@ public class ProposalDao
 					p.setOther(JSON.parseObject(otherStr));
 
 				JSONArray list = JSON.parseArray(rs.getString("plans"));
-				for (int i = 0; i < list.size(); i++)
-				{
-					JSONObject plan = list.getJSONObject(i);
-					serviceMgr.req("lifeins", "plan/create.json", plan);
+				if(list!=null) {
+					for (int i = 0; i < list.size(); i++) {
+						JSONObject plan = list.getJSONObject(i);
+						serviceMgr.req("lifeins", "plan/create.json", plan);
 
-					p.addPlan(plan.getString("planId"));
+						p.addPlan(plan.getString("planId"));
+					}
 				}
 
 				return p;
@@ -251,4 +254,76 @@ public class ProposalDao
 		String sql = "update t_proposal_bless set valid = 'N', update_time = ? where bless_id = ?";
 		jdbc.update(sql, new Date(), blessId);
 	}
+
+
+	public boolean saveProposal(Proposal c)
+	{
+		if (c == null || c.getApplicant() == null)
+			return false;
+
+		Date now = new Date();
+
+		Long proposalId = c.getId();
+		String applicant = JSON.toJSONString(c.getApplicant());
+		String other = c.getOther() == null ? null : JSON.toJSONString(c.getOther());
+
+		boolean isNew = true;
+
+		if (proposalId != null)
+		{
+			String sql1 = "select count(*) from t_proposal where proposal_id = ?";
+			int num = jdbc.queryForObject(sql1, new Object[] {proposalId}, Integer.class);
+			isNew = num == 0;
+		}
+		else
+		{
+			proposalId = tools.nextId("proposal");
+			c.setId(proposalId);
+		}
+
+		if (isNew)
+		{
+			String sql = "insert into t_proposal(proposal_id, proposal_name, bless, other, remark, applicant, insure_time, cover,   platform_id, creator, create_time, updater, update_time) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			jdbc.update(sql, proposalId, c.getName(), c.getBless(), other, c.getRemark(), applicant, c.getInsureTime(), c.getCover(), c.getPlatformId(), c.getOwner(), now, c.getOwner(), now);
+		}
+		else
+		{
+			String sql = "update t_proposal set proposal_name = ?, bless = ?, other = ?, remark = ?, applicant = ?, insure_time = ?, cover = ?,  updater = ?, update_time = ? where proposal_id = ?";
+			jdbc.update(sql, c.getName(), c.getBless(), other, c.getRemark(), applicant, c.getInsureTime(), c.getCover(),   c.getOwner(), now, proposalId);
+		}
+
+		return true;
+	}
+
+	public void createAgent(Long accountId,String name,String mobile,String detail){
+		String sql1 = "select count(*) from t_proposal_agent where account_id = ?";
+		int num = jdbc.queryForObject(sql1, new Object[] {accountId}, Integer.class);
+		if(num==0){
+			String sql = "insert into t_proposal_agent(account_id, name, mobile, detail) values(?, ?, ?, ?)";
+			jdbc.update(sql, accountId, name, mobile, detail);
+		}else{
+			String sql = "update t_proposal_agent set name = ?, mobile = ?, detail = ? where account_id = ?";
+			jdbc.update(sql, name, mobile, detail, accountId);
+		}
+	}
+
+	public JSONObject queryAgent(Long accountId){
+		JSONObject obj = new JSONObject();
+		String sql = "select count(*) from t_proposal_agent where account_id = ?";
+		int num = jdbc.queryForObject(sql, new Object[] {accountId}, Integer.class);
+		if(num==0){
+			return  null;
+		}
+		String sql1 = "select name,mobile,detail from t_proposal_agent where account_id = ?";
+		Map<String,Object> res = jdbc.queryForMap(sql1,accountId);
+		obj.put("name",res.get("name"));
+		obj.put("accountId",accountId);
+		obj.put("mobile",res.get("mobile"));
+		obj.put("detail",res.get("detail"));
+
+		return obj;
+	}
+
+
+
 }

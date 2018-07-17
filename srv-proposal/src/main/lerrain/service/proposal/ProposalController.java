@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Common;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -479,6 +480,65 @@ public class ProposalController
 		res.put("result", "success");
 		res.put("content", pro);
 
+		return res;
+	}
+
+
+	@RequestMapping("/createSingle.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject createSingle(@RequestBody JSONObject p)
+	{
+		Long owner = p.getLong("owner");
+		Long platformId = p.getLong("platformId");
+
+		JSONObject applicant = p.getJSONObject("applicant");
+		Proposal proposal = ps.newProposal(applicant, owner, platformId);
+
+		fill(proposal, p);
+
+		boolean r = ps.addProposal(proposal);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", proposalTool.jsonOf(proposal));
+
+		return res;
+	}
+
+
+	@RequestMapping("/createAgent.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject createAgent(@RequestBody JSONObject p)
+	{
+		Long accountId = p.getLong("accountId");
+		String name = p.getString("name");
+		String mobile = p.getString("mobile");
+		String detail =null;
+
+		if(null != p.getJSONObject("detail")){
+			 detail = p.getJSONObject("detail").toJSONString();
+		}
+
+		ps.createAgent(accountId,name,mobile,detail);
+
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+
+		return res;
+	}
+
+	@RequestMapping("/queryAgent.json")
+	@ResponseBody
+	@CrossOrigin
+	public JSONObject queryAgent(@RequestBody JSONObject p)
+	{
+		Long accountId = p.getLong("accountId");
+		JSONObject agent = ps.queryAgent(accountId);
+		JSONObject res = new JSONObject();
+		res.put("result", "success");
+		res.put("content", agent);
 		return res;
 	}
 }

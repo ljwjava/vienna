@@ -318,17 +318,27 @@ input[type="checkbox"]
 	text-align: center;
 	background-color: #888;
 	font-weight: 400;
-	width: 45%;
-	max-width: 55%;
+	width: 40%;
+	max-width: 50%;
 }
+
+.console .mid
+{
+	color: #FFF;
+	text-align: center;
+	background-color: #FFBB00;
+	font-weight: 400;
+	max-width: 30%;
+}
+
 
 .console .right
 {
 	color: #FFF;
 	text-align: center;
-	background-color: #ffba34;
+	background-color: #FF6E0D;
 	font-weight: 600;
-	max-width: 40%;
+	max-width: 30%;
 }
 
 .list img

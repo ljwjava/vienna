@@ -162,4 +162,19 @@ public class ProposalService
 	{
 		proposalDao.deleteBless(blessId);
 	}
+
+	public boolean addProposal(Proposal p)
+	{
+		return proposalDao.saveProposal(p);
+	}
+
+
+	public void  createAgent(Long accountId,String name,String mobile,String detail){
+		proposalDao.createAgent(accountId,name,mobile,detail);
+	}
+
+	public JSONObject  queryAgent(Long accountId ){
+		return proposalDao.queryAgent(accountId );
+	}
+
 }

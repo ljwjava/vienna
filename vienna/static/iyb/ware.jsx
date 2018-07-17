@@ -282,6 +282,26 @@ var Ware = React.createClass({
             }
         });
     },
+    proposal(){
+        let authSale = this.refs.accessSale.auth();
+        if(!authSale.allow) {
+            this.refs.accessSale.show();
+            return false;
+        }
+
+        if(this.state.salesFlag != 0 && this.state.salesFlagMsg[this.state.salesFlag] != null) {
+            ToastIt(this.state.salesFlagMsg[this.state.salesFlag]);
+            return false;
+        }
+        let factors = this.refs.plan.val();
+        factors.url = this.getApplyUrl();
+        factors.packId = this.state.detail.target;
+        common.req("proposal/single/create.json", {platformId:6,plan:factors,applicant
+                :{code:env.docs.code,productId:this.state.detail.target,premium:this.state.premium,accountId:common.param("accountId")}}, v => {
+            console.info(v);
+            document.location.href = v + "&accountId=" + common.param("accountId");
+        });
+    },
     next(){
         console.log(this.refs.accessSale);
         // 判断资格认证
@@ -685,7 +705,8 @@ var Ware = React.createClass({
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
                             {env.frame == "iyb" && !!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
 							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
-							<div className="col right" onClick={this.next.bind(this)}>去投保</div>
+                            {common.param("wareId") == 17 ?<div className="col mid" onClick={this.proposal.bind(this)}>计划书</div>:null}
+                            <div className="col right" onClick={this.next.bind(this)}>去投保</div>
 						</div>
 					</div>
 				</div>
