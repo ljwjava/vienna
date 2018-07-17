@@ -16,6 +16,7 @@ import lerrain.tool.Common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -196,9 +197,11 @@ public class UserController {
         if (1 == type) {
             roleList.add(RoleTypeEnum.YUNFUMEMBER.getId());
         } else if (2 == type) {
-            roleList.add(RoleTypeEnum.YUNFUORG.getId());
+            roleList.add(RoleTypeEnum.YUNFUENTERPRISE.getId());
         } else if (3 == type) {
             roleList.add(RoleTypeEnum.YUNFUORG.getId());
+        } else if (4 == type) {
+            roleList.add(RoleTypeEnum.YUNFUBD.getId());
         }
         String loginName = json.getString("loginName");
         String password = null;
@@ -253,6 +256,9 @@ public class UserController {
     @ResponseBody
     public JSONObject currentUser(@RequestBody JSONObject json) {
         String loginName = json.getString("loginName");
+        if(StringUtils.isEmpty(loginName)) {
+        	loginName = json.getString("user/loginName");
+        }
         Log.info("loginName:" + loginName);
         String userId = userSrv.getUserId(loginName);
         JSONObject result = new JSONObject();
@@ -279,7 +285,13 @@ public class UserController {
 
             User user = userSrv.csLogin(loginName, password);
             if (user != null) {
-                result.put("status", "ok");
+	            if(user.getStatus() == 9) {
+	                result.put("type", "freezeAccount");
+	            } else {
+	                result.put("status", "ok");
+	                result.put("userId", user.getId());
+	                result.put("userType", user.getType());
+	            }
             }
         } catch (Exception e) {
             result.put("result", "fail");
@@ -295,8 +307,8 @@ public class UserController {
     public JSONObject batchOpenAccount(@RequestBody JSONObject json) {
         // 开通类型 1人员 2组织 登录名 密码 类型 手机号
         JSONObject res = new JSONObject();
+        JSONArray array = json.getJSONArray("memberInfo");
         try {
-            JSONArray array = json.getJSONArray("memberInfo");
             for (int i = 0; i < array.size(); i++) {
                 try {
                     JSONObject j = array.getJSONObject(i);
@@ -309,15 +321,22 @@ public class UserController {
                         roleList.add(RoleTypeEnum.YUNFUORG.getId());
                     } else if (3 == type) {
                         roleList.add(RoleTypeEnum.YUNFUORG.getId());
+                    } else if (4 == type) {
+                        roleList.add(RoleTypeEnum.YUNFUBD.getId());
                     }
                     String loginName = j.getString("mobile");
                     String password = j.getString("password");
+                    String orgPassword = null;
                     if (password == null) {
                         password = PasswordUtil.createPassword();
+                        orgPassword = password;
                     }
                     password = Common.md5Of(password);
                     boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
                     Log.info("开通账号结果:" + result);
+                    if(result) {
+                    	j.put("password", orgPassword);
+                    }
                 } catch (Exception e1) {
                     Log.error(e1);
                 }
@@ -326,8 +345,8 @@ public class UserController {
             Log.error(e);
         }
         res.put("result", "success");
-        res.put("content", true);
-
+        res.put("content", array);
+        Log.info("批量开通账返回："+JSON.toJSONString(res));
         return res;
     }
 
@@ -369,6 +388,18 @@ public class UserController {
         return result;
 
     }
+    
+    @RequestMapping({ "/checkLoginName.json" })
+    @ResponseBody
+    public JSONObject checkLoginName(@RequestBody JSONObject json) {
+        String loginName = json.getString("loginName");
+        boolean flag = userSrv.isExisted(loginName);
+        JSONObject result = new JSONObject();
+        result.put("result", "success");
+        result.put("content", flag);
+        return result;
+    }
+    
 
     @RequestMapping({ "/findWxuserByOpendId.json" })
     @ResponseBody
