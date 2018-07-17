@@ -37,6 +37,7 @@ public class Shop {
     private JSONObject detailJson;              //商品详情
     private String extraInfo;                   //扩展信息
     private String sort;                        //排序
+    private String qrcodeUid;                   //二维码uid
 
     private String creator;
     private Date gmtCreated;

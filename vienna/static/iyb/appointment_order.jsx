@@ -251,10 +251,15 @@ var Ground = React.createClass({
 		    "T2": "优选体",
 		    "T3": "超优体"
         };
-		let insCategory = insCategoryMap[env.order.detail.factors.INS_CATEGORY];
+		let insCategory = insCategoryMap["T"+env.order.detail.factors.INS_CATEGORY];
 
 		return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
+				<div className="title">订单信息</div>
+				<div className="view">
+					<div><span>　订单号</span>{env.order.applyNo}</div>
+					<div><span>　产品名称</span>{env.order.productName}</div>
+				</div>
 				<div className="title">投保人信息</div>
 				<div className="view">
 					<div><span>　投保人是被保人</span>本人</div>

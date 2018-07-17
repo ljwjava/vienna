@@ -64,7 +64,7 @@ public class SaleService
                 List<PackIns> pis = w.getDetail();
                 if(pis != null) {
                     for(PackIns pi : pis) {
-                        if(packIds.contains(pi.getId())){
+                        if(packIds.contains(pi.getId()) && pi.canShow()){
                             if(rpis == null) rpis = new ArrayList<PackIns>();
                             rpis.add(pi);
                         }

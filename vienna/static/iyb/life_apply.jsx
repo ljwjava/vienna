@@ -576,7 +576,13 @@ var Ground = React.createClass({
         })
     },
     benefitDeath(comp, code) {
-        this.setState({benefitDeathType:code});
+        if(this.refs.relation.val() == env.formOpt.relationSelf) {
+            this.setState({benefitDeathType:code});
+        }else if(code == "other"){
+            ToastIt("投被保人非同一人不允许指定受益人");
+            this.setState({benefitDeathType:"law"});
+            comp.setState({value: "law"});
+        }
     },
     benefitLive(comp, code) {
         this.setState({benefitLiveType:code});
@@ -682,13 +688,20 @@ var Ground = React.createClass({
             if (beneficiaryLive == null || beneficiaryLive.length == 0)
                 b1 = false;
         }
+        var repNode = true;
         if (this.state.benefitDeathType == "other") {
+            var arr = ",";
             beneficiaryDeath = this.state.benefitDeath.map(i => {
                 let c = this.refs["d"+i];
                 b1 = c.verifyAll() && b1;
                 let r = c.val();
                 if (!env.formOpt.beneficiary.order)
                     r.order = 1;	// 固定第一顺位
+                if(arr.indexOf(","+r.certNo+",") >= 0){
+                    repNode = false;
+                }else{
+                    arr += r.certNo + ",";
+                }
                 r.certName = c.refs.certType.text();
                 if (vv["d" + r.order] == null) vv["d" + r.order] = 0;
                 vv["d" + r.order] += Number(r.scale);
@@ -702,6 +715,10 @@ var Ground = React.createClass({
                 ToastIt("受益人同一次序下比例之和需要为100%");
                 return;
             }
+        }
+        if(!repNode){
+            ToastIt("受益人信息不能重复！");
+            return;
         }
         if (!b1) {
             ToastIt("请检查受益人信息");
@@ -1002,6 +1019,14 @@ var Ground = React.createClass({
         let r1 = this.state.rules == null ? null : this.state.rules.map((r,i) => (<div className="error" key={i}>错误：{r}</div>));
         let r2 = this.state.alert == null ? null : this.state.alert.map((r,i) => (<div className="alert" key={i}>备注：{r}</div>));
         env.insocc = (this.state.insurant || !env.formOpt.applicant.occupation) && env.formOpt.insurant.occupation;
+
+        // 指定受益人控制（被保人非本人时，不允许选择指定受益人）
+        let benefitOps = this.state.benefit;
+        let relaIns = (this.refs.relation == null ? null : this.refs.relation.val());
+        if(relaIns != null && relaIns != env.formOpt.relationSelf){
+            benefitOps = [benefitOps[0]];
+        }
+
         return (
 			<div className="common" style={{maxWidth: "750px", minWidth: "320px", marginLeft: "auto", marginRight: "auto"}}>
 				<div className="title">投保人信息</div>
@@ -1030,7 +1055,7 @@ var Ground = React.createClass({
 						<div className="tab">
 							<div className="row">
 								<div className="col line left">受益人</div>
-								<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={this.state.benefit}/></div>
+								<div className="col line right"><Switcher ref="benefitDeath" value={this.props.defVal.beneficiaryDeathType} onChange={this.benefitDeath} options={benefitOps}/></div>
 							</div>
 						</div>
                         {b2}

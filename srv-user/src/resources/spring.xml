@@ -44,4 +44,5 @@
 			<ref bean="dataSource" />
 		</property>
 	</bean>
+	<bean class="lerrain.service.common.ServiceTools"/>
 </beans>

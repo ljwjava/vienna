@@ -578,13 +578,23 @@ var Ware = React.createClass({
 		}
 		env.factors = factors;
 		common.req("sale/perform.json", {platformId:2, opt:"try", content:factors}, r => {
-			var form = r.form == null ? this.state.form : r.form;
+            let form = r.form == null ? this.state.form : r.form;
 			if (r.factors != null) form.map(function(e) {
-				var res = r.factors[e.name];
+                let res = r.factors[e.name];
 				if (res != null)
 					e.value = res;
 			});
-			this.setState({premium:r.total, rules:r.rules, alert:r.alert, vals:r, form:form});
+			let nForm = [];
+			if(form != null){
+			    for(let fidx in form){
+                    let xf = form[fidx];
+                    if(env.ware.id != 17 || xf.name != 'APPLY_ZONE'){
+                        nForm.push(xf);
+                    }
+                }
+            }
+            r.form = nForm;
+			this.setState({premium:r.total, rules:r.rules, alert:r.alert, vals:r, form:nForm});
 		});
 	},
     onSummary(code) {
@@ -703,7 +713,7 @@ var Ware = React.createClass({
 					<div className="tab">
 						<div className="row">
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
-                            {env.frame == "iyb" && !!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
+                            {!!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
 							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
                             {common.param("wareId") == 17 ?<div className="col mid" onClick={this.proposal.bind(this)}>计划书</div>:null}
                             <div className="col right" onClick={this.next.bind(this)}>去投保</div>

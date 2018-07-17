@@ -1,15 +1,11 @@
 package lerrain.service.env.function;
 
-import lerrain.service.common.Log;
-import lerrain.tool.CipherUtil;
 import lerrain.tool.Common;
 import lerrain.tool.Disk;
 import lerrain.tool.formula.Factors;
 import lerrain.tool.formula.Function;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FileFX implements Factors
 {

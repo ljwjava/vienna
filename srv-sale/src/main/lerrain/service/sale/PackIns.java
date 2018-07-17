@@ -25,6 +25,7 @@ public class PackIns
     String name;
 
     int type;
+    int showFlag;   // 展示标记（1-展示；0-不展示）
     int applyMode;
     int priceType;
 
@@ -57,6 +58,17 @@ public class PackIns
     public void setType(int type)
     {
         this.type = type;
+    }
+
+    public int getShowFlag() {
+        return showFlag;
+    }
+    public boolean canShow() {
+        return showFlag == 1;
+    }
+
+    public void setShowFlag(int showFlag) {
+        this.showFlag = showFlag;
     }
 
     public Map<String, Object> getExtra()

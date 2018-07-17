@@ -109,6 +109,7 @@ public class SaleDao
                     packIns.setName(m.getString("name"));
                     packIns.setWare(wareMap.get(m.getLong("ware_id")));
                     packIns.setType(m.getInt("type"));
+                    packIns.setShowFlag(m.getInt("show_flag"));
                     packIns.setApplyMode(m.getInt("apply_mode"));
 
                     if (!Common.isEmpty(formOpt))
