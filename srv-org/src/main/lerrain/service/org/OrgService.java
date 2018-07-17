@@ -134,6 +134,7 @@ public class OrgService
             Long id = tools.nextId("user");
             org.setId(id);
     	}
+        org.setCode((org.getParentCode() != null ? org.getParentCode(): "")+"|"+org.getId());
         int result = orgDao.save(org);
         if (result > 0) {
             return org.getId();
@@ -160,12 +161,14 @@ public class OrgService
         Org currentOrg = orgDao.loadOrg(id);
         result.put("key", currentOrg.getId());
         result.put("title", currentOrg.getName());
+        result.put("level", 0);
+        result.put("code", currentOrg.getCode());
         // 获取子机构
         List<Org> list = orgDao.querySubordinateById(currentOrg.getId());
         JSONArray listArray = new JSONArray();
         if (list != null && list.size() > 0) {
             for (Org org : list) {
-                listArray.add(parseOrgTree(org));
+                listArray.add(parseOrgTree(org,result.getInteger("level")));
             }
         }
         if (listArray != null && listArray.size() > 0) {
@@ -174,15 +177,17 @@ public class OrgService
         return array;
     }
 
-    private JSONObject parseOrgTree(Org org) {
+    private JSONObject parseOrgTree(Org org,int level) {
         JSONObject result = new JSONObject();
         result.put("key", org.getId());
         result.put("title", org.getName());
+        result.put("level", level+1);
+        result.put("code", org.getCode());
         List<Org> list = orgDao.querySubordinateById(org.getId());
         JSONArray listArray = new JSONArray();
         if (list != null && list.size() > 0) {
             for (Org orgs : list) {
-                listArray.add(parseOrgTree(orgs));
+                listArray.add(parseOrgTree(orgs,result.getInteger("level")));
             }
         }
         if (listArray != null && listArray.size() > 0) {

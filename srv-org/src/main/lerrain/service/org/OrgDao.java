@@ -31,6 +31,7 @@ public class OrgDao
 				org.setName(tc.getString("name"));
 				org.setParentId(tc.getLong("parent_id"));
                 org.setCompanyId(tc.getLong("company_id"));
+                org.setCode(tc.getString("code"));
 				return org;
 			}
 		}, orgId);
@@ -47,7 +48,7 @@ public class OrgDao
         List<Org> list = new ArrayList<Org>();
         List<Map<String, Object>> listMap = jdbc
                 .queryForList(
-                "select id,name,parent_id as parentId,company_id as companyId from t_org where valid is null and parent_id ="
+                "select id,name,parent_id as parentId,company_id as companyId,code from t_org where valid is null and parent_id ="
                         + id);
         if (listMap != null && listMap.size() > 0) {
             for (Map<String, Object> map : listMap) {
@@ -67,9 +68,9 @@ public class OrgDao
 
     public int save(Org org) {
         return jdbc
-                .update("insert into t_org (id, name, type, company_id, parent_id,mobile,create_time,update_time) values (?,?,?,?,?,?,now(),now())",
+                .update("insert into t_org (id, name, type, company_id, parent_id,mobile,code,email,create_time,update_time) values (?,?,?,?,?,?,?,?,now(),now())",
                         org.getId(), org.getName(), org.getType(), org.getCompanyId(), org.getParentId(),
-                        org.getMobile());
+                        org.getMobile(),org.getCode(),org.getEmail());
     }
 
     public List<Org> childOrg(Long orgId) {

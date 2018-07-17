@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lerrain.service.common.Log;
 import lerrain.tool.Common;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,8 +145,13 @@ public class MemberDao
         }
         if (list != null && list.size() > 0) {
             for (Map<String, Object> map : list) {
-                Map map1 = jdbc.queryForMap("select status from t_user where user_id=?", map.get("id"));
-                map.put("userStatus", map1.get("status"));
+            	try {
+                    Map map1 = jdbc.queryForMap("select status from t_user where user_id=?", map.get("id"));
+                    map.put("userStatus", map1.get("status"));
+            	} catch(Exception e) {
+            		Log.error(e);
+            		Log.error("get member userStatus error:"+map.get("id"));
+            	}
             }
         }
         return list;

@@ -11,6 +11,8 @@ public class Org
     Long   companyId;
     int    level;
     String mobile;
+    String parentCode;
+    String email;
 
     public Long getParentId()
     {
@@ -83,5 +85,21 @@ public class Org
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+
+	public String getParentCode() {
+		return parentCode;
+	}
+
+	public void setParentCode(String parentCode) {
+		this.parentCode = parentCode;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 }

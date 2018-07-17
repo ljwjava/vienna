@@ -122,9 +122,9 @@ public class OrgController
             member.setName(name);
             member.setMobile(mobile);
             Long orgId = json.getLong("orgId");
-            Long companyId = json.getLong("companyId");
+            Org org = orgSrv.getOrg(orgId);
             member.setOrgId(orgId);
-            member.setCompanyId(companyId);
+            member.setCompanyId(org.getCompanyId());
             member.setStatus(1);
             id = memberSrv.save(member);
         } else if (2 == type) {
@@ -145,6 +145,7 @@ public class OrgController
             Long companyId = enterpriseSrv.save(enterprise);
             org.setCompanyId(companyId);
             org.setType(4);
+            org.setEmail(email);
             id = orgSrv.save(org);
         } else if (3 == type) { // 保存机构信息
             // 保存渠道/部门信息
@@ -152,10 +153,18 @@ public class OrgController
             org.setName(name);
             org.setMobile(mobile);
             org.setType(4);
-            Long companyId = json.getLong("companyId");
+            org.setEmail(email);
             Long parentOrgId = json.getLong("parentOrgId");
+            Org parentOrg = orgSrv.getOrg(parentOrgId);
+//            // 校验层级
+//            if(parentCode != null && parentCode.split("|").length > 6) {
+//                result.put("result", "false");
+//                result.put("content", "机构层级不能超过7层");
+//                return result;
+//            }
+            org.setParentCode(parentOrg.getCode());
             org.setParentId(parentOrgId);
-            org.setCompanyId(companyId);
+            org.setCompanyId(parentOrg.getCompanyId());
             org.setType(4);
             id = orgSrv.save(org);
         }
@@ -225,10 +234,21 @@ public class OrgController
     @ResponseBody
     public JSONObject listByOrgId(@RequestBody JSONObject json) {
         JSONObject result = new JSONObject();
-        List<Map<String, Object>> list = memberSrv.listByOrgId(json.getLongValue("orgId"), json.getInteger("from"),
-                json.getInteger("number"), json.getString("searchCondition"));
+        int currentPage = Common.intOf(json.get("currentPage"), 1);
+        int num = Common.intOf(json.get("pageSize"), 20);
+        int from =  num*(currentPage - 1);
+        Long count = memberSrv.countByOrgId(json.getLongValue("orgId"));
+        JSONObject page = new JSONObject();
+        page.put("total",count);
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        List<Map<String, Object>> list = memberSrv.listByOrgId(json.getLongValue("orgId"), from,
+                num, json.getString("searchCondition"));
         result.put("result", "success");
-        result.put("content", list);
+        JSONObject r = new JSONObject();
+        r.put("pagination", page);
+        r.put("list", list);
+        result.put("content", r);
         return result;
     }
 
@@ -256,7 +276,6 @@ public class OrgController
         List<Enterprise> list = enterpriseSrv.querySubordinate(companyId);
         result.put("result", "success");
         JSONObject rJson = new JSONObject();
-        rJson.put("list", list.size());
         rJson.put("list", list);
         result.put("content", rJson);
         return result;
@@ -313,9 +332,9 @@ public class OrgController
                 Member member = new Member();
                 member.setName(name);
                 member.setMobile(mobile);
-                Long companyId = json.getLong("companyId");
+                Org org = orgSrv.getOrg(Long.valueOf(orgId));
                 member.setOrgId(Long.valueOf(orgId));
-                member.setCompanyId(companyId);
+                member.setCompanyId(org.getCompanyId());
                 member.setStatus(1);
                 id = memberSrv.save(member);
             } else if (2 == type) {
@@ -439,5 +458,15 @@ public class OrgController
         res.put("result", "success");
         res.put("content", enterpriseSrv.updateById(enterprise));
         return res;
+    }
+    
+    @RequestMapping("/queryChannelLink.json")
+    @ResponseBody
+    public JSONObject queryChannelLink(@RequestBody JSONObject json) {
+        JSONObject result = new JSONObject();
+        result.put("result", "success");
+        Long userId = json.getLong("userId");
+        result.put("content", userId);
+        return result;
     }
 }

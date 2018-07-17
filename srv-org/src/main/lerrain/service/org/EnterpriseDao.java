@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lerrain.service.common.Log;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -119,13 +121,18 @@ public class EnterpriseDao
                         + id);
         if (listMap != null && listMap.size() > 0) {
             for (Map<String, Object> map : listMap) {
-            	// 查询用户信息
-            	Map<String,Object> userMap = jdbc.queryForMap("select u.user_id,u.status from t_org org ,t_user u where org.id= u.user_id and org.company_id= ? and org.parent_id is null", map.get("id"));
-            	if(userMap != null && userMap.size() > 0) {
-                	map.put("userId", userMap.get("user_id"));
-                	map.put("userStatus", userMap.get("status"));
+            	try {
+                	// 查询用户信息
+                	Map<String,Object> userMap = jdbc.queryForMap("select u.user_id,u.status from t_org org ,t_user u where org.id= u.user_id and org.company_id= ? and org.parent_id is null", map.get("id"));
+                	if(userMap != null && userMap.size() > 0) {
+                    	map.put("userId", userMap.get("user_id"));
+                    	map.put("userStatus", userMap.get("status"));
+                	}
+                    list.add(JSON.parseObject(JSON.toJSONString(map), Enterprise.class));            		
+            	} catch(Exception e) {
+            		Log.error("get user info err:"+map.get("id"));
+            		Log.error(e);
             	}
-                list.add(JSON.parseObject(JSON.toJSONString(map), Enterprise.class));
             }
         }
         if (list != null && list.size() > 0) {
