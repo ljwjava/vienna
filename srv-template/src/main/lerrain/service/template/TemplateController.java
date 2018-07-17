@@ -36,6 +36,7 @@ public class TemplateController {
         int from = num * (currentPage - 1);
         String name = p.getString("name");
         Long userId = p.getLong("userId");
+        Long userType = p.getLong("userType");
         JSONArray list = new JSONArray();
         for (Template template : templateSrv.list(name, userId, from, num)) {
             JSONObject obj = new JSONObject();
@@ -53,6 +54,7 @@ public class TemplateController {
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);
+        r.put("userType",userType);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
