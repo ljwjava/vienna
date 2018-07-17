@@ -95,6 +95,7 @@ public class UserService
         for (Long roleId : roleIdList) {
             userDao.saveUserRole(userId, roleId);
         }
+        // 发送账号开通短信
         return true;
     }
 
@@ -109,8 +110,9 @@ public class UserService
             throw new Exception("用户不存在或密码错误");
 
         User user = userDao.load(userId);
-
-        userDao.updateLoginTime(userId, new Date());
+        if(user.getStatus() != 9) { // 禁用
+            userDao.updateLoginTime(userId, new Date());
+        }
 
         return user;
     }
