@@ -1,15 +1,28 @@
 package lerrain.service.biz;
 
-import com.alibaba.fastjson.JSONObject;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import lerrain.service.common.Log;
+
+import org.apache.commons.lang.StringUtils;
 import lerrain.service.common.ServiceMgr;
 import lerrain.tool.Network;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
@@ -225,5 +238,68 @@ public class PlatformController
             System.setOut(oldPs);
         }
     }
+    
+    @RequestMapping(value={"/cs/**/*.json","/cs/*.json"})
+    @ResponseBody
+    @CrossOrigin
+    public JSONObject cs(HttpServletRequest req,HttpServletResponse rsp)
+    {
+        String uri = req.getRequestURI();
+        uri = uri.substring(1);
+
+        JSONObject res = new JSONObject();
+        try
+        {
+            String origin = req.getHeader("Origin");
+            Log.info("origin:"+origin);
+            if(origin == null) {
+                origin = req.getHeader("Referer");
+            }
+            rsp.setHeader("Access-Control-Allow-Origin", origin);            // 允许指定域访问跨域资源
+            rsp.setHeader("Access-Control-Allow-Credentials", "true");       // 允许客户端携带跨域cookie，此时origin值不能为“*”，只能为指定单一域名
+            
+            if(RequestMethod.OPTIONS.toString().equals(req.getMethod())) {
+                String allowMethod = req.getHeader("Access-Control-Request-Method");
+                String allowHeaders = req.getHeader("Access-Control-Request-Headers");
+                rsp.setHeader("Access-Control-Max-Age", "86400");            // 浏览器缓存预检请求结果时间,单位:秒
+                rsp.setHeader("Access-Control-Allow-Methods", allowMethod);  // 允许浏览器在预检请求成功之后发送的实际请求方法名
+                rsp.setHeader("Access-Control-Allow-Headers", allowHeaders); // 允许浏览器发送的请求消息头
+                return null;
+            }
+            Cookie[] cookies = req.getCookies();
+            JSONObject param = gc.getParam(req);
+            HttpSession session = req.getSession();
+            JSONObject cookieJson = new JSONObject();
+            if(cookies != null && cookies.length > 0) {
+                for(int i=0;i<cookies.length;i++){
+                	String name = cookies[i].getName();
+                	String value = cookies[i].getValue();
+                	cookieJson.put(name, value);
+                }
+            }
+            Log.info("cookieJson:"+JSON.toJSONString(cookieJson));
+            if(req.getRequestURI().startsWith("/cs/") && !req.getRequestURI().startsWith("/cs/open/") && !req.getRequestURI().startsWith("/cs/getMenu.json") && !req.getRequestURI().startsWith("/cs/login.json") && StringUtils.isBlank(cookieJson.getString("user%2FloginName"))) {
+            	try {
+            		Log.info("url:"+req.getRequestURI());
+            		Log.info("跳转到登录页");
+//                    rsp.setStatus(299);
+//                	return null;
+            	} catch(Exception e) {
+            		Log.error(e);
+            	}
+            }
+            res.put("result", "success");
+            res.put("content", gc.call(req.getServerName() + ":" + req.getServerPort(), uri, session, param));
+        }
+        catch (Exception e)
+        {
+        	res.put("result", "false");
+            res.put("errorCode", 101);
+            
+            res.put("errorMsg", e.getMessage());
+        }
+
+        return res;
+    }    
 }
 
