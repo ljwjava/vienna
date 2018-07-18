@@ -338,6 +338,7 @@ public class ShopDao
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
 		sql.append(" t.id as tempId,");
+		sql.append(" r.id as relId,");
 		sql.append(" t.scheme_id as schemeId,");
 		sql.append(" r.rel_user_id as userId,");
 		sql.append(" r.sub_user_id as subUserId,");
@@ -370,7 +371,7 @@ public class ShopDao
 			public JSONObject mapRow(ResultSet m, int arg1) throws SQLException
 			{
 				JSONObject j = new JSONObject();
-				j.put("userId",m.getString("creator"));
+				j.put("relId",m.getString("relId"));
 				j.put("tempId",m.getString("tempId"));
 				j.put("schemeId",m.getString("schemeId"));
 				j.put("userId",m.getString("userId"));
