@@ -316,7 +316,7 @@ public class ShopDao
 		sql.append("SELECT count(*)");
 		sql.append(" FROM");
 		sql.append(" `t_cs_commodity_rate_template` t");
-		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation r ON t.id = r.rel_temp_id`");
+		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
 		sql.append(" WHERE t.is_deleted='N'");
 		sql.append(" and r.is_deleted='N'");
 		if (null != contion.getSubUserId()) {
@@ -326,10 +326,7 @@ public class ShopDao
 			sql.append(" and r.rel_user_id = "+contion.getUserId());
 		}
 		if (StringUtils.isNotBlank(contion.getUsed())) {
-			sql.append(" and r.used = "+contion.getUsed());
-		}
-		if (null != contion.getUserId()) {
-			sql.append(" and t.creator = "+contion.getUserId());
+			sql.append(" and r.used = '"+contion.getUsed()+"'");
 		}
 		return jdbc.queryForObject(sql.toString(), Integer.class);
 	}
