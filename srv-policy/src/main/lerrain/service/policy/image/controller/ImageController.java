@@ -46,6 +46,7 @@ public class ImageController {
         ImageUpload data = new ImageUpload();
         data.setMobile(params.getString("mobile"));
         data.setName(params.getString("name"));
+        data.setUserId(params.getLong("userId"));
         if (StringUtils.isNotBlank(params.getString("startDate"))) {
             data.setStartDate(params.getString("startDate") + " 00:00:00");
         }

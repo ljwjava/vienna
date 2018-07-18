@@ -120,7 +120,7 @@ public class ImageService {
     }
 
     public void save(ImageUpload upload, JSONArray policyArray) throws ParseException {
-        if (upload != null) {
+        if (upload != null && upload.getId() != null) {
             updateImageUpload(upload);
             if (policyArray == null || policyArray.isEmpty()) {
                 deletePolicy(upload.getId(), null);
@@ -158,6 +158,7 @@ public class ImageService {
                 policyExtra.setDetail(extra.toJSONString());
                 policyExtra.setType(2);
                 imageDao.insertPolicyExtra(policyExtra);
+                imageDao.insertWxPolicy(upload.getOpenId(), upload.getId(), policy.getId());
             } else {
                 policyService.updatePolicy(policy);
                 if (policy.getClauses() != null && !policy.getClauses().isEmpty()) {
@@ -179,7 +180,7 @@ public class ImageService {
             saveId.add(policy.getId());
 
         }
-        if (upload != null) {
+        if (upload != null && upload.getId() != null) {
             imageDao.deletePolicy(upload.getId(), saveId);
         }
 
