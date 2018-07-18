@@ -38,6 +38,7 @@ public class Shop {
     private String extraInfo;                   //扩展信息
     private String sort;                        //排序
     private String qrcodeUid;                   //二维码uid
+    private String commodityIds;                //商品id集合
 
     private String creator;
     private Date gmtCreated;
