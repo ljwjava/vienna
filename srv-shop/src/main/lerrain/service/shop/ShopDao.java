@@ -182,6 +182,9 @@ public class ShopDao
 		sql.append(" AND s.is_deleted='N'");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
+		if (StringUtils.isNotBlank(contion.getCommodityIds())){
+            sql.append(" AND c.id in ("+contion.getCommodityIds()+")");
+        }
 		if (StringUtils.isNotBlank(contion.getQrcodeUid())){
 			sql.append(" AND c.id in ("+this.queryProductsByQrcodeInfo(contion).getProductIds()+")");
 		}
@@ -251,21 +254,6 @@ public class ShopDao
         return jdbc.queryForObject(sql.toString(), Integer.class);
     }
 
-	public int countTemplateUsed(Long tempId)
-	{
-		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT");
-		sql.append(" COUNT(r.rel_user_id)");
-		sql.append(" FROM");
-		sql.append(" `t_cs_commodity_rate_template_relation` r");
-		sql.append(" WHERE r.is_deleted='N'");
-		if (null != tempId) {
-			sql.append(" and r.rel_temp_id = "+tempId);
-		}
-
-		return jdbc.queryForObject(sql.toString(), Integer.class);
-	}
-
     public List<JSONObject> rateTemplates(RateTemp contion, int from, int number){
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
@@ -309,6 +297,96 @@ public class ShopDao
             }
         });
     }
+
+	public int countUsedTemplateByTempId(Long tempId)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT");
+		sql.append(" COUNT(r.rel_user_id)");
+		sql.append(" FROM");
+		sql.append(" `t_cs_commodity_rate_template_relation` r");
+		sql.append(" WHERE r.is_deleted='N'");
+		if (null != tempId) {
+			sql.append(" and r.rel_temp_id = "+tempId);
+		}
+
+		return jdbc.queryForObject(sql.toString(), Integer.class);
+	}
+
+	public int countUsedTemplate(RateTemp contion)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT count(*)");
+		sql.append(" FROM");
+		sql.append(" `t_cs_commodity_rate_template` t");
+		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
+		sql.append(" WHERE t.is_deleted='N'");
+		sql.append(" and r.is_deleted='N'");
+		if (null != contion.getSubUserId()) {
+			sql.append(" and r.sub_user_id = "+contion.getSubUserId());
+		}
+		if (null != contion.getUserId()) {
+			sql.append(" and r.rel_user_id = "+contion.getUserId());
+		}
+		if (StringUtils.isNotBlank(contion.getUsed())) {
+			sql.append(" and r.used = '"+contion.getUsed()+"'");
+		}
+		return jdbc.queryForObject(sql.toString(), Integer.class);
+	}
+
+	public List<JSONObject> usedRateTemplates(RateTemp contion, int from, int number){
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append(" t.id as tempId,");
+		sql.append(" r.id as relId,");
+		sql.append(" t.scheme_id as schemeId,");
+		sql.append(" r.rel_user_id as userId,");
+		sql.append(" r.sub_user_id as subUserId,");
+		sql.append(" r.used,");
+		sql.append(" t.`code`,");
+		sql.append(" t.`name`,");
+		sql.append(" t.creator,");
+		sql.append(" t.gmt_created,");
+		sql.append(" t.modifier,");
+		sql.append(" t.gmt_modified,");
+		sql.append(" t.is_deleted");
+		sql.append(" FROM");
+		sql.append(" `t_cs_commodity_rate_template` t");
+		sql.append(" INNER JOIN `t_cs_commodity_rate_template_relation` r ON t.id = r.rel_temp_id");
+		sql.append(" WHERE t.is_deleted='N'");
+		if (null != contion.getSubUserId()) {
+			sql.append(" and r.sub_user_id = "+contion.getSubUserId());
+		}
+		if (null != contion.getUserId()) {
+			sql.append(" and r.rel_user_id = "+contion.getUserId());
+		}
+		if (StringUtils.isNotBlank(contion.getUsed())) {
+			sql.append(" and r.used = '"+contion.getUsed()+"'");
+		}
+		sql.append(" limit ?, ?");
+
+		return jdbc.query(sql.toString(), new Object[] {from, number}, new RowMapper<JSONObject>()
+		{
+			@Override
+			public JSONObject mapRow(ResultSet m, int arg1) throws SQLException
+			{
+				JSONObject j = new JSONObject();
+				j.put("relId",m.getString("relId"));
+				j.put("tempId",m.getString("tempId"));
+				j.put("schemeId",m.getString("schemeId"));
+				j.put("userId",m.getString("userId"));
+				j.put("subUserId",m.getString("subUserId"));
+				j.put("code",m.getString("code"));
+				j.put("name", m.getString("name"));
+				j.put("creator",m.getString("creator"));
+				j.put("gmtCreated",m.getString("gmt_created"));
+				j.put("modifier",m.getString("modifier"));
+				j.put("gmtModified",m.getString("gmt_modified"));
+				j.put("isDeleted",m.getString("is_deleted"));
+				return j;
+			}
+		});
+	}
 
     public int countScheme(String search)
     {

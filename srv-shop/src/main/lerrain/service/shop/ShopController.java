@@ -95,6 +95,7 @@ public class ShopController
         return res;
     }
 
+    //查询用户创建的模板
     @RequestMapping("/rateTemplates.json")
     @ResponseBody
     public JSONObject rateTemplates(@RequestBody JSONObject p)
@@ -114,6 +115,37 @@ public class ShopController
         r.put("list", rtList);
         JSONObject page = new JSONObject();
         page.put("total",productSrv.countTemplate(contion));
+        page.put("pageSize", num);
+        page.put("current", currentPage);
+        r.put("pagination", page);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", r);
+
+        return res;
+    }
+
+    //查询用户已使用的模板
+    @RequestMapping("/usedRateTemplates.json")
+    @ResponseBody
+    public JSONObject usedRateTemplates(@RequestBody JSONObject p)
+    {
+        int currentPage = Common.intOf(p.get("currentPage"), 1);
+        int num = Common.intOf(p.get("pageSize"), 10);
+        int from =  num*(currentPage - 1);
+
+//        Long userId = p.getLong("userId");
+//        String cdName = p.getString("cdName");
+
+        RateTemp contion = JSONObject.parseObject(p.toJSONString(),RateTemp.class);
+
+        List<JSONObject> rtList = productSrv.usedRateTemplates(contion, from, num);
+
+        JSONObject r = new JSONObject();
+        r.put("list", rtList);
+        JSONObject page = new JSONObject();
+        page.put("total",productSrv.countUsedTemplate(contion));
         page.put("pageSize", num);
         page.put("current", currentPage);
         r.put("pagination", page);

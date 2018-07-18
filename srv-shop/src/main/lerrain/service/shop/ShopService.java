@@ -95,8 +95,19 @@ public class ShopService
         for(int i=0;i<rates.size();i++){
             JSONObject json = rates.get(i);
             Long tempId = json.getLong("tempId");
-            json.put("usedCount",productDao.countTemplateUsed(tempId));
+            json.put("usedCount",productDao.countUsedTemplateByTempId(tempId));
         }
+        return rates;
+    }
+
+    public int countUsedTemplate(RateTemp contion)
+    {
+        return productDao.countUsedTemplate(contion);
+    }
+
+    public List<JSONObject> usedRateTemplates(RateTemp contion, int from, int num)
+    {
+        List<JSONObject> rates = productDao.usedRateTemplates(contion, from, num);
         return rates;
     }
 
@@ -119,7 +130,7 @@ public class ShopService
         contion.setUserId(rt.getUserId());
         contion.setSubUserId(rt.getSubUserId());
         contion.setUsed("Y");
-        List<JSONObject> rates = productDao.rateTemplates(contion, 0, 10);
+        List<JSONObject> rates = this.usedRateTemplates(contion, 0, 10);
         if(null != rates && rates.size()>0){
             for(int i=0;i<rates.size();i++) {
                 RateTemp temp = JSONObject.parseObject(rates.get(i).toJSONString(), RateTemp.class);
