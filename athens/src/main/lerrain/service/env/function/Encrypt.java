@@ -1,5 +1,6 @@
 package lerrain.service.env.function;
 
+import lerrain.service.env.util.BASE64Encoder;
 import lerrain.tool.CipherUtil;
 import lerrain.tool.Common;
 import lerrain.tool.formula.Factors;
@@ -11,6 +12,7 @@ import java.util.Map;
 public class Encrypt implements Factors
 {
     Map<String, Object> map = new HashMap<>();
+    BASE64Encoder encoder=new BASE64Encoder();
 
     public Encrypt()
     {
@@ -56,7 +58,8 @@ public class Encrypt implements Factors
             public Object run(Object[] v, Factors factors)
             {
                 try {
-                    return Common.encodeBase64(v[0].toString().getBytes("UTF-8"));
+//                    return Common.encodeBase64(v[0].toString().getBytes("UTF-8"));
+                    return encoder.encode(v[0].toString().getBytes("UTF-8"));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
