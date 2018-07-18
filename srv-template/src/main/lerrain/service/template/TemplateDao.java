@@ -124,7 +124,7 @@ public class TemplateDao {
             jdbc.update("insert into t_cs_template_product_type(id,product_type_name,creator,gmt_created,modifier,gmt_modified,is_deleted) " +
                     "VALUES (?,?,?,?,?,?,?) ", tpt.getId(), tpt.getProductTypeName(), "system", new Date(), "system", new Date(), "N");
         } else {
-            jdbc.update("update t_cs_template_product_type set product_type_name=?,gmt_modified=? where id=?", tpt.getProductTypeName(), tpt.getId());
+            jdbc.update("update t_cs_template_product_type set product_type_name=?,gmt_modified=? where id=?", tpt.getProductTypeName(), new Date(),tpt.getId());
         }
         return tpt.getId();
     }
