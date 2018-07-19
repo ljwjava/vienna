@@ -173,6 +173,7 @@ public class EnvService
         stack.put("FileFX", new FileFX());
         stack.put("ToolFX", new ToolFX());
         stack.put("UrlFX", new UrlFX());
+        stack.put("MapFX", new MapFX());
         stack.put("TaskFX", taskFX);
         stack.put("StoreFX", storeFX);
         stack.put("pushMessage", pushMessage);
