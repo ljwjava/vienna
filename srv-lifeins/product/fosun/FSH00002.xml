@@ -4,7 +4,7 @@
 		id="FSH00002"
 		corporation_id="fosun"
 		code="110032"
-		name="康乐一生重大疾病保险（B款）"
+		name="康乐一生重大疾病保险(B款升级款)"
 		name_abbr="康乐一生"
 		unit="1000"
 		type_code="thunder"
@@ -34,11 +34,11 @@
 			</insure>
 		</param>
 
-		<!--<input>-->
-			<!--<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万'],[600000,'60万']]</item>-->
-			<!--<item name="PAY" label="缴费年期" widget="select">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>-->
-			<!--<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>-->
-		<!--</input>-->
+		<input>
+			<item name="AMOUNT" label="保额" widget="select" type="integer">[[100000,'10万'],[200000,'20万'],[300000,'30万'],[400000,'40万'],[500000,'50万'],[600000,'60万']]</item>
+			<item name="PAY" label="缴费年期" widget="select">[['term_5','5年交'],['term_10','10年交'],['term_15','15年交'],['term_20','20年交'],['term_20','30年交']]</item>
+			<item name="INSURE" label="保障期间" widget="select">[['to_70','保至70岁'],['to_80','保至80岁'],['full_105','保终身']]</item>
+		</input>
 
 		<init>
 			<item name="OTHER">return {PLAN_CODE: "JH1100321", PRODUCT_CODE: "110032"}</item>
@@ -60,7 +60,7 @@
 			<product id="FSH00004"/>
 		</rider>
 
-		<attachment>
+	<attachment>
 			<coverage filter="coverage" parser="coverage">
 				<paragraph title="重大疾病">
 					<item>被保险人在保险期间内因意外，或本合同生效（若曾复效，则自本合同最后复效）之日起180天后因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊初次发生本合同所列的一种或多种重大疾病，本公司按本合同基本保险金额给付重大疾病保险金，同时本合同终止。</item>
@@ -104,11 +104,11 @@
 			<if condition="OCCUPATION_CODE != null and (DS.OCC_RANK[0][0] > 4 || DS.OCC_RANK[0][0] == 0)">
 				该职业暂时无法投保
 			</if>
-			<if condition="AGE + PAY_PERIOD >= 70">
-				交费期满时，被保险人年龄要求小于70周岁
+			<if condition="AGE + PAY_PERIOD > 70">
+				交费期满时，被保险人年龄要求不大于70周岁
 			</if>
-			<if condition="APPLICANT.AGE + PAY_PERIOD >= 70">
-				交费期满时，投保人年龄要求小于70周岁
+			<if condition="APPLICANT.AGE + PAY_PERIOD > 70">
+				交费期满时，投保人年龄要求不大于70周岁
 			</if>
 
 			<if condition="DAY >= 30 and 1 >= AGE and AMOUNT > 300000">
@@ -127,12 +127,12 @@
 				46~50岁保额不得超过30万
 			</if>
 
-			<if condition="AGE >= 41 and 45 >= AGE and (PAY_VALUE == 30 or INSURE_VALUE == 70)">
+			<!-- if condition="AGE >= 41 and 45 >= AGE and (PAY_VALUE == 30 or INSURE_VALUE == 70)">
 				41~45岁投保，交费期限定10年/15年/20年，保障期间限定至80岁/至终身
-			</if>
-			<if condition="AGE >= 46 and 50 >= AGE and (PAY_VALUE == 30 or PAY_VALUE == 20 or INSURE_VALUE == 70)">
-				46~50岁投保，交费期限定10年/15年，保障期间限定至80岁/至终身
-			</if>
+			</if -->
+			<!-- if condition="AGE >= 46 and 50 >= AGE and (PAY_VALUE == 30 or INSURE_VALUE == 70)">
+				46~50岁投保，交费期限定10年/15年/20年，保障期间限定至80岁/至终身
+			</if -->
 		</rule>
 	</product>
 </declare>

@@ -870,6 +870,7 @@ var Ground = React.createClass({
             vendor: env.vendor,
             uwId: env.uwId,
             serialNo:env.serialNo,
+            singleproposalId:env.proposalId,
             packName: (env.pack.extra.productName != null && env.pack.extra.productName != "" ? env.pack.extra.productName : orderName)
         };
         let order = {
@@ -1129,6 +1130,7 @@ $(document).ready( function() {
         env.brokerId = common.param("accountId");
         env.uwId = common.param("uwId");
         env.serialNo=common.param("serialNo");
+        env.proposalId=common.param("proposalId");
         common.req("order/create.json", {}, r => {
             env.orderId = r.id;
             let planFactors = JSON.parse(common.load("iyb/temp", 600000));
@@ -1154,6 +1156,7 @@ $(document).ready( function() {
             if (r.detail != null) {
                 env.uwId = r.detail.uwId;
                 env.serialNo=r.detail.serialNo;
+                env.proposalId=r.detail.proposalId;
                 draw(r.detail);
             } else {
                 draw({});

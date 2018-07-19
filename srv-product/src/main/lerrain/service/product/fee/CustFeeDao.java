@@ -200,4 +200,13 @@ public class CustFeeDao
 
 		}, productId);
 	}
+
+	public JSONObject deleteRate(JSONObject c)
+	{
+		String delCustFee = "UPDATE `vie_biz`.`t_product_fee_cust` SET `valid`='Y', `updater`=? WHERE (`scheme_id`=? and `product_id`=?);";
+
+		jdbc.update(delCustFee, c.getString("modifier"), c.getLong("schemeId"), c.getLong("productId"));
+
+		return c;
+	}
 }

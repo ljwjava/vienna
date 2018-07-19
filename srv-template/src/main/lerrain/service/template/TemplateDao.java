@@ -64,6 +64,7 @@ public class TemplateDao {
                 t.setTemplateName(m.getString("template_name"));
                 t.setGmtModified(m.getTimestamp("gmt_modified"));
                 t.setLink(m.getString("link"));
+                t.setTitle(m.getString("title"));
                 return t;
             }
         });

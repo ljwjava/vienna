@@ -79,6 +79,10 @@ public class ImageDao {
             sql.append(" and a.mobile =? ");
             list.add(params.getMobile());
         }
+        if (params.getUserId() != null) {
+            sql.append(" and a.user_id =? ");
+            list.add(params.getUserId());
+        }
         if (StringUtils.isNotBlank(params.getStartDate())) {
             sql.append(" and a.gmt_created >=? ");
             list.add(params.getStartDate());

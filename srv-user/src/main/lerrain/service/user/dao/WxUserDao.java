@@ -44,6 +44,10 @@ public class WxUserDao {
             sql.append("and open_id = ? ");
             params.add(user.getOpenId());
         }
+        if (user.getUserId() != null) {
+            sql.append("and user_id = ? ");
+            params.add(user.getUserId());
+        }
         if (user.getStart() != null && user.getLimit() != null) {
             sql.append(" limit ?,?");
             params.add(user.getStart());
