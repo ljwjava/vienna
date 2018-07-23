@@ -8,7 +8,7 @@ var OccupationPicker = React.createClass({
 	getInitialState() {
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
-		return {value: v.value||v.code, code: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[]};
+		return {value: v.value||v.code, code: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[], readOnly: !!v.readOnly};
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state
     componentWillMount() {
@@ -131,6 +131,7 @@ var OccupationPicker = React.createClass({
 							 title='职业类别选择'
 							 cols={ 5 }
 							 value = {this.state.proPickerVal}
+                             readOnly={this.state.readOnly}
 							 placeholder="请选择职业类别"
 							 labelTpl={ ({ label, level }) => level === undefined ? label : `${ label }(${ level }类)` }
 							 onOk={(obj, data) => {

@@ -9,7 +9,7 @@ var CityPicker = React.createClass({
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
 	    if (typeof v == "string") v = {code: v};
-		return {value: v.value||v.code, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[]};
+		return {value: v.value||v.code, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[], readOnly: !!v.readOnly};
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state
     componentWillMount() {
@@ -133,6 +133,7 @@ var CityPicker = React.createClass({
 							 title='所在地区选择'
 							 cols={ 3 }
 							 value = {this.state.proPickerVal}
+                             readOnly={this.state.readOnly}
 							 placeholder="请选择所在地区"
                              showTpl={({label, value}) => this.getFullName(label, value)}
 							 // labelTpl={ ({ label, value }) => this.getFullName(label, value) }

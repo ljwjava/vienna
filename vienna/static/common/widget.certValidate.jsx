@@ -56,8 +56,8 @@ var CertValidEditor = React.createClass({
 
 		return (
 			<div>
-				<a className="inputPad" onClick={this.setLong}><span style={{color:"#888"}}>{this.state.long?"◤ ":"      ◥"}</span>{this.state.long?"长期有效":""}</a>
-				{this.state.long?null:<DateEditor ref="certExpire" valReq="yes" defaultValue="" onChange={this.setExpire} value={val.certExpire}/>}
+				<a className="inputPad" onClick={!this.props.readOnly && this.setLong}><span style={{color:"#888"}}>{this.state.long?"◤ ":"      ◥"}</span>{this.state.long?"长期有效":""}</a>
+				{this.state.long?null:<DateEditor ref="certExpire" valReq="yes" defaultValue="" onChange={this.setExpire} value={val.certExpire} readOnly={!!this.props.readOnly}/>}
 			</div>
 		);
 	}

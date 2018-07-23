@@ -44,7 +44,7 @@ var Selecter = React.createClass({
 		if (this.props.showAddit != null)
             showAddit = this.props.showAddit;
 		let btns = this.props.options.map(v => (<option key={v[0]} value={v[0]}>{v[1]+((v.length > 2 && showAddit) ? ">"+v[2] : "")}</option>));
-		return (<select ref="self" onChange={this.onChange} defaultValue={this.props.value}>{btns}</select>);
+		return (<select ref="self" onChange={!this.props.readOnly && this.onChange} defaultValue={this.props.value} readOnly={!!this.props.readOnly}>{btns}</select>);
 	}
 });
 

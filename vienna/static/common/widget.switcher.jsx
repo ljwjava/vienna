@@ -4,7 +4,7 @@ import React from 'react';
 
 var Switcher = React.createClass({
 	getInitialState() {
-		return {value: this.props.value != null ? this.props.value : (this.props.options == null || this.props.options.length == 0 ? null : this.props.options[0][0])};
+		return {value: this.props.value != null ? this.props.value : (this.props.options == null || this.props.options.length == 0 ? null : this.props.options[0][0]), readOnly: !!this.props.readOnly};
     },
 	val() {
 		return this.state.value;
@@ -28,7 +28,7 @@ var Switcher = React.createClass({
 	render() {
 		let btns;
 		if (this.props.options != null)
-			btns = this.props.options.map(v => (<span key={v[0]} className={this.state.value==v[0]?"blockSel":"block"} onClick={this.change.bind(this, v[0])}>{v[1]}</span>));
+			btns = this.props.options.map(v => (<span key={v[0]} className={this.state.value==v[0]?"blockSel":"block"} onClick={!this.state.readOnly && this.change.bind(this, v[0])}>{v[1]}</span>));
 		return (<span>{btns}</span>);
 	}
 });

@@ -46,7 +46,7 @@ var Inputer = React.createClass({
             this.props.onBlur(this);
     },
 	render() {
-		return (<input ref="self" type="text" className={this.props.className} placeholder={this.props.placeholder} onChange={this.onChange} onBlur={this.onBlur} defaultValue={this.props.value}/>);
+		return (<input ref="self" type="text" readOnly={!!this.props.readOnly} className={this.props.className} placeholder={this.props.placeholder} onChange={this.onChange} onBlur={this.onBlur} defaultValue={this.props.value}/>);
 	}
 });
 

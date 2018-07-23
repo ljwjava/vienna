@@ -26,27 +26,27 @@ var Form = React.createClass({
 			let comp;
 			let opt = v.onChange != null ? v.onChange : (v.refresh?this.onRefresh:this.onChange);
 			if (v.type == "text") {
-				comp = (<Inputer ref={v.code} valCode={v.code} valType="text" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={v.ph || v.desc} value={v.value}/>);
+				comp = (<Inputer ref={v.code} valCode={v.code} valType="text" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={v.ph || v.desc} value={v.value} readOnly={v.readOnly}/>);
 			} else if (v.type == "switch") {
-				comp = (<Switcher ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value}/>);
+				comp = (<Switcher ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value} readOnly={v.readOnly}/>);
 			} else if (v.type == "date") {
-				comp = (<DateEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} placeholder={v.ph || v.desc} options={v.options} value={v.value}/>);
+				comp = (<DateEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} placeholder={v.ph || v.desc} options={v.options} value={v.value} readOnly={v.readOnly}/>);
 			} else if (v.type == "idcard") {
-				comp = (<IdCard ref={v.code} valCode={v.code} valReq={v.req} valRelation={this.refs[v.relation]} onSucc={v.succ} onChange={opt} placeholder={v.ph || v.desc} value={v.value} isIdCert={v.isIdCert}/>);
+				comp = (<IdCard ref={v.code} valCode={v.code} valReq={v.req} valRelation={this.refs[v.relation]} onSucc={v.succ} onChange={opt} placeholder={v.ph || v.desc} value={v.value} isIdCert={v.isIdCert} readOnly={v.readOnly}/>);
 			} else if (v.type == "certValidate") {
-				comp = (<CertValidEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} value={v.value}/>);
+				comp = (<CertValidEditor ref={v.code} valCode={v.code} valReq={v.req} onChange={opt} value={v.value} readOnly={v.readOnly}/>);
 			} else if (v.type == "select") {
-				comp = (<Selecter ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value} showAddit={v.showAddit}/>);
+				comp = (<Selecter ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value} showAddit={v.showAddit} readOnly={v.readOnly}/>);
             } else if (v.type == "city") {
-                comp = (<CityPicker ref={v.code} valCode={v.code} valType="city" company={v.company} onChange={opt} valReq={v.req} value={v.value}/>);
+                comp = (<CityPicker ref={v.code} valCode={v.code} valType="city" company={v.company} onChange={opt} valReq={v.req} value={v.value} readOnly={v.readOnly}/>);
             } else if (v.type == "bankCity") {
-                comp = (<CityPicker ref={v.code} valCode={v.code} valType="bankCity" company={v.company} onChange={opt} valReq={v.req} value={v.value}/>);
+                comp = (<CityPicker ref={v.code} valCode={v.code} valType="bankCity" company={v.company} onChange={opt} valReq={v.req} value={v.value} readOnly={v.readOnly}/>);
             } else if (v.type == "cityCorrect") {
-                comp = (<CityPicker ref={v.code} valCode={v.code} valType="cityCorrect" company={v.company} onChange={opt} valReq={v.req} value={v.value}/>);
+                comp = (<CityPicker ref={v.code} valCode={v.code} valType="cityCorrect" company={v.company} onChange={opt} valReq={v.req} value={v.value} readOnly={v.readOnly}/>);
             } else if (v.type == "occupation") {
-                comp = (<OccupationPicker ref={v.code} valCode={v.code} onChange={opt} valReq={v.req} value={v.value}/>);
+                comp = (<OccupationPicker ref={v.code} valCode={v.code} onChange={opt} valReq={v.req} value={v.value} readOnly={v.readOnly}/>);
 			} else if (v.type == "number") {
-				comp = (<Inputer ref={v.code} valCode={v.code} valType="number" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={v.ph || ("请输入"+v.name)} value={v.value}/>);
+				comp = (<Inputer ref={v.code} valCode={v.code} valType="number" valReg={v.reg} valMistake={v.mistake} valReq={v.req} onChange={opt} placeholder={v.ph || ("请输入"+v.name)} value={v.value} readOnly={v.readOnly}/>);
 			} else if (v.type == "static") {
                 comp = (<input ref={v.code} type="text" readOnly="true" value={v.value}/>);
 			} else if (v.type == "label") {
