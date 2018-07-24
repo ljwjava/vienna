@@ -55,4 +55,9 @@ public class PolicyService {
         policyDao.updatePolicyClause(policyClause);
     }
 
+    public int countPolicyRecord(Integer type,String policyNo) {
+        return policyDao.countPolicyRecord(type,policyNo);
+    }
+
+
 }

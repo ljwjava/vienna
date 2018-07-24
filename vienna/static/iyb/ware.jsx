@@ -293,13 +293,14 @@ var Ware = React.createClass({
             ToastIt(this.state.salesFlagMsg[this.state.salesFlag]);
             return false;
         }
+        this.saveAndNext();
         let factors = this.refs.plan.val();
         factors.url = this.getApplyUrl();
         factors.packId = this.state.detail.target;
         common.req("proposal/single/create.json", {platformId:6,plan:factors,applicant
                 :{code:env.docs.code,productId:this.state.detail.target,premium:this.state.premium,accountId:common.param("accountId")}}, v => {
             console.info(v);
-            document.location.href = v + "&accountId=" + common.param("accountId");
+            document.location.href = v + "&accountId=" + common.param("accountId")+"&productId="+this.state.detail.target;
         });
     },
     next(){
@@ -715,7 +716,7 @@ var Ware = React.createClass({
                             {env.frame == "iyb" ? <div className="col rect" onClick={this.openPoster}>海报</div> : null}
                             {!!env.kefuUrl ? <div className="col rect" onClick={this.openKF}>客服</div> : null}
 							<div className="col left">{env.pack != null && env.pack.applyMode == 1 ? "首期" : ""}保费：{!this.state.premium || this.state.premium <= 0 ? "无法计算" : this.state.premium}</div>
-                            {common.param("wareId") == 17 ?<div className="col mid" onClick={this.proposal.bind(this)}>计划书</div>:null}
+                            {(env.frame == "iyb" && common.param("wareId") == 17)  ? <div className="col mid" onClick={this.proposal.bind(this)}>计划书</div>:null}
                             <div className="col right" onClick={this.next.bind(this)}>去投保</div>
 						</div>
 					</div>

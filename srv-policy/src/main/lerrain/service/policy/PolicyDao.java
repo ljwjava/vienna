@@ -243,4 +243,9 @@ public class PolicyDao {
                         policyClause.getEffectiveTime(), policyClause.getFinishTime(), policyClause.getAmount(),
                         policyClause.getPremium(), policyClause.getId() });
     }
+
+    public int countPolicyRecord(int type, String policyNo )
+    {
+        return jdbc.queryForObject("SELECT COUNT(*) FROM t_policy_record WHERE   TYPE = ? AND policy_no = ? ", new Object[]{type, policyNo}, Integer.class);
+    }
 }

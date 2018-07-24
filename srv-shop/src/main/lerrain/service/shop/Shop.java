@@ -9,8 +9,10 @@ import java.util.Date;
 @Data
 public class Shop {
     private Long commodityId;                   //商品ID
+    private Long CommodityPlanId;               //商品计划ID
     private Long wareId;                        //产品包id
     private Long userId;                         //业务员userId,如果是老渠道accountId
+    private Long subUserId;                     //下级userId
     private String companyId;                   //业务员归属公司id
     private String commodityTypeCode;           //商品类型编码
     private String commodityTypeName;           //商品类型名称
@@ -39,6 +41,7 @@ public class Shop {
     private String sort;                        //排序
     private String qrcodeUid;                   //二维码uid
     private String commodityIds;                //商品id集合
+    private String wareIds;                     //商品包id集合
 
     private String creator;
     private Date gmtCreated;

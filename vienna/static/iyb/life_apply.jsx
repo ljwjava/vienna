@@ -1122,6 +1122,7 @@ var getUrl = function(key){
 };
 
 $(document).ready( function() {
+    console.info("666");
     env.orderId = common.param("orderId");
     if (env.orderId == null)
         env.orderId = common.load("iyb/orderId", 1800000);
@@ -1134,6 +1135,11 @@ $(document).ready( function() {
         common.req("order/create.json", {}, r => {
             env.orderId = r.id;
             let planFactors = JSON.parse(common.load("iyb/temp", 600000));
+            if(env.proposalId != null && planFactors ==null){
+                common.reqSync("proposal/single/plan.json", {proposalId:env.proposalId}, rr => {
+                    planFactors = rr;
+                });
+            }
             let init = {};
             if (planFactors) {
                 init.applicant = {};
