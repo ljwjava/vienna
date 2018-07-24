@@ -256,8 +256,8 @@ public class UserController {
     @ResponseBody
     public JSONObject currentUser(@RequestBody JSONObject json) {
         String loginName = json.getString("loginName");
-        if(StringUtils.isEmpty(loginName)) {
-        	loginName = json.getString("user/loginName");
+        if (StringUtils.isEmpty(loginName)) {
+            loginName = json.getString("user/loginName");
         }
         Log.info("loginName:" + loginName);
         String userId = userSrv.getUserId(loginName);
@@ -285,13 +285,13 @@ public class UserController {
 
             User user = userSrv.csLogin(loginName, password);
             if (user != null) {
-	            if(user.getStatus() == 9) {
-	                result.put("type", "freezeAccount");
-	            } else {
-	                result.put("status", "ok");
-	                result.put("userId", user.getId());
-	                result.put("userType", user.getType());
-	            }
+                if (user.getStatus() == 9) {
+                    result.put("type", "freezeAccount");
+                } else {
+                    result.put("status", "ok");
+                    result.put("userId", user.getId());
+                    result.put("userType", user.getType());
+                }
             }
         } catch (Exception e) {
             result.put("result", "fail");
@@ -334,8 +334,8 @@ public class UserController {
                     password = Common.md5Of(password);
                     boolean result = userSrv.openAccount(userId, type, loginName, password, roleList);
                     Log.info("开通账号结果:" + result);
-                    if(result) {
-                    	j.put("password", orgPassword);
+                    if (result) {
+                        j.put("password", orgPassword);
                     }
                 } catch (Exception e1) {
                     Log.error(e1);
@@ -346,7 +346,7 @@ public class UserController {
         }
         res.put("result", "success");
         res.put("content", array);
-        Log.info("批量开通账返回："+JSON.toJSONString(res));
+        Log.info("批量开通账返回：" + JSON.toJSONString(res));
         return res;
     }
 
@@ -359,6 +359,7 @@ public class UserController {
         WxUser user = new WxUser();
         user.setMobile(params.getString("mobile"));
         user.setName(params.getString("name"));
+        user.setUserId(params.getLong("userId"));
         Integer total = wxUserService.countWxUser(user);
         if (total == 0) {
             result.put("result", "success");
@@ -388,7 +389,7 @@ public class UserController {
         return result;
 
     }
-    
+
     @RequestMapping({ "/checkLoginName.json" })
     @ResponseBody
     public JSONObject checkLoginName(@RequestBody JSONObject json) {
@@ -399,7 +400,6 @@ public class UserController {
         result.put("content", flag);
         return result;
     }
-    
 
     @RequestMapping({ "/findWxuserByOpendId.json" })
     @ResponseBody

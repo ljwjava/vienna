@@ -241,4 +241,22 @@ public class PolicyController
 
         return res;
     }
+
+    @RequestMapping("/countPolicyRecord.json")
+    @ResponseBody
+    public JSONObject countPolicyRecord(@RequestBody JSONObject p)
+    {
+        Log.info(p);
+
+        int type = p.getIntValue("type");
+        String policyNo = p.getString("policyNo");
+        String partnerName = p.getString("partnerName");
+
+        int cou = policySrv.countPolicyRecord(type, policyNo);
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", cou);
+        return res;
+    }
 }

@@ -1,5 +1,6 @@
 package lerrain.service.product.fee;
 
+import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
 import lerrain.tool.Common;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,8 +91,17 @@ public class CustFeeService
 		return feeDao.queryFeeByScheme(schemeId, from, num);
 	}
 
+	public List<CustFeeDefine> queryFeeByScheme(Long schemeId)
+	{
+		return feeDao.queryFeeByScheme(schemeId);
+	}
+
 	public List<CustFeeDefine> queryTotalFeeRate(Long productId)
 	{
 		return feeDao.queryTotalFeeRate(productId);
+	}
+
+	public JSONObject deleteRate(JSONObject c){
+		return feeDao.deleteRate(c);
 	}
 }

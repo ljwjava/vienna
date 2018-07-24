@@ -178,6 +178,29 @@ public class CustFeeDao
 		});
 	}
 
+	public List<CustFeeDefine> queryFeeByScheme(Long schemeId)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("select * from t_product_fee_cust where valid is null");
+		if (null != schemeId) {
+			sql.append(" and scheme_id = "+schemeId);
+		}
+		return jdbc.query(sql.toString(), new RowMapper<CustFeeDefine>()
+		{
+			@Override
+			public CustFeeDefine mapRow(ResultSet rs, int j) throws SQLException
+			{
+				CustFeeDefine cfd = new CustFeeDefine();
+				cfd.setSchemeId(rs.getLong("scheme_id"));
+				cfd.setProductId(rs.getLong("product_id"));
+				cfd.setBegin(rs.getDate("begin"));
+				cfd.setEnd(rs.getDate("end"));
+				return cfd;
+			}
+
+		});
+	}
+
 	public List<CustFeeDefine> queryTotalFeeRate(Long productId)
 	{
 		String sql = "select * from t_cs_product_rate where is_deleted = 'N' and product_id = ?";
@@ -199,5 +222,14 @@ public class CustFeeDao
 			}
 
 		}, productId);
+	}
+
+	public JSONObject deleteRate(JSONObject c)
+	{
+		String delCustFee = "UPDATE `vie_biz`.`t_product_fee_cust` SET `valid`='Y', `updater`=? WHERE (`scheme_id`=? and `product_id`=?);";
+
+		jdbc.update(delCustFee, c.getString("modifier"), c.getLong("schemeId"), c.getLong("productId"));
+
+		return c;
 	}
 }

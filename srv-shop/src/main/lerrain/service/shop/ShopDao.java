@@ -150,7 +150,6 @@ public class ShopDao
 		sql.append(" c.premium_des AS priceDescText,");
 		sql.append(" c.home_image AS homeImage,");
 		sql.append(" s.share_logo AS shareImage,");
-		sql.append(" c.sale_limit AS saleLimit,");
 		sql.append(" s.share_title AS shareTitle,");
 		sql.append(" s.share_desc AS shareDesc,");
 		sql.append(" m.`code` AS marketType,");
@@ -218,7 +217,6 @@ public class ShopDao
 				p.setPriceDescText(m.getString("priceDescText"));
 				p.setHomeImage(m.getString("homeImage"));
 				p.setShareImage(m.getString("shareImage"));
-				p.setSaleLimit(m.getString("saleLimit"));
 				p.setShareTitle(m.getString("shareTitle"));
 				p.setShareDesc(m.getString("shareDesc"));
 				p.setMarketType(m.getString("marketType"));
@@ -429,7 +427,6 @@ public class ShopDao
 				p.setPriceDesc(rs.getString("mini_premium"));
 				p.setHomeImage(rs.getString("home_image"));
 				p.setShareImage(rs.getString("share_logo"));
-				p.setSaleLimit(rs.getString("sale_limit"));
 				p.setShareTitle(rs.getString("share_title"));
 				p.setShareDesc(rs.getString("share_desc"));
 				p.setOnlineStatus(rs.getString("online_state"));
@@ -550,5 +547,20 @@ public class ShopDao
 				return p;
 			}
 		});
+	}
+
+	public Long saveOrUpdateCommodityPlan(Shop shop)
+	{
+		String update = "UPDATE `vie_biz`.`t_cs_commodity_plan` SET `rel_user_id`=?, `rel_commodity_id`=?, `rel_commoidty_code`=?, `rel_commoidty_name`=?, `rel_type_code`=?, `rel_type_name`=?, `modifier`=?, `gmt_modified`=?,  WHERE (`id`=?);";
+		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_plan` (`id`, `rel_user_id`, `rel_commodity_id`, `rel_commoidty_code`, `rel_commoidty_name`, `rel_type_code`, `rel_type_name`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+		if(null != shop.getCommodityPlanId()){
+			jdbc.update(update, shop.getSubUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getModifier(),shop.getGmtModified() ,shop.getCommodityPlanId());
+		}else{
+			shop.setCommodityPlanId(tools.nextId("csCommodityPlan"));
+			jdbc.update(insert,shop.getCommodityPlanId(), shop.getSubUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getCreator(), shop.getModifier());
+		}
+
+		return shop.getCommodityPlanId();
 	}
 }

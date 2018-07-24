@@ -1,5 +1,6 @@
 package lerrain.service.product.fee;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lerrain.service.common.Log;
@@ -210,6 +211,19 @@ public class CustFeeController
         return res;
     }
 
+    @RequestMapping("/fee/rate/queryTotalFeeByScheme.json")
+    @ResponseBody
+    public JSONObject queryTotalFeeByScheme(@RequestBody JSONObject c)
+    {
+        Long schemeId = c.getLong("schemeId");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", ccs.queryFeeByScheme(schemeId));
+
+        return res;
+    }
+
     @RequestMapping("/fee/rate/queryTotalFeeRate.json")
     @ResponseBody
     public JSONObject queryTotalFeeRate(@RequestBody JSONObject c)
@@ -219,6 +233,23 @@ public class CustFeeController
         JSONObject res = new JSONObject();
         res.put("result", "success");
         res.put("content", ccs.queryTotalFeeRate(productId));
+
+        return res;
+    }
+
+    @RequestMapping("/fee/rate/delRate.json")
+    @ResponseBody
+    public JSONObject deleteRateTemplate(@RequestBody JSONObject c)
+    {
+        JSONObject res = new JSONObject();
+        JSONObject json = new JSONObject();
+        json.put("schemeId", c.getLong("schemeId"));
+        json.put("productId", c.getLong("productId"));
+        json.put("modifier", c.getString("modifier"));
+
+        JSONObject result = ccs.deleteRate(json);
+        res.put("result", "success");
+        res.put("content", result);
 
         return res;
     }

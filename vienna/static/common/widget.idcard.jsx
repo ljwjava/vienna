@@ -34,7 +34,7 @@ var IdCard = React.createClass({
 			this.props.onChange(this); 
 	},
 	render() {
-		return (<Inputer ref="certNo" type="text" placeholder="请输入证件号码" onChange={this.onChange} value={this.props.value}/>);
+		return (<Inputer ref="certNo" type="text" placeholder="请输入证件号码" onChange={this.onChange} value={this.props.value} readOnly={!!this.props.readOnly}/>);
 	}
 });
 
