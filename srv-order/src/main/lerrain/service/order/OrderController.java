@@ -20,6 +20,7 @@ public class OrderController
 
     @RequestMapping("/create.json")
     @ResponseBody
+    //创建订单
     public JSONObject create(@RequestBody JSONObject p)
     {
         Order order = orderSrv.newOrder();
@@ -34,6 +35,7 @@ public class OrderController
 
     @RequestMapping("/channel_create.json")
     @ResponseBody
+    //创建渠道订单
     public synchronized JSONObject channelCreate(@RequestBody JSONObject p)
     {
         String code = p.getString("code");
@@ -58,6 +60,7 @@ public class OrderController
 
     @RequestMapping("/children.json")
     @ResponseBody
+    //更新子订单
     public JSONObject children(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
@@ -92,6 +95,7 @@ public class OrderController
 
     @RequestMapping("/restore.json")
     @ResponseBody
+    //恢复订单数据
     public JSONObject restore(@RequestBody JSONObject p)
     {
         return restore(p.getLong("orderId"));
@@ -99,6 +103,7 @@ public class OrderController
 
     @RequestMapping("/restore")
     @ResponseBody
+    //根据订单id恢复订单数据
     public JSONObject restore(@RequestParam("orderId") Long orderId)
     {
         if (orderId == null)
@@ -125,6 +130,7 @@ public class OrderController
 
     @RequestMapping("/list.json")
     @ResponseBody
+    //通过订单类型，业务员，平台id，产品类型获取订单列表
     public JSONObject list(@RequestBody JSONObject p)
     {
         int type = p.getIntValue("type");
@@ -149,6 +155,7 @@ public class OrderController
 
     @RequestMapping("/query.json")
     @ResponseBody
+    //通过订单类型，业务员，平台id，产品类型获取订单列表
     public JSONObject query(@RequestBody JSONObject p)
     {
         int type = p.getIntValue("type");
@@ -169,6 +176,7 @@ public class OrderController
 
     @RequestMapping("/view.json")
     @ResponseBody
+    //通过订单id查询订单详细数据
     public JSONObject view(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
@@ -205,6 +213,7 @@ public class OrderController
 
     @RequestMapping("/replace.json")
     @ResponseBody
+    //更新订单信息
     public JSONObject replace(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
@@ -215,7 +224,7 @@ public class OrderController
 
         Order order = orderSrv.getOrder(orderId);
         if (order.getStatus() != 1 && order.getStatus() != 4 && order.getStatus() != 24)
-            throw new RuntimeException("订单<"+orderId+">处理失败：只有未提交或退回的订单才可以修改");
+            throw new RuntimeException("订单<"+orderId+">处理失败：只有未提交或退回 的订单才可以修改");
 
         synchronized (order)
         {
@@ -233,6 +242,7 @@ public class OrderController
 
     @RequestMapping("/save.json")
     @ResponseBody
+    //保存订单信息
     public JSONObject save(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
@@ -261,6 +271,7 @@ public class OrderController
 
     @RequestMapping("/update.json")
     @ResponseBody
+    //更新订单信息
     public JSONObject update(@RequestBody JSONObject p)
     {
         Long orderId = p.getLong("orderId");
@@ -300,7 +311,8 @@ public class OrderController
 
         return res;
     }
-
+    
+    //填充订单信息
     private void fill(Order order, JSONObject p, boolean isReset)
     {
         order.setModifyTime(new Date());

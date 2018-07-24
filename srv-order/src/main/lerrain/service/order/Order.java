@@ -10,38 +10,38 @@ import java.util.Map;
  */
 public class Order
 {
-    Long id;
-    Long parentId;
-    String code;
+    Long id;//主键id
+    Long parentId;//父类id
+    String code;//编号
 
-    String productId;
-    String productCode;
-    String productName;
+    String productId;//产品id
+    String productCode;//产品编号
+    String productName;//产品名称
 
     int productType; //1长期寿险 2短期健康险 3驾乘险 4建议书订单 5团险
 
-    String consumer;
+    String consumer;//
 
-    Long vendorId;
-    Long platformId;
+    Long vendorId;//
+    Long platformId;//平台id
     Long bizId;     //本地业务表对应id，与type配合使用，保险为t_policy表
 
-    String applyNo;
-    String bizNo;
-    String bizMsg;
+    String applyNo;//投保单号
+    String bizNo;//
+    String bizMsg;//
 
-    String owner;
-    String ownerCompany;
+    String owner;//业务员
+    String ownerCompany;//业务员所属公司
 
-    BigDecimal price;
+    BigDecimal price;//保费
 
-    List<Long> children;
+    List<Long> children;//子单
 
-    Date createTime, modifyTime;
+    Date createTime, modifyTime;//更新时间
 
-    Map<String, Object> factors;
-    Map<String, Object> detail;
-    Map<String, Object> extra;
+    Map<String, Object> factors;//
+    Map<String, Object> detail;//投保人，被保人，投保计划等 json数据集合
+    Map<String, Object> extra;//支付相关json数据集合
 
     int type;           //2保险 3组合 4团单
     int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 6部分付款 9支付异常 0无状态
