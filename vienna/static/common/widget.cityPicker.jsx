@@ -9,7 +9,10 @@ var CityPicker = React.createClass({
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
 	    if (typeof v == "string") v = {code: v};
-		return {value: v.value||v.code, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[], readOnly: !!v.readOnly};
+		return {value: v.value, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[], readOnly: !!v.readOnly};
+    },
+    getCode(){
+	    return this.state.code || this.state.value;
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state
     componentWillMount() {
@@ -57,7 +60,7 @@ var CityPicker = React.createClass({
     },
    	val() {
         // console.log('val', this.state.value);
-		return {code: this.state.value, text: this.getFullName(this.state.text, this.state.value)};
+		return {code: this.getCode(), value: this.state.value, text: this.getFullName(this.state.text, this.state.value)};
 	},
 	verify() {
 		let alert = null;
@@ -78,8 +81,7 @@ var CityPicker = React.createClass({
         var vv = proPickerVal[proPickerVal.length - 1];
         // this.state.value = {occCode: vv.value, occDesc: vv.label, occLevel: vv.level};
         // console.log('update', vv);
-        this.setState({isCalculated: 'N', proPickerV: false, open:false,
-            value: vv.value, text: vv.label, proPickerVal: proPickerVal
+        this.setState({isCalculated: 'N', proPickerV: false, open:false, value: vv.value, code: vv.code, text: vv.label, proPickerVal: proPickerVal
         },() => this.props.onChange(this));
         return [];
     },

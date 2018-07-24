@@ -8,7 +8,10 @@ var OccupationPicker = React.createClass({
 	getInitialState() {
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
-		return {value: v.value||v.code, code: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[], readOnly: !!v.readOnly};
+		return {value: v.value, code: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[], readOnly: !!v.readOnly};
+    },
+    getCode(){
+        return this.state.code || this.state.value;
     },
 	// 在完成首次渲染之前调用，此时仍可以修改组件的state
     componentWillMount() {
@@ -68,7 +71,7 @@ var OccupationPicker = React.createClass({
         return propickval;
     },
    	val() {
-		return {value: this.state.value, code: this.state.code, text: this.state.text, level: this.state.level};
+		return {value: this.getCode(), code: this.state.code, text: this.state.text, level: this.state.level};
 	},
 	verify() {
 		let alert = null;
