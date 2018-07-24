@@ -155,6 +155,10 @@ public class ShopService
             // 已经在使用的模板设置无效
             RateTemp res = this.handleUsedRateTemp(rt);
             Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
+            if(null != rt.getShops() && rt.getShops().size() > 0){
+                List<Shop> resShops = this.saveOrUpdCommodityPlan(rt.getShops());
+                rt.setShops(resShops);
+            }
             rt.setRelId(relId);
             rts.add(rt);
         }
@@ -171,5 +175,14 @@ public class ShopService
 	    Long id = productDao.saveOrUpdateQrcodeInfo(qr);
 	    qr.setId(id);
         return qr;
+    }
+
+    public List<Shop> saveOrUpdCommodityPlan(List<Shop> shops){
+	    for(int i=0;i<shops.size();i++) {
+	        Shop shop = shops.get(i);
+            Long id = productDao.saveOrUpdateCommodityPlan(shop);
+            shop.setCommodityPlanId(id);
+        }
+        return shops;
     }
 }

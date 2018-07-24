@@ -211,6 +211,19 @@ public class CustFeeController
         return res;
     }
 
+    @RequestMapping("/fee/rate/queryTotalFeeByScheme.json")
+    @ResponseBody
+    public JSONObject queryTotalFeeByScheme(@RequestBody JSONObject c)
+    {
+        Long schemeId = c.getLong("schemeId");
+
+        JSONObject res = new JSONObject();
+        res.put("result", "success");
+        res.put("content", ccs.queryFeeByScheme(schemeId));
+
+        return res;
+    }
+
     @RequestMapping("/fee/rate/queryTotalFeeRate.json")
     @ResponseBody
     public JSONObject queryTotalFeeRate(@RequestBody JSONObject c)
