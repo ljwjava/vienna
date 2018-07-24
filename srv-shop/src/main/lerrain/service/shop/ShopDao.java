@@ -558,7 +558,7 @@ public class ShopDao
 			jdbc.update(update, shop.getUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getModifier(),shop.getGmtModified() ,shop.getCommodityPlanId());
 		}else{
 			shop.setCommodityPlanId(tools.nextId("csCommodityPlan"));
-			jdbc.update(insert,shop.getCommodityPlanId(), shop.getUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getCreator(), shop.getModifier());
+			jdbc.update(insert,shop.getCommodityPlanId(), shop.getSubUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getCreator(), shop.getModifier());
 		}
 
 		return shop.getCommodityPlanId();
