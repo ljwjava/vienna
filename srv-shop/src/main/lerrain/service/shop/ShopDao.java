@@ -39,6 +39,7 @@ public class ShopDao
 		sql.append(" AND s.is_deleted='N'");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
+		sql.append(" AND r.used = 'Y'");
 		if (StringUtils.isNotBlank(contion.getQrcodeUid())){
 			sql.append(" AND c.id in ("+this.queryProductsByQrcodeInfo(contion).getProductIds()+")");
 		}
@@ -80,6 +81,7 @@ public class ShopDao
 		sql.append(" AND s.is_deleted='N'");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
+		sql.append(" AND r.used = 'Y'");
 		if (StringUtils.isNotBlank(contion.getQrcodeUid())){
 			sql.append(" AND c.id in ("+this.queryProductsByQrcodeInfo(contion).getProductIds()+")");
 		}
