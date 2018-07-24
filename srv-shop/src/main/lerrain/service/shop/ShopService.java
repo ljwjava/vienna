@@ -155,10 +155,10 @@ public class ShopService
             // 已经在使用的模板设置无效
             RateTemp res = this.handleUsedRateTemp(rt);
             Long relId = productDao.saveOrUpdateRateTemplateRelation(rt);
-            if(null != rt.getShops() && rt.getShops().size() > 0){
-                List<Shop> resShops = this.saveOrUpdCommodityPlan(rt.getShops());
-                rt.setShops(resShops);
-            }
+//            if(null != rt.getShops() && rt.getShops().size() > 0){
+//                List<Shop> resShops = this.saveOrUpdCommodityPlan(rt.getShops());
+//                rt.setShops(resShops);
+//            }
             rt.setRelId(relId);
             rts.add(rt);
         }
