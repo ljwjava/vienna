@@ -555,7 +555,7 @@ public class ShopDao
 		String insert = "INSERT INTO `vie_biz`.`t_cs_commodity_plan` (`id`, `rel_user_id`, `rel_commodity_id`, `rel_commoidty_code`, `rel_commoidty_name`, `rel_type_code`, `rel_type_name`, `creator`, `modifier`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 		if(null != shop.getCommodityPlanId()){
-			jdbc.update(update, shop.getUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getModifier(),shop.getGmtModified() ,shop.getCommodityPlanId());
+			jdbc.update(update, shop.getSubUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getModifier(),shop.getGmtModified() ,shop.getCommodityPlanId());
 		}else{
 			shop.setCommodityPlanId(tools.nextId("csCommodityPlan"));
 			jdbc.update(insert,shop.getCommodityPlanId(), shop.getSubUserId(), shop.getCommodityId(), shop.getCommodityCode(),shop.getCommodityName(), shop.getCommodityTypeCode(), shop.getCommodityTypeName(), shop.getCreator(), shop.getModifier());
