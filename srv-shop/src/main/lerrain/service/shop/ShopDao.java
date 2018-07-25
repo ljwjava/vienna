@@ -34,6 +34,7 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
 		sql.append(" LEFT JOIN t_cs_commodity_share s ON s.rel_commodity_id = c.id");
 		sql.append(" WHERE r.is_deleted='N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
 		sql.append(" AND c.is_deleted='N'");
 		sql.append(" AND t.is_deleted='N'");
 		sql.append(" AND s.is_deleted='N'");
@@ -79,6 +80,7 @@ public class ShopDao
 		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
 		sql.append(" LEFT JOIN t_cs_commodity_share s ON s.rel_commodity_id = c.id");
 		sql.append(" WHERE r.is_deleted='N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
 		sql.append(" AND c.is_deleted='N'");
 		sql.append(" AND t.is_deleted='N'");
 		sql.append(" AND s.is_deleted='N'");
@@ -137,6 +139,7 @@ public class ShopDao
 		sql.append(" AND c.rel_type_code = l.rel_type_code");
 		sql.append(" AND r.rel_user_id = l.user_id");
 		sql.append(" WHERE r.is_deleted='N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
 		sql.append(" AND c.is_deleted='N'");
 		sql.append(" AND t.is_deleted='N'");
 		sql.append(" AND s.is_deleted='N'");
@@ -214,6 +217,7 @@ public class ShopDao
 		sql.append(" AND c.rel_type_code = l.rel_type_code");
 		sql.append(" AND r.rel_user_id = l.user_id");
 		sql.append(" WHERE r.is_deleted = 'N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
 		sql.append(" AND c.is_deleted = 'N'");
 		sql.append(" AND t.is_deleted = 'N'");
 		sql.append(" AND s.is_deleted = 'N'");
