@@ -213,13 +213,13 @@ public class PolicyDao {
     }
 
     public Long savePolicyRecord(Long id, String policyNo, String packageName, Integer status, String partnerName,
-                                 Integer type, JSONObject detail, String msg, double premium) {
+                                 Integer type, JSONObject detail, String msg, double premium,String period) {
         if (id == null) {
             id = tools.nextId("PolicyRecord");
             jdbc.update(
-                    "insert into t_policy_record(id, policy_no,package_name, partner_name,type,msg,status, detail, premium, create_time,creator,update_time,updater,valid) "
-                            + "value(?, ?, ?, ?, ?,?, ?,?,?,?, ?,?,?,?)", id, policyNo, packageName, partnerName, type,
-                    msg, status, detail.toJSONString(), premium, new Date(), "systme", new Date(), "system", "N");
+                    "insert into t_policy_record(id, policy_no,package_name, partner_name,type,msg,status, detail, premium, create_time,creator,update_time,updater,valid,period) "
+                            + "value(?, ?, ?, ?, ?,?, ?,?,?,?, ?,?,?,?,?)", id, policyNo, packageName, partnerName, type,
+                    msg, status, detail.toJSONString(), premium, new Date(), "systme", new Date(), "system", "N",period);
         } else {
             jdbc.update("update t_policy_record set status=?, detail=?, msg=? where id=?", status, detail, msg, id);
         }
@@ -244,8 +244,8 @@ public class PolicyDao {
                         policyClause.getPremium(), policyClause.getId() });
     }
 
-    public int countPolicyRecord(int type, String policyNo )
+    public int countPolicyRecord(int type, String policyNo,String period )
     {
-        return jdbc.queryForObject("SELECT COUNT(*) FROM t_policy_record WHERE   TYPE = ? AND policy_no = ? ", new Object[]{type, policyNo}, Integer.class);
+        return jdbc.queryForObject("SELECT COUNT(*) FROM t_policy_record WHERE   TYPE = ? AND policy_no = ? and period =? ", new Object[]{type, policyNo,period}, Integer.class);
     }
 }

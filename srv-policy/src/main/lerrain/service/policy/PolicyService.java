@@ -43,8 +43,8 @@ public class PolicyService {
     }
 
     public Long savePolicyRecord(Long id, String policyNo, String packageName, Integer status, String partnerName,
-                                 Integer type, JSONObject detail, String msg, double premium) {
-        return policyDao.savePolicyRecord(id, policyNo, packageName, status, partnerName, type, detail, msg, premium);
+                                 Integer type, JSONObject detail, String msg, double premium,String period) {
+        return policyDao.savePolicyRecord(id, policyNo, packageName, status, partnerName, type, detail, msg, premium,period);
     }
 
     public void insertPolicyClause(PolicyClause policyClause, Policy p) {
@@ -55,8 +55,8 @@ public class PolicyService {
         policyDao.updatePolicyClause(policyClause);
     }
 
-    public int countPolicyRecord(Integer type,String policyNo) {
-        return policyDao.countPolicyRecord(type,policyNo);
+    public int countPolicyRecord(Integer type,String policyNo,String period) {
+        return policyDao.countPolicyRecord(type,policyNo,period);
     }
 
 
