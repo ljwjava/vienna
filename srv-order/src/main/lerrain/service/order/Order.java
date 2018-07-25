@@ -18,7 +18,7 @@ public class Order
     String productCode;
     String productName;
 
-    int productType; //1长期寿险 2短期健康险 3驾乘险 4建议书订单 5团险
+    int productType; //1长期寿险 2短期健康险 3驾乘险 4建议书订单 5体检卡 6团险
 
     String consumer;
 
