@@ -46,6 +46,9 @@ public class ShopDao
 		if(null != contion.getUserId()) {
 			sql.append(" AND r.rel_user_id = "+contion.getUserId());
 		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
+		}
 		if (StringUtils.isNotBlank(contion.getCommodityName())) {
 			sql.append(" AND c.`name` LIKE '%"+ contion.getCommodityName() +"%'");
 		}
@@ -87,6 +90,9 @@ public class ShopDao
 		}
 		if(null != contion.getUserId()) {
 			sql.append(" AND r.rel_user_id = "+contion.getUserId());
+		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
 		}
         if (StringUtils.isNotBlank(contion.getCommodityName())) {
             sql.append(" AND c.`name` LIKE '%"+ contion.getCommodityName() +"%'");
@@ -142,6 +148,9 @@ public class ShopDao
 		}
 		if (null != contion.getUserId()) {
 			sql.append(" AND r.rel_user_id = "+contion.getUserId());
+		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
 		}
 		if (!StringUtils.equals("all",contion.getCommodityTypeCode()) && StringUtils.isNotBlank(contion.getCommodityTypeCode())) {
 			sql.append(" AND t.`code` = '"+contion.getCommodityTypeCode()+"'");
@@ -219,6 +228,9 @@ public class ShopDao
 		}
 		if (null != contion.getUserId()) {
 			sql.append(" AND r.rel_user_id = "+contion.getUserId());
+		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
 		}
 		if (!StringUtils.equals("all",contion.getCommodityTypeCode()) && StringUtils.isNotBlank(contion.getCommodityTypeCode())) {
 			sql.append(" AND t.`code` = '"+contion.getCommodityTypeCode()+"'");
