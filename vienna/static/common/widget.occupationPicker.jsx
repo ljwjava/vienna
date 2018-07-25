@@ -8,7 +8,7 @@ var OccupationPicker = React.createClass({
 	getInitialState() {
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
-		return {value: v.value, code: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[], readOnly: !!v.readOnly};
+		return {value: v.value, code: v.code, text: v.text, level: v.level, occupation:[], proPickerVal:[],readOnly: !!this.props.readOnly};
     },
     getCode(){
         return this.state.code || this.state.value;
