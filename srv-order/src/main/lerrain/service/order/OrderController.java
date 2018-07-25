@@ -357,17 +357,35 @@ public class OrderController
 //            order.setStatus(p.getIntValue("status"));
     }
 
-    private Map fill(Map m1, Map m2, boolean reset)
+    private Map<String, Object> fill(Map<String, Object> m1, Map<String, Object> m2, boolean reset)
     {
         if (reset)
             return m2;
 
-        if (m1 == null)
+        if (Common.isEmpty(m1))
             return m2;
-        if (m2 == null)
+        if (Common.isEmpty(m2))
             return m1;
 
-        m1.putAll(m2);
+        return putAll(m1, m2);
+    }
+
+    private Map<String, Object> putAll(Map<String, Object> m1, Map<String, Object> m2){
+        if (Common.isEmpty(m1))
+            return m2;
+        if (Common.isEmpty(m2))
+            return m1;
+
+        for(String key : m2.keySet()) {
+            Object sm2 = m2.get(key);
+            Object sm1 = m1.get(key);
+
+            if(sm1 instanceof Map && sm2 instanceof Map) {
+                m1.put(key, putAll((Map)sm1, (Map)sm2));
+            }else{
+                m1.put(key, sm2);
+            }
+        }
 
         return m1;
     }
