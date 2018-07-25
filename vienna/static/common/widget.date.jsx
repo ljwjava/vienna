@@ -58,7 +58,7 @@ var DateEditor = React.createClass({
 			d.setDate(d.getDate() + 1);
             val = d.format("yyyy-MM-dd");
 		}
-		return (<input ref="self" type="date" placeholder={this.props.placeholder} onChange={this.onChange} onBlur={this.onChange} defaultValue={val} readOnly={!!this.props.readOnly}/>);
+		return (<input ref="self" type="date" placeholder={this.props.placeholder} onChange={this.onChange} onBlur={this.onChange} defaultValue={val} disabled={!!this.props.readOnly}/>);
 	}
 });
 
