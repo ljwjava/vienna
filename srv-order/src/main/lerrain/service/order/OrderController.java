@@ -112,6 +112,8 @@ public class OrderController
             order.setBizMsg(null);
             order.setPay(1);
             order.setStatus(1);
+            order.setAppointmentStatus(0);
+            order.setArtifUwStatus(0);
         }
 
         orderSrv.update(order);
@@ -271,6 +273,8 @@ public class OrderController
 
         int pay = Common.intOf(p.get("pay"), -1);
         int status = Common.intOf(p.get("status"), -1);
+        int appointmentStatus = Common.intOf(p.get("appointmentStatus"), -1);
+        int artifUwStatus = Common.intOf(p.get("artifUwStatus"), -1);
 
         Order order = orderSrv.getOrder(orderId);
         synchronized (order)
@@ -290,6 +294,10 @@ public class OrderController
                 order.setPay(pay);
             if (status >= 0)
                 order.setStatus(status);
+            if (appointmentStatus >= 0)
+                order.setAppointmentStatus(appointmentStatus);
+            if (artifUwStatus >= 0)
+                order.setArtifUwStatus(artifUwStatus);
         }
 
         orderSrv.update(order);

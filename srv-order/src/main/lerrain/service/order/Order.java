@@ -45,7 +45,9 @@ public class Order
 
     int type;           //2保险 3组合 4团单
     int pay     = 1;    //1未付款 2已付款 3已退款 4部分退款 5支付失败 6部分付款 9支付异常 0无状态
-    int status  = 1;    //1填写中 2已提交 3成功 4失败退回 5终止 6失败并失效 8转至其他系统处理 9异常 10待初审 11初审不通过 12待人核 13人核通过 14人核不通过 21预约中 22已预约 23预约告知 24预约失败
+    int status  = 1;    // 1填写中 2已提交 3成功 4失败退回 5终止 6失败并失效 8转至其他系统处理 9异常 10待初审 11初审不通过 12待人核 13人核通过 14人核不通过 21预约中 22已预约 23预约告知 24预约失败
+    int appointmentStatus = 0;  // 0未预约 1预约中 2已预约 3预约成功 4预约失败 5预约取消
+    int artifUwStatus = 0;  // 0待初审 1初审失败 2待人核 3人核通过 4人核不通过
 
     public String getBizNo()
     {
@@ -299,5 +301,21 @@ public class Order
 
     public void setOwnerCompany(String ownerCompany) {
         this.ownerCompany = ownerCompany;
+    }
+
+    public int getAppointmentStatus() {
+        return appointmentStatus;
+    }
+
+    public void setAppointmentStatus(int appointmentStatus) {
+        this.appointmentStatus = appointmentStatus;
+    }
+
+    public int getArtifUwStatus() {
+        return artifUwStatus;
+    }
+
+    public void setArtifUwStatus(int artifUwStatus) {
+        this.artifUwStatus = artifUwStatus;
     }
 }
