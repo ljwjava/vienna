@@ -231,9 +231,11 @@ public class PolicyController
 
         String msg = p.getString("msg");
         String policyNo = p.getString("policyNo");
+        String period = p.getString("period");
 
 
-        id = policySrv.savePolicyRecord(id, policyNo, packageName, status,  partnerName,  type,  detail,  msg, premium);
+
+        id = policySrv.savePolicyRecord(id, policyNo, packageName, status,  partnerName,  type,  detail,  msg, premium,period);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
@@ -251,8 +253,9 @@ public class PolicyController
         int type = p.getIntValue("type");
         String policyNo = p.getString("policyNo");
         String partnerName = p.getString("partnerName");
+        String period = p.getString("period");
 
-        int cou = policySrv.countPolicyRecord(type, policyNo);
+        int cou = policySrv.countPolicyRecord(type, policyNo,period);
 
         JSONObject res = new JSONObject();
         res.put("result", "success");
