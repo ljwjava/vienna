@@ -171,7 +171,8 @@ public class CustFeeDao
                 CustFeeDefine custFd = new CustFeeDefine();
                 String str = rs.getString("content");
                 List<CustFeeDefine> list = JSON.parseArray(str, CustFeeDefine.class);
-
+                custFd.setSchemeId(rs.getLong("scheme_id"));
+                custFd.setProductId(rs.getLong("product_id"));
                 for (CustFeeDefine cfd : list)
                 {
                     cfd.setSchemeId(rs.getLong("scheme_id"));
@@ -200,7 +201,8 @@ public class CustFeeDao
                 CustFeeDefine custFd = new CustFeeDefine();
                 String str = rs.getString("content");
                 List<CustFeeDefine> list = JSON.parseArray(str, CustFeeDefine.class);
-
+                custFd.setSchemeId(rs.getLong("scheme_id"));
+                custFd.setProductId(rs.getLong("product_id"));
                 for (CustFeeDefine cfd : list)
                 {
                     cfd.setSchemeId(rs.getLong("scheme_id"));
