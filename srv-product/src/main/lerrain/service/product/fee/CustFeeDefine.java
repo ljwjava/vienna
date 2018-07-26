@@ -3,6 +3,7 @@ package lerrain.service.product.fee;
 import lerrain.tool.Common;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +24,18 @@ public class CustFeeDefine
     int unit;
 
     String memo;
+
+    List<CustFeeDefine> cfds;
+
+    public List<CustFeeDefine> getCfds()
+    {
+        return cfds;
+    }
+
+    public void setCfds(List<CustFeeDefine> cfds)
+    {
+        this.cfds = cfds;
+    }
 
     public Long getSchemeId()
     {

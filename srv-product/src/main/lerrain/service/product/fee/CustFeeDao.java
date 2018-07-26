@@ -168,12 +168,19 @@ public class CustFeeDao
 			@Override
 			public CustFeeDefine mapRow(ResultSet rs, int arg1) throws SQLException
 			{
-				CustFeeDefine cfd = new CustFeeDefine();
-				cfd.setSchemeId(rs.getLong("scheme_id"));
-				cfd.setProductId(rs.getLong("product_id"));
-				cfd.setBegin(rs.getDate("begin"));
-				cfd.setEnd(rs.getDate("end"));
-				return cfd;
+                CustFeeDefine custFd = new CustFeeDefine();
+                String str = rs.getString("content");
+                List<CustFeeDefine> list = JSON.parseArray(str, CustFeeDefine.class);
+
+                for (CustFeeDefine cfd : list)
+                {
+                    cfd.setSchemeId(rs.getLong("scheme_id"));
+                    cfd.setProductId(rs.getLong("product_id"));
+                    cfd.setBegin(rs.getDate("begin"));
+                    cfd.setEnd(rs.getDate("end"));
+                }
+                custFd.setCfds(list);
+                return custFd;
 			}
 		});
 	}
@@ -190,12 +197,19 @@ public class CustFeeDao
 			@Override
 			public CustFeeDefine mapRow(ResultSet rs, int j) throws SQLException
 			{
-				CustFeeDefine cfd = new CustFeeDefine();
-				cfd.setSchemeId(rs.getLong("scheme_id"));
-				cfd.setProductId(rs.getLong("product_id"));
-				cfd.setBegin(rs.getDate("begin"));
-				cfd.setEnd(rs.getDate("end"));
-				return cfd;
+                CustFeeDefine custFd = new CustFeeDefine();
+                String str = rs.getString("content");
+                List<CustFeeDefine> list = JSON.parseArray(str, CustFeeDefine.class);
+
+                for (CustFeeDefine cfd : list)
+                {
+                    cfd.setSchemeId(rs.getLong("scheme_id"));
+                    cfd.setProductId(rs.getLong("product_id"));
+                    cfd.setBegin(rs.getDate("begin"));
+                    cfd.setEnd(rs.getDate("end"));
+                }
+                custFd.setCfds(list);
+                return custFd;
 			}
 
 		});
