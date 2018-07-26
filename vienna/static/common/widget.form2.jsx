@@ -38,7 +38,7 @@ var Form = React.createClass({
 			} else if (v.type == "select") {
 				comp = (<Selecter ref={v.code} valCode={v.code} onChange={opt} options={v.options} value={v.value} showAddit={v.showAddit} readOnly={v.readOnly}/>);
             } else if (v.type == "city") {
-                comp = (<CityPicker ref={v.code} valCode={v.code} valType="city" company={v.company} onChange={opt} valReq={v.req} value={v.value} readOnly={v.readOnly}/>);
+                comp = (<CityPicker ref={v.code} valCode={v.code} valType="city" cityVersion={v.formOpt && v.formOpt.cityVersion} company={v.company} onChange={opt} valReq={v.req} value={v.value} readOnly={v.readOnly}/>);
             } else if (v.type == "bankCity") {
                 comp = (<CityPicker ref={v.code} valCode={v.code} valType="bankCity" company={v.company} onChange={opt} valReq={v.req} value={v.value} readOnly={v.readOnly}/>);
             } else if (v.type == "cityCorrect") {

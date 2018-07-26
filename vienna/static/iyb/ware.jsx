@@ -21,11 +21,12 @@ class PlanForm extends Form {
             return [];
         let company = this.props.company;
         let summary = this.props.summary;
+        let formOpt = this.props.formOpt;
         let forms = this.props.fields.map((v) => {
             if(v.widget == "benefitCharts") {
                 return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value, valCharts: summary != null ? summary.chart : null};
             }else{
-                return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value};
+                return {name:v.label, code:v.name, company: company, type:v.widget, refresh:"yes", options:v.detail, value:v.value, formOpt:formOpt};
             }
         });
 
@@ -497,7 +498,9 @@ var Ware = React.createClass({
             env.vendor = s.vendor;
             env.company = s.vendor.code;
             env.kefuUrl = s.extra.kefuUrl;
+            env.formOpt = s.formOpt;
             r.form = s.form;
+            r.formOpt = s.formOpt;
             r.vendor = s.vendor;
             r.company = s.vendor.code;
             if (r.detail.summary == null) {
@@ -695,9 +698,9 @@ var Ware = React.createClass({
                     }
 					{ this.state.form == null ? null :
 						<div className="form">
-                            <PlanForm ref="plan" parent={this} fields={this.state.form} company={this.state.company} summary={this.state.vals == null ? null : this.state.vals.summary} onRefresh={this.refreshPremium}/>
+                            <PlanForm ref="plan" parent={this} fields={this.state.form} formOpt={this.state.formOpt} company={this.state.company} summary={this.state.vals == null ? null : this.state.vals.summary} onRefresh={this.refreshPremium}/>
 							<div style={{paddingTop:"10px"}}>{r1}{r2}</div>
-						</div>
+                        </div>
 					}
 				</div>
 				<div className="font-bm" style={{height:"40px", lineHeight:"40px", textAlign:"center", borderBottom: "1px solid #CCC"}}>
