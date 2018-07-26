@@ -305,6 +305,8 @@ public class TemplateController {
                     if (Objects.equals(typeName, tNameJ)) {
                         pro.put("packageName", tpj.getString("name"));
                         pro.put("premium", tpj.getString("price"));
+                        pro.put("link", tpj.getString("commodityLink"));
+                        pro.put("proDesc", tpj.getString("commodityDesc"));
                         pro.put("label",tNameJ);
                         if (j <= 1) {
                             //默认前2个做首页

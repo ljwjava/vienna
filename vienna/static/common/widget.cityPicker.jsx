@@ -24,7 +24,8 @@ var CityPicker = React.createClass({
 	    if(!!this.props.company){
 	        company = this.props.company;
         }
-        common.req("dict/view.json", {company: company, name: this.state.valType, version: "new"}, r => {
+        let cityVersion = this.props.cityVersion == null ? "new" : this.props.cityVersion;
+            common.req("dict/view.json", {company: company, name: this.state.valType, version: cityVersion}, r => {
             let val = this.state.value;
             var proPickerVal = [];
             if(val != null && val != '') {

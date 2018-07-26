@@ -57,13 +57,17 @@
 			<if condition="PAY_PERIOD > INSURE_PERIOD">
 				交费期间不能长于保障期间
 			</if>
-			<if condition="ZONE_CODE == null" level="alert">
-				请选择所在地区
-			</if>
+
 			<if condition="SOCIAL_INS == null and INSURANT.OCCUPATION_L != null and (INSURANT.OCCUPATION_L lt 1 or INSURANT.OCCUPATION_L > 5)">
 				职业要求为1~5类
 			</if>
+			<if condition="OCCUPATION_CODE == null">
+				请选择职业
+			</if>
 			<!--
+			<if condition="ZONE_CODE == null" level="alert">
+				请选择所在地区
+			</if>
 			<if condition="PAY_PERIOD * PREMIUM >= 200000">
 				累计总保费不能超过20万
 			</if>
@@ -72,75 +76,57 @@
 			</if>
 			-->
 			<if>
+				if(SOCIAL_INS == true) {
+					if(SOCIAL_ZONE == null){
+						return '请填写社保所在地区';
+					}
+				}else{
+					if(ZONE == null){
+						return '请填写所在地区';
+					}
+				}
+			</if>
+			<if>
+				//-----------------------小蘑菇plus二期优化-----------------------
 				if (ZONE_CODE == null)
 					return null;
 				var lv = try(DS.ZONE_LEVEL[0][SOCIAL_INS == null ? 0 : 1], 3);
-				// 老蘑菇
-				if(SOCIAL_INS == null) {
-					if (lv == 1) {
-						if (AGE le 40 and AMOUNT > 1500000) {
-							return '18~40周岁，一类城市最高150万有效保额';
-						} else if (AGE >= 41 and AMOUNT > 1000000) {
-							return '41~50周岁，一类城市最高100万有效保额';
+				// 有无社保 SOCIAL_INS
+				// 社保所在地区 SOCIAL_ZONE
+				// 所在地区 ZONE
+				// 职业分类 OCCUPATION_CODE 七位数字
+				// 地区分类 lv 0.0,1.0,2.0,3.0
+				// 是否进行纳税申报12万 INCOME true,false
+				// 年龄限制 AGE 数字
+				if(SOCIAL_INS == true) {
+					if(OCCUPATION_CODE != '9901001'){
+						if(lv == 1 and INCOME == true){
+							return 'Max_300';
+						}else if((lv == 1 and INCOME == false) or (lv == 2 and INCOME == true)){
+							return 'Max_200';
+						}else if((lv == 2 and INCOME == false) or (lv != 1 and lv != 2 and INCOME == true)){
+							return 'Max_100';
+						}else if(lv != 1 and lv != 2 and INCOME == false){
+							return 'Max_050';
 						}
-					} else if (lv == 2) {
-						if (AGE le 40 and AMOUNT > 1000000) {
-							return '18~40周岁，二类城市最高100万有效保额';
-						} else if (AGE >= 41 and AMOUNT > 500000) {
-							return '41~50周岁，二类城市最高50万有效保额';
-						}
-					} else {
-						if (AMOUNT > 500000) {
-							return '普通地区最高50万有效保额';
+					}else{
+						if(lv == 1 and AGE le 40){
+							return 'Max_150';
+						}else if((lv == 1 and AGE >= 41) or (lv == 2 and AGE le 40)){
+							return 'Max_100';
+						}else if((lv == 2 and AGE >= 41) or (lv != 1 and lv != 2)){
+							return 'Max_050';
 						}
 					}
-				// 新蘑菇（PLUS）
-				} else {
-					if (OCCUPATION_CODE != '9901001' and SOCIAL_INS) {
-						var max = INCOME ? [300, 200, 100] : [200, 100, 50];
-						if(lv >= 2 and !INCOME) {
-							return '根据风险识别，您无法投保小蘑菇PLUS， 请投保保额低于150万的小蘑菇定寿！';
-						}
-						if (lv == 1) {
-							if (AMOUNT > 10000 * max[0]) {
-								return '根据您提供的基本信息，适合于您的保额范围是160万至' + max[0] + '万';
-							}
-						} else if (lv == 2) {
-							if (AMOUNT > 10000 * max[1]) {
-								return '根据您提供的基本信息，适合于您的保额范围是160万至' + max[1] + '万';
-							}
-						} else {
-							if (AMOUNT > 10000 * max[2]) {
-								return '根据风险识别，您无法投保小蘑菇PLUS， 请投保保额低于150万的小蘑菇定寿！';
-								// return '根据您提供的基本信息，适合于您的保额范围是160万至' + max[2] + '万';
-							}
-						}
-						return null;
-					} else {
-						return '根据风险识别，您无法投保小蘑菇PLUS， 请投保保额低于150万的小蘑菇定寿！';
-				/*
-						if (lv == 1) {
-							if (AGE le 40 and AMOUNT > 1500000) {
-								return '根据您提供的基本信息，适合于您的保额范围是30万至150万';
-							} else if (AGE >= 41 and AMOUNT > 1000000) {
-								return '根据您提供的基本信息，适合于您的保额范围是30万至100万';
-							}
-						} else if (lv == 2) {
-							if (AGE le 40 and AMOUNT > 1000000) {
-								return '当前条件下，二类城市最高100万有效保额';
-							} else if (AGE >= 41 and AMOUNT > 500000) {
-								return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
-							}
-						} else {
-							if (AMOUNT > 500000) {
-								return '根据您提供的基本信息，适合于您的保额范围是30万至50万';
-							}
-						}
-				*/
+				}else{
+					if(lv == 1 and AGE le 40){
+						return 'Max_150';
+					}else if((lv == 1 and AGE >= 41) or (lv == 2 and AGE le 40)){
+						return 'Max_100';
+					}else if((lv == 2 and AGE >= 41) or (lv != 1 and lv != 2)){
+						return 'Max_050';
 					}
 				}
-				// 根据您提供的基本信息，适合于您的保额范围是30万 - ？
-				return null;
 			</if>
 		</rule>
 	</product>
