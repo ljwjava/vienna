@@ -13,6 +13,7 @@ public class Shop {
     private Long wareId;                        //产品包id
     private Long userId;                         //业务员userId,如果是老渠道accountId
     private Long subUserId;                     //下级userId
+    private Long tempId;                        //模板Id
     private String companyId;                   //业务员归属公司id
     private String commodityTypeCode;           //商品类型编码
     private String commodityTypeName;           //商品类型名称

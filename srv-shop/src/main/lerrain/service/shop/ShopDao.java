@@ -254,6 +254,7 @@ public class ShopDao
 				p.setWareId(m.getLong("wareId"));
 				p.setUserId(m.getLong("userId"));
 				p.setSubUserId(m.getLong("subUserId"));
+				p.setTempId(m.getLong("tempId"));
 				p.setCommodityTypeCode(m.getString("commodityTypeCode"));
 				p.setCommodityTypeName(m.getString("commodityTypeName"));
 				p.setCommodityId(m.getLong("commodityId"));
@@ -314,6 +315,9 @@ public class ShopDao
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
         sql.append(" WHERE t.is_deleted='N'");
+        if (null != contion.getTempId()){
+			sql.append(" and t.id = "+contion.getTempId());
+		}
 		if (null != contion.getUserId()) {
 			sql.append(" and t.creator = "+contion.getUserId());
 		}

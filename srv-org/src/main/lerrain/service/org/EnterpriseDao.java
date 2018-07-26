@@ -101,9 +101,16 @@ public class EnterpriseDao
      * @param companyId
      * @return
      */
-    public List<Enterprise> queryAllSubordinate(Long companyId) {
+    public List<Enterprise> querySubInfo(Long companyId) {
         List<Enterprise> list = new ArrayList<Enterprise>();
-        list = jdbc.queryForList("select * from t_enterprise where parent_id = " + companyId, Enterprise.class);
+        List<Map<String, Object>> listMap = jdbc.queryForList("select id,company_name as companyName,telephone,email, create_time as gmtCreated,parent_id as parentId from t_enterprise where parent_id =" + companyId);
+        if (listMap != null && listMap.size() > 0) {
+            for (Map<String, Object> map : listMap) {
+            	Enterprise enterprise = JSON.parseObject(JSON.toJSONString(map), Enterprise.class);
+            	enterprise.setLevel(1);
+                list.add(enterprise);
+            }
+        }
         return list;
     }
 
