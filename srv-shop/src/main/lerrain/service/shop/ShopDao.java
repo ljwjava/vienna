@@ -254,6 +254,7 @@ public class ShopDao
 				p.setWareId(m.getLong("wareId"));
 				p.setUserId(m.getLong("userId"));
 				p.setSubUserId(m.getLong("subUserId"));
+				p.setTempId(m.getLong("tempId"));
 				p.setCommodityTypeCode(m.getString("commodityTypeCode"));
 				p.setCommodityTypeName(m.getString("commodityTypeName"));
 				p.setCommodityId(m.getLong("commodityId"));
