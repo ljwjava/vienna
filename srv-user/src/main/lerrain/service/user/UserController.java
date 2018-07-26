@@ -314,8 +314,11 @@ public class UserController {
                     JSONObject j = array.getJSONObject(i);
                     Long userId = j.getLong("id");
                     int type = json.getIntValue("type");
+                    if(type == 0) {
+                    	type = 1;
+                    }
                     List<Long> roleList = new ArrayList<Long>();
-                    if (1 == type || 0 == type) {
+                    if (1 == type) {
                         roleList.add(RoleTypeEnum.YUNFUMEMBER.getId());
                     } else if (2 == type) {
                         roleList.add(RoleTypeEnum.YUNFUORG.getId());

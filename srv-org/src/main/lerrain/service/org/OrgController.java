@@ -108,9 +108,10 @@ public class OrgController
         JSONObject result = new JSONObject();
         Long id = -1l;
         int type = json.getIntValue("type");
-        String mobile = json.getString("mobile");
-        String name = json.getString("name");
         String email = json.getString("email");
+        String loginName =json.getString("loginName");
+        String mobile = (!loginName.equals(email) ? loginName:null);
+        String name = json.getString("name");
         // 邀请码
         Long inviteCode = json.getLong("inviteCode");
         if(inviteCode != null && inviteCode > 0) {
@@ -127,7 +128,7 @@ public class OrgController
             member.setCompanyId(org.getCompanyId());
             member.setStatus(1);
             id = memberSrv.save(member);
-        } else if (2 == type) {
+        } else if (2 == type || 4 == type) {
             // 保存渠道/部门信息
             Org org = new Org();
             Long userId = json.getLong("userId");
@@ -268,12 +269,18 @@ public class OrgController
     public JSONObject companySubordinate(@RequestBody JSONObject json) {
         JSONObject result = new JSONObject();
         Long companyId = json.getLongValue("companyId");
+        Long userType = json.getLongValue("userType");
         if(companyId == null || companyId < 1) {
         	Long userId = json.getLongValue("userId");
         	// 获取公司ID
         	companyId = enterpriseSrv.getCompanyId(userId);
         }
-        List<Enterprise> list = enterpriseSrv.querySubordinate(companyId);
+        List<Enterprise> list = null;
+        if(userType == 4) {
+        	list = enterpriseSrv.querySubordinate(companyId);
+        } else {
+        	list = enterpriseSrv.querySubInfo(companyId);
+        }
         result.put("result", "success");
         JSONObject rJson = new JSONObject();
         rJson.put("list", list);
