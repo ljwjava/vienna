@@ -9,7 +9,7 @@ var CityPicker = React.createClass({
 	    var v = this.props.value;
 	    v = v == null ? {} : this.props.value;
 	    if (typeof v == "string") v = {code: v};
-		return {value: v.value, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[], readOnly: !!v.readOnly};
+		return {value: v.value, code: v.code, text: v.text, valType: this.props.valType, city:[], proPickerVal:[], readOnly: !!this.props.readOnly};
     },
     getCode(){
 	    return this.state.code || this.state.value;

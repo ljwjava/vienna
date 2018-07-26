@@ -14,10 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class FeeDao
@@ -49,23 +46,31 @@ public class FeeDao
 
 	public List<FeeDefine> listFeeRate(Long schemeId, Long productId)
 	{
-		String sql = "select * from t_product_fee_define where valid is null and product_id = ? and scheme_id = ? order by begin, end, pay, insure";
+		String sql = "select * from t_product_fee_define where valid is null and product_id = ? and scheme_id = ? order by begin, end, pay, insure, oth_factors";
 
-		return jdbc.query(sql, new RowMapper<FeeDefine>()
+		List<FeeDefine> l = jdbc.query(sql, new RowMapper<FeeDefine>()
 		{
 			@Override
 			public FeeDefine mapRow(ResultSet rs, int j) throws SQLException
 			{
-				return feeRateOf(rs, false);
+				return feeRateOf(rs, false, null);
 			}
 
 		}, productId, schemeId);
+
+		List<FeeDefine> lnew = new ArrayList<>();
+		for(FeeDefine fd : l){
+			if(fd != null)
+				lnew.add(fd);
+		}
+
+		return lnew;
 	}
 
 	public void saveFeeRate(Long schemeId, Long productId, List<FeeDefine> list)
 	{
-		String insert = "insert into t_product_fee_define(scheme_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		String update = "replace into t_product_fee_define(id, scheme_id, product_id, pay, insure, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String insert = "insert into t_product_fee_define(scheme_id, product_id, pay, insure, oth_factors, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String update = "replace into t_product_fee_define(id, scheme_id, product_id, pay, insure, oth_factors, sale_fee, upper_bonus, sale_bonus, unit, freeze, begin, end) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		for (FeeDefine fd : list)
 		{
@@ -82,11 +87,18 @@ public class FeeDao
 
 			if (sf != null || ub != null || sb != null)
 			{
-				Map map = fd.getFactors();
+				Map<String, Object> map = fd.getFactors();
+				JSONObject othFactors = null;
+				for(String key : map.keySet()) {
+					if(!key.equalsIgnoreCase("pay") && !key.equalsIgnoreCase("insure")) {
+						if(othFactors == null) othFactors = new JSONObject();
+						othFactors.put(key, map.get(key));
+					}
+				}
 				if (fd == null)
-					jdbc.update(insert, schemeId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
+					jdbc.update(insert, schemeId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), othFactors == null ? null : othFactors, sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
 				else
-					jdbc.update(update, fd.getId(), schemeId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
+					jdbc.update(update, fd.getId(), schemeId, productId, map == null ? null : map.get("pay"), map == null ? null : map.get("insure"), othFactors == null ? null : othFactors, sf, ub, sb, fd.getUnit(), fd.getFreeze(), fd.getBegin(), fd.getEnd());
 			}
 			else if (fd.getId() != null)
 			{
@@ -95,35 +107,62 @@ public class FeeDao
 		}
 	}
 
-	public List<FeeDefine> listFeeRate(Long schemeId, Long productId, Map rs)
+	public List<FeeDefine> listFeeRate(Long schemeId, Long productId, Map<String, Object> rs)
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("select * from t_product_fee_define where valid is null and product_id = ? and scheme_id = ?");
 
 		String pay = Common.trimStringOf(rs.get("pay"));
 		String insure = Common.trimStringOf(rs.get("insure"));
+		final Map<String, Object> othFactors = new HashMap<>();
+		for(String key : rs.keySet()) {
+			if(!key.equalsIgnoreCase("pay") && !key.equalsIgnoreCase("insure")) {
+				othFactors.put(key, rs.get(key));
+			}
+		}
 
 		sql.append(" and (pay is null or pay = '" + pay + "')");
 		sql.append(" and (insure is null or insure = '" + insure + "')");
 
-		return jdbc.query(sql.toString(), new RowMapper<FeeDefine>()
+		List<FeeDefine> l = jdbc.query(sql.toString(), new RowMapper<FeeDefine>()
 		{
 			@Override
 			public FeeDefine mapRow(ResultSet rs, int j) throws SQLException
 			{
-				return feeRateOf(rs, true);
+				return feeRateOf(rs, true, othFactors);
 			}
 
 		}, productId, schemeId);
+
+		List<FeeDefine> lnew = new ArrayList<>();
+		for(FeeDefine fd : l){
+			if(fd != null)
+				lnew.add(fd);
+		}
+
+		return lnew;
 	}
 
-	private FeeDefine feeRateOf(ResultSet rs, boolean tran) throws SQLException
+	/**
+	 * 整理并过滤数据
+	 * @param rs
+	 * @param tran
+	 * @param othFactors 为null时，返回所有；否则根据因子判断是否返回数据
+	 * @return
+	 * @throws SQLException
+	 */
+	private FeeDefine feeRateOf(ResultSet rs, boolean tran, Map<String, Object> othFactors) throws SQLException
 	{
 		Long schemeId = rs.getLong("scheme_id");
 		Long productId = rs.getLong("product_id");
 
 		String pay = rs.getString("pay");
 		String insure = rs.getString("insure");
+		String ofStr = rs.getString("oth_factors");	// 其他因子
+		Map<String, Object> ofDB = new HashMap<>();
+		if(!Common.isEmpty(ofStr)) {
+			ofDB = JSON.parseObject(ofStr);
+		}
 
 		int freeze = Common.intOf(rs.getObject("freeze"), 0);
 		int unit = Common.intOf(rs.getObject("unit"), 0);
@@ -153,7 +192,31 @@ public class FeeDao
 		Map m = new JSONObject();
 		m.put("pay", pay);
 		m.put("insure", insure);
+		if(!Common.isEmpty(ofDB))
+			m.putAll(ofDB);
 		pc.setFactors(m);
+
+		// 查询所有
+		if(othFactors == null) {
+			return pc;
+		}
+
+		// 若数据库配置有额外因子配置，但传参没有，则不返回这条佣金配置
+		if(Common.isEmpty(othFactors) && !Common.isEmpty(ofDB)){
+			return null;
+		}
+
+		// 判断所有因子是否符合
+		if(!Common.isEmpty(ofDB)){
+			for(String key : ofDB.keySet()) {
+				String vDB = Common.trimStringOf(m.get(key));	// 佣金定义因子对应值
+				String v = Common.trimStringOf(othFactors.get(key));
+				// 若配置有值，且与传值不一致，则直接返回空
+				if(!Common.isEmpty(vDB) && !vDB.equalsIgnoreCase(v)){
+					return null;
+				}
+			}
+		}
 
 		return pc;
 	}

@@ -3,6 +3,7 @@
 <script type="text/javascript" src="https://cdn-qcloud.zhongan.com/a00000/Project/HealthInsurance/iYunBao/js/common/wechatdemo.js?v=201606161609"></script>
 <script type="text/javascript" src="../js/comm.pickerStack.js?v=20180518001"></script>
 <script type="text/javascript" src="../js/echarts/echarts.min.4.1.0.rc2.blp.js"></script>
+<script src="//static.iyunbao.com/website/health/iybApp/lib/mylog/1.0/mylog-1.0.0.min.js"></script>
 
 <style>
     .form .alert
@@ -112,4 +113,13 @@
             }
         }, 100);
     };
+
+</script>
+<script>
+    (function() {
+        var mylog = document.createElement("script");
+        mylog.src = "//static.iyunbao.com/website/health/iybApp/lib/mylog/1.0/mylog-1.0.0.min.js";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(mylog, s);
+    })();
 </script>
