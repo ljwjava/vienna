@@ -60,4 +60,8 @@ public class EnterpriseService {
     public Long getCompanyId(Long userId) {
     	return enterpriseDao.getCompanyId(userId);
     }
+    
+    public List<Enterprise> querySubInfo(Long companyId) {
+        return enterpriseDao.querySubInfo(companyId);
+    }
 }
