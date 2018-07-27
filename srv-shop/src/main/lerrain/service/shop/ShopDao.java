@@ -22,29 +22,39 @@ public class ShopDao
 	public int countType(Shop contion)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT ");
-		sql.append(" count(t.`code`)");
-		sql.append("FROM");
-		sql.append("`t_cs_commodity_plan` p");
-		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
-		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
-		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
-		sql.append(" WHERE p.is_deleted='N'");
+		sql.append("SELECT");
+		sql.append(" count(dd.`code`)");
+		sql.append(" FROM (");
+		sql.append(" SELECT t.`code`, p.ware_id as wareId");
+		sql.append(" FROM");
+		sql.append(" t_cs_commodity_rate_template_relation r");
+		sql.append(" INNER JOIN t_product_fee_cust f ON r.rel_temp_id = f.scheme_id");
+		sql.append(" INNER JOIN t_ware_pack p ON p.id = f.product_id");
+		sql.append(" INNER JOIN t_cs_commodity c ON c.ware_id = p.ware_id");
+		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
+		sql.append(" LEFT JOIN t_cs_commodity_share s ON s.rel_commodity_id = c.id");
+		sql.append(" WHERE r.is_deleted='N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
 		sql.append(" AND c.is_deleted='N'");
 		sql.append(" AND t.is_deleted='N'");
 		sql.append(" AND s.is_deleted='N'");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
+		sql.append(" AND r.used = 'Y'");
 		if (StringUtils.isNotBlank(contion.getQrcodeUid())){
 			sql.append(" AND c.id in ("+this.queryProductsByQrcodeInfo(contion).getProductIds()+")");
 		}
 		if(null != contion.getUserId()) {
-			sql.append(" AND p.rel_user_id = "+contion.getUserId());
+			sql.append(" AND r.rel_user_id = "+contion.getUserId());
+		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
 		}
 		if (StringUtils.isNotBlank(contion.getCommodityName())) {
 			sql.append(" AND c.`name` LIKE '%"+ contion.getCommodityName() +"%'");
 		}
-
+		sql.append(" GROUP BY wareId");
+		sql.append(" ) as dd");
 		return jdbc.queryForObject(sql.toString(), Integer.class);
 	}
 
@@ -60,27 +70,36 @@ public class ShopDao
         sql.append(" t.id AS tagId,");
 		sql.append(" t.`code` AS tagCode,");
 		sql.append(" t.`name` AS tagName,");
-		sql.append(" c.`code` AS cdCode");
+		sql.append(" c.`code` AS cdCode,");
+		sql.append(" p.ware_id AS wareId");
 		sql.append(" FROM");
-		sql.append(" `t_cs_commodity_plan` p");
-		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
-		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
-		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
-		sql.append(" WHERE p.is_deleted='N'");
+		sql.append(" t_cs_commodity_rate_template_relation r");
+		sql.append(" INNER JOIN t_product_fee_cust f ON r.rel_temp_id = f.scheme_id");
+		sql.append(" INNER JOIN t_ware_pack p ON p.id = f.product_id");
+		sql.append(" INNER JOIN t_cs_commodity c ON c.ware_id = p.ware_id");
+		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
+		sql.append(" LEFT JOIN t_cs_commodity_share s ON s.rel_commodity_id = c.id");
+		sql.append(" WHERE r.is_deleted='N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
 		sql.append(" AND c.is_deleted='N'");
 		sql.append(" AND t.is_deleted='N'");
 		sql.append(" AND s.is_deleted='N'");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
+		sql.append(" AND r.used = 'Y'");
 		if (StringUtils.isNotBlank(contion.getQrcodeUid())){
 			sql.append(" AND c.id in ("+this.queryProductsByQrcodeInfo(contion).getProductIds()+")");
 		}
 		if(null != contion.getUserId()) {
-			sql.append(" AND p.rel_user_id = "+contion.getUserId());
+			sql.append(" AND r.rel_user_id = "+contion.getUserId());
+		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
 		}
         if (StringUtils.isNotBlank(contion.getCommodityName())) {
             sql.append(" AND c.`name` LIKE '%"+ contion.getCommodityName() +"%'");
         }
+		sql.append(" GROUP BY wareId");
 		sql.append(" limit ?, ?");
 		sql.append(" ) tt");
 		sql.append(" GROUP BY tt.tagCode");
@@ -103,25 +122,38 @@ public class ShopDao
 	public int count(Shop contion)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT count(*)");
+		sql.append("SELECT");
+		sql.append(" count(*)");
+		sql.append(" FROM (");
+		sql.append(" SELECT p.ware_id AS wareId");
 		sql.append(" FROM");
-		sql.append(" `t_cs_commodity_plan` p");
-		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
-		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
-		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
-		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = p.rel_commodity_id AND m.rel_type = 'commodity'");
-		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_user_id = l.user_id");
-		sql.append(" WHERE p.is_deleted='N'");
+		sql.append(" t_cs_commodity_rate_template_relation r");
+		sql.append(" INNER JOIN t_product_fee_cust f ON r.rel_temp_id = f.scheme_id");
+		sql.append(" INNER JOIN t_ware_pack p ON p.id = f.product_id");
+		sql.append(" INNER JOIN t_cs_commodity c ON c.ware_id = p.ware_id");
+		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
+		sql.append(" LEFT JOIN t_cs_commodity_share s ON s.rel_commodity_id = c.id");
+		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = c.id");
+		sql.append(" AND m.rel_type = 'commodity'");
+		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON c.id = l.commodity_id");
+		sql.append(" AND c.rel_type_code = l.rel_type_code");
+		sql.append(" AND r.rel_user_id = l.user_id");
+		sql.append(" WHERE r.is_deleted='N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
 		sql.append(" AND c.is_deleted='N'");
 		sql.append(" AND t.is_deleted='N'");
 		sql.append(" AND s.is_deleted='N'");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
+		sql.append(" AND r.used = 'Y'");
 		if (StringUtils.isNotBlank(contion.getQrcodeUid())){
 			sql.append(" AND c.id in ("+this.queryProductsByQrcodeInfo(contion).getProductIds()+")");
 		}
 		if (null != contion.getUserId()) {
-			sql.append(" AND p.rel_user_id = "+contion.getUserId());
+			sql.append(" AND r.rel_user_id = "+contion.getUserId());
+		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
 		}
 		if (!StringUtils.equals("all",contion.getCommodityTypeCode()) && StringUtils.isNotBlank(contion.getCommodityTypeCode())) {
 			sql.append(" AND t.`code` = '"+contion.getCommodityTypeCode()+"'");
@@ -129,7 +161,8 @@ public class ShopDao
 		if (StringUtils.isNotBlank(contion.getCommodityName())) {
 			sql.append(" AND c.`name` LIKE '%"+contion.getCommodityName()+"%'");
 		}
-
+		sql.append(" GROUP BY wareId");
+		sql.append(" ) as dd");
 		return jdbc.queryForObject(sql.toString(), Integer.class);
 	}
 
@@ -137,8 +170,11 @@ public class ShopDao
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
-		sql.append(" c.ware_id as wareId,");
-		sql.append(" p.rel_user_id AS userId,");
+		sql.append(" p.ware_id AS wareId,");
+		sql.append(" r.rel_user_id AS userId,");
+		sql.append(" r.sub_user_id AS subUserId,");
+		sql.append(" r.rel_temp_id AS tempId,");
+		sql.append(" f.product_id AS productId,");
 		sql.append(" /*companyId*/");
 		sql.append(" t.`code` AS commodityTypeCode,");
 		sql.append(" t.`name` AS commodityTypeName,");
@@ -162,25 +198,32 @@ public class ShopDao
 		sql.append(" c.link_url AS commodityLink,");
 		sql.append(" c.rel_supplier_code AS supplierCode,");
 		sql.append(" c.extra_info AS extraInfo,");
-        sql.append(" c.creator,");
-        sql.append(" DATE_FORMAT(c.gmt_created,'%Y-%m-%d %T') AS gmtCreated,");
-        sql.append(" c.modifier,");
-        sql.append(" DATE_FORMAT(c.gmt_modified,'%Y-%m-%d %T') AS gmtModified,");
-        sql.append(" c.is_deleted AS isDeleted,");
+		sql.append(" c.creator,");
+		sql.append(" DATE_FORMAT(c.gmt_created,'%Y-%m-%d %T') AS gmtCreated,");
+		sql.append(" c.modifier,");
+		sql.append(" DATE_FORMAT(c.gmt_modified,'%Y-%m-%d %T') AS gmtModified,");
+		sql.append(" c.is_deleted AS isDeleted,");
 		sql.append(" c.sort");
 		sql.append(" FROM");
-		sql.append(" `t_cs_commodity_plan` p");
-		sql.append(" INNER JOIN t_cs_commodity c ON p.rel_commodity_id = c.id");
-		sql.append(" INNER JOIN t_cs_commodity_type t ON p.rel_type_code = t.`code`");
-		sql.append(" INNER JOIN t_cs_commodity_share s ON s.rel_commodity_id = p.rel_commodity_id");
-		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = p.rel_commodity_id AND m.rel_type = 'commodity'");
-		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON p.rel_commodity_id = l.commodity_id AND p.rel_type_code = l.rel_type_code AND p.rel_user_id = l.user_id");
-		sql.append(" WHERE p.is_deleted='N'");
-		sql.append(" AND c.is_deleted='N'");
-		sql.append(" AND t.is_deleted='N'");
-		sql.append(" AND s.is_deleted='N'");
+		sql.append(" t_cs_commodity_rate_template_relation r");
+		sql.append(" INNER JOIN t_product_fee_cust f ON r.rel_temp_id = f.scheme_id");
+		sql.append(" INNER JOIN t_ware_pack p ON p.id = f.product_id");
+		sql.append(" INNER JOIN t_cs_commodity c ON c.ware_id = p.ware_id");
+		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
+		sql.append(" LEFT JOIN t_cs_commodity_share s ON s.rel_commodity_id = c.id");
+		sql.append(" LEFT JOIN t_cs_commodity_market m ON m.rel_id = c.id");
+		sql.append(" AND m.rel_type = 'commodity'");
+		sql.append(" LEFT JOIN t_cs_commodity_label_relation l ON c.id = l.commodity_id");
+		sql.append(" AND c.rel_type_code = l.rel_type_code");
+		sql.append(" AND r.rel_user_id = l.user_id");
+		sql.append(" WHERE r.is_deleted = 'N'");
+		sql.append(" AND ifnull(f.valid,'') <> 'Y'");
+		sql.append(" AND c.is_deleted = 'N'");
+		sql.append(" AND t.is_deleted = 'N'");
+		sql.append(" AND s.is_deleted = 'N'");
 		sql.append(" AND c.online_state = 1");
 		sql.append(" AND t.online_state = 1");
+		sql.append(" AND r.used = 'Y'");
 		if (StringUtils.isNotBlank(contion.getCommodityIds())){
             sql.append(" AND c.id in ("+contion.getCommodityIds()+")");
         }
@@ -188,7 +231,10 @@ public class ShopDao
 			sql.append(" AND c.id in ("+this.queryProductsByQrcodeInfo(contion).getProductIds()+")");
 		}
 		if (null != contion.getUserId()) {
-			sql.append(" AND p.rel_user_id = "+contion.getUserId());
+			sql.append(" AND r.rel_user_id = "+contion.getUserId());
+		}
+		if(null != contion.getSubUserId()) {
+			sql.append(" AND r.sub_user_id = "+contion.getSubUserId());
 		}
 		if (!StringUtils.equals("all",contion.getCommodityTypeCode()) && StringUtils.isNotBlank(contion.getCommodityTypeCode())) {
 			sql.append(" AND t.`code` = '"+contion.getCommodityTypeCode()+"'");
@@ -196,7 +242,7 @@ public class ShopDao
 		if (StringUtils.isNotBlank(contion.getCommodityName())) {
 			sql.append(" AND c.`name` LIKE '%"+contion.getCommodityName()+"%'");
 		}
-		sql.append(" /*AND l.id IN (1, 2)*/");
+		sql.append(" GROUP BY wareId");
 		sql.append(" limit ?, ?");
 
 		return jdbc.query(sql.toString(), new Object[] {from, number}, new RowMapper<Shop>()
@@ -207,6 +253,8 @@ public class ShopDao
 				Shop p = new Shop();
 				p.setWareId(m.getLong("wareId"));
 				p.setUserId(m.getLong("userId"));
+				p.setSubUserId(m.getLong("subUserId"));
+				p.setTempId(m.getLong("tempId"));
 				p.setCommodityTypeCode(m.getString("commodityTypeCode"));
 				p.setCommodityTypeName(m.getString("commodityTypeName"));
 				p.setCommodityId(m.getLong("commodityId"));
@@ -267,6 +315,9 @@ public class ShopDao
         sql.append(" FROM");
         sql.append(" `t_cs_commodity_rate_template` t");
         sql.append(" WHERE t.is_deleted='N'");
+        if (null != contion.getTempId()){
+			sql.append(" and t.id = "+contion.getTempId());
+		}
 		if (null != contion.getUserId()) {
 			sql.append(" and t.creator = "+contion.getUserId());
 		}
@@ -409,7 +460,7 @@ public class ShopDao
 		sql.append(" s.*");
 		sql.append(" FROM t_cs_commodity c");
 		sql.append(" INNER JOIN t_cs_commodity_type t ON c.rel_type_code = t.`code`");
-		sql.append(" INNER JOIN t_cs_commodity_share s ON c.id = s.rel_commodity_id");
+		sql.append(" LEFT JOIN t_cs_commodity_share s ON c.id = s.rel_commodity_id");
 		sql.append(" WHERE c.ware_id = ?");
 		return jdbc.queryForObject(sql.toString(), new Object[] {wareId}, new RowMapper<Shop>()
 		{

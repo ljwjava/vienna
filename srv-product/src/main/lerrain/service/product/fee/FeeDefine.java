@@ -12,7 +12,7 @@ public class FeeDefine
     Long schemeId;
     Long productId;
 
-    Map factors;
+    Map<String, Object> factors;
 
     Object saleFee;
     Object saleBonus;
@@ -45,12 +45,12 @@ public class FeeDefine
         this.schemeId = schemeId;
     }
 
-    public Map getFactors()
+    public Map<String, Object> getFactors()
     {
         return factors;
     }
 
-    public void setFactors(Map factors)
+    public void setFactors(Map<String, Object> factors)
     {
         this.factors = factors;
     }

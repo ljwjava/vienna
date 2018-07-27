@@ -277,13 +277,16 @@ public class PlatformController
                 	cookieJson.put(name, value);
                 }
             }
-            Log.info("cookieJson:"+JSON.toJSONString(cookieJson));
-            if(req.getRequestURI().startsWith("/cs/") && !req.getRequestURI().startsWith("/cs/open/") && !req.getRequestURI().startsWith("/cs/getMenu.json") && !req.getRequestURI().startsWith("/cs/login.json") && StringUtils.isBlank(cookieJson.getString("user%2FloginName"))) {
+//            Log.info("cookieJson:"+JSON.toJSONString(cookieJson));
+            if(req.getRequestURI().startsWith("/cs/") && !req.getRequestURI().startsWith("/cs/open") && !req.getRequestURI().startsWith("/cs/getMenu.json") && !req.getRequestURI().startsWith("/cs/login.json")) {
             	try {
             		Log.info("url:"+req.getRequestURI());
-            		Log.info("跳转到登录页");
-//                    rsp.setStatus(299);
-//                	return null;
+                    Object csUserId = session.getAttribute("csUserId");
+                    if(csUserId == null) {
+                		Log.info("session失效，跳转到登录页");
+                		rsp.setStatus(299);
+                		return null;
+                    }
             	} catch(Exception e) {
             		Log.error(e);
             	}

@@ -203,7 +203,6 @@ public class ShopController
     public JSONObject batchOperateRateTemplate(@RequestBody JSONObject p)
     {
         JSONObject res = new JSONObject();
-        JSONObject content = new JSONObject();
         res.put("result", "success");
         JSONArray list = p.getJSONArray("list");
         Long userId = p.getLong("userId");
@@ -215,7 +214,7 @@ public class ShopController
         		r.setModifier(userId+"");
         	}
             List<RateTemp> rts = productSrv.batchOperateRateTemplate(contions);
-            content.put("content",JSON.toJSON(rts));
+            res.put("content",JSON.toJSON(rts));
         }
         return res;
     }

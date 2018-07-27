@@ -152,7 +152,7 @@ class ApplicantForm extends Form {
         if (env.formOpt.applicant.occupation)
             v.push({name:'职业', code:"occupation", type:"occupation", refresh:"yes", req:"yes", desc:"请选择职业"});
         if (env.formOpt.applicant.city)
-            v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
+            v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes", formOpt:env.formOpt});
         if (env.formOpt.applicant.address)
             v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"例:学院路37号院1号楼109室"});
         if (env.formOpt.applicant.hasIncome) {
@@ -189,7 +189,7 @@ class InsurantForm extends Form {
         v.push({name:'性别', code:"gender", type:"switch", refresh:"yes", options:[["M","男"],["F","女"]]});
         v.push({name:'出生日期', code:"birthday", type:"date", refresh:"yes", req:"yes", desc:"请选择出生日期"});
         if (env.formOpt.insurant.city)
-            v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes"});
+            v.push({name:'所在地区', code:"city", type:"city", company: env.company, refresh:"yes", req:"yes", formOpt:env.formOpt});
         if (env.formOpt.insurant.address)
             v.push({name:'通讯地址', code:"address", type:"text", reg:"^[^\\!\\@\\#\\$\\%\\`\\^\\&\\*]{10,}$", req:"yes", mistake:"字数过少或有特殊符号", desc:"例:学院路37号院1号楼109室"});
         if (env.formOpt.insurant.mobile)

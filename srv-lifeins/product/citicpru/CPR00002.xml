@@ -10,7 +10,7 @@
 		type_code="life"
 		sequence="1000"
 		input="amount"
-		premium="DS.RATE[0][IC == 3 ? 2 : (IC == 2 ? 1 : 0)]*AMOUNT/UNIT"
+		premium="DS.RATE[0][BL == 3 ? 2 : (BL == 2 ? 1 : 0)]*AMOUNT/UNIT"
 		sale_begin_date="2015-01-01"
 		sale_end_date=""
 		last_modify_date="2017-01-01">
@@ -34,8 +34,8 @@
 		</param>
 
 		<init>
-			<item name="IC" value="var INS_CATEGORY = try(INSURANT.INS_CATEGORY, null); return INS_CATEGORY == null ? 1 : INS_CATEGORY;"/>
-			<item name="DSCSV" value="IC == 3 ? DS.CSV3 : (IC == 2 ? DS.CSV2 : DS.CSV1)"/>
+			<item name="BL" value="var BENEF_LEVEL = try(INSURANT.BENEF_LEVEL, null); return BENEF_LEVEL == null ? 1 : BENEF_LEVEL;"/>
+			<item name="DSCSV" value="BL == 3 ? DS.CSV3 : (BL == 2 ? DS.CSV2 : DS.CSV1)"/>
 			<item name="A_CITY" value="['11','31','4401','4403']"/>
 			<item name="B_CITY" value="['4201','5101','3201','4101']"/>
 			<item name="C_CITY" value="['3205']"/>

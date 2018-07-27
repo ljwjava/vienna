@@ -296,15 +296,17 @@ public class TemplateController {
         if (typeProducts != null && typeProducts.size() > 0) {
             for (int i = 0; i < typeProducts.size(); i++) {
                 JSONObject typeProduct = typeProducts.getJSONObject(i);
-                String typeName = typeProduct.getString("typeName");
+                String typeName = typeProduct.getString("commodityTypeName");
                 JSONArray productArray = new JSONArray();
                 for (int j = 0; j <= typeProducts.size() - 1; j++) {
                     JSONObject tpj = typeProducts.getJSONObject(j);
-                    String tNameJ = tpj.getString("typeName");
+                    String tNameJ = tpj.getString("commodityTypeName");
                     JSONObject pro = new JSONObject();
                     if (Objects.equals(typeName, tNameJ)) {
-                        pro.put("packageName", tpj.getString("name"));
+                        pro.put("packageName", tpj.getString("commodityName"));
                         pro.put("premium", tpj.getString("price"));
+                        pro.put("link", tpj.getString("commodityLink"));
+                        pro.put("proDesc", tpj.getString("commodityDesc"));
                         pro.put("label",tNameJ);
                         if (j <= 1) {
                             //默认前2个做首页
