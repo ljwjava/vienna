@@ -22,6 +22,11 @@ public class CustomerController
     @Autowired
     ChannelUserRService cuService;
 
+    /**
+     * 查询客户列表(分页)
+     * @param json
+     * @return
+     */
 	@RequestMapping("/list.json")
 	@ResponseBody
 	public JSONObject list(@RequestBody JSONObject json)
@@ -49,6 +54,11 @@ public class CustomerController
 		return res;
 	}
 
+	/**
+     * 查询客户列表
+     * @param json
+     * @return
+     */
 	@RequestMapping("/query.json")
 	@ResponseBody
 	public JSONObject query(@RequestBody JSONObject json)
@@ -72,6 +82,11 @@ public class CustomerController
 		return res;
 	}
 
+	/**
+	 * 查询客户信息
+	 * @param json
+	 * @return
+	 */
 	@RequestMapping("/view.json")
 	@ResponseBody
 	public JSONObject view(@RequestBody JSONObject json)
@@ -88,6 +103,11 @@ public class CustomerController
 		return res;
 	}
 	
+	/**
+	 * 添加客户信息
+	 * @param m
+	 * @return
+	 */
 	@RequestMapping("/save.json")
 	@ResponseBody
 	public JSONObject save(@RequestBody JSONObject m)
@@ -119,6 +139,11 @@ public class CustomerController
 		return res;
 	}
 	
+	/**
+	 * 删除客户信息(逻辑删除)
+	 * @param json
+	 * @return
+	 */
 	@RequestMapping("/delete.json")
 	@ResponseBody
 	public JSONObject delete(@RequestBody JSONObject json)
@@ -134,6 +159,11 @@ public class CustomerController
 		return res;
 	}
 
+	/**
+	 * 代码流程简易，但是不知道涉及的业务是什么
+	 * @param json
+	 * @return
+	 */
     // 渠道用户信息绑定accountId
     @RequestMapping("/channel_bind_account.json")
     @ResponseBody

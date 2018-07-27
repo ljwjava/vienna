@@ -27,6 +27,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 开发 -> 脚本、	接口、用户、网关调试、Funcation调试
+ *
+ */
 @Controller
 public class DevelopController
 {

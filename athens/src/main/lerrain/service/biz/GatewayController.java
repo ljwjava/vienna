@@ -24,6 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * Annotate lyx
+ */
 @Controller
 @ControllerAdvice
 public class GatewayController
@@ -97,6 +101,7 @@ public class GatewayController
                 throw new RuntimeException("not login - " + uri);
         }
 
+        //With --> owner=memberId,platformId=PLATFORM_ID,将接口交易需要附加参数从session中取出，并传递至交易中
         if (gateway.getWith() != null)
         {
             for (Map.Entry<String, String> w : ((Map<String, String>)gateway.getWith()).entrySet())
@@ -118,12 +123,14 @@ public class GatewayController
 
         Object val = null;
 
+        //Forward --> 0无 1微服务 2本地重定向 3远程链接 4?
         //请求服务在前，脚本为整理结果
         if (gateway.getForward() == Gateway.REQUEST_MICRO_SERVICE)
         {
             String forwardTo = gateway.getForwardTo(uri);
 
             int p2 = forwardTo.indexOf("/");
+            //调用forwardTo服务接口
             JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
 
             if (!"success".equals(json.getString("result")))
@@ -138,10 +145,10 @@ public class GatewayController
             Stack stack = new Stack(root);
             stack.set("self", val == null ? param : val);
             stack.set("SESSION", new SessionAdapter(session));
-
+            
             try
             {
-                val = script.run(stack);
+                val = script.run(stack);//script 执行中将可以获取使用到self(当前交易请求参数),session参数
             }
             catch (ScriptRuntimeException e1)
             {
@@ -159,6 +166,7 @@ public class GatewayController
             }
         }
 
+        //Forward --> 0无 1微服务 2本地重定向 3远程链接 4?
         //请求服务在后，脚本为预处理参数
         if (gateway.getForward() == Gateway.FORWARD_MICRO_SERVICE)
         {
@@ -168,6 +176,7 @@ public class GatewayController
             String forwardTo = gateway.getForwardTo(uri);
 
             int p2 = forwardTo.indexOf("/");
+          //调用forwardTo服务接口
             JSONObject json = sv.req(forwardTo.substring(0, p2), forwardTo.substring(p2 + 1), param);
 
             if (!"success".equals(json.getString("result")))
@@ -347,6 +356,12 @@ public class GatewayController
         return res;
     }
 
+    /**
+     * 短连接跳转
+     * @param req
+     * @param linkId
+     * @return
+     */
     @RequestMapping("/${gatedir}t/{linkId}")
     @CrossOrigin
     public String callLink(HttpServletRequest req, @PathVariable String linkId)

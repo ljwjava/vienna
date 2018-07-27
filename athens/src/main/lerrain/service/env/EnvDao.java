@@ -21,6 +21,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * 应用场景DAO
+ * Annotate lyx
+ */
 @Repository
 public class EnvDao
 {
@@ -37,13 +41,14 @@ public class EnvDao
     {
         sourceMgr.close();
 
+        //初始化数据源
         jdbc.query("select * from t_data_source", new RowCallbackHandler()
         {
             @Override
             public void processRow(ResultSet rs) throws SQLException
             {
                 Long id = rs.getLong("id");
-                int type = rs.getInt("type");
+                int type = rs.getInt("type");//1:数据库链接，2:脚本文件?
                 Map opts = JSON.parseObject(rs.getString("config"));
 
                 sourceMgr.add(id, type, opts);
@@ -51,6 +56,11 @@ public class EnvDao
         });
     }
 
+    /**
+     * 加载所有env应用环境
+     * @param funcs
+     * @return
+     */
     public List<Environment> loadAllEnv(final Map funcs)
     {
         final Map<String, Environment> map = new HashMap<>();
@@ -103,6 +113,8 @@ public class EnvDao
             c.setStack(stack);
         }
 
+        //Refer --> IYB,INS,PIS,CMS
+        //如果当前应用Refer存在值，则当前应用环境中declare(声明)相对应的应用对象
         for (Environment c : r)
         {
             if (c.getRefer() != null) for (String code : c.getRefer())
@@ -131,10 +143,12 @@ public class EnvDao
                 String anchor = rs.getString("anchor");
                 Long sourceId = rs.getLong("source_id");
 
+                //给锚设置相应数据源
                 p.getStack().set(anchor, sourceMgr.getSource(sourceId));
             }
         });
 
+        //TODO 如果type 为6，则会执行value 中相关脚本(如：查询供应商信息，所有建议书产品，中介全产品，云服所有产品等等)
         jdbc.query("select * from t_env_const where env_id = ? or env_code = ? order by id", new Object[] {p.getId(), p.getCode()}, new RowCallbackHandler()
         {
             @Override
@@ -215,6 +229,7 @@ public class EnvDao
 
         });
 
+        //TODO .. init 未知
         if (p.getInit() != null)
             p.getInit().run(p.getStack());
     }

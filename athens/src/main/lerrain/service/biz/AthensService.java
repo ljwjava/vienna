@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * Annotate lyx
+ */
 @Service
 public class AthensService
 {
@@ -38,6 +41,7 @@ public class AthensService
 	@PostConstruct
 	public void reset()
 	{
+		//设置服务日志打印级别
 		sv.setLog("sale", 2);
 		sv.setLog("lifeins", 2);
 		sv.setLog("proposal", 2);
@@ -52,11 +56,16 @@ public class AthensService
 			Log.resetWriteLevel("info,error,alert");
 		}
 
+		//全局配置关闭循环引用检测
 		JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
 
+		//应用环境重置
 		envSrv.reset();
+		
+		//重置网关数据
 		gatewaySrv.reset(envSrv);
 
+		//加载数据库定时任务
 		taskSrv.reset(envSrv);
 	}
 

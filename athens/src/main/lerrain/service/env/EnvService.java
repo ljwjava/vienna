@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * 应用场景服务
+ * Annotate lyx
+ */
 @Service
 public class EnvService
 {
@@ -190,6 +194,9 @@ public class EnvService
             env2.put(c.getCode(), c);
         }
 
+        //scope --> iyb++,agency++,data++,user,clouds++
+        //遍历 所有env 信息，如果envs集合不包含，则添加 scope中对应envID
+        //envs集合最终
         for (String str : scope.split(","))
         {
             if (str.endsWith("++"))

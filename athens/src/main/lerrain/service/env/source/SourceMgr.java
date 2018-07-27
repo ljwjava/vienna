@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 数据源管理
+ * Annotate lyx
+ */
 @Component
 public class SourceMgr
 {
@@ -24,6 +28,12 @@ public class SourceMgr
         ArcTool.start();
     }
 
+    /**
+     * 
+     * @param sourceId
+     * @param type	1:数据库链接，2:脚本文件?
+     * @param opts
+     */
     public void add(Long sourceId, int type, Map opts)
     {
         if (type == TYPE_DB)

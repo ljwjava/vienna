@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Annotate lyx
+ */
 @Controller
 @RequestMapping("/image")
 public class ImageController
@@ -41,6 +44,15 @@ public class ImageController
 
     /**
      * 上传图片影像
+     * 报文格式
+      {
+		imageDatas: 
+		[{
+			"class": "apply_img", //目录名称
+			"data": base64串
+		}]
+	
+	  }
      * @return
      */
     @RequestMapping("/upload/base64.json")
@@ -85,6 +97,10 @@ public class ImageController
 
 
 
+    /**
+     * 获取(下载?)图片
+     * 请求格式：http://ip:端口/image/load/temp/目录名称/2018/07/03/20/153062017552303201.jpg
+     */
     @RequestMapping("/load/**")
     @CrossOrigin
     public void loadImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -102,6 +118,10 @@ public class ImageController
         os.write(Disk.load(new File(imagesDir + pathName)));
     }
 
+    /**
+     * 获取图片(base64字符串形式)
+     * 请求格式：http://ip:端口/image/load/base64/temp/目录名称/2018/07/03/20/153062017552303201.jpg
+     */
     @RequestMapping("/load/base64/**")
     @CrossOrigin
     public void loadImageBase64(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -116,6 +136,11 @@ public class ImageController
         response.getOutputStream().write(("data:"+type+";base64," + Common.encodeBase64(Disk.load(new File(imagesDir + pathName))).replaceAll("\r\n", "")).getBytes());
     }
 
+    /**
+     * 获取图片base64字符串
+     * 请求格式：http://ip:端口/image/get/base64.json?pathName=temp/目录名称/2018/07/03/20/153062017552303201.jpg
+     * 返回JSON报文
+     */
     @RequestMapping("/get/base64.json")
     @ResponseBody
     @CrossOrigin
